@@ -260,17 +260,18 @@ main()
 {
     char *b,ch,a;
     int i;
+    char *iface = "dsl0";
     app_comm_cli cli("/home/artpol/socket");
     printf("Connect ok\n");
 
 printf("-----------------------------------------------\n");
-    print_endp_cur(cli,"dsl2",stu_c,net_side,0);
+    print_endp_cur(cli,iface,stu_c,net_side,0);
 printf("-----------------------------------------------\n");
-    print_endp_cur(cli,"dsl2",stu_r,cust_side,0);    
+    print_endp_cur(cli,iface,stu_r,cust_side,0);    
 printf("-----------------------------------------------\n");
-    print_endp_cur(cli,"dsl2",sru1,net_side,0);
+    print_endp_cur(cli,iface,sru1,net_side,0);
 printf("-----------------------------------------------\n");
-    print_endp_cur(cli,"dsl2",sru1,cust_side,0);
+    print_endp_cur(cli,iface,sru1,cust_side,0);
 printf("-----------------------------------------------\n");    
 /*
     i =0;

@@ -4,11 +4,14 @@
  * 	provides schedule for request generating and sending
  */
 
+#include <eoc_debug.h>
 #include <engine/EOC_scheduler.h>
 
 void
 EOC_scheduler::jump_Offline()
 {
+    PDEBUG(DINFO,"");
+
     for(int i=0;i<MAX_UNITS;i++)
         statem->ustates[i] = NotPresent;
     statem->state = Offline;
@@ -19,6 +22,7 @@ EOC_scheduler::jump_Offline()
 int 
 EOC_scheduler::jump_Setup()
 {
+    PDEBUG(DINFO,"");
     statem->state = Setup;
     // Schedule Discovery request
     return send_q->add(stu_c,BCAST,REQ_DISCOVERY,ts);
@@ -28,7 +32,7 @@ EOC_scheduler::jump_Setup()
 int
 EOC_scheduler::jump_Normal()
 {
-    printf("Jump Normal\n");
+    PDEBUG(DINFO,"");
     statem->state = Normal;
     
     return 0;    
@@ -53,28 +57,31 @@ EOC_scheduler::response(EOC_msg *m)
 
     if( !m || (m->src() == unknown) )
 	return -1;
-//    printf("-----------------response------------------\n");
-//    wait_q->print();
+
+    PDEBUG(DFULL,"-----------------response------------------");
+    EDEBUG(DFULL,wait_q->print());
+
     if( wait_q->find_del(m->src(),m->dst(),m->type(),ts) )
 	return -1;
-//    printf("-----------------after find_del-------------\n");
-//    wait_q->print();    
-//    printf("-----------------end response---------------\n");
 
-    printf("RESPONSE: src(%d),dst(%d),type(%d)\n",m->src(),m->dst(),m->type());
+    PDEBUG(DFULL,"-----------------after find_del-------------");
+    EDEBUG(DFULL,wait_q->print());    
+    PDEBUG(DFULL,"-----------------end response---------------");
+
+    PDEBUG(DFULL,"RESPONSE: src(%d),dst(%d),type(%d)",m->src(),m->dst(),m->type());
     
     switch( m->type() ){	
     case RESP_DISCOVERY:
 	if( statem->state != Setup ){
-	    printf("RESPONSE DROP (not Setup): src(%d),dst(%d),type(%d)\n",m->src(),m->dst(),m->type());
+	PDEBUG(DFULL,"RESPONSE DROP (not Setup): src(%d),dst(%d),type(%d)",m->src(),m->dst(),m->type());
     	    return -1;
 	}
 	if( statem->ustates[ind] != NotPresent ){
-	    printf("RESPONSE DROP (not NotPresent): src(%d),dst(%d),type(%d)\n",m->src(),m->dst(),m->type());
+	    PDEBUG(DFULL,"RESPONSE DROP (not NotPresent): src(%d),dst(%d),type(%d)",m->src(),m->dst(),m->type());
 	    // Not in proper state - drop
 	    if( statem->ustates[(int)stu_c-1] == Discovered &&
 		statem->ustates[(int)stu_r-1] == Discovered ){
-		printf("All is discovered!\n");
+		PDEBUG(DINFO,"All units discovered!");
 		return 0;
 	    }
 	    return wait_q->add(BCAST,stu_c,RESP_DISCOVERY,ts);
@@ -139,7 +146,7 @@ EOC_scheduler::request(sched_elem &el)
 	return -1;	
     }
     if( el.type == REQ_DISCOVERY )
-	printf("REQUEST: src(%d),dst(%d),type(%d)\n",el.src,el.dst,el.type);
+	PDEBUG(DFULL,"REQUEST: src(%d),dst(%d),type(%d)",el.src,el.dst,el.type);
     sched_elem n = el;
     unit swap = n.src;
     n.src = n.dst;
@@ -162,7 +169,7 @@ EOC_scheduler::request(sched_elem &el)
 	wait_q->add(n1);
     default:
 	n.type = REQ2RESP(n.type);
-//        printf("TO_WAIT_Q: src(%d),dst(%d),type(%d)\n",n.src,n.dst,n.type);
+	PDEBUG(DFULL,"TO_WAIT_Q: src(%d),dst(%d),type(%d)",n.src,n.dst,n.type);
 	n.tstamp = ts;
 	wait_q->add(n);
     }
@@ -174,8 +181,8 @@ EOC_scheduler::resched()
 {
     sched_elem el;
     int ret;
-//    printf("RESCHED\n");
-//    wait_q->print();
+    PDEBUG(DFULL,"RESCHED");
+    EDEBUG(DFULL,wait_q->print());
     while( !(ret=wait_q->get_old(ts,wait_to,el)) ){
 	switch( el.type ){
 	case RESP_NSIDE_PERF:
@@ -183,7 +190,7 @@ EOC_scheduler::resched()
 	case RESP_MAINT_STAT:
 	    break;
 	default:
-//    	    printf("RESCHED: src(%d) dst(%d) type(%d) ts(%d)\n",el.src,el.dst,el.type,el.tstamp.get_val());
+    	    PDEBUG(DFULL,"RESCHED: src(%d) dst(%d) type(%d) ts(%d)",el.src,el.dst,el.type,el.tstamp.get_val());
 	    unit swap = el.src;
 	    el.src = el.dst;
 	    el.dst = swap;

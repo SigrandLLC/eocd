@@ -43,7 +43,6 @@ int EOC_db::
 response(EOC_msg *m,int check)
 {
     u8 type = RESP_IND(m->type());
-//    printf("EOC_DB: Get response: %d\n",m->type());
     if( !m || !m->is_response() || !handlers[type] )
         return -1;
     return handlers[type](this,m,check);
@@ -122,7 +121,6 @@ int EOC_db::
 unit_quan(){
     int i,cnt=0;
     for(i=0;i<MAX_UNITS && units[i];i++){
-        //printf("Count unit #%d\n",i);
         cnt++;
     }
     return cnt;
@@ -143,7 +141,7 @@ _resp_discovery(EOC_db *db,EOC_msg *m,int check)
     if( !db->units[ind] ){
 	db->units[ind] = new EOC_unit(m->src(),resp,db->loop_num);
     }
-    printf("DISCOVERY_RESP FROM(%d): hop=%d,resl=%d,vendor_id=%d,fwd_loss=%d\n",
+    PDEBUG(DINFO,"DISCOVERY_RESP FROM(%d): hop=%d,resl=%d,vendor_id=%d,fwd_loss=%d",
 	    m->src(),resp->hop,resp->res1,resp->vendor_id,resp->fwd_loss);
     return 0;
 }
@@ -154,7 +152,6 @@ _resp_inventory(EOC_db *db,EOC_msg *m,int check)
     ASSERT( m->type() == RESP_INVENTORY);
     ASSERT( m->payload_sz() == RESP_INVENTORY_SZ);
 
-    printf("INVENTORY_RESP FROM(%d)\n",m->src());
     resp_inventory *resp= (resp_inventory *)m->payload();
 
     int ind = (int)m->src() - 1;
@@ -164,6 +161,8 @@ _resp_inventory(EOC_db *db,EOC_msg *m,int check)
     
     if( check )
 	return 0;
+
+    PDEBUG(DINFO,"INVENTORY_RESP FROM(%d)",m->src());
 
     // Check that units was not changed
     if( db->units[ind]->integrity(resp) ){
@@ -185,7 +184,9 @@ _resp_configure(EOC_db *db,EOC_msg *m,int check)
     ASSERT( m->payload_sz() == RESP_CONFIGURE_SZ);
 
     resp_configure *resp= (resp_configure *)m->payload();
-    printf("CONFIGURE_RESP FROM(%d), loop(%d),snr(%d)\n",m->src(),resp->loop_attn,resp->snr_marg);
+    if( check )
+	return 0;
+    PDEBUG(DINFO,"CONFIGURE_RESP FROM(%d), loop(%d),snr(%d)",m->src(),resp->loop_attn,resp->snr_marg);
     return 0;
 }
 
@@ -199,10 +200,6 @@ _resp_status(EOC_db *db,EOC_msg *m,int check)
     resp_status *resp= (resp_status*)m->payload();
     int loop_id = resp->loop_id-1;
     EOC_loop *nsloop=NULL,*csloop=NULL;
-
-    printf("STATUS RESPONSE: src(%d) dst(%d) ns_snr=%d, cs_snr=%d\n",
-	    m->src(),m->dst(),resp->ns_snr_marg,resp->cs_snr_marg);
-
 
     nsloop = db->check_exist(m->src(),net_side,loop_id);
     csloop = db->check_exist(m->src(),cust_side,loop_id);
@@ -225,6 +222,10 @@ _resp_status(EOC_db *db,EOC_msg *m,int check)
     if( check )
 	return 0;
 
+    PDEBUG(DINFO,"STATUS RESPONSE: src(%d) dst(%d) ns_snr=%d, cs_snr=%d",
+	    m->src(),m->dst(),resp->ns_snr_marg,resp->cs_snr_marg);
+
+
     if( csloop ){
 	csloop->short_status(resp->cs_snr_marg);
     }
@@ -245,12 +246,13 @@ _resp_nside_perf(EOC_db *db,EOC_msg *m,int check)
     int loop_id = resp->loop_id-1; 
     EOC_loop *nsloop=NULL;
 
-//    printf("NET SIDE PERF RESPONSE: src(%d) dst(%d)\n",m->src(),m->dst());
     if( !(nsloop = db->check_exist(m->src(),net_side,loop_id) ) )
 	return -1;
     
     if( check )
 	return 0;
+
+    PDEBUG(DINFO,"NET SIDE PERF RESPONSE: src(%d) dst(%d)",m->src(),m->dst());
     
     if( nsloop ){
 	nsloop->full_status(resp);
@@ -269,13 +271,14 @@ _resp_cside_perf(EOC_db *db,EOC_msg *m,int check)
     int loop_id = resp->loop_id-1;
     EOC_loop *csloop=NULL;
 
-//    printf("CUST SIDE PERF RESPONSE: src(%d) dst(%d)\n",m->src(),m->dst());
 
     if( !(csloop = db->check_exist(m->src(),cust_side,loop_id)) )
 	return -1;
 	
     if( check )
 	return 0;
+
+    PDEBUG(DINFO,"CUST SIDE PERF RESPONSE: src(%d) dst(%d)",m->src(),m->dst());
     
     if( csloop ){
 	csloop->full_status(resp);
@@ -296,8 +299,7 @@ _resp_test(EOC_db *db,EOC_msg *m,int check)
 	return 0;
 
     resp_configure *resp= (resp_configure *)m->payload();
-    printf("TEST_RESP FROM(%d), loop(%d),snr(%d)\n",m->src(),resp->loop_attn,resp->snr_marg);
-    // db->add_unit(m->src(),resp);
+    PDEBUG(DINFO,"TEST_RESP FROM(%d), loop(%d),snr(%d)",m->src(),resp->loop_attn,resp->snr_marg);
     return 0;
 }
 
@@ -314,24 +316,24 @@ int EOC_db::
 _appreq_inventory(EOC_db *db,app_frame *fr)
 {
     inventory_payload *p = (inventory_payload*)fr->payload_ptr();
-    printf("DB: Inventory app request\n");
+    PDEBUG(DINFO,"DB: Inventory app request");
     if( !p ){
-	printf("DB Inventory: eror !p\n");    
+	PDEBUG(DERR,"DB Inventory: eror !p");    
 	return -1;
     }
     if( db->check_exist((unit)p->unit) ){
-	printf("DB Inventory: error check exist\n");	
+	PDEBUG(DERR,"DB Inventory: error check exist");
 	fr->negative();
 	return 0;
     }
-    printf("DB Inventory: form response\n");	    
+    PDEBUG(DINFO,"DB Inventory: form response");	    
     fr->response();
-    printf("DB Inventory: prisvaivanie\n");
+    PDEBUG(DINFO,"DB Inventory: prisvaivanie");
     p->eoc_softw_ver = db->units[p->unit-1]->eoc_softw_ver();
     p->inv = db->units[p->unit-1]->inventory_info();
     p->region1 = 1;
     p->region0 = 1;
-    printf("DB Inventory: success\n");	    
+    PDEBUG(DINFO,"DB Inventory: success");
     return 0;
 }
 
@@ -343,18 +345,18 @@ _appreq_endpcur(EOC_db *db,app_frame *fr)
     time_t cur;
     EOC_loop *loop;
 
-    printf("DB: Endpoint current app request\n");
+    PDEBUG(DINFO,"DB: Endpoint current app request");
     if( !p ){
-	printf("DB Endp cur: eror !p\n");    
+	PDEBUG(DERR,"DB Endp cur: eror !p");    
 	return -1;
     }
     if( !(loop = db->check_exist((unit)p->unit,(side)p->side,p->loop)) ){
-	printf("DB Endp cur: error check exist: unit(%d) side(%d) loop(%d)\n",
+	PDEBUG(DERR,"DB Endp cur: error check exist: unit(%d) side(%d) loop(%d)",
 	    p->unit,p->side,p->loop);	
 	fr->negative();
 	return 0;
     }
-    printf("DB Endp cur: form response\n");	    
+    PDEBUG(DINFO,"DB Endp cur: form response");
     if( time(&cur) < 0 ){
 	fr->negative();
 	return 0;
@@ -369,11 +371,13 @@ _appreq_endpcur(EOC_db *db,app_frame *fr)
     loop->m15_counters(0,elem);
     p->cur15min = elem.cntrs;
     p->cur_15m_elaps = cur - elem.tstamp;
-
-    printf("ENDP 15 MIN: cur=%d, tstamp = %d\n",cur,elem.tstamp);
+/*
+    PDEBUG(DINFO,"ENDP 15 MIN: cur=%d, tstamp = %d",cur,elem.tstamp);
     
-    printf("ENDP 15 MIN: cur=%s, tstamp = %s\n",
+    PDEBUG(DINFO,"ENDP 15 MIN: cur=%s, tstamp = %s",
 	asctime(localtime(&cur)),asctime(localtime(&elem.tstamp)) );
+*/
+    PDEBUG(DINFO,"ENDP CUR: es=%d",p->cur15min.es );
 
     loop->d1_counters(0,elem);
     p->cur1day = elem.cntrs;
@@ -390,17 +394,17 @@ _appreq_endp15min(EOC_db *db,app_frame *fr)
     EOC_loop *loop;
     counters_elem elem;
 
-    printf("DB: Endpoint 15 min app request\n");
+    PDEBUG(DINFO,"DB: Endpoint 15 min app request");
     if( !p ){
-	printf("DB Endp 15min: eror !p\n");    
+	PDEBUG(DERR,"DB Endp 15min: eror !p");
 	return -1;
     }
     if( !(loop = db->check_exist((unit)p->unit,(side)p->side,p->loop)) ){
-	printf("DB Endp 15 min: error check exist\n");	
+	PDEBUG(DERR,"DB Endp 15 min: error check exist");
 	fr->negative();
 	return 0;
     }
-    printf("DB Endp 15min: form response\n");	    
+    PDEBUG(DINFO,"DB Endp 15min: form response");
 
     if( loop->m15_counters(p->int_num,elem) ){
 	fr->negative();
@@ -418,17 +422,17 @@ _appreq_endp1day(EOC_db *db,app_frame *fr)
     EOC_loop *loop;
     counters_elem elem;
 
-    printf("DB: Endpoint 1 day app request\n");
+    PDEBUG(DINFO,"DB: Endpoint 1 day app request");
     if( !p ){
-	printf("DB Endp 1 day: eror !p\n");    
+	PDEBUG(DERR,"DB Endp 1 day: eror !p");    
 	return -1;
     }
     if( !(loop = db->check_exist((unit)p->unit,(side)p->side,p->loop)) ){
-	printf("DB Endp 1 day: error check exist\n");	
+	PDEBUG(DERR,"DB Endp 1 day: error check exist");
 	fr->negative();
 	return 0;
     }
-    printf("DB Endp 1 day: form response\n");	    
+    PDEBUG(DINFO,"DB Endp 1 day: form response");
 
     if( loop->d1_counters(p->int_num,elem) ){
 	fr->negative();

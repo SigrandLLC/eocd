@@ -49,7 +49,7 @@ typedef struct{
     u8 :7;
     u8 loop_attn;
     u8 :4;
-    u8 snr_marg :4;
+    u8 snr_marg :7;
 } resp_configure;
 #define RESP_CONFIGURE REQ2RESP(REQ_CONFIGURE)
 #define RESP_CONFIGURE_SZ sizeof(resp_configure)

@@ -3,8 +3,10 @@
 void EOC_loop::
 status_diff(side_perf *info,counters_t &cntrs)
 {
+    memset(&cntrs,0,sizeof(cntrs));
     if( !(memcmp(info,&last_msg,sizeof(last_msg))) )
         return;
+
     cntrs.es = modulo_diff(last_msg.es,info->es,255,"es");
     cntrs.ses = modulo_diff(last_msg.ses,info->ses,255,"ses");
     cntrs.crc = modulo_diff(last_msg.crc,info->crc,65535,"crc");
@@ -59,6 +61,7 @@ shift_rings(){
 	_15m_tm.tm_min = (((int)_15m_tm.tm_min)/EOC_15MIN_INT_LEN)*EOC_15MIN_INT_LEN;
 	_15m_tm.tm_sec = 0;    
         _15min_ints[0]->tstamp = mktime(&_15m_tm);
+	
     }
 	
     if( _1d_tm.tm_year == cur_tm.tm_year ){
@@ -118,6 +121,7 @@ full_status(side_perf *info)
 {
     counters_t cntrs;
     status_diff(info,cntrs);
+    printf("FULL STATUS: info->es=%u,cntrs.es=%u, last.es=%u\n",info->es,cntrs.es,last_msg.es);
     shift_rings();	
     // change online data
     state.loop_attn = info->loop_attn;

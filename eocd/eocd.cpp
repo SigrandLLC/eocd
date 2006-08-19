@@ -38,7 +38,7 @@ EOC_main *m;
 
 
 EOC_dummy1 *N1,*N9;
-
+/*
 EOC_dev_terminal *
 init_dev(char *name_1)
 {
@@ -51,7 +51,7 @@ init_dev(char *name_1)
     return NULL;
 }
 
-
+*/
 
 
 static void child_handler(int signum)
@@ -157,10 +157,11 @@ int main( int argc, char *argv[] ) {
     	static struct option long_options[] = {
     	    {"daemon", 0, 0, 'd'},
     	    {"config_path", 1, 0, 'c'},
+    	    {"debuglev", 2, 0, 'l'},
     	    {0, 0, 0, 0}
 	};
 
-	int c = getopt_long (argc, argv, "dc:",
+	int c = getopt_long (argc, argv, "dl::c:",
                 long_options, &option_index);
         if (c == -1)
     	    break;
@@ -171,13 +172,40 @@ int main( int argc, char *argv[] ) {
         case 'c':
 	    strncpy(config_path,optarg,256);
     	    break;
+	case 'l':
+	    printf("Debug level setting\n");
+	    char c = '0';
+	    if(optarg){
+		c = optarg[0];
+	    }
+	    debug_lev = c - '0';
+	    switch(debug_lev){
+	    case 0:
+		debug_lev = DERR;
+		printf("Debug level: DEBUG ERRORS\n");
+		break;
+	    case 1:
+		debug_lev = DINFO;
+		printf("Debug level: DEBUG INFO\n");
+		break;
+	    case 2:
+		debug_lev = DFULL;
+		printf("Debug level: DEBUG FULL\n");
+		break;
+	    default:
+		printf("unknown \"debuglev\" argument (%c), switch debug off\n",c);
+		debug_lev = DOFF;
+		continue;
+	    }
 	}
     }
 
 
     // Daemonize
-    if( need_daemonize )
+    if( need_daemonize ){
+	debug_lev = DOFF;
 	daemonize();
+    }
 
 // ------------------ virtual devs ------------------------------------------------------    
 #define REPEATERS 2

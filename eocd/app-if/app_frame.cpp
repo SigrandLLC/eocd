@@ -12,7 +12,7 @@ app_frame(app_ids id,app_types type,roles role,u8 act_seconds,char *dname){
 	buf_size = offs + strnlen(dname,256)+1;
 	if( !(buf = new char[buf_size]) ){
 	    buf_size = 0;
-	    eocd_log(0,"Not enought memory");
+	    PDEBUG(DERR,"Not enought memory");
 	    return;
 	}
 	memset(buf,0,buf_size);
@@ -24,7 +24,7 @@ app_frame(app_ids id,app_types type,roles role,u8 act_seconds,char *dname){
 	hdr->type = (u8)type;
 	hdr->role = (u8)role;
 	if( time(&hdr->tstamp) < 0)
-	    eocd_log(0,"Error getting current time");
+	    PDEBUG(DERR,"Error getting current time");
 	hdr->act_sec = act_seconds;
 	memcpy(hdr->dname,dname,strnlen(dname,SPAN_NAME_LEN));
 }
@@ -40,12 +40,12 @@ app_frame(char *b,int size){
     if( (offs = size_by_id((app_ids)hdr->id,(app_types)hdr->type,psize,csize) ) <0 ){
         buf = NULL;
         buf_size = 0;
-        eocd_log(0,"Cannot get info about frame id = %d",hdr->id);
+        PDEBUG(DERR,"Cannot get info about frame id = %d",hdr->id);
         return;
     }
     if( (hdr->psize != psize) || (hdr->csize != csize) ||
 	    (!csize && hdr->type == APP_SET) ){
-        eocd_log(0,"Error in app_frame header");
+        PDEBUG(DERR,"Error in app_frame header");
         buf = NULL;
         buf_size = 0;
     }

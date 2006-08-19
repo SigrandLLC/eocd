@@ -12,10 +12,6 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
-#include <eocd_log.h>
-
-
-
 class app_comm{
 protected:
     enum { MAX_SOCK_NAME = 256 };

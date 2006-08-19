@@ -15,12 +15,13 @@ CPPFLAGS=-g -I$(INCLUDES)
 TARGS :=generic engine devs utils local db app-if
 OBJECTS := build/*.o 
 
-#CC=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-gcc
-#CXX=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-g++
-#AR=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-ar
-#RANLIB=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-ranlib
+CC=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-gcc
+CXX=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-g++
+AR=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-ar
+RANLIB=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-ranlib
 
-RANLIB=ranlib
+#RANLIB=ranlib
+
 export CXX AR RANLIB CC
 
 INCLUDES += -I$(TOPDIR)/libconfig/
@@ -31,6 +32,7 @@ all: $(TARGS)
 
 all-mips: $(TARGS) 
 	$(CXX) -g -I$(INCLUDES) -o result main.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
+	$(CXX) -g -I$(INCLUDES) -o eocd eocd.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
 
 local: EOC_main.o
 	cp $^ build/    
@@ -57,5 +59,5 @@ clean:
 	make -C db clean
 	make -C app-if clean
 	rm -f *.o
-	rm -f result
+	rm -f result eocd
 	rm -f build/*.o

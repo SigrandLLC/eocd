@@ -5,41 +5,12 @@
 #include <malloc.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <syslog.h>
 
 #include <generic/EOC_generic.h>
 #include <devs/EOC_mr17h.h>
-#include <eocd_log.h>
+#include <eoc_debug.h>
 
-/* NOW member of EOC_dev_terminal
-int
-check_ctrl_files(char *d,char **opts,int opts_num) 
-{
-    DIR *dir;
-    int ocnt = 0;
-    struct dirent *ent;
-    
-    if( !(dir = opendir(d)) ){
-	printf("Cannot open dir: %s\n",d);
-	return -1;
-    }
-    
-    for(int i=0;i<opts_num;i++){
-	rewinddir(dir);
-	while( ent = readdir(dir) ){
-//	    printf("check equal of: %s - %s\n",opts[i],ent->d_name);
-	    if( !strncmp(opts[i],ent->d_name,256) ){
-		printf("%s - %s is equal\n",opts[i],ent->d_name);
-		ocnt++;
-		break;
-	    }
-	}
-    }
-    closedir(dir);
-    printf("ocnt = %d, opts_num = %d\n",ocnt,opts_num);
-    return (ocnt == opts_num ) ? 0 : -1;	
-}
-
-*/
 EOC_mr17h::
 EOC_mr17h(char *name)
 {
@@ -54,13 +25,16 @@ EOC_mr17h(char *name)
     mr17h_conf_dir(name,conf_path,PATH_SIZE);
 
     if( check_ctrl_files(conf_path,opts,opts_num) ){
-	printf("check_ctrl failed\n");
+	PDEBUG(DERR,"check_ctrl failed\n");
+	syslog(LOG_ERR,"Failed to find MR17H control files in %s",conf_path);
 	return;
     }
     chan_path = new char[FILE_PATH_SIZE];
     snprintf(chan_path,FILE_PATH_SIZE,"%s/eoc",conf_path);
-    printf("Init mr17h - success\n");
+    PDEBUG(DINFO,"MR17H device (%s) successflly initialized\n",name);
     valid = 1;
+    
+    PDEBUG(DINFO,"finish");
 }
 
 EOC_mr17h::
@@ -81,19 +55,19 @@ send(EOC_msg *m)
     int err = 0;
     
     if( !valid ){
-	printf("Error - initialisation unsuccessfull\n");
+	PDEBUG(DERR,"Error - initialisation unsuccessfull\n");
 	return -1;
     }
 
     if( (fd = open(chan_path,O_WRONLY) ) < 0 ){	
-	printf("Cannot open file: %d\n",chan_path);
+	PDEBUG(DERR,"Cannot open file: %d\n",chan_path);
 	valid = 0;
 	return -1;
     }
     
     wrcnt = write(fd,m->mptr(),m->msize());
     if( wrcnt < m->msize() ){
-	printf("Sended %d must be %d\n",wrcnt,m->msize());
+	PDEBUG(DERR,"Sended %d must be %d\n",wrcnt,m->msize());
 	err = -1;
     }
 
@@ -113,18 +87,18 @@ recv()
     EOC_msg *msg;
 
     if( !valid ){
-	printf("Devise not valid\n");
+	PDEBUG(DERR,"Devise not valid");
 	return NULL;
     }
 
     if( (fd = open(chan_path,O_RDONLY) ) < 0 ){
-	printf("Cannot open file %s\n",chan_path);    
+	PDEBUG(DERR,"Cannot open file %s",chan_path);    
 	valid = 0;
 	return NULL;
     }
     cnt=read(fd,buff,BUFF_SZ);
     close(fd);
-//    printf("Raded %d bytes\n",cnt);
+    PDEBUG(DFULL,"Raded %d bytes",cnt);
     if( !cnt )
 	return NULL;
     
@@ -132,7 +106,7 @@ recv()
     memcpy(ptr,buff,cnt);
     msg = new EOC_msg;
     if( msg->setup(ptr,cnt) ){
-	printf("Error wile setting up msg\n");
+	PDEBUG(DERR,"Error wile setting up msg");
 	free(ptr);
 	return NULL;
     }
@@ -147,15 +121,15 @@ set_dev_option(char *name,char *val)
     if( !valid )
 	return -1;
 	
-    printf("set_dev_option(%s,%s)\n",name,val); 
+    PDEBUG(DFULL,"set_dev_option(%s,%s)",name,val); 
     snprintf(fname,FILE_PATH_SIZE,"%s/%s",conf_path,name);
     if( (fd = open(fname,O_WRONLY)) < 0 ){
-	printf("set_dev_option: Cannot open %s\n",fname);
+	PDEBUG(DERR,"set_dev_option: Cannot open %s",fname);
 	return -1;
     }
     int len = strlen(val)+1;
     int cnt = write(fd,val,len);
-    printf("set_dev_option: write %d, written %d\n",len,cnt);
+    PDEBUG(DFULL,"set_dev_option: write %d, written %d",len,cnt);
     close(fd);
     if( cnt != len )
 	return -1;
@@ -173,16 +147,16 @@ get_dev_option(char *name,char *&buf)
 	return -1;
 
     buf = new char[BUF_SIZE];
-//    printf("get_dev_option(%s)\n",name); 
+    PDEBUG(DFULL,"get_dev_option(%s)",name); 
     snprintf(fname,FILE_PATH_SIZE,"%s/%s",conf_path,name);
     if( (fd = open(fname,O_RDONLY)) < 0 ){
-//	printf("get_dev_option: Cannot open %s\n",fname);
+	PDEBUG(DERR,"get_dev_option: Cannot open %s",fname);
 	delete[] buf;
 	buf = NULL;
 	return -1;
     }
     int cnt = read(fd,buf,BUF_SIZE);
-//    printf("get_dev_option: readed %d\n",cnt);
+    PDEBUG(DFULL,"get_dev_option: readed %d",cnt);
     close(fd);
     if( cnt < 0 ){
 	delete[] buf;
@@ -224,7 +198,7 @@ configure(span_conf_profile_t &cfg)
 	    return -1;
 	break;
     default:
-	eocd_log(CONFL,"Unexpected annex value: %d, set to annex_a\n",cfg.annex);
+	PDEBUG(DERR,"Unexpected annex value: %d, set to annex_a",cfg.annex);
 	if( set_dev_option("annex","0") )
 	    return -1;
     }	
@@ -273,7 +247,7 @@ EOC_mr17h::link_state()
     if( params != 1 )
 	return OFFLINE;
     if( state ){
-//	printf("GET LINK UP\n");
+	PDEBUG(DFULL,"GET LINK UP\n");
 	return ONLINE;
     }
     return OFFLINE;
@@ -284,24 +258,42 @@ statistics(int loop,side_perf &stat)
 {
     char *buf;
     u8 ovfl,rst;
+    int ret = 0;
     int cnt = get_dev_option("statistics_row",buf);
     if( cnt <= 0 )
 	return -1;
-    printf("STATISTICS: read params\n");
+    PDEBUG(DINFO,"STATISTICS: read params");
+    printf("readed stat: %s\n",buf);
     int params = sscanf(buf,"%d %d %u %u %u %u %u %*u %*u %u %u",
 	    &stat.snr_marg,&stat.loop_attn,&stat.es,&stat.ses,&stat.crc,
 	    &stat.losws,&stat.uas,&rst,&ovfl);
-    printf("STATISTICS: readed %d params\n",params);
+    PDEBUG(DINFO,"STATISTICS: readed %d params",params);
     delete[] buf;
     if( params != 9 )
 	return -1;
     stat.cntr_rst_stur = stat.cntr_rst_stuc = rst;
     stat.cntr_ovfl_stur = stat.cntr_ovfl_stuc = ovfl;
 
-    printf("snr(%d) attn(%d) es(%d) ses(%d) crc(%d) losws(%d) uas(%d) cntr_rst(%d) ovfl(%d)\n",
+    PDEBUG(DINFO,"snr(%d) attn(%d) es(%d) ses(%d) crc(%d) losws(%d) uas(%d) cntr_rst(%d) ovfl(%d)",
 	    stat.snr_marg,stat.loop_attn,stat.es,stat.ses,stat.crc,
 	    stat.losws,stat.uas,stat.cntr_rst_stuc,stat.cntr_ovfl_stuc);
+    
+    side_perf tmp = stat;
+    tmp.snr_marg = last_perf.snr_marg;
+    if( memcmp(&tmp,&last_perf,sizeof(last_perf)) ){
+	ret = 1;
+    }
+    if( stat.snr_marg < snr_tresh && snr_tresh ){
+	stat.snr_marg_alarm = 1;
+	ret = 1;
+    }
+    if( stat.loop_attn < attn_tresh && attn_tresh ){
+	stat.loop_attn_alarm = 1;
+	ret = 1;
+    }
 
-    return 0;
+    printf("Return %d\n",ret);
+    last_perf = stat;
+    return ret;
 }
 

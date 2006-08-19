@@ -1,5 +1,6 @@
 // system includes
 #include <sys/types.h>
+#include <syslog.h>
 #include <dirent.h>
 
 // lib includes
@@ -27,7 +28,7 @@ using namespace std;
 EOC_dev_terminal *
 init_dev(char *name);
 
-/*
+
 EOC_dev_terminal *
 init_dev(char *name)
 {
@@ -51,11 +52,14 @@ init_dev(char *name)
 		printf("Seems it mr17h\n");
 		dev = (EOC_dev_terminal*)new EOC_mr17h(name);
 		closedir(dir1);
+		side_perf s;
 		if( !dev->init_ok() ){
 		    printf("Error initialising %s\n",name);		    
 		    delete dev;
 		    return NULL;
 		}
+		dev->statistics(0,s);
+		( (EOC_mr17h*)dev )->dbg_last_msg();
 		printf("Dev %s successfully initialised\n",name);		    
 		return dev; 
 	    }
@@ -71,13 +75,13 @@ init_dev(char *name)
 		    return dev; 
 		}
 	    }
-*//*
+*/
 	}
     }
     closedir(dir);
     return NULL;
 }
-*/
+
 
 int EOC_main::
 read_config()
@@ -88,34 +92,39 @@ read_config()
     int tick_per_min = TICK_PER_MINUTE_DEF;
 
     //----------- Open config file ------------------//
-    printf("Open config file: %s\n",config_file);
+    PDEBUG(DINFO,"Open config file: %s",config_file);
     try
     {
 	cfg.readFile((const char *)config_file);
     }catch(ParseException& ex){
-	// eoc_debug("Error in %s (%d): %s",file,ex.getLine(),ex.getError());
-	cout << "failed in line " << ex.getLine()<< " error: " << ex.getError() << endl;
+	//eoc_debug("Error in %s (%d): %s",file,ex.getLine(),ex.getError());
+	syslog(LOG_ERR,"Error in %s (%d): %s",ex.getLine(),ex.getError());
+	PDEBUG(DERR,"Error in %s (%d): %s",ex.getLine(),ex.getError());
 	return -1;
     }catch(FileIOException &fex){
 	// eoc_debug("Cannot open configuration file: %s",file);
-	printf("Cannot open configuration file: %s\n",config_file);
+	syslog(LOG_ERR,"Cannot open configuration file: %s",config_file);
+	PDEBUG(DERR,"Cannot open configuration file: %s",config_file);
 	return -1;
     }catch(...){
-	printf("Error openning config file: %s\n",config_file);
+	syslog(LOG_ERR,"Error openning config file: %s",config_file);
+	PDEBUG(DERR,"Error openning config file: %s",config_file);
 	return -1;
     }
-    printf("Config file opened successfull\n");
+    PDEBUG(DINFO,"Config file opened successfull");
     //----------- read tick per minute value ------------------//
     // 1. Check that conf_profile group exist
     try{
 	tick_per_min = cfg.lookup("act_per_minute");
 	if( tick_per_min < 0 ){
 	    //eoc_log("(%s): value of \"act_per_minute\" must be greater than zero",config_file);
-	    printf("(%s): value of \"act_per_minute\" must be greater than zero\n",config_file);
+	    syslog(LOG_ERR,"(%s): value of \"act_per_minute\" must be greater than zero",config_file);
+	    PDEBUG(DERR,"(%s): value of \"act_per_minute\" must be greater than zero",config_file);
 	    return -1;
 	}else if( tick_per_min > TICK_PER_MINUTE_MAX ){
 	    //eoc_log("(%s): exceed maximum value of \"act_per_minute\": %d, must be %d",config_file,tick_per_min,TICK_PER_MINUTE_MAX);
-	    printf("(%s): exceed maximum value of \"act_per_minute\": %d, must be %d\n",config_file,tick_per_min,TICK_PER_MINUTE_MAX);
+	    syslog(LOG_ERR,"(%s): exceed maximum value of \"act_per_minute\": %d, must be %d",config_file,tick_per_min,TICK_PER_MINUTE_MAX);
+	    PDEBUG(DERR,"(%s): exceed maximum value of \"act_per_minute\": %d, must be %d",config_file,tick_per_min,TICK_PER_MINUTE_MAX);
 	    return -1;
 	}	
     }catch(SettingNotFoundException &snfex){
@@ -123,15 +132,17 @@ read_config()
     }catch(SettingTypeException &tex){
 	// wrong type - configuration parsing error
 	//eoc_log("(%s): wrong data type of \"act_per_minute\" setting",config_file);
-	printf("(%s): wrong data type of \"act_per_minute\" setting\n",config_file);
+	syslog(LOG_ERR,"(%s): wrong data type of \"act_per_minute\" setting\n",config_file);
+	PDEBUG(DERR,"(%s): wrong data type of \"act_per_minute\" setting",config_file);
 	return -1;
     }catch(...){
 	//eoc_log("Unexpected error while parsing \"act_per_minute\" setting in %s",config_file);
-	printf("Unexpected error while parsing  \"act_per_minute\" setting in %s\n",config_file);
+	syslog(LOG_ERR,"Unexpected error while parsing  \"act_per_minute\" setting in %s",config_file);
+	PDEBUG(DERR,"Unexpected error while parsing  \"act_per_minute\" setting in %s",config_file);
 	return -1;
     }
     
-    printf("tick_p_min = %d\n",tick_per_min);
+    PDEBUG(DINFO,"tick_p_min = %d",tick_per_min);
 
     //----------- read span configuration profiles ------------------//
     // 1. Check that conf_profile group exist
@@ -139,7 +150,8 @@ read_config()
 	Setting &s = cfg.lookup("span_profiles");
     }catch(...){
         // eoc_log("(%s): cannot found \"conf_profiles\" section",config_file);
-        printf("(%s): cannot found \"span_profiles\" section\n",config_file);
+        syslog(LOG_ERR,"(%s): cannot found \"span_profiles\" section",config_file);
+        PDEBUG(DERR,"(%s): cannot found \"span_profiles\" section",config_file);
         return -1;
     }
 
@@ -151,7 +163,8 @@ read_config()
 	    const char *str = s[i]["name"];
 	    if( !(name = strndup(str,SNMP_ADMIN_LEN)) ){
 		//eoc_log("Not enougth memory");
-		printf("Not enougth memory\n");
+		syslog(LOG_ERR,"Not enougth memory");
+		PDEBUG(DERR,"Not enougth memory");
 		return -1;
 	    }
 	    
@@ -188,30 +201,35 @@ read_config()
 	    // Check input values
 	    if( wires > 4 || wires <= 0 ){
 		//eoc_log("(%s): wrong \"wires\" value in %s profile: %d , may be 1-4",config_file,name,wires);
-		printf("(%s): wrong \"wires\" value in %s profile: %d , may be 1-4\n",config_file,name,wires);
+		syslog(LOG_ERR,"(%s): wrong \"wires\" value in %s profile: %d , may be 1-4",config_file,name,wires);
+		PDEBUG(DERR,"(%s): wrong \"wires\" value in %s profile: %d , may be 1-4",config_file,name,wires);
 		return -1;
 	    }
 	    if( annex > 2 || annex <= 0){
 		//eoc_log("(%s): wrong \"annex\" value in %s profile: %d , may be 0-3",config_file,name,annex);
-		printf("(%s): wrong \"wires\" value in %s profile: %d , may be 1-4\n",config_file,name,annex);
+		syslog(LOG_ERR,"(%s): wrong \"wires\" value in %s profile: %d , may be 1-4",config_file,name,annex);
+		PDEBUG(DERR,"(%s): wrong \"wires\" value in %s profile: %d , may be 1-4",config_file,name,annex);
 		return -1;
 	    }
 	    	
 	    if( power > 3 && power <= 0){
 		//eoc_log("(%s): wrong \"power\" value in %s profile: %d , may be 0,1",config_file,name,power);
-		printf("(%s) wrong \"power\" value in %s profile: %d , may be 0,1\n",config_file,name,power);
+		syslog(LOG_ERR,"(%s) wrong \"power\" value in %s profile: %d , may be 0,1",config_file,name,power);
+		PDEBUG(DERR,"(%s) wrong \"power\" value in %s profile: %d , may be 0,1",config_file,name,power);
 		return -1;
 	    }
 
 	    if( ref_clock > 4 || ref_clock <= 0){
 		//eoc_log("(%s): wrong \"ref_clock\" value in %s profile: %d , may be 0-3",config_file,name,ref_clock);
-		printf("(%s): wrong \"ref_clock\" value in %s profile: %d , may be 1-4\n",config_file,name,ref_clock);
+		syslog(LOG_ERR,"(%s): wrong \"ref_clock\" value in %s profile: %d , may be 1-4",config_file,name,ref_clock);
+		PDEBUG(DERR,"(%s): wrong \"ref_clock\" value in %s profile: %d , may be 1-4",config_file,name,ref_clock);
 		return -1;
 	    }
 	    	
 	    if( line_probe != 1 && line_probe != 2){
 		//eoc_log("(%s): wrong \"line_probe\" value in %s profile: %d , may be 0,1",config_file,name,line_probe);
-		printf("(%s): wrong \"line_probe\" value in %s profile: %d , may be 0,1\n",config_file,name,line_probe);
+		syslog(LOG_ERR,"(%s): wrong \"line_probe\" value in %s profile: %d , may be 0,1",config_file,name,line_probe);
+		PDEBUG(DERR,"(%s): wrong \"line_probe\" value in %s profile: %d , may be 0,1",config_file,name,line_probe);
 		return -1;
 	    }
 
@@ -243,12 +261,15 @@ read_config()
 	}catch(ConfigException& cex){
     	    if( name ){
 		// eoc_log("Error while parsing profile: %s",name);
-		printf("(%s): error while parsing profile: %s\n",config_file,name);
+		syslog(LOG_ERR,"(%s): error while parsing profile: %s",config_file,name);
+		PDEBUG(DERR,"(%s): error while parsing profile: %s",config_file,name);
 		return -1;
 	    }
 	    break;
 	}catch(...){
-	    cout << "fail get element" << endl;
+	    syslog(LOG_ERR,"Fail to get span_profiles[%d] element",i);
+	    PDEBUG(DERR,"Fail to get span_profiles[%d] element",i);
+
 	}
     }
 /*
@@ -258,7 +279,7 @@ read_config()
 	Setting &s = cfg.lookup("span_profiles");
     }catch(...){
         // eoc_log("Cannot found \"span_profiles\" section in %s file",file);
-        printf("Cannot found \"span_profiles\" section in %s file\n",file);
+        printf("Cannot found \"span_profiles\" section in %s file",file);
         return -1;
     }
 
@@ -270,7 +291,7 @@ read_config()
 	    const char *str = s[i]["name"];
 	    if( !(name = strndup(str,SNMP_ADMIN_LEN)) ){
 		//eoc_log("Not enougth memory");
-		printf("Not enougth memory\n");
+		printf("Not enougth memory");
 		return -1;
 	    }
 	    int wires = s[i]["wires"];
@@ -284,30 +305,30 @@ read_config()
 	    // Check input values
 	    if( wires > 4 || wires <= 0 ){
 		//eoc_log("Wrong \"wires\" value in %s profile: %d , may be 1-4",name,wires);
-		printf("Wrong \"wires\" value in %s profile: %d , may be 1-4\n",name,wires);
+		printf("Wrong \"wires\" value in %s profile: %d , may be 1-4",name,wires);
 		return -1;
 	    }
 	    if( annex > 3 || annex < 0){
 		//eoc_log("Wrong \"annex\" value in %s profile: %d , may be 0-3",name,annex);
-		printf("Wrong \"wires\" value in %s profile: %d , may be 1-4\n",name,annex);
+		printf("Wrong \"wires\" value in %s profile: %d , may be 1-4",name,annex);
 		return -1;
 	    }
 	    	
 	    if( power != 1 && power != 0){
 		//eoc_log("Wrong \"power\" value in %s profile: %d , may be 0,1",name,power);
-		printf("Wrong \"power\" value in %s profile: %d , may be 0,1\n",name,power);
+		printf("Wrong \"power\" value in %s profile: %d , may be 0,1",name,power);
 		return -1;
 	    }
 
 	    if( ref_clock > 3 || ref_clock < 0){
 		//eoc_log("Wrong \"ref_clock\" value in %s profile: %d , may be 0-3",name,ref_clock);
-		printf("Wrong \"ref_clock\" value in %s profile: %d , may be 1-4\n",name,ref_clock);
+		printf("Wrong \"ref_clock\" value in %s profile: %d , may be 1-4",name,ref_clock);
 		return -1;
 	    }
 	    	
 	    if( line_probe != 1 && line_probe != 0){
 		//eoc_log("Wrong \"line_probe\" value in %s profile: %d , may be 0,1",name,line_probe);
-		printf("Wrong \"line_probe\" value in %s profile: %d , may be 0,1\n",name,line_probe);
+		printf("Wrong \"line_probe\" value in %s profile: %d , may be 0,1",name,line_probe);
 		return -1;
 	    }
 
@@ -326,7 +347,7 @@ read_config()
 	}catch(ConfigException& cex){
     	    if( name ){
 		// eoc_log("Error while parsing profile: %s",name);
-		printf("Error while parsing profile: %s\n",name);
+		printf("Error while parsing profile: %s",name);
 		return -1;
 	    }
 	    break;
@@ -341,8 +362,8 @@ read_config()
     try{
 	Setting &s = cfg.lookup("channels");
     }catch(...){
-        // eoc_log("(%s): cannot found \"channels\" section",config_file);
-        printf("(%s): cannot found \"channels\" section\n",config_file);
+	syslog(LOG_ERR,"(%s): cannot found \"channels\" section",config_file);
+	PDEBUG(DERR,"(%s): cannot found \"channels\" section",config_file);
         return -1;
     }
 
@@ -353,48 +374,48 @@ read_config()
     	    Setting &s = cfg.lookup("channels");
 	    const char *str = s[i]["name"];
 	    if( !(name = strndup(str,SNMP_ADMIN_LEN)) ){
-		//eoc_log("Not enougth memory");
-		printf("Not enougth memory\n");
+		syslog(LOG_ERR,"Not enougth memory");
+		PDEBUG(DERR,"Not enougth memory");
 		return -1;
 	    }
 	    int master = s[i]["master"];
 	    
 	    if( master != 1 && master != 0){
-		//eoc_log("(%s): wrong \"master\" value in %s channel: %d , may be 0,1",config_file,name,master);
-		printf("(%s): wrong \"master\" value in %s channel: %d , may be 0,1\n",config_file,name,master);
+		syslog(LOG_ERR,"(%s): wrong \"master\" value in %s channel: %d , may be 0,1",config_file,name,master);
+		PDEBUG(DERR,"(%s): wrong \"master\" value in %s channel: %d , may be 0,1",config_file,name,master);
 		return -1;
 	    }
 
 	    // If channel is slave - only responder part
 	    if( !master ){
 		if( add_slave(name) ){
-		    //eoc_log("(%s): cannot add channel \"%s\" - no such device",config_file,name);
-		    printf("(%s): cannot add channel \"%s\" - no such device\n",config_file,name);
+		    syslog(LOG_ERR,"(%s): cannot add channel \"%s\" - no such device",config_file,name);
+		    PDEBUG(DERR,"(%s): cannot add channel \"%s\" - no such device",config_file,name);
 		}    
 		continue;
 	    }
 	    
 	    char *cprof = strndup(s[i]["conf_profile"],SNMP_ADMIN_LEN);
 	    if( !cprof ){
-		//eoc_log("(%s): Not enought memory",config_file);
-		printf("(%s): Not enought memory\n",config_file);
+		syslog(LOG_ERR,"(%s): Not enought memory",config_file);
+		PDEBUG(DERR,"(%s): Not enought memory",config_file);
 		return -1;
 	    }
 	    if( !conf_profs.find((char*)cprof,strlen(str)) ){
-		//eoc_log("(%s): wrong \"conf_profile\" value in %s channel: %s, no such profile",config_file,name,cprof);
-		printf("(%s) wrong \"conf_profile\" value in %s channel: %s, no such profile\n",config_file,name,cprof);
+		syslog(LOG_ERR,"(%s) wrong \"conf_profile\" value in %s channel: %s, no such profile",config_file,name,cprof);
+		PDEBUG(DERR,"(%s) wrong \"conf_profile\" value in %s channel: %s, no such profile",config_file,name,cprof);
 		return -1;
 	    }
 /*
 	    char *aprof = strndup(s[i]["alarm_profile"],SNMP_ADMIN_LEN);
 	    if( !aprof ){
 		//eoc_log("(%s): Not enought memory",config_file);
-		printf("(%s): Not enought memory\n",config_file);
+		printf("(%s): Not enought memory",config_file);
 		return -1;
 	    }
 	    if( !alarm_profs.find((char*)str,strlen(str)) ){
 		//eoc_log("(%s): wrong \"alarm_profile\" value in %s channel: %s, no such profile",config_file,name,aprof);
-		printf("(%s) wrong \"alarm_profile\" value in %s channel: %s, no such profile\n",config_file,name,aprof);
+		printf("(%s) wrong \"alarm_profile\" value in %s channel: %s, no such profile",config_file,name,aprof);
 		return -1;
 	    }
 
@@ -403,26 +424,29 @@ read_config()
 	    int repeaters = s[i]["repeaters"];
 	    if( repeaters <0 || repeaters > MAX_REPEATERS ){
 		//eoc_log("(%s): wrong \"repeaters\" value in %s channel: %d, may be 1-%d",config_file,name,repeaters,MAX_REPEATERS);
-		printf("(%s): wrong \"conf_profile\" value in %s channel: %d, may be 1-%d\n",config_file,name,repeaters,MAX_REPEATERS);
+		syslog(LOG_ERR,"(%s): wrong \"conf_profile\" value in %s channel: %d, may be 1-%d",config_file,name,repeaters,MAX_REPEATERS);
+		PDEBUG(DERR,"(%s): wrong \"conf_profile\" value in %s channel: %d, may be 1-%d",config_file,name,repeaters,MAX_REPEATERS);
 		return -1;
 	    }
 	    
 	    // TODO: Add alarm handling
 	    if( add_master(name,cprof,NULL,repeaters,tick_per_min) ){
 		//eoc_log("(%s): cannot add channel \"%s\" - no such device",config_file,name);
-		printf("(%s): cannot add channel \"%s\" - no such device\n",config_file,name);
+		syslog(LOG_ERR,"(%s): cannot add channel \"%s\" - no such device",config_file,name);
+		PDEBUG(DERR,"(%s): cannot add channel \"%s\" - no such device",config_file,name);
 		continue;
 	    }
 	    cout << name << " " << master << " " << str << endl;
 	}catch(ConfigException& cex){
     	    if( name ){
-		// eoc_log("(%s): error while parsing profile: %s",config_file,name);
-		printf("(%s): error while parsing profile: %s\n",config_file,name);
+		syslog(LOG_ERR,"(%s): error while parsing profile: %s",config_file,name);
+		PDEBUG(DERR,"(%s): error while parsing profile: %s",config_file,name);
 		return -1;
 	    }
 	    break;
 	}catch(...){
-	    cout << "fail get element" << endl;
+	    syslog(LOG_ERR,"Fail to get channels[%d] element",i);
+	    PDEBUG(DERR,"Fail to get channels[%d] element",i);
 	}
     }
 
@@ -520,7 +544,7 @@ app_request(app_frame *fr)
     if( fr->role() != app_frame::REQUEST )
 	return -1;
     
-    printf("App request, ID = %d\n",fr->id());
+    PDEBUG(DINFO,"App request, ID = %d",fr->id());
     switch( fr->id() ){
     case APP_SPAN_NAME:
 	return app_spanname(fr);

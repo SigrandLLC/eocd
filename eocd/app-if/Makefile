@@ -33,9 +33,9 @@ all: install client server ext_app
 #	g++ $(CPPFLAGS) -o result main.cpp
 
 client: all
-	$(CXX) $(CPPFLAGS) -o cli client.cpp app_comm_cli.o app_comm.o app_frame.o
+	$(CXX) $(CPPFLAGS) -o cli client.cpp app_comm_cli.o app_comm.o app_frame.o $(TOPDIR)/build/eoc_debug.o
 server: all
-	$(CXX) $(CPPFLAGS) -o srv server.cpp app_comm_srv.o app_comm.o app_frame.o
+	$(CXX) $(CPPFLAGS) -o srv server.cpp app_comm_srv.o app_comm.o app_frame.o $(TOPDIR)/build/eoc_debug.o
 
 lib: objects
 	$(AR) rc libcomm.a app_comm.o app_comm_cli.o app_comm_srv.o app_frame.o comm.o
@@ -44,7 +44,7 @@ lib: objects
 
 
 ext_app: lib
-	$(CC) $(CPPFLAGS) -o ext main.c libcomm.a -lstdc++
+	$(CC) $(CPPFLAGS) -o ext main.c libcomm.a -lstdc++ $(TOPDIR)/build/eoc_debug.o
 
 
 clean:

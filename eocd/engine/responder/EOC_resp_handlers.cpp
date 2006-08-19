@@ -17,8 +17,8 @@
 int
 EOC_responder::_inventory(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt)
 {
-    assert( in && m );
-    assert( m->type() == REQ_INVENTORY );
+    ASSERT( in && m );
+    ASSERT( m->type() == REQ_INVENTORY );
     ret = NULL;
     cnt = 1;
     m->response(RESP_INVENTORY_SZ);
@@ -40,8 +40,8 @@ EOC_responder::_inventory(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt)
 int
 EOC_responder::_configure(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt)
 {
-    assert( in && m );
-    assert(m->type() == REQ_CONFIGURE );
+    ASSERT( in && m );
+    ASSERT(m->type() == REQ_CONFIGURE );
     EOC_router *r = in->r;
     req_configure *req = (req_configure *)m->payload();
     u8 normal = req->conf_type;
@@ -91,8 +91,8 @@ collect_statistic(EOC_dev *dev,int loop_num,side_perf *perf,int *perf_change)
 int
 EOC_responder::_status(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt)
 {
-    assert( in && m );
-    assert(m->type() == REQ_STATUS );
+    ASSERT( in && m );
+    ASSERT(m->type() == REQ_STATUS );
     EOC_router *r = in->r;
     EOC_dev *ns = r->nsdev();
     EOC_dev *cs = r->csdev();

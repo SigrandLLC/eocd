@@ -6,8 +6,8 @@ ifeq ($(TOPDIR),)
 endif
 
 
-all: EOC_msg.o
-	cp EOC_msg.o $(TOPDIR)/build
+all: EOC_msg.o eoc_debug.o
+	cp $^ $(TOPDIR)/build
 
 clean:
 	rm -f *.o

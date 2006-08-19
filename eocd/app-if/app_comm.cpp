@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 
 #include <app-if/app_comm.h>
+#include <eoc_debug.h>
 
 int app_comm::
 set_nonblock(int sock)
@@ -16,12 +17,12 @@ set_nonblock(int sock)
 
     opts = fcntl(sock,F_GETFL);
     if (opts < 0) {
-    	eocd_perror("fcntl(F_GETFL)");
+    	PERROR("fcntl(F_GETFL)");
     	return -errno;
     }
     opts = (opts | O_NONBLOCK);
     if (fcntl(sock,F_SETFL,opts) < 0) {
-    	eocd_perror("fcntl(F_SETFL)");
+    	PERROR("fcntl(F_SETFL)");
     	return -errno;
     }
     return 0;
@@ -53,7 +54,7 @@ wait()
 
     count = select(hisock+1,&socks,(fd_set *)0,(fd_set *)0, &timeout);
     if( count < 0) {
-        eocd_perror("Select");
+        PERROR("Select");
         return -errno;
     }
     if( count ){
@@ -66,9 +67,6 @@ int app_comm::
 _send(int fd,char *buf,size_t size)
 {
     size_t nsize;
-//    char *nbuf = transp(buf,size,nsize);
-//    if( !nbuf )
-//	return -EAGAIN;
     if( ::send(fd,buf,size,0) != nsize )
         return -EAGAIN;
     return 0;
@@ -84,12 +82,6 @@ _recv(int fd,char *&buf)
     
     if( (frame_len = ::recv(fd,frame,BLOCK_SIZE,MSG_PEEK|MSG_DONTWAIT) ) <= 0 )
 	return -EAGAIN;
-/*
-    
-    buf = untransp(frame,frame_len);
-    if( !buf )
-	return -ENOMEM;
-*/    
     ret = ::recv(fd,(char*)frame,frame_len,MSG_DONTWAIT);
     if( frame_len != ret )
 	return -EAGAIN;

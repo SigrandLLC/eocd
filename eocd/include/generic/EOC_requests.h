@@ -24,7 +24,7 @@ typedef struct{
     u8 loop_attn:7;
     u8 conf_type:1;
     u8 :4;
-    u8 snr_marg:4;
+    u8 snr_marg:7;
 } req_configure;
 #define REQ_CONFIGURE_SZ sizeof(req_configure)
 

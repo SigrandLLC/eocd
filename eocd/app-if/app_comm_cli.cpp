@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 
 #include <app-if/app_comm_cli.h>
+#include <eoc_debug.h>
 
 app_comm_cli::
 app_comm_cli(char *sock_name):app_comm(sock_name)
@@ -19,19 +20,19 @@ app_comm_cli(char *sock_name):app_comm(sock_name)
 
     // Check path exist
     if( (ret = stat(sname,&sbuf)) ){
-        eocd_perror("Problem with socket (%s)",sname);
+        PERROR("Problem with socket (%s)",sname);
         error_init = 1;
         return;
     }  
     if( !S_ISSOCK(sbuf.st_mode) ){
-	eocd_log(ERROR,"Not a socket (%s)",sname);
+	PDEBUG(DERR,"Not a socket (%s)",sname);
         error_init = 1;	
 	return;
     }
 
     // Create socket
     if ( (s = socket(AF_UNIX, SOCK_STREAM, 0) ) < 0) {
-    	eocd_perror("Cannot create socket (%s)",sname);
+    	PERROR("Cannot create socket (%s)",sname);
         error_init = 1;
 	return;    
     }
@@ -41,7 +42,7 @@ app_comm_cli(char *sock_name):app_comm(sock_name)
 	
     len = sizeof(saun.sun_family) + strlen(saun.sun_path);
     if (connect(s,(struct sockaddr*)&saun, len) < 0) {
-	eocd_perror("Cannot connect to (%s)",sname);
+	PERROR("Cannot connect to (%s)",sname);
         error_init = 1;
 	sfd = -1;
 	return;
@@ -59,7 +60,7 @@ int app_comm_cli::
 complete_wait()
 {
     if( sfd < 0 ){
-	eocd_log(0,"Error wile initialisation\n");
+	PDEBUG(DERR,"Error wile initialisation\n");
 	return -1;
     }
 
@@ -72,7 +73,7 @@ int app_comm_cli::
 send(char *buf,size_t size)
 {
     if( sfd < 0 ){
-	eocd_log(0,"Error wile initialisation\n");
+	PDEBUG(DERR,"Error wile initialisation\n");
 	return -1;
     }
     return _send(sfd,buf,size);
@@ -83,7 +84,7 @@ ssize_t app_comm_cli::
 recv(char *&buf)
 {
     if( sfd < 0 ){
-	eocd_log(0,"Error wile initialisation\n");
+	PDEBUG(DERR,"Error wile initialisation\n");
 	return -1;
     }
 

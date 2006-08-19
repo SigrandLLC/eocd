@@ -3,7 +3,6 @@
 
 #include <stdio.h>
 #include <generic/EOC_types.h>
-#include <eocd_log.h>
 #include <eoc_debug.h>
 #include <string.h>
 #include <time.h>
@@ -54,7 +53,7 @@ public:
     int info_uptodate(){
 	time_t cur;
 	if(time(&cur) < 0){
-	    eocd_log(0,"Error getting current time");
+	    PDEBUG(DERR,"Error getting current time");
 	}
 	return ((cur-hdr->tstamp)<hdr->act_sec) ? 1 : 0;
     }

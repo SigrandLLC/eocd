@@ -8,7 +8,7 @@
 #include <sys/stat.h>
 
 #include <app-if/app_comm_srv.h>
-
+#include <eoc_debug.h>
 
 app_comm_srv::
 app_comm_srv(char *sock_path,char *sock_name) : app_comm(sock_path,sock_name)
@@ -21,32 +21,32 @@ app_comm_srv(char *sock_path,char *sock_name) : app_comm(sock_path,sock_name)
     // Check path exist
     if( (ret = stat(sock_path,&sbuf)) ){
 	if( errno != ENOENT ){
-	    eocd_perror("Error getting info about %s",sock_path);
+	    PERROR("Error getting info about %s",sock_path);
 	    return;
 	}
 	if( mkdir(sock_path,(S_IRWXU | S_IRGRP | S_IXGRP)) ){
-	    eocd_perror("Cannot create dir %s",sock_path);
+	    PERROR("Cannot create dir %s",sock_path);
 	    return;
 	}
 	if( stat(sock_path,&sbuf) ){
-	    eocd_perror("Error creating dir %s",sock_path);
+	    PERROR("Error creating dir %s",sock_path);
 	    return;
 	}
     }  
     if( !S_ISDIR(sbuf.st_mode) ){
-	eocd_log(ERROR,"Error: %s is not directory",sock_path);
+	PDEBUG(DERR,"Error: %s is not directory",sock_path);
 	return;
     }
 
     // Create socket
     if ((s = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
-    	eocd_perror("Cannot create socket");
+    	PERROR("Cannot create socket");
 	return;    
     }
 			    
     if( unlink(sname) ){
 	if( errno != ENOENT ){
-	    eocd_perror("Cannot unlink (%s)",sname);
+	    PERROR("Cannot unlink (%s)",sname);
 	    return;
 	}
     }
@@ -55,12 +55,12 @@ app_comm_srv(char *sock_path,char *sock_name) : app_comm(sock_path,sock_name)
     strcpy(saun.sun_path,sname);
     len = sizeof(saun.sun_family) + strlen(saun.sun_path);
     if(bind(s, (const sockaddr*)&saun, len) < 0) {
-    	eocd_perror("Cannot bind server with socket (%s)",sname);
+    	PERROR("Cannot bind server with socket (%s)",sname);
 	return;
     }
     // open socket for listening
     if(listen(s,MAX_CONNECTIONS) < 0) {
-    	eocd_perror("Error trying listen socket (%s)",sname);
+    	PERROR("Error trying listen socket (%s)",sname);
 	return;
     }
     
@@ -103,7 +103,7 @@ new_connection()
 
 	nsock = accept(sfd, NULL, NULL);
 	if( nsock < 0) {
-		eocd_perror("Error: while accept incoming connection of (%s)",sname);
+		PERROR("Error: while accept incoming connection of (%s)",sname);
 		return -errno;
 	}
 	if( (ret = set_nonblock(nsock)) ){
@@ -113,7 +113,7 @@ new_connection()
 
 	if( conn_num == MAX_CONNECTIONS ){
 		close(nsock);
-		eocd_log(WARNING,"Close new connection - no room left");
+		PDEBUG(DINFO,"Close new connection - no room left");
 		return -ENOMEM;
 	}
 	// add to socket list
@@ -132,7 +132,7 @@ complete_wait()
     for (i=0; i<conn_num; i++) {
 	if (FD_ISSET(conn_fd[i],&socks)){
 	    if( ::recv(conn_fd[i],&tmp,1,MSG_PEEK|MSG_DONTWAIT) < 1 ){
-		eocd_log(WARNING,"Connection closed");
+		PDEBUG(DINFO,"Connection closed");
 		close(conn_fd[i]);
 		// shift descriptors
 		for(j=i;j<conn_num;j++)

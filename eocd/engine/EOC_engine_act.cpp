@@ -138,7 +138,7 @@ int EOC_engine_act::
 configure(char *ch_name)
 {
     EOC_dev_terminal *dev;
-    PDEBUG(0,"start");
+    PDEBUG(DINFO,"start");
     switch(type){
     case master:
         dev = (EOC_dev_terminal*)rtr->nsdev();
@@ -150,13 +150,13 @@ configure(char *ch_name)
         return 0;
     }
     if( !dev ){
-        eocd_log(CONFL,"(%s): Error router initialisation",ch_name);
+        PDEBUG(DERR,"(%s): Error router initialisation",ch_name);
         return -1;
     }
     conf_profile *prof = (conf_profile *)
 	    cfg->conf_tbl()->find((char*)cfg->conf_prof_name(),strlen(cfg->conf_prof_name()) );
     if( !prof ){
-        PDEBUG(0,"Cannot find corresponding profile");
+        PDEBUG(DERR,"Cannot find corresponding profile");
 	return -1;
     }	
     return dev->configure(prof->conf);

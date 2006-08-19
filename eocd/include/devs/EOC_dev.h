@@ -37,10 +37,14 @@ protected:
     int error_init;
     device dev_type;
     s8 attn_tresh,snr_tresh;
+    side_perf last_perf;
     int valid;
 public:
     // Initialisation check
     int init_ok() { return valid; }
+    EOC_dev(){
+	memset((void*)&last_perf,0,sizeof(last_perf));
+    }
     //----- EOC functions ---------//
     virtual int send(EOC_msg *msg) = 0;
     virtual EOC_msg *recv() = 0;

@@ -40,11 +40,17 @@ public:
     // DEBUG
     int loops() { return 1;};
 
-    int tresholds(s8 loopattn,s8 snr){
-	printf("loop_attn(%d) snr_marg(%d)\n",loopattn,snr);
+    int tresholds(s8 attn,s8 snr){
+	snr_tresh = snr;
+	attn_tresh = attn;
     }
     
+    
+    
     int statistics(int loop,side_perf &stat);
+    void 	dbg_last_msg(){
+	printf("LAST MSG:\nes(%u) ses(%u) losws(%u) crc(%u)\n",last_perf.es,last_perf.ses,last_perf.losws,last_perf.crc);
+    }
 
 };
 

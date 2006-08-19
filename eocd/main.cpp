@@ -64,18 +64,17 @@ int main()
 
 
 EOC_dummy1 *N1,*N9;
-
+/*
 EOC_dev_terminal *
 init_dev(char *name_1)
 {
-/*
     if( !strcmp(name_1,"eth0") ){
 	return n1;
     }	
     if( !strcmp(name_1,"dsl1") ){
 	return n9;
     }
-*/
+
     if( !strcmp(name_1,"dsl2") ){
 	return N1;
     }	
@@ -101,10 +100,10 @@ init_dev(char *name_1)
     if( !strcmp(name_1,"dsl9") ){
 	return n11;
     }
-*/
+
     return NULL;
 }
-
+*/
 
 /*
 

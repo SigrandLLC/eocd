@@ -27,7 +27,7 @@ public:
     hash_table *conf_tbl(){ return conf_prof; }
     hash_table *alarm_tbl(){ return alarm_prof; }
     s8 snr_tresh(){ return 0;}
-    s8 loop_tresh(){ return 0; }
+    s8 loop_tresh(){ return 15; }
 };
 
 #endif

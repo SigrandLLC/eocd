@@ -7,7 +7,7 @@
 #include <engine/EOC_poller.h>
 #include <engine/EOC_engine.h>
 #include <handlers/EOC_poller_req.h>
-#include <eocd_log.h>
+#include <eoc_debug.h>
 
 // Terminal constructor
 EOC_engine::EOC_engine(EOC_dev_terminal *d1,dev_type t,u16 rmax)
@@ -61,9 +61,9 @@ EOC_engine::schedule()
     int i=0;
     int cnt;
     number++;
-    PDEBUG(10,"%d schedule started\n",number);
+    PDEBUG(DFULL,"%d schedule started\n",number);
     while( (m = rtr->receive()) && i<recv_max){
-        PDEBUG(10,"%d schedule: message: src(%d) dst(%d) id(%d)\n",number,m->src(),m->dst(),m->type());
+        PDEBUG(DFULL,"%d schedule: message: src(%d) dst(%d) id(%d)\n",number,m->src(),m->dst(),m->type());
 	if( m->is_request() ){
 	    if( resp->request(m,ret,cnt) ){
 		delete m;
@@ -106,7 +106,7 @@ configure(char *ch_name)
     
     switch(type){	
     case master:
-        eocd_log(CONFL,"(%s): Request slave configuration for master!",ch_name);
+        PDEBUG(DERR,"(%s): Request slave configuration for master!",ch_name);
         return -1;
     case slave:
     {
@@ -117,7 +117,7 @@ configure(char *ch_name)
         return 0;
     }
     if( !dev ){
-        eocd_log(CONFL,"(%s): Error router initialisation",ch_name);
+        PDEBUG(DERR,"(%s): Error router initialisation",ch_name);
         return -1;
     }
     dev->configure();
