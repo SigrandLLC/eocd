@@ -206,11 +206,11 @@ _resp_status(EOC_db *db,EOC_msg *m,int check)
     
     switch(m->src()){
     case stu_c:
-	if( !nsloop )
+	if( !csloop )
 	    return -1;
 	break;
     case stu_r:
-	if( !csloop )
+	if( !nsloop )
 	    return -1;
 	break;
     default:

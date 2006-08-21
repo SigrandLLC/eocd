@@ -55,11 +55,11 @@ setup_state_act()
     case repeater:
 	return 0;
     case master:
-	if( !(dev = rtr->nsdev()) )
+	if( !(dev = rtr->csdev()) )
 	    return -1;
 	break;
     case slave:
-	if( !(dev = rtr->csdev()) )
+	if( !(dev = rtr->nsdev()) )
 	    return -1;
 	break;
     }

@@ -13,6 +13,7 @@ extern "C" {
 #include <engine/EOC_engine_act.h>
 
 #include <EOC_main.h>
+#include <eoc_debug.h>
 
 /*
 typedef struct{
@@ -68,13 +69,6 @@ EOC_dummy1 *N1,*N9;
 EOC_dev_terminal *
 init_dev(char *name_1)
 {
-    if( !strcmp(name_1,"eth0") ){
-	return n1;
-    }	
-    if( !strcmp(name_1,"dsl1") ){
-	return n9;
-    }
-
     if( !strcmp(name_1,"dsl2") ){
 	return N1;
     }	
@@ -100,10 +94,10 @@ init_dev(char *name_1)
     if( !strcmp(name_1,"dsl9") ){
 	return n11;
     }
-
+*//*
     return NULL;
 }
-*/
+
 
 /*
 
@@ -283,13 +277,13 @@ int main()
 	Ex[kk] = new EOC_engine(Nxx[kk][0],Nxx[kk][1]);
     }
     
-    EOC_main m("eocd.cfg");    
+    EOC_main m("eocd.conf");    
 
 //----------------------------------------------------------------
 
     int k=0;
     side_perf S;
-
+/*
     while(k<200){
 	//sleep(1);
 	m.poll_channels();
@@ -330,13 +324,14 @@ int main()
 		S.uas++;
 		Nxx[1][1]->setup_current_stat(S);
 	}
-*/	
+	
     }
-
+*/
+    debug_lev = DINFO;
     k = 0;
     while(1){
 	m.poll_channels();
-	m.app_listen(60);
+	m.app_listen(0);
 	for(int kk=0;kk<REPEATERS;kk++){
 	    Ex[kk]->schedule();
 	}

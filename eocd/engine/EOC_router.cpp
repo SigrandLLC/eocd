@@ -182,11 +182,11 @@ EOC_router::csunit()
 	
     switch( type ){
     case slave:
-	return err;
-    case master:
 	return stu_c;
+    case master:
+	return err;
     case repeater:
-	return ifs[CS_IND].sunit;
+	return ifs[cust_side].sunit;
     }
     return err;
 }
@@ -204,7 +204,7 @@ EOC_router::nsunit()
     case master:
 	return err;
     case repeater:
-	return ifs[NS_IND].sunit;
+	return ifs[net_side].sunit;
     }
     return err;
 }
@@ -218,11 +218,11 @@ EOC_router::csdev()
 	
     switch( type ){
     case master:
-	return NULL;
-    case slave:
 	return ifs[0].sdev;
+    case slave:
+	return NULL;
     case repeater:
-	return ifs[CS_IND].sdev;
+	return ifs[cust_side].sdev;
     }
     return NULL;
 }
@@ -237,11 +237,11 @@ EOC_router::nsdev()
 	
     switch( type ){
     case master:
-	return ifs[0].sdev;
-    case slave:
 	return NULL;
+    case slave:
+	return ifs[0].sdev;
     case repeater:
-	return ifs[NS_IND].sdev;
+	return ifs[net_side].sdev;
     }
     return NULL;
 }
@@ -252,7 +252,7 @@ EOC_router::csunit(unit u)
 {
     if( !if_cnt || type == master || type == slave )
 	return -1;
-    ifs[CS_IND].sunit = u;
+    ifs[cust_side].sunit = u;
     return 0;
 }
 
@@ -261,7 +261,7 @@ EOC_router::nsunit(unit u)
 {
     if( !if_cnt || type == master || type == slave )
 	return -1;
-    ifs[NS_IND].sunit = u;
+    ifs[net_side].sunit = u;
     return 0;
 }
 

@@ -262,19 +262,18 @@ statistics(int loop,side_perf &stat)
     int cnt = get_dev_option("statistics_row",buf);
     if( cnt <= 0 )
 	return -1;
-    PDEBUG(DINFO,"STATISTICS: read params");
-    printf("readed stat: %s\n",buf);
+    PDEBUG(DFULL,"STATISTICS: read params");
     int params = sscanf(buf,"%d %d %u %u %u %u %u %*u %*u %u %u",
 	    &stat.snr_marg,&stat.loop_attn,&stat.es,&stat.ses,&stat.crc,
 	    &stat.losws,&stat.uas,&rst,&ovfl);
-    PDEBUG(DINFO,"STATISTICS: readed %d params",params);
+    PDEBUG(DFULL,"STATISTICS: readed %d params",params);
     delete[] buf;
     if( params != 9 )
 	return -1;
     stat.cntr_rst_stur = stat.cntr_rst_stuc = rst;
     stat.cntr_ovfl_stur = stat.cntr_ovfl_stuc = ovfl;
 
-    PDEBUG(DINFO,"snr(%d) attn(%d) es(%d) ses(%d) crc(%d) losws(%d) uas(%d) cntr_rst(%d) ovfl(%d)",
+    PDEBUG(DFULL,"snr(%d) attn(%d) es(%d) ses(%d) crc(%d) losws(%d) uas(%d) cntr_rst(%d) ovfl(%d)",
 	    stat.snr_marg,stat.loop_attn,stat.es,stat.ses,stat.crc,
 	    stat.losws,stat.uas,stat.cntr_rst_stuc,stat.cntr_ovfl_stuc);
     
@@ -292,7 +291,6 @@ statistics(int loop,side_perf &stat)
 	ret = 1;
     }
 
-    printf("Return %d\n",ret);
     last_perf = stat;
     return ret;
 }

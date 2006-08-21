@@ -21,7 +21,6 @@ public:
 	shdsl_state state;
     };
     enum {SHDSL_MAX_IF=2};
-    enum {CS_IND=0,NS_IND=1};    
 protected:
     dev_type type;
     struct interface ifs[SHDSL_MAX_IF];

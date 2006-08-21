@@ -31,10 +31,10 @@ public:
 	u = u_in;
 	switch( u ){
 	case stu_c:
-	    side[net_side] = new EOC_side(loops); 
+	    side[cust_side] = new EOC_side(loops); 
 	    break;
 	case stu_r:
-	    side[cust_side] = new EOC_side(loops);
+	    side[net_side] = new EOC_side(loops);
 	    break;
 	default:
 	    side[cust_side] = new EOC_side(loops); 

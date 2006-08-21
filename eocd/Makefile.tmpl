@@ -9,21 +9,16 @@
 TOPDIR=$(PWD)
 INCLUDES=$(TOPDIR)/include/
 CPPFLAGS=-g -I$(INCLUDES)
-#STAGING_DIR=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/
-#LDFLAGS=-nodefaultlibs -L$(STAGING_DIR)/usr/lib -L$(STAGING_DIR)/lib
-#LIBS=-luClibc++ -lustl -lc -lm -lgcc
 
-.PHONY: generic engine devs utils db app-if tar
+.PHONY: generic engine devs utils db app-if
 
 TARGS :=generic engine devs utils local db app-if
 OBJECTS := build/*.o 
 
-CC=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-gcc
-CXX=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-g++
-AR=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-ar
-RANLIB=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-ranlib
-
-#RANLIB=ranlib
+CC=@CROSS_PREFIX@gcc
+CXX=@CROSS_PREFIX@g++
+AR=@CROSS_PREFIX@ar
+RANLIB=@CROSS_PREFIX@ranlib
 
 export CXX AR RANLIB CC
 
@@ -31,7 +26,7 @@ INCLUDES += -I$(TOPDIR)/libconfig/
 
 all: $(TARGS) 
 	$(CXX) -g -I$(INCLUDES) -o result main.cpp $(OBJECTS) libconfig++.a
-#	$(CXX) -g -I$(INCLUDES) -o eocd eocd.cpp $(OBJECTS) libconfig++.a
+	$(CXX) -g -I$(INCLUDES) -o eocd eocd.cpp $(OBJECTS) libconfig++.a
 
 all-mips: $(TARGS) 
 	$(CXX) -g -I$(INCLUDES) -o result main.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
@@ -64,10 +59,3 @@ clean:
 	rm -f *.o
 	rm -f result eocd
 	rm -f build/*.o
-
-
-ARCH_FILES=app-if build CHECK db devs engine eocd.conf eocd.cpp EOC_main.cpp \
-generic include main.cpp Makefile.tmpl system TODO.txt utils
-
-tar: clean
-	tar --exclude="\.svn" -cjvf tar/eocd.tar.bz2 $(ARCH_FILES)

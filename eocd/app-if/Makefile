@@ -44,7 +44,7 @@ lib: objects
 
 
 ext_app: lib
-	$(CC) $(CPPFLAGS) -o ext main.c libcomm.a -lstdc++ $(TOPDIR)/build/eoc_debug.o
+	$(CC) $(CPPFLAGS) -o ext main.c libcomm.a -luClibc++ $(TOPDIR)/build/eoc_debug.o
 
 
 clean:

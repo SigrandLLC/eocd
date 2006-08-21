@@ -98,8 +98,8 @@ read_config()
 	cfg.readFile((const char *)config_file);
     }catch(ParseException& ex){
 	//eoc_debug("Error in %s (%d): %s",file,ex.getLine(),ex.getError());
-	syslog(LOG_ERR,"Error in %s (%d): %s",ex.getLine(),ex.getError());
-	PDEBUG(DERR,"Error in %s (%d): %s",ex.getLine(),ex.getError());
+	syslog(LOG_ERR,"Error in %s (%d): %s",config_file,ex.getLine(),ex.getError());
+	PDEBUG(DERR,"Error in %s (%d): %s",config_file,ex.getLine(),ex.getError());
 	return -1;
     }catch(FileIOException &fex){
 	// eoc_debug("Cannot open configuration file: %s",file);
