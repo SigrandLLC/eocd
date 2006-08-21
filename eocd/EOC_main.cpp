@@ -28,7 +28,7 @@ using namespace std;
 EOC_dev_terminal *
 init_dev(char *name);
 
-
+/*
 EOC_dev_terminal *
 init_dev(char *name)
 {
@@ -75,13 +75,13 @@ init_dev(char *name)
 		    return dev; 
 		}
 	    }
-*/
+*//*
 	}
     }
     closedir(dir);
     return NULL;
 }
-
+*/
 
 int EOC_main::
 read_config()

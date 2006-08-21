@@ -64,37 +64,58 @@ int main()
 /* MAIN TEST */  
 
 
-EOC_dummy1 *N1,*N9;
-/*
+EOC_dummy1 *Nx[15][2];
+
 EOC_dev_terminal *
 init_dev(char *name_1)
 {
+
+    if( !strcmp(name_1,"dsl0") ){
+	return Nx[0][0];
+    }	
+    if( !strcmp(name_1,"dsl1") ){
+	return Nx[1][0];
+    }	
     if( !strcmp(name_1,"dsl2") ){
-	return N1;
+	return Nx[2][0];
     }	
     if( !strcmp(name_1,"dsl3") ){
-	return N9;
-    }
-/*    
+	return Nx[3][0];
+    }	
     if( !strcmp(name_1,"dsl4") ){
-	return n6;
+	return Nx[4][0];
     }	
     if( !strcmp(name_1,"dsl5") ){
-	return n7;
-    }
+	return Nx[5][0];
+    }	
     if( !strcmp(name_1,"dsl6") ){
-	return n8;
+	return Nx[6][0];
     }	
     if( !strcmp(name_1,"dsl7") ){
-	return n9;
-    }
+	return Nx[7][0];
+    }	
     if( !strcmp(name_1,"dsl8") ){
-	return n10;
+	return Nx[8][0];
     }	
     if( !strcmp(name_1,"dsl9") ){
-	return n11;
-    }
-*//*
+	return Nx[9][0];
+    }	
+    if( !strcmp(name_1,"dsl10") ){
+	return Nx[10][0];
+    }	
+    if( !strcmp(name_1,"dsl11") ){
+	return Nx[11][0];
+    }	
+    if( !strcmp(name_1,"dsl12") ){
+	return Nx[12][0];
+    }	
+    if( !strcmp(name_1,"dsl13") ){
+	return Nx[13][0];
+    }	
+    if( !strcmp(name_1,"dsl14") ){
+	return Nx[14][0];
+    }	
+
     return NULL;
 }
 
@@ -263,19 +284,23 @@ int main()
     
 // ------------------ Channel2 ------------------------------------------------------    
 #define REPEATERS 2
-    dummy_channel CHANS[REPEATERS+1][2];
-
-    N1 = new EOC_dummy1("m-ns",&CHANS[0][0],&CHANS[0][1]);
-    N9 = new EOC_dummy1("s-cs",&CHANS[REPEATERS][1],&CHANS[REPEATERS][0]);
-
-    EOC_dummy1 *Nxx[REPEATERS][2];
-    EOC_engine *Ex[REPEATERS];
+    dummy_channel CHANS[15][REPEATERS+1][2];
+    EOC_dummy1 *Nxx[15][REPEATERS][2];
+    EOC_engine *Ex[15][REPEATERS];
+    EOC_engine *E[15];
     
-    for(int kk=0;kk<REPEATERS;kk++){
-	Nxx[kk][0] = new EOC_dummy1("R",&CHANS[kk][1],&CHANS[kk][0]);
-	Nxx[kk][1] = new EOC_dummy1("R",&CHANS[kk+1][0],&CHANS[kk+1][1]);
-	Ex[kk] = new EOC_engine(Nxx[kk][0],Nxx[kk][1]);
+    for(int i=0;i<15;i++){
+	Nx[i][0] = new EOC_dummy1("m-cs",&CHANS[i][0][0],&CHANS[i][0][1]);
+	Nx[i][1] = new EOC_dummy1("s-ns",&CHANS[i][REPEATERS][1],&CHANS[i][REPEATERS][0]);
+	E[i] = new EOC_engine(Nx[i][1],slave);
+        for(int kk=0;kk<REPEATERS;kk++){
+	    Nxx[i][kk][0] = new EOC_dummy1("R",&CHANS[i][kk][1],&CHANS[i][kk][0]);
+	    Nxx[i][kk][1] = new EOC_dummy1("R",&CHANS[i][kk+1][0],&CHANS[i][kk+1][1]);
+	    Ex[i][kk] = new EOC_engine(Nxx[i][kk][0],Nxx[i][kk][1]);
+	}
     }
+	
+    
     
     EOC_main m("eocd.conf","/home/artpol/");    
 
@@ -283,59 +308,19 @@ int main()
 
     int k=0;
     side_perf S;
-/*
-    while(k<200){
-	//sleep(1);
-	m.poll_channels();
 
-//	for(int s=0;s<1000000;s++);
-
-	m.app_listen(2);
-
-/*        e2->schedule();
-        e3->schedule();
-        e4->schedule();
-        e5->schedule();
-        e6->schedule();
-        e7->schedule();
-        e8->schedule();
-	
-	for(int kk=0;kk<REPEATERS;kk++){
-	    Ex[kk]->schedule();
-	}
-	
-	k++;
-	if( k>40 ){
-		S = Nxx[0][1]->get_current_stat();
-		S.ses++;
-		Nxx[0][1]->setup_current_stat(S);
-
-
-		S = Nxx[0][0]->get_current_stat();
-		S.es++;
-		S.losws++;
-		Nxx[0][0]->setup_current_stat(S);
-
-		S = Nxx[1][0]->get_current_stat();
-		S.crc++;
-		Nxx[1][0]->setup_current_stat(S);
-
-		S = Nxx[1][1]->get_current_stat();
-		S.uas++;
-		Nxx[1][1]->setup_current_stat(S);
-	}
-	
-    }
-*/
     debug_lev = DINFO;
     k = 0;
     while(1){
 	m.poll_channels();
-	m.app_listen(0);
-	for(int kk=0;kk<REPEATERS;kk++){
-	    Ex[kk]->schedule();
+	m.app_listen(1);
+	for(int i=0;i<15;i++){
+	    E[i]->schedule();
+	    for(int kk=0;kk<REPEATERS;kk++)
+	        Ex[i][kk]->schedule();
 	}
 	k++;
+/*	
 	if( !(k%40) ){
 		S = Nxx[0][1]->get_current_stat();
 		S.ses++;
@@ -355,7 +340,7 @@ int main()
 		S.uas++;
 		Nxx[1][1]->setup_current_stat(S);
 	}
-
+*/
     }
     return 0;
 }

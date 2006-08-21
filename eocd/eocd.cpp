@@ -38,7 +38,7 @@ EOC_main *m;
 
 
 EOC_dummy1 *N1,*N9;
-/*
+
 EOC_dev_terminal *
 init_dev(char *name_1)
 {
@@ -51,7 +51,7 @@ init_dev(char *name_1)
     return NULL;
 }
 
-*/
+
 
 
 static void child_handler(int signum)

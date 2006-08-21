@@ -1,4 +1,3 @@
-
 ifeq ($(TOPDIR),)
     TOPDIR=$(PWD)/../
     CC=gcc
@@ -18,7 +17,7 @@ OBJS_EXT= $(OBJ_DIR)/eoc_debug.o ../libcomm.a
 all: client server ext_app eoc-info
 
 eoc-info: eoc-info.cpp $(OBJS) $(OBJS_CLI)
-	$(CXX) $(CPPFLAGS) -o eoc-info eoc-info.cpp $(OBJS) $(OBJS_CLI)
+	$(CXX) $(CPPFLAGS) -o eoc-info app-utils.cpp eoc-info.cpp $(OBJS) $(OBJS_CLI)
 
 client: client.cpp $(OBJS) $(OBJS_CLI)
 	$(CXX) $(CPPFLAGS) -o cli client.cpp $(OBJS) $(OBJS_CLI)
@@ -32,4 +31,4 @@ ext_app: main.c $(OBJS_EXT)
 
 clean:
 	rm -f *.o *.lo
-	rm -f ext cli srv
+	rm -f ext cli srv eoc-info

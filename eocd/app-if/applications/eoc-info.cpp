@@ -8,254 +8,13 @@ extern "C"{
 #include <string.h>
 #include <getopt.h>
 }
-/*
+
 #include <generic/EOC_generic.h>
 #include <app-if/app_comm_cli.h>
 #include <app-if/app_frame.h>
-/*
-char *
-unit2string(unit u)
-{
-    static char buf[64];
-    switch(u){
-    case stu_c:
-	sprintf(buf,"STU-C");
-	break;
-    case stu_r:
-	sprintf(buf,"STU-R");
-	break;
-    case sru1:
-	sprintf(buf,"SRU1");
-	break;
-    case sru2:
-	sprintf(buf,"SRU2");
-	break;
-    case sru3:
-	sprintf(buf,"SRU3");
-	break;
-    case sru4:
-	sprintf(buf,"SRU4");
-	break;
-    case sru5:
-	sprintf(buf,"SRU5");
-	break;
-    case sru6:
-	sprintf(buf,"SRU6");
-	break;
-    case sru7:
-	sprintf(buf,"SRU7");
-	break;
-    case sru8:
-	sprintf(buf,"SRU8");
-	break;
-    default:
-	sprintf(buf,"unknown unit");
-    }
-    return buf;
-}
 
-char *
-side2string(side s)
-{
-    static char buf[64];
-    switch(s){
-    case net_side:
-	sprintf(buf,"NetSide");
-	break;
-    case cust_side:
-	sprintf(buf,"CustSide");
-	break;
-    default:
-	sprintf(buf,"unknown side");
-	break;
-    }
-    return buf;
-}
+#include "app-utils.h"
 
-int
-print_cur_payload(endp_cur_payload *p )
-{
-    printf("Current state of %s : %s : loop%d\n",unit2string((unit)p->unit),side2string((side)p->side),p->loop);
-    printf("LoopAttenuation:\t%d\n",p->cur_attn);
-    printf("SNR Margin:\t%d\n",p->cur_snr);
-//-------------------------------------------------------------//
-    printf("Current Status: ");
-    if( p->cur_status.noDefect )
-        printf("noDefect ");
-    if( p->cur_status.powerBackoff )
-        printf("powerBackoff ");
-    if( p->cur_status.deviceFault )
-        printf("deviceFault ");
-    if( p->cur_status.dcContFault )
-        printf("dcContFault ");
-    if( p->cur_status.snrMargAlarm )
-        printf("snrMargAlarm ");
-    if( p->cur_status.loopAttnAlarm )
-        printf("loopAttnAlarm ");
-    if( p->cur_status.loswFailAlarm )
-        printf("loswFailAlarm ");
-    if( p->cur_status.configInitFailure )
-        printf("configInitFailure ");
-    if( p->cur_status.protoInitFailure )
-        printf("protoInitFailure ");
-    if( p->cur_status.noNeighborPresent )
-        printf("noNeighborPresent ");
-    if( p->cur_status.loopbackActive )
-        printf("loopbackActive");
-//-------------------------------------------------------------//	
-    printf("Counters till startup: ");	
-    printf("es(%u) ses(%u) crc(%d) losws(%u) uas(%u)\n",
-	p->total.es,p->total.ses,p->total.crc,p->total.losws,p->total.uas);
-//-------------------------------------------------------------//
-    printf("Current 15 minutes interval: sec.elapsed(%d) ",p->cur_15m_elaps);	
-    printf("es(%u) ses(%u) crc(%d) losws(%u) uas(%u)\n",
-	p->cur15min.es,p->cur15min.ses,p->cur15min.crc,p->cur15min.losws,p->cur15min.uas);
-//-------------------------------------------------------------//
-    printf("Current 1 day interval: sec.elapsed(%d) ",p->cur_1d_elaps);	
-    printf("es(%u) ses(%u) crc(%d) losws(%u) uas(%u)\n",
-	p->cur1day.es,p->cur1day.ses,p->cur1day.crc,p->cur1day.losws,p->cur1day.uas);
-}
-
-int 
-print_int_payload(endp_int_payload *p,char *display)
-{
-    printf("%s interval #%d: ",display,p->int_num);	
-    printf("es(%u) ses(%u) crc(%d) losws(%u) uas(%u)\n",
-	p->cntrs.es,p->cntrs.ses,p->cntrs.crc,p->cntrs.losws,p->cntrs.uas);
-    return 0;
-}
-
-
-int
-print_endp_cur(app_comm_cli &cli,char *chan,unit u,side s,int loop)
-{
-    char *b;
-    int size;
-    // Endpoint current
-    endp_cur_payload *p,*p1;
-    app_frame *fr, *fr1;
-    
-    fr = new app_frame(APP_ENDP_CUR,APP_GET,app_frame::REQUEST,1,chan);
-    p = (endp_cur_payload*)fr->payload_ptr();
-    p->unit = u;
-    p->side = s;
-    p->loop = loop;
-    cli.send(fr->frame_ptr(),fr->frame_size());
-    cli.wait();
-    size = cli.recv(b);
-    fr1 = new app_frame(b,size);
-    if( !fr1->frame_ptr() ){
-	printf("error requesting\n");
-	return -1;
-    } 
-    if( fr1->is_negative() ){ // no such unit or no net_side
-	delete fr1;
-	printf("Requested component: unit(%s),side(%s),loop(%d) NOT FOUND\n",
-		unit2string(u),side2string(s),loop);
-    } else {
-	p1 = (endp_cur_payload*)fr1->payload_ptr();
-	if( p1->unit != p->unit || p1->side != p->side || p1->loop != p->loop ){
-	    printf("Error: get information about different unit\n");
-	    delete fr1;
-	    return -1;
-	}
-	print_cur_payload(p1);
-	delete fr1;
-    }
-    delete fr;
-    return 0;
-}
-
-
-int
-print_endp_15m(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
-{
-    char *b;
-    int size;
-    // Endpoint current
-    endp_15min_payload *p,*p1;
-    app_frame *fr, *fr1;
-    
-    fr = new app_frame(APP_ENDP_15MIN,APP_GET,app_frame::REQUEST,1,chan);
-    p = (endp_15min_payload*)fr->payload_ptr();
-    p->unit = u;
-    p->side = s;
-    p->loop = loop;
-    p->int_num = inum;
-    cli.send(fr->frame_ptr(),fr->frame_size());
-    cli.wait();
-    size = cli.recv(b);
-    fr1 = new app_frame(b,size);
-    if( !fr1->frame_ptr() ){
-	printf("error requesting\n");
-	return -1;
-    } 
-    if( fr1->is_negative() ){ // no such unit or no net_side
-	delete fr1;
-	printf("Requested component: unit(%s),side(%s),loop(%d),int(%d) NOT FOUND\n",
-		unit2string(u),side2string(s),loop,inum);
-	delete fr;
-	return -1;
-    } else {
-	p1 = (endp_15min_payload*)fr1->payload_ptr();
-	if( p1->unit != p->unit || p1->side != p->side 
-	    || p1->loop != p->loop || p1->int_num != p->int_num ){
-	    printf("Error: get information about different unit\n");
-	    delete fr1;
-	    return -1;
-	}
-	print_int_payload(p1,"15min");
-	delete fr1;
-    }
-    delete fr;
-    return 0;
-}
-
-
-int
-print_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
-{
-    char *b;
-    int size;
-    // Endpoint current
-    endp_1day_payload *p,*p1;
-    app_frame *fr, *fr1;
-    
-    fr = new app_frame(APP_ENDP_1DAY,APP_GET,app_frame::REQUEST,1,chan);
-    p = (endp_1day_payload*)fr->payload_ptr();
-    p->unit = u;
-    p->side = s;
-    p->loop = loop;
-    p->int_num = inum;
-    cli.send(fr->frame_ptr(),fr->frame_size());
-    cli.wait();
-    size = cli.recv(b);
-    fr1 = new app_frame(b,size);
-    if( !fr1->frame_ptr() ){
-	printf("error requesting\n");
-	return -1;
-    } 
-    if( fr1->is_negative() ){ // no such unit or no net_side
-	delete fr1;
-	printf("Requested component: unit(%s),side(%s),loop(%d),int(%d) NOT FOUND\n",
-		unit2string(u),side2string(s),loop,inum);
-	delete fr;
-	return -1;
-    } else {
-	p1 = (endp_1day_payload*)fr1->payload_ptr();
-	if( p1->unit != p->unit || p1->side != p->side 
-	    || p1->loop != p->loop || p1->int_num != p->int_num ){
-	    printf("Error: get information about different unit\n");
-	    delete fr1;
-	    return -1;
-	}
-	print_int_payload(p1,"1day");
-	delete fr1;
-    }
-    delete fr;
-    return 0;
-}
-*/
 
 void print_usage(char *name)
 {
@@ -267,20 +26,187 @@ void print_usage(char *name)
 	    name);
 }
 
+void
+unit_full(app_comm_cli *cli,char *chan,int i)
+{
+    unit u = (unit)(i+1);
+    printf("%s(%s) full info:\n",chan,unit2string(u));
+    print_endp_cur(cli,chan,u,net_side,0);
+    print_endp_cur(cli,chan,u,cust_side,0);
+}
+
+void print_short_chan(app_comm_cli *cli,char *chan)
+{
+    app_frame *req = new app_frame(APP_SPAN_PARAMS,APP_GET,app_frame::REQUEST,1,chan);
+    app_frame *resp;
+    char *buf;
+    
+    cli->send(req->frame_ptr(),req->frame_size());
+    cli->wait();
+    int size = cli->recv(buf);
+    if( !size ){
+	delete req;
+	return;
+    }
+    
+    resp = new app_frame(buf,size);
+    if( !resp->frame_ptr() ){
+        printf("Bad message from eocd\n");
+	goto err_exit;
+    } 
+    
+    if( resp->is_negative() ){ // no such unit or no net_side
+	goto err_exit;
+    }
+    {
+    span_params_payload *p = (span_params_payload *)resp->payload_ptr();
+    printf(" %s: %d repeaters\n",chan,p->units);
+    }
+err_exit:
+    delete resp;
+    delete req;
+    return;
+}
+
+void print_exact(app_comm_cli *cli,char *chan)
+{
+    app_frame *req = new app_frame(APP_SPAN_PARAMS,APP_GET,app_frame::REQUEST,1,chan);
+    app_frame *resp;
+    char *buf;
+    
+    cli->send(req->frame_ptr(),req->frame_size());
+    cli->wait();
+    int size = cli->recv(buf);
+    if( !size ){
+	delete req;
+	return;
+    }
+    
+    resp = new app_frame(buf,size);
+    if( !resp->frame_ptr() ){
+        printf("Bad message from eocd\n");
+	goto err_exit;
+    } 
+    
+    if( resp->is_negative() ){ // no such unit or no net_side
+	goto err_exit;
+    }
+{
+    span_params_payload *p = (span_params_payload *)resp->payload_ptr();
+    for(int i=0;i<p->units;i++){
+	unit_full(cli,chan,i);
+    }
+}
+err_exit:
+    delete resp;
+    delete req;
+    return;
+
+}
+
+
+void print_short(app_comm_cli *cli)
+{
+    app_frame *req = new app_frame(APP_SPAN_NAME,APP_GET,app_frame::REQUEST,1,"");
+    char *buf;
+    int flag = 0;
+    
+    printf("Short information about served channels:\n");
+    do{
+        cli->send(req->frame_ptr(),req->frame_size());
+	cli->wait();
+	int size = cli->recv(buf);
+	if( !size )
+	    break;
+
+        app_frame *resp = new app_frame(buf,size);
+	if( !resp->frame_ptr() ){
+	    printf("Bad message from eocd\n");
+	    delete resp;
+	    delete req;
+	    return;
+	} 
+	if( resp->is_negative() ){ // no such unit or no net_side
+	    delete resp;
+	    break;
+	}
+	
+        span_name_payload *p = (span_name_payload*)resp->payload_ptr();
+	for(int i=0;i<p->filled;i++){
+	    print_short_chan(cli,p->name[i]);
+	    
+	}	
+	if( !p->filled )
+	    break;
+	flag = !p->last_msg;
+	req->chan_name(p->name[p->filled-1]);
+	delete resp;
+    }while( flag );
+
+    delete req;
+}
+
+
+void print_full(app_comm_cli *cli)
+{
+    app_frame *req = new app_frame(APP_SPAN_NAME,APP_GET,app_frame::REQUEST,1,"");
+    char *buf;
+    int flag = 0;
+    
+    printf("Full information about served channels:\n");
+    do{
+        cli->send(req->frame_ptr(),req->frame_size());
+	cli->wait();
+	int size = cli->recv(buf);
+	if( !size )
+	    break;
+
+        app_frame *resp = new app_frame(buf,size);
+	if( !resp->frame_ptr() ){
+	    printf("Bad message from eocd\n");
+	    delete resp;
+	    delete req;
+	    return;
+	} 
+	if( resp->is_negative() ){ // no such unit or no net_side
+	    delete resp;
+	    break;
+	}
+	
+        span_name_payload *p = (span_name_payload*)resp->payload_ptr();
+	for(int i=0;i<p->filled;i++){
+	    printf("-----------------------------------------------------\n");
+	    print_exact(cli,p->name[i]);
+	}	
+	if( !p->filled )
+	    break;
+	flag = !p->last_msg;
+	req->chan_name(p->name[p->filled-1]);
+	delete resp;
+    }while( flag );
+
+    delete req;
+
+}
+
+
+
+
 int
 main(int argc, char *argv[] )
 {
     char iface[256];
-    char *sock_name = "/var/eocd/socket";
+//    char *sock_name = "/var/eocd/socket";
+    char *sock_name = "/home/artpol/eocd-socket";
     typedef enum {NONE,SHORT,FULL,EXACT} type_t;
     type_t type = NONE;
-/*    
+
     app_comm_cli cli(sock_name);
     if( !cli.init_ok() ){
 	printf("Cannot connect to %s\n",sock_name);
 	return 0;
     }
-*/
+
     // process command line arguments here
     while (1) {
         int option_index = -1;
@@ -318,13 +244,13 @@ main(int argc, char *argv[] )
 	print_usage(argv[0]);
 	break;
     case SHORT:
-	print_short();
+	print_short(&cli);
 	break;
     case EXACT:
-	print_exact(iface);
+	print_exact(&cli,iface);
 	break;
     case FULL:
-	print_full();
+	print_full(&cli);
 	break;
     }
     return 0;

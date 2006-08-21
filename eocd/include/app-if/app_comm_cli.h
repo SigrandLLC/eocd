@@ -1,4 +1,4 @@
-#ifndef EOCD_APP_COMM_CLIH
+#ifndef EOCD_APP_COMM_CLI_H
 #define EOCD_APP_COMM_CLI_H
 
 #include <app-if/app_comm.h>

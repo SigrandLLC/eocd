@@ -16,12 +16,12 @@ CPPFLAGS=-g $(INCLUDES)
 TARGS :=generic engine devs utils local db app-if
 OBJECTS := build/*.o 
 
-CC=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-gcc
-CXX=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-g++
-AR=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-ar
-RANLIB=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-ranlib
+#CC=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-gcc
+#CXX=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-g++
+#AR=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-ar
+#RANLIB=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-ranlib
 
-#RANLIB=ranlib
+RANLIB=ranlib
 
 export CXX AR RANLIB CC TOPDIR INCLUDES CPPFLAGS
 
