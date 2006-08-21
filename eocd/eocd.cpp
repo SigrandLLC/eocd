@@ -226,7 +226,12 @@ int main( int argc, char *argv[] ) {
 
 
     /* Now we are a daemon -- do the work for which we were paid */
-    m = new EOC_main(config_path);    
+    m = new EOC_main(config_path,"/home/artpol");
+    
+    if( !m->get_valid() ){
+	delete m;
+	return -1;
+    }
 
     int k = 0;
     side_perf S;

@@ -277,7 +277,7 @@ int main()
 	Ex[kk] = new EOC_engine(Nxx[kk][0],Nxx[kk][1]);
     }
     
-    EOC_main m("eocd.conf");    
+    EOC_main m("eocd.conf","/home/artpol/");    
 
 //----------------------------------------------------------------
 

@@ -25,17 +25,22 @@ protected:
     hash_table alarm_profs;
     hash_table channels;
     app_comm_srv app_srv;
+    int valid;
 public:
-    EOC_main(char *cfg) : conf_profs(SNMP_ADMIN_LEN), alarm_profs(SNMP_ADMIN_LEN),
-		     channels(MAX_IF_NAME_LEN), app_srv("/home/artpol/","socket")
+    EOC_main(char *cfg,char *sockpath) : conf_profs(SNMP_ADMIN_LEN), alarm_profs(SNMP_ADMIN_LEN),
+		     channels(MAX_IF_NAME_LEN), app_srv(sockpath,"eocd-socket")
     {
+	valid = 0;
 	strncpy(config_file,cfg,MAX_FNAME);
 	config_file[MAX_FNAME-1] = '\0';
-	read_config();
+	if( read_config() )
+	    return;
 //	configure_channels();
+	valid = 1;
     }
     ~EOC_main(){
     }
+    int get_valid(){ return valid; }
     // Read configuration file and initialise or change channels
     int read_config();
     // Write configuration to config file (when it changes from network)
