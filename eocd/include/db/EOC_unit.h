@@ -19,6 +19,8 @@ protected:
     u8 eoc_softw_v;
     resp_inventory inv_info;
     u8 inv_info_setted;
+    resp_sensor_state sensors_cur;
+    u8 sens1,sens2,sens3;
     
     power_t power;
     EOC_side *side[EOC_SIDES_NUM];
@@ -29,6 +31,10 @@ public:
 	for( int i=0; i<EOC_SIDES_NUM;i++)
 	    side[i] = NULL;
 	u = u_in;
+	memset(&sensors_cur,0,sizeof(sensors_cur));
+	sens1 = 0;
+	sens2 = 0;	
+	sens3 = 0;
 	switch( u ){
 	case stu_c:
 	    side[cust_side] = new EOC_side(loops); 
@@ -59,6 +65,13 @@ public:
 	return 0;
     }
     resp_inventory inventory_info(){ return inv_info; }
+    void sensor_resp(resp_sensor_state *resp){
+//	PDEBUG(DINFO,"SAVE SENSOR STATE: s1(%d), s2(%d), s3(%d)",resp->sensor1,resp->sensor2,resp->sensor3);
+	sensors_cur = *resp;
+	sens1 += resp->sensor1;
+	sens2 += resp->sensor2;
+	sens3 += resp->sensor3;
+    }
     
 };
 

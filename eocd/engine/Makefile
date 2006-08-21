@@ -2,8 +2,6 @@ ifeq ($(TOPDIR),)
     TOPDIR=$(PWD)/../
 endif
 
-INCLUDES=$(TOPDIR)include/
-CPPFLAGS=-g -I$(INCLUDES)
 .PHONY: poller local responder
 
 all: poller local responder
@@ -12,10 +10,11 @@ local: EOC_router.o EOC_engine.o EOC_engine_act.o
 	cp $^ $(TOPDIR)/build
 
 poller:
-	make -C poller TOPDIR=$(TOPDIR) CXX=$(CXX)
+	@echo "INCLUDES=$(INCLUDES)"
+	make -C poller
 
 responder:
-	make -C responder TOPDIR=$(TOPDIR) CXX=$(CXX)
+	make -C responder
 
 clean:
 	rm -f *.o

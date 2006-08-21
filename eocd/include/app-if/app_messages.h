@@ -45,7 +45,6 @@ typedef struct{
 #define SPAN_CONF_PAY_SZ sizeof(span_conf_payload)
 #define SPAN_CONF_CH_SZ 0
 
-
 typedef struct{
     s8 nreps;
     u32 max_lrate;

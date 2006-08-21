@@ -7,45 +7,24 @@ ifeq ($(TOPDIR),)
     RANLIB=ranlib
 endif
 
-INCLUDES=$(TOPDIR)include/
-CPPFLAGS=-g -I$(INCLUDES) -I./
+.PHONY: install lib objects apps
 
-.PHONY: lib first objects
-
-first:
-	@echo "TOPDIR="$(TOPDIR)
-	@echo "INCLUDES="$(INCLUDES)	
-	@echo "CPPFLAGS="$(CPPFLAGS)	
-
+all: lib install
 
 objects: app_comm.o app_comm_cli.o app_comm_srv.o app_frame.o comm.o
-	$(CXX) $(CPPFLAGS) -c -fPIC -o app_comm.lo app_comm.cpp
-	$(CXX) $(CPPFLAGS) -c -fPIC -o app_comm_cli.lo app_comm_cli.cpp
-	$(CXX) $(CPPFLAGS) -c -fPIC -o app_comm_srv.lo app_comm_srv.cpp
-	$(CXX) $(CPPFLAGS) -c -fPIC -o app_frame.lo app_frame.cpp
-	$(CXX) $(CPPFLAGS) -c -fPIC -o comm.lo comm.cpp
-
 
 install: app_comm.o app_comm_cli.o app_comm_srv.o app_frame.o
 	cp $^ $(TOPDIR)/build
 
-all: install client server ext_app
+all: install apps
 #	g++ $(CPPFLAGS) -o result main.cpp
 
-client: all
-	$(CXX) $(CPPFLAGS) -o cli client.cpp app_comm_cli.o app_comm.o app_frame.o $(TOPDIR)/build/eoc_debug.o
-server: all
-	$(CXX) $(CPPFLAGS) -o srv server.cpp app_comm_srv.o app_comm.o app_frame.o $(TOPDIR)/build/eoc_debug.o
+apps: install
+	make -C applications
 
 lib: objects
 	$(AR) rc libcomm.a app_comm.o app_comm_cli.o app_comm_srv.o app_frame.o comm.o
 	$(RANLIB) libcomm.a
-	$(CXX) $(CPPFLAGS) -shared -fPIC app_comm_srv.lo app_comm.lo app_frame.lo comm.lo -o libcomm.so
-
-
-ext_app: lib
-	$(CC) $(CPPFLAGS) -o ext main.c libcomm.a -luClibc++ $(TOPDIR)/build/eoc_debug.o
-
 
 clean:
 	rm -f *.o *.lo

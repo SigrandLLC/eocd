@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "comm.h"
+#include "../comm.h"
 
 int 
 print_int_payload(endp_int_payload *p,char *display)

@@ -1,4 +1,3 @@
-@echo "TOPDIR=$(TOPDIR)"
 ifeq ($(TOPDIR),)
     TOPDIR=../
     INCLUDES=$(TOPDIR)include/

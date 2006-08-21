@@ -130,6 +130,7 @@ EOC_scheduler::response(EOC_msg *m)
     case RESP_NSIDE_PERF:
     case RESP_CSIDE_PERF:
     case RESP_MAINT_STAT:
+    case RESP_SENSOR_STATE:
 	// have no corresponding requests - responses to STATUS request
         break;	
     default:
@@ -166,6 +167,8 @@ EOC_scheduler::request(sched_elem &el)
 	n1.type = RESP_CSIDE_PERF;
 	wait_q->add(n1);
 	n1.type = RESP_MAINT_STAT;
+	wait_q->add(n1);
+	n1.type = RESP_SENSOR_STATE;
 	wait_q->add(n1);
     default:
 	n.type = REQ2RESP(n.type);

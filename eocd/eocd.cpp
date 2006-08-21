@@ -226,7 +226,7 @@ int main( int argc, char *argv[] ) {
 
 
     /* Now we are a daemon -- do the work for which we were paid */
-    m = new EOC_main(config_path,"/home/artpol");
+    m = new EOC_main(config_path,"/var/eocd/socket");
     
     if( !m->get_valid() ){
 	delete m;

@@ -162,6 +162,25 @@ EOC_responder::_status(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt)
 	}
     }	    
 
+#ifdef REPEATER
+    extern u8 sensor_alarm_1,sensor_alarm_2,sensor_alarm_3;
+     if( sensor_alarm_1 || sensor_alarm_2 || sensor_alarm_3 ){
+	if( !(array[offs] = new EOC_msg(m,RESP_SENSOR_STATE_SZ)) )
+            goto err_exit;
+	EOC_msg *t = array[offs];
+	t->type(RESP_SENSOR_STATE);
+	offs++;
+	resp_sensor_state *resp = (resp_sensor_state *)t->payload();
+	resp->sensor1 = sensor_alarm_1;
+	resp->sensor2 = sensor_alarm_2;
+	resp->sensor3 = sensor_alarm_3;
+	 
+	sensor_alarm_1 = 0;
+	sensor_alarm_2 = 0;
+	sensor_alarm_3 = 0;
+}
+#endif
+
     cnt = offs;
     ret = array;
     return 0;
@@ -185,3 +204,4 @@ EOC_responder::_test(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt)
     m->response(10);
     return 0;
 }
+

@@ -31,6 +31,7 @@ class EOC_db{
     static int _resp_status(EOC_db *db,EOC_msg *m,int check);
     static int _resp_nside_perf(EOC_db *db,EOC_msg *m,int check);
     static int _resp_cside_perf(EOC_db *db,EOC_msg *m,int check);
+    static int _resp_sensor_state(EOC_db *db,EOC_msg *m,int check);
 
     static int _appreq_inventory(EOC_db *db,app_frame *fr);
     static int _appreq_endpcur(EOC_db *db,app_frame *fr);

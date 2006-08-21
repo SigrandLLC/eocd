@@ -15,7 +15,7 @@ extern int debug_lev;
 #	define ASSERT(x) assert(x)
 #       define PDEBUG(lev,fmt,args...) \
 		if( lev<=debug_lev ) \
-			printf("eocd: %s " fmt " \n",__FUNCTION__, ## args  )
+			printf("eocd(%s): " fmt " \n",__FUNCTION__, ## args  )
 
 
 #	define EDEBUG(lev,function) \

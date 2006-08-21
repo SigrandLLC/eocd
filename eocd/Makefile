@@ -7,11 +7,9 @@
 
 
 TOPDIR=$(PWD)
-INCLUDES=$(TOPDIR)/include/
-CPPFLAGS=-g -I$(INCLUDES)
-#STAGING_DIR=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/
-#LDFLAGS=-nodefaultlibs -L$(STAGING_DIR)/usr/lib -L$(STAGING_DIR)/lib
-#LIBS=-luClibc++ -lustl -lc -lm -lgcc
+INCLUDES=-I$(TOPDIR)/include/
+INCLUDES += -I$(TOPDIR)/libconfig/
+CPPFLAGS=-g $(INCLUDES)
 
 .PHONY: generic engine devs utils db app-if tar
 
@@ -25,33 +23,32 @@ RANLIB=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mips
 
 #RANLIB=ranlib
 
-export CXX AR RANLIB CC
+export CXX AR RANLIB CC TOPDIR INCLUDES CPPFLAGS
 
-INCLUDES += -I$(TOPDIR)/libconfig/
 
 all: $(TARGS) 
-	$(CXX) -g -I$(INCLUDES) -o result main.cpp $(OBJECTS) libconfig++.a
-#	$(CXX) -g -I$(INCLUDES) -o eocd eocd.cpp $(OBJECTS) libconfig++.a
+	$(CXX) -g $(INCLUDES) -o result main.cpp $(OBJECTS) libconfig++.a
+#	$(CXX) -g $(INCLUDES) -o eocd eocd.cpp $(OBJECTS) libconfig++.a
 
 all-mips: $(TARGS) 
-	$(CXX) -g -I$(INCLUDES) -o result main.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
-	$(CXX) -g -I$(INCLUDES) -o eocd eocd.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
+	$(CXX) -g $(INCLUDES) -o result main.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
+	$(CXX) -g $(INCLUDES) -o eocd eocd.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
 
 local: EOC_main.o
 	cp $^ build/    
 
 engine:
-	make -C engine/ INCLUDES=$(INCLUDES) TOPDIR=$(TOPDIR) CPPFLAGS="$(CPPFLAGS)"
+	make all -C engine/ 
 generic:
-	make -C generic/ INCLUDES=$(INCLUDES) TOPDIR=$(TOPDIR) CPPFLAGS="$(CPPFLAGS)"
+	make all -C generic/ 
 devs:
-	make -C devs/ INCLUDES=$(INCLUDES) TOPDIR=$(TOPDIR) CPPFLAGS="$(CPPFLAGS)"
+	make all -C devs/ 
 utils:
-	make -C utils/ INCLUDES=$(INCLUDES) TOPDIR=$(TOPDIR) CPPFLAGS="$(CPPFLAGS)"
+	make all -C utils/ 
 db:
-	make -C db/ INCLUDES=$(INCLUDES) TOPDIR=$(TOPDIR) CPPFLAGS="$(CPPFLAGS)"
+	make all -C db/ 
 app-if:
-	make client server -C app-if/ INCLUDES=$(INCLUDES) TOPDIR=$(TOPDIR) CPPFLAGS="$(CPPFLAGS)"
+	make all -C app-if/ 
 
 
 clean:

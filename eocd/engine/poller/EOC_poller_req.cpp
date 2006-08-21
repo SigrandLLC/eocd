@@ -83,8 +83,6 @@ _req_status(sched_state stat,sched_elem el,EOC_config *cfg)
     return m;
 }
 
-
-
 EOC_msg *
 _req_test(sched_state stat,sched_elem el,EOC_config *cfg)
 {
@@ -101,4 +99,6 @@ _req_test(sched_state stat,sched_elem el,EOC_config *cfg)
     memcpy(req,"aaaaaaaaaaaaaaa",10);
     return m;
 }
+
+
 

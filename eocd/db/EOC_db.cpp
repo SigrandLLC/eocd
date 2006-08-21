@@ -17,6 +17,7 @@ register_handlers(){
     handlers[RESP_IND(RESP_STATUS)] = _resp_status;
     handlers[RESP_IND(RESP_NSIDE_PERF)] = _resp_nside_perf;
     handlers[RESP_IND(RESP_CSIDE_PERF)] = _resp_cside_perf;
+    handlers[RESP_IND(RESP_SENSOR_STATE)] = _resp_sensor_state;
 	
     // register Application requests for info
     app_handlers[APP_INVENTORY] = _appreq_inventory;
@@ -286,6 +287,28 @@ _resp_cside_perf(EOC_db *db,EOC_msg *m,int check)
     return 0;
 }
 
+int EOC_db::
+_resp_sensor_state(EOC_db *db,EOC_msg *m,int check)
+{
+    ASSERT( m->type() == RESP_SENSOR_STATE );
+    ASSERT( m->payload_sz() == RESP_SENSOR_STATE_SZ);
+    ASSERT(m);
+    resp_sensor_state *resp= (resp_sensor_state*)m->payload();
+    EOC_unit *unit=NULL;
+
+    if( db->check_exist(m->src()) )
+	return -1;
+
+    if( check )
+	return 0;
+
+    unit = db->units[(int)m->src()-1];
+    if( unit ){
+	PDEBUG(DINFO,"SENSOR STATE: src(%d): s1(%d), s2(%d), s3(%d)",m->src(),resp->sensor1,resp->sensor2,resp->sensor3);
+	unit->sensor_resp(resp);
+    }
+    return 0;
+}
 
 
 int EOC_db::
