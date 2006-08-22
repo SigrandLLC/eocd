@@ -32,7 +32,8 @@ typedef struct{
 
 typedef struct{
     u8 units;
-    u8 loops;
+    u8 link_establ:1;
+    u8 loops:7;
 } span_params_payload;
 #define SPAN_PARAMS_PAY_SZ sizeof(span_params_payload)
 #define SPAN_PARAMS_CH_SZ 0

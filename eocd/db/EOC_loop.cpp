@@ -1,4 +1,5 @@
 #include <db/EOC_loop.h>
+#include <eoc_debug.h>
 
 void EOC_loop::
 status_diff(side_perf *info,counters_t &cntrs)
@@ -121,7 +122,7 @@ full_status(side_perf *info)
 {
     counters_t cntrs;
     status_diff(info,cntrs);
-    printf("FULL STATUS: info->es=%u,cntrs.es=%u, last.es=%u\n",info->es,cntrs.es,last_msg.es);
+    PDEBUG(DINFO,"FULL STATUS: info->es=%u,cntrs.es=%u, last.es=%u\n",info->es,cntrs.es,last_msg.es);
     shift_rings();	
     // change online data
     state.loop_attn = info->loop_attn;

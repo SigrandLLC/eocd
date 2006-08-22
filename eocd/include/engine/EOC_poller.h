@@ -36,7 +36,7 @@ public:
 	delete sch;
 	delete cfg;
     }
-    inline void link_state(EOC_dev::Linkstate link){ sch->link_state(link); }
+    void link_state(EOC_dev::Linkstate link);
     inline EOC_dev::Linkstate link_state(){ 
 	return ((sch->state()==EOC_scheduler::Offline) ? EOC_dev::OFFLINE : EOC_dev::ONLINE);
     }
@@ -47,6 +47,7 @@ public:
     int process_msg(EOC_msg *m);
     int app_request(app_frame *fr);
     inline int unit_quan(){ db->unit_quan(); }
+    inline int link_established(){ db->link_established(); }
       
 };
 

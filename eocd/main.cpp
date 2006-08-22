@@ -313,10 +313,10 @@ int main()
     k = 0;
     while(1){
 	m.poll_channels();
-	m.app_listen(1);
-	for(int i=0;i<15;i++){
+	m.app_listen(2);
+	for(int i=0;i<1;i++){
 	    E[i]->schedule();
-	    for(int kk=0;kk<REPEATERS;kk++)
+	    for(int kk=0;kk<1;kk++)
 	        Ex[i][kk]->schedule();
 	}
 	k++;

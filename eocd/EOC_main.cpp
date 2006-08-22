@@ -28,7 +28,7 @@ using namespace std;
 EOC_dev_terminal *
 init_dev(char *name);
 
-/*
+#ifndef VIRTUAL_DEVS
 EOC_dev_terminal *
 init_dev(char *name)
 {
@@ -75,13 +75,13 @@ init_dev(char *name)
 		    return dev; 
 		}
 	    }
-*//*
+*/
 	}
     }
     closedir(dir);
     return NULL;
 }
-*/
+#endif // #ifndef VIRTUAL_DEVS
 
 int EOC_main::
 read_config()
@@ -516,23 +516,25 @@ app_listen(int seconds)
 
 //    while( (size = app_srv.recv(conn,buff) ) ){
     while( time(&cur) >0 && time(&cur)-start < seconds ){
-
         if( !app_srv.wait() ){
 	    continue;
 	}
-
 	size = app_srv.recv(conn,buff);
-	if( !size ){
+	if( size<=0 ){
 	    continue;
 	}
+
 	app_frame fr(buff,size);
 	if( !fr.frame_ptr() ){
 	    delete buff;
 	    continue; 
 	}
-	if( ret = app_request(&fr) )
+
+	if( ret = app_request(&fr) ){
 	    continue;
-	app_srv.send(conn,fr.frame_ptr(),fr.frame_size());
+	}
+
+	ret = app_srv.send(conn,fr.frame_ptr(),fr.frame_size());
 	time(&cur);
     }
 }
@@ -586,6 +588,7 @@ app_spanname(app_frame *fr)
 	}
 	int filled = 0;
         while( el && filled<SPAN_NAMES_NUM){
+
 	    if( el->eng->get_type() == master ){
 		int cp_len = (el->nsize>SPAN_NAME_LEN) ? SPAN_NAME_LEN : el->nsize;
 		strncpy(p->name[filled],el->name,cp_len);

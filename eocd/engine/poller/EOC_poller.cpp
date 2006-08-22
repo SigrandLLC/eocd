@@ -103,3 +103,11 @@ app_request(app_frame *fr)
     return 0;
 }
 
+void EOC_poller::
+link_state(EOC_dev::Linkstate link)
+{
+    sch->link_state(link);
+    if( link == EOC_dev::OFFLINE ){
+	db->link_down();
+    }
+}

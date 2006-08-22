@@ -171,6 +171,7 @@ app_request(app_frame *fr){
 	span_params_payload *p = (span_params_payload *)fr->payload_ptr();
 	p->units = poll->unit_quan();
 	p->loops = rtr->loops();
+	p->link_establ = poll->link_established();
 	return 0;
     }
     default:

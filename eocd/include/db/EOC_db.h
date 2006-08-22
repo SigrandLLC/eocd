@@ -19,6 +19,7 @@ class EOC_db{
     typedef int (*app_handler_t)(EOC_db *db,app_frame *fr);
 
     EOC_unit *units[MAX_UNITS];
+    u8 units_discov[MAX_UNITS];
     response_handler_t handlers[RESPONSE_QUAN];
     app_handler_t app_handlers[app_ids_num];
     EOC_scheduler *sch;
@@ -53,9 +54,12 @@ public:
     int clear();
     int app_request(app_frame *fr);
     int unit_quan();
+    int link_established();
+
     int check_exist(unit u);
     EOC_side *check_exist(unit u,side s);
     EOC_loop *check_exist(unit u,side s,int loop);
+    void link_down();
 };
 
 #endif

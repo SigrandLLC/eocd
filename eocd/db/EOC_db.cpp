@@ -31,8 +31,11 @@ register_handlers(){
 EOC_db::
 EOC_db(EOC_scheduler *s,int lnum){
     int i;
-    for(i=0;i<MAX_UNITS;i++)
+    for(i=0;i<MAX_UNITS;i++){
         units[i] = NULL;
+        units_discov[i] = 0;
+    }
+	
     for(i=0;i<RESPONSE_QUAN;i++)
         handlers[i] = NULL;
     register_handlers();
@@ -91,7 +94,7 @@ check_exist(unit u){
     u8 ind = (u8)u - 1;
     if( !(ind < MAX_UNITS) )
 	return -1;
-    if( units[(int)u - 1] )
+    if( units[(int)u - 1] && units_discov[(int)u - 1] )
         return 0;
     return -1;
 }
@@ -121,10 +124,29 @@ check_exist(unit u,side s,int loop)
 int EOC_db::
 unit_quan(){
     int i,cnt=0;
-    for(i=0;i<MAX_UNITS && units[i];i++){
-        cnt++;
+    for(i=0;i<MAX_UNITS ;i++){
+	if( units_discov[i] )
+    	    cnt++;
     }
     return cnt;
+}
+
+int EOC_db::
+link_established()
+{
+    if( units_discov[1] ){
+    	return 1;
+    }
+    return 0;
+}
+
+
+void EOC_db::
+link_down()
+{
+    PDEBUG(DERR,"Link down");
+    for(int i=0;i<MAX_UNITS;i++)
+	units_discov[i] = 0;
 }
 
 //------------------- EOC responses -------------------------//
@@ -140,10 +162,22 @@ _resp_discovery(EOC_db *db,EOC_msg *m,int check)
 	return 0;
 	
     if( !db->units[ind] ){
+	PDEBUG(DERR,"Add new unit %d",ind);
 	db->units[ind] = new EOC_unit(m->src(),resp,db->loop_num);
     }
+    db->units_discov[ind] = 1;
     PDEBUG(DINFO,"DISCOVERY_RESP FROM(%d): hop=%d,resl=%d,vendor_id=%d,fwd_loss=%d",
 	    m->src(),resp->hop,resp->res1,resp->vendor_id,resp->fwd_loss);
+    if( m->src() == stu_r ){
+	PDEBUG(DERR,"Clean units list");
+	for(int i=0;i<MAX_UNITS;i++){
+	    if( db->units[i] && !db->units_discov[i] ){
+		PDEBUG(DERR,"Unit(%d) is not present anymore\n",i);
+		delete db->units[i];
+		db->units[i] = NULL;
+	    }
+	}
+    }
     return 0;
 }
 

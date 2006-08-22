@@ -9,6 +9,7 @@ app_frame(app_ids id,app_types type,roles role,u8 act_seconds,char *dname){
 	    buf_size = 0;
 	    return;
 	}
+	int I = offs;
 	buf_size = offs + strnlen(dname,256)+1;
 	if( !(buf = new char[buf_size]) ){
 	    buf_size = 0;

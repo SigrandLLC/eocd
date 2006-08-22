@@ -6,22 +6,28 @@
 #***********************************************************************************
 
 
+
 TOPDIR=$(PWD)
 INCLUDES=-I$(TOPDIR)/include/
 INCLUDES += -I$(TOPDIR)/libconfig/
-CPPFLAGS=-g $(INCLUDES)
+CPPFLAGS=-g $(INCLUDES) 
+ifeq ($(VIRT),1)
+CPPFLAGS += -DVIRTUAL_DEVS
+endif
 
 .PHONY: generic engine devs utils db app-if tar
 
 TARGS :=generic engine devs utils local db app-if
 OBJECTS := build/*.o 
 
-#CC=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-gcc
-#CXX=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-g++
-#AR=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-ar
-#RANLIB=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-ranlib
-
+ifneq ($(VIRT),1)
+CC=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-gcc
+CXX=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-g++
+AR=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-ar
+RANLIB=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-ranlib
+else
 RANLIB=ranlib
+endif
 
 export CXX AR RANLIB CC TOPDIR INCLUDES CPPFLAGS
 
@@ -31,7 +37,7 @@ all: $(TARGS)
 #	$(CXX) -g $(INCLUDES) -o eocd eocd.cpp $(OBJECTS) libconfig++.a
 
 all-mips: $(TARGS) 
-	$(CXX) -g $(INCLUDES) -o result main.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
+#	$(CXX) -g $(INCLUDES) -o result main.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
 	$(CXX) -g $(INCLUDES) -o eocd eocd.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
 
 local: EOC_main.o

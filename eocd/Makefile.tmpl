@@ -7,8 +7,10 @@
 
 
 TOPDIR=$(PWD)
-INCLUDES=$(TOPDIR)/include/
-CPPFLAGS=-g -I$(INCLUDES)
+INCLUDES=-I$(TOPDIR)/include/
+INCLUDES += -I$(TOPDIR)/libconfig/
+CPPFLAGS=-g $(INCLUDES) 
+
 
 .PHONY: generic engine devs utils db app-if
 
@@ -20,33 +22,31 @@ CXX=@CROSS_PREFIX@g++
 AR=@CROSS_PREFIX@ar
 RANLIB=@CROSS_PREFIX@ranlib
 
-export CXX AR RANLIB CC
-
-INCLUDES += -I$(TOPDIR)/libconfig/
+export CXX AR RANLIB CC TOPDIR INCLUDES CPPFLAGS
 
 all: $(TARGS) 
-	$(CXX) -g -I$(INCLUDES) -o result main.cpp $(OBJECTS) libconfig++.a
-	$(CXX) -g -I$(INCLUDES) -o eocd eocd.cpp $(OBJECTS) libconfig++.a
+	$(CXX) -g $(INCLUDES) -o result main.cpp $(OBJECTS) libconfig++.a
+#	$(CXX) -g $(INCLUDES) -o eocd eocd.cpp $(OBJECTS) libconfig++.a
 
 all-mips: $(TARGS) 
-	$(CXX) -g -I$(INCLUDES) -o result main.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
-	$(CXX) -g -I$(INCLUDES) -o eocd eocd.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
+#	$(CXX) -g $(INCLUDES) -o result main.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
+	$(CXX) -g $(INCLUDES) -o eocd eocd.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
 
 local: EOC_main.o
 	cp $^ build/    
 
 engine:
-	make -C engine/ INCLUDES=$(INCLUDES) TOPDIR=$(TOPDIR) CPPFLAGS="$(CPPFLAGS)"
+	make all -C engine/ 
 generic:
-	make -C generic/ INCLUDES=$(INCLUDES) TOPDIR=$(TOPDIR) CPPFLAGS="$(CPPFLAGS)"
+	make all -C generic/ 
 devs:
-	make -C devs/ INCLUDES=$(INCLUDES) TOPDIR=$(TOPDIR) CPPFLAGS="$(CPPFLAGS)"
+	make all -C devs/ 
 utils:
-	make -C utils/ INCLUDES=$(INCLUDES) TOPDIR=$(TOPDIR) CPPFLAGS="$(CPPFLAGS)"
+	make all -C utils/ 
 db:
-	make -C db/ INCLUDES=$(INCLUDES) TOPDIR=$(TOPDIR) CPPFLAGS="$(CPPFLAGS)"
+	make all -C db/ 
 app-if:
-	make client server -C app-if/ INCLUDES=$(INCLUDES) TOPDIR=$(TOPDIR) CPPFLAGS="$(CPPFLAGS)"
+	make all -C app-if/ 
 
 
 clean:
@@ -59,3 +59,10 @@ clean:
 	rm -f *.o
 	rm -f result eocd
 	rm -f build/*.o
+
+
+ARCH_FILES=app-if build CHECK db devs engine eocd.conf eocd.cpp EOC_main.cpp \
+generic include main.cpp Makefile.tmpl system TODO.txt utils
+
+tar: clean
+	tar --exclude="\.svn" -cjvf tar/eocd.tar.bz2 $(ARCH_FILES)

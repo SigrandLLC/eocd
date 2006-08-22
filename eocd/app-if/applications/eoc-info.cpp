@@ -20,9 +20,10 @@ void print_usage(char *name)
 {
     printf("Usage: %s [options]\n"
 	    "Options:\n"
-	    "  --short (-s)\t\tShort info about served channels\n"
-	    "  --full (-f)\t\tFull info about served channels\n"
-	    "  --iface (-i) <iface>\tFull info about channel <iface>\n",
+	    "  -s, --short\t\tShort info about served channels\n"
+	    "  -f, --full\t\tFull info about served channels\n"
+	    "  -i, --iface=<iface>\tFull info about channel <iface>\n"
+	    "  -h, --help\t\tThis page\n",
 	    name);
 }
 
@@ -42,9 +43,12 @@ void print_short_chan(app_comm_cli *cli,char *chan)
     char *buf;
     
     cli->send(req->frame_ptr(),req->frame_size());
-    cli->wait();
+    if( cli->wait() ){
+	printf("Error while waiting\n");
+	cli->wait();
+    }
     int size = cli->recv(buf);
-    if( !size ){
+    if( size <=0 ){
 	delete req;
 	return;
     }
@@ -60,7 +64,9 @@ void print_short_chan(app_comm_cli *cli,char *chan)
     }
     {
     span_params_payload *p = (span_params_payload *)resp->payload_ptr();
-    printf(" %s: %d repeaters\n",chan,p->units);
+    int repeaters = (p->link_establ) ? p->units-2 : p->units-1;
+    printf(" %s: %d repeaters, %s\n",chan,(repeaters<0) ? 0 : repeaters,
+	    (p->link_establ) ? "online" : "offline");
     }
 err_exit:
     delete resp;
@@ -116,12 +122,12 @@ void print_short(app_comm_cli *cli)
         cli->send(req->frame_ptr(),req->frame_size());
 	cli->wait();
 	int size = cli->recv(buf);
-	if( !size )
+	if( size<=0 )
 	    break;
 
         app_frame *resp = new app_frame(buf,size);
 	if( !resp->frame_ptr() ){
-	    printf("Bad message from eocd\n");
+	    printf("%s: Bad message from eocd\n",__FUNCTION__);
 	    delete resp;
 	    delete req;
 	    return;
@@ -158,7 +164,7 @@ void print_full(app_comm_cli *cli)
         cli->send(req->frame_ptr(),req->frame_size());
 	cli->wait();
 	int size = cli->recv(buf);
-	if( !size )
+	if( size<=0 )
 	    break;
 
         app_frame *resp = new app_frame(buf,size);
@@ -196,16 +202,10 @@ int
 main(int argc, char *argv[] )
 {
     char iface[256];
-//    char *sock_name = "/var/eocd/socket";
-    char *sock_name = "/home/artpol/eocd-socket";
+    char *sock_name = "/var/eocd/eocd-socket";
+//    char *sock_name = "/home/artpol/eocd-socket";
     typedef enum {NONE,SHORT,FULL,EXACT} type_t;
     type_t type = NONE;
-
-    app_comm_cli cli(sock_name);
-    if( !cli.init_ok() ){
-	printf("Cannot connect to %s\n",sock_name);
-	return 0;
-    }
 
     // process command line arguments here
     while (1) {
@@ -214,10 +214,11 @@ main(int argc, char *argv[] )
     	    {"short", 0, 0, 's'},
     	    {"full", 0, 0, 'f'},
     	    {"iface", 1, 0, 'i'},
+    	    {"help", 0, 0, 'h'},
     	    {0, 0, 0, 0}
 	};
 
-	int c = getopt_long (argc, argv, "sfi:",
+	int c = getopt_long (argc, argv, "sfhi:",
                 long_options, &option_index);
         if (c == -1)
     	    break;
@@ -236,13 +237,24 @@ main(int argc, char *argv[] )
 		strncpy(iface,optarg,255);
 	    }
 	    break;
+	case 'h':
+	    break;
 	}
     }
-    
-    switch( type ){
-    case NONE:
+    if( type == NONE ){    
 	print_usage(argv[0]);
-	break;
+	return 0;
+    }
+    
+    // Connect to eocd server
+    app_comm_cli cli(sock_name);
+    if( !cli.init_ok() ){
+	printf("Cannot connect to %s\n",sock_name);
+	return 0;
+    }
+    
+    // Do requested work
+    switch( type ){
     case SHORT:
 	print_short(&cli);
 	break;
