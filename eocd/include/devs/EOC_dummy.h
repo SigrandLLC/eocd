@@ -6,13 +6,13 @@
 
 #define HDLC_BUFF_SZ 112
 
-class EOC_sg17 : public EOC_dev{
+class EOC_dummy : public EOC_dev{
 protected:
-    char *fname;
+    char *f1,*f2;
     int valid;    
 public:
-    EOC_sg17(char *fname);
-    ~EOC_sg17();    
+    EOC_dummy(char *file1,char *file2);
+    ~EOC_dummy();    
     int send(EOC_msg *m);
     EOC_msg *recv();
     Linkstate link_state();

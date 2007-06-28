@@ -8,6 +8,7 @@
 
 class EOC_dev{
 public:
+    enum Linkstate { OFFLINE, ONLINE };
     enum device { SG16PCI,SG17PCI,SG17R };
     enum annex_t { annexA,annexB,annexF };
     enum tcpam_t { tcpam4, tcpam8, tcpam16,tcpam32 };
@@ -26,6 +27,7 @@ protected:
 public:
     virtual int send(EOC_msg *msg) = 0;
     virtual EOC_msg *recv() = 0;
+    virtual Linkstate link_state() = 0;
 /*    virtual read_cfg(EOC_dev_cfg *cfg) = 0;
     virtual apply_cfg(EOC_dev_cfg *cfg) = 0;    
 */

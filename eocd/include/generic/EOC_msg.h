@@ -8,14 +8,16 @@
 
 class EOC_msg{
 public:
-    enum Direction { UNDEFINED,DOWNSTREAM, UPSTREAM };
+    enum Direction { NOSTREAM,DOWNSTREAM, UPSTREAM };
     enum EOC_CONSTS {EOC_HEADER=2};
 protected:
     char *buf;
-    int size;
+    int size,bsize;
     enum Direction dir;
 public:
     EOC_msg();
+    EOC_msg(EOC_msg *ex);
+    EOC_msg(EOC_msg *ex,int new_size);    
     ~EOC_msg();
     void direction(enum Direction d);
     Direction direction();
@@ -27,11 +29,13 @@ public:
     int src(unit src);
     int setup(char *ptr,int size);
     void clean();
+    
     inline char *mptr(){ return buf; }
     inline int msize(){	return size; }
     inline char *payload(){ return &buf[2]; }
     inline int payload_sz(){ return size-2; }    
     int response(int);
+    int resize(int sz);
     
     // class of message
     inline int is_response(){

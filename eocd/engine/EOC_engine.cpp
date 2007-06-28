@@ -3,21 +3,26 @@
 #include <engine/EOC_responder.h>
 #include <engine/EOC_poller.h>
 
-EOC_engine::EOC_engine(EOC_role r,EOC_dev *d1,EOC_dev *d2)
+EOC_engine::EOC_engine(dev_type r,EOC_dev *d1,EOC_dev *d2)
 {
     type = r;
     rtr = new EOC_router(r,d1,d2);
-    resp = new EOC_responder;
+    resp = new EOC_responder(rtr);
     if( r == master ){
         poll = new EOC_poller;
     }
 }
 
-int 
+int
 EOC_engine::schedule()
 {
     EOC_msg *m;
     // Receive one EOC message
+    setup_state();
+
+    if( state == EOC_OFFLINE )
+	return 0;
+	
     if( m = rtr->receive() ){
 	if( m->is_request() ){
 	    m = resp->process(m);
@@ -48,3 +53,4 @@ EOC_engine::schedule()
 
     return 0;
 }
+

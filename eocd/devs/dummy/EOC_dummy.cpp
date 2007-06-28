@@ -5,39 +5,38 @@
 #include <malloc.h>
 #include <unistd.h>
 
-#include <devs/EOC_sg17.h>
+#include <devs/EOC_dummy.h>
 
-EOC_sg17::EOC_sg17(char *file)
+EOC_dummy::EOC_dummy(char *file1,char *file2)
 {
-/*
-    char *opts[]={"annex","crate","master","mod","rate","remcfg",
-		    "state","statistic"};
-    int opts_num = sizeof(opts)/sizeof(char*);		    
-    cpath = strdup(p);
-    if( check_ctrl_files() ){
-	error_init = 1;
-	return;
-    }
-*/
     int fd;
 
-    if( (fd = open(file,O_RDWR)) < 0 ){
+    if( (fd = open(file1,O_RDWR)) < 0 ){
         valid = 0;
         return;
     }
-    fname = strndup(file,256);
+    close(fd);
+    if( (fd = open(file2,O_RDWR)) < 0 ){
+        valid = 0;
+        return;
+    }
+    close(fd);
+
+    f1 = strndup(file1,256);
+    f2 = strndup(file2,256);    
     valid = 1;
 }
 
-EOC_sg17::~EOC_sg17()
+EOC_dummy::~EOC_dummy()
 {
-    free(fname);
+    free(f1);
+    free(f2);    
 }
 
 
 #define BUFF_SZ 1024
 int
-EOC_sg17::send(EOC_msg *m)
+EOC_dummy::send(EOC_msg *m)
 {
     int fd;
     int wrcnt = 0;
@@ -46,7 +45,7 @@ EOC_sg17::send(EOC_msg *m)
     if( !valid )
 	return -1;
 
-    if( (fd = open(fname,O_WRONLY) ) < 0 ){
+    if( (fd = open(f1,O_WRONLY) ) < 0 ){
 	valid = 0;
 	return -1;
     }
@@ -61,7 +60,7 @@ EOC_sg17::send(EOC_msg *m)
     
     
 EOC_msg *
-EOC_sg17::recv()
+EOC_dummy::recv()
 {
     int fd;
     char buff[BUFF_SZ];
@@ -73,7 +72,7 @@ EOC_sg17::recv()
     if( !valid )
 	return NULL;
 
-    if( (fd = open(fname,O_RDONLY) ) < 0 ){
+    if( (fd = open(f2,O_RDONLY) ) < 0 ){
 	valid = 0;
 	return NULL;
     }
@@ -97,7 +96,7 @@ EOC_sg17::recv()
     }
 
 /* FOR DEBUG PURPOSE */
-    FILE *stream = fopen(fname,"w");
+    FILE *stream = fopen(f2,"w");
     if( stream )
 	fclose(stream);
 /* DEBUG END */    
@@ -106,5 +105,5 @@ EOC_sg17::recv()
 
 // DEBUG_VERSION
 EOC_dev::Linkstate
-EOC_sg17::link_state(){ return ONLINE; }
+EOC_dummy::link_state(){ return ONLINE; }
 // END DEBUG_VERSION
