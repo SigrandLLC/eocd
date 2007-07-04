@@ -16,6 +16,7 @@ protected:
     enum Direction dir;
 public:
     EOC_msg();
+    EOC_msg(int size);    
     EOC_msg(EOC_msg *ex);
     EOC_msg(EOC_msg *ex,int new_size);    
     ~EOC_msg();

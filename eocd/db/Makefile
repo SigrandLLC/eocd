@@ -6,8 +6,8 @@ INCLUDES=$(TOPDIR)include/
 
 CPPFLAGS=-g -I$(INCLUDES)
 
-all: EOC_router.o
-	cp $^ $(TOPDIR)/build
+all: EOC_db.o
+	cp EOC_db.o $(TOPDIR)/build
 
 
 clean:

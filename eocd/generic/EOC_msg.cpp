@@ -1,13 +1,28 @@
 #include <generic/EOC_generic.h>
+#include <generic/EOC_requests.h>
+#include <generic/EOC_responses.h>
 #include <generic/EOC_msg.h>
 #include <stdlib.h>
 
 EOC_msg::EOC_msg(){
-	buf = NULL;
+    buf = NULL;
+    bsize = 0;
+    size = 0;
+    dir = NOSTREAM;
+}
+
+EOC_msg::EOC_msg(int size){
+    dir = NOSTREAM;
+    if( !(buf = (char*)malloc(size + EOC_HEADER)) ){
 	bsize = 0;
 	size = 0;
-	dir = NOSTREAM;
+	return;
+    }
+    bsize = size+EOC_HEADER;
+    size = bsize;
+    
 }
+
 
 EOC_msg::EOC_msg(EOC_msg *ex)
 {
@@ -33,6 +48,7 @@ EOC_msg::EOC_msg(EOC_msg *ex,int new_size)
     if( buf )    
 	memcpy(buf,ex->mptr(),size);
     else{
+    // TODO: EXCEPTION!!!
 	bsize = 0;
 	size =0;
     }
@@ -163,7 +179,7 @@ EOC_msg::response(int sz)
     resize(sz);
     dst(s);
     src(d);
-    type(id+128);
+    type(id+RESP_OFFSET);
     dir = (dir == DOWNSTREAM) ? UPSTREAM : DOWNSTREAM;
     return 0;
 }
