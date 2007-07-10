@@ -11,18 +11,16 @@ EOC_msg::EOC_msg(){
     dir = NOSTREAM;
 }
 
-EOC_msg::EOC_msg(int size){
+EOC_msg::EOC_msg(int sz){
     dir = NOSTREAM;
-    if( !(buf = (char*)malloc(size + EOC_HEADER)) ){
+    if( !(buf = (char*)malloc(sz + EOC_HEADER)) ){
 	bsize = 0;
 	size = 0;
 	return;
     }
-    bsize = size+EOC_HEADER;
+    bsize = sz+EOC_HEADER;
     size = bsize;
-    
 }
-
 
 EOC_msg::EOC_msg(EOC_msg *ex)
 {
@@ -71,7 +69,7 @@ EOC_msg::direction(){
 }
 
 //---- Get/Set message type ----//
-int
+unsigned char
 EOC_msg::type(){
     if( !buf || size < 2)
         return -1;
@@ -130,8 +128,8 @@ EOC_msg::setup(char *ptr,int sz)
     size = sz;	
     bsize = sz;
     // check for correctness
-    if( (dst() < unknown || dst() > sru8) ||
-	    (src() < unknown || src() > sru8) ){
+    if( (dst() < unknown || (dst() > sru8 && dst()!=BCAST) ) ||
+	    (src() < unknown || (src() > sru8 && src()!=BCAST) ) ){
 	buf = NULL;
 	size = 0;
 	bsize = 0;
