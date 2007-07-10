@@ -13,9 +13,11 @@ CPPFLAGS=-g -I$(INCLUDES)
 .PHONY: generic engine devs
 
 TARGS :=generic engine devs
-OBJECTS := build/EOC_router.o build/EOC_msg.o build/EOC_dummy.o 
+#OBJECTS := build/EOC_router.o build/EOC_msg.o build/EOC_scheduler.o build/EOC_dummy.o 
+OBJECTS := build/*.o 
 
-all: $(TARGS) $(OBJECTS)
+
+all: $(TARGS) 
 	g++ -g -I$(INCLUDES) -o result main.cpp $(OBJECTS)
 
 
