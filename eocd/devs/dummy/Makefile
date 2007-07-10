@@ -4,8 +4,8 @@ ifeq ($(TOPDIR),)
     CPPFLAGS=-g -I$(INCLUDES)
 endif
 
-all: EOC_dummy.o
-	cp EOC_dummy.o $(TOPDIR)/build
+all: EOC_dummy.o EOC_dummy1.o
+	cp $? $(TOPDIR)/build
 
 clean:
 	rm -f *.o
