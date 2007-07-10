@@ -1,5 +1,5 @@
-#ifndef SIGRAND_EOC_MSG_H
-#define SIGRAND_EOC_MSG_H
+#ifndef EOC_MSG_H
+#define EOC_MSG_H
 
 #include <stdio.h>
 #include <string.h>
@@ -22,7 +22,7 @@ public:
     ~EOC_msg();
     void direction(enum Direction d);
     Direction direction();
-    int type();
+    unsigned char type();
     int type(unsigned char);
     unit dst();
     int dst(unit dst);
@@ -39,12 +39,12 @@ public:
     int resize(int sz);
     
     // class of message
-    inline int is_response(){
+    inline int is_request(){
 	if( type() < 127 )
 	    return 1;
 	return 0;
     }
-    inline int is_request(){ return !is_response(); }
+    inline int is_response(){ return !is_request(); }
 	
 };
 #endif

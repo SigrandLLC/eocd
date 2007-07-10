@@ -2,55 +2,10 @@
 #define SCHED_QUEUE_H
 
 #include <generic/EOC_generic.h>
+#include <engine/sched_elem.h>
 #include <list>
+
 using namespace std;
-
-class __timestamp{
-protected:
-    unsigned long ticks;
-    enum {IMMEDIATELY=0};
-public:
-    __timestamp(){ ticks = 0; }
-    __timestamp(unsigned int t){ ticks = t; }
-    __timestamp(const __timestamp &t){ ticks = t.ticks; }
-    __timestamp(__timestamp t,unsigned int offs){ ticks = t.ticks + offs; }
-
-    inline bool operator ==(__timestamp &right){
-	if( ticks == right.ticks )
-	    return 1;
-	return 0;
-    }
-    inline bool operator < (__timestamp &right){
-	if( ticks < right.ticks )
-	    return 1;
-	return 0;
-    }
-    inline bool operator <= (__timestamp &right){
-	if( ticks <= right.ticks )
-	    return 1;
-	return 0;
-    }
-    inline __timestamp & operator ++ (int k){
-	ticks++;
-	return *this;
-    }
-
-};
-
-class sched_elem{
-public:
-    unit src,dst;
-    unsigned char type;
-    __timestamp tstamp;
-public:
-    inline bool operator < (sched_elem &right){
-	if( tstamp < right.tstamp )
-	    return 1;
-	return 0;
-    }
-        
-};
-
 
 class sched_queue{
 public:
@@ -63,8 +18,12 @@ public:
     ~sched_queue(){
 	q.clear();
     }
+    
+    void clear(){
+	q.clear();
+    }
 
-    inline int add(unit src,unit dst,unsigned char type,__timestamp ts){
+    int add(unit src,unit dst,unsigned char type,__timestamp ts){
 	list<sched_elem>::iterator p = q.begin();
 	list<sched_elem>::iterator p1 = q.end();
 	for(;p != q.end();p++ ){
@@ -73,6 +32,8 @@ public:
 	    if( p->tstamp == ts )
 		p1 = p;
 	}
+	if( p1 != q.end() )
+	    p1++;
 	sched_elem *n = new sched_elem;
 	n->src = src;
 	n->dst = dst;
@@ -80,39 +41,52 @@ public:
 	n->tstamp = ts;
 	q.insert(p1,*n);
 	delete n;
+	return 0;
     }
     
-    inline int schedule(unit &src,unit &dst, unsigned char &type,__timestamp cur){
+    int schedule(sched_elem &el,__timestamp cur,sched_queue &s){
 	q.sort();
+	unit swap;
 	list<sched_elem>::iterator p = q.begin();
 	for(;p != q.end();p++ ){
 	    if( p->tstamp <= cur ){
-		src = p->src;
-		dst = p->dst;
-		type = p->type;
-		q.erase(p);
+		el = *p;
+		swap = p->src;
+		p->src = p->dst;
+		p->dst = swap;
+		p->type += RESP_OFFSET; 
+		s.q.splice(s.q.end(),q,p);
 		return 0;
-	    }
+	    }else
+		return -1;
 	}	
 	return -1;
     }
-    inline int find_del(unit src,unit dst,unsigned char type){
+    int find_del(unit src,unit dst,unsigned char type){
 	q.sort();
 	list<sched_elem>::iterator p = q.begin();
 	for(;p != q.end();p++ ){
 	    unit s1 = p->src;
 	    unit d1 = p->dst;
 	    char t1 = p->type;
-	    if( (src == p->src) && (dst == p->dst) && (type == p->type) ){
+	    if( ((src == p->src)||(p->src == BCAST)) && (dst == p->dst) && (type == p->type) ){
 		q.erase(p);
 		return 0;
 	    }
 	}	
 	return -1;
     }
-    inline void clear(){
-	q.clear();
-    }
+    void print(){
+	q.sort();
+	list<sched_elem>::iterator p = q.begin();
+	int i=0;
+	for(;p != q.end();p++ ){
+	    unsigned char a = p->type;
+	    printf("%d: src(%d),dst(%d),type(%u),tick(%d)\n",i,p->src,p->dst,(unsigned char)(a&0xff),p->tstamp.get_val());
+	    i++;
+	}	
+    }	
+
 };
 
 /*
@@ -122,16 +96,19 @@ int main()
     __timestamp t1(t);
     __timestamp t2(t,5);
     __timestamp t3(195);
-    sched_queue q;
+    sched_queue q,q1;
+    
     unit s,d;
     unsigned char tp;
+    sched_elem el;
+    int k=q.schedule(el,t2,q1);
     q.add(stu_c,stu_r,1,t);
-    q.add(stu_c,sru1,1,t2);
+    q.add(stu_c,sru1,1,t2+10);
     q.add(stu_c,sru2,2,t2);
     t++;
-    int k=q.find_del(stu_c,sru3,1);
-    k=q.find_del(stu_c,sru2,1);
-    k=q.find_del(stu_c,sru2,2);
+    k=q.find_del(stu_c,sru3,1);
+    k=q.schedule(el,t2,q1);
+    k=q1.find_del(stu_c,sru2,2);
     k=q.find_del(stu_c,sru1,1);
     k=q.find_del(stu_c,stu_r,1);
     k=q.find_del(stu_c,stu_r,1);

@@ -31,7 +31,6 @@ protected:
     inline void zero_init();
     inline EOC_dev *get_route_dev(int if_ind);
     inline int out_direction(EOC_msg::Direction *dir);
-    inline void update_state(struct interface *);    
     inline EOC_msg *process_discovery(int if_ind,EOC_msg *m);
     
 public:
@@ -44,9 +43,13 @@ public:
 
     unit csunit();
     unit nsunit();    
+    EOC_dev *csdev();
+    EOC_dev *nsdev();    
+
     int csunit(unit u);
     int nsunit(unit u);
     int term_unit(unit u);
+    void update_state();    
 
 };
 
