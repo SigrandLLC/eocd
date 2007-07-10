@@ -2,7 +2,9 @@
 #include <generic/EOC_msg.h>
 #include <devs/EOC_dev.h>
 #include <engine/EOC_router.h>
-#include <db/EOC_responses.h>
+#include <generic/EOC_responses.h>
+#include <generic/EOC_requests.h>
+
 
 EOC_router::EOC_router(dev_type r,EOC_dev *side)
 {
@@ -17,13 +19,13 @@ EOC_router::EOC_router(dev_type r,EOC_dev *side)
         ifs[if_cnt].sunit = stu_c;
 	ifs[if_cnt].out_dir = EOC_msg::DOWNSTREAM;
 	ifs[if_cnt].in_dir = EOC_msg::UPSTREAM;
-	ifs[if_cnt].state = EOC_OFFLINE;
+	ifs[if_cnt].state = eoc_Offline;
 	break;
     case slave:
         ifs[if_cnt].sunit = stu_r;
 	ifs[if_cnt].in_dir = EOC_msg::DOWNSTREAM;
 	ifs[if_cnt].out_dir = EOC_msg::UPSTREAM;
-	ifs[if_cnt].state = EOC_OFFLINE;
+	ifs[if_cnt].state = eoc_Offline;
 	break;
     default:
 	return;
@@ -44,15 +46,14 @@ EOC_router::EOC_router(dev_type r,EOC_dev *nside,EOC_dev *cside)
 
     ifs[if_cnt].in_dir = EOC_msg::UPSTREAM;
     ifs[if_cnt].out_dir = EOC_msg::DOWNSTREAM;    
-    ifs[if_cnt].state = EOC_OFFLINE;
+    ifs[if_cnt].state = eoc_Offline;
     ifs[if_cnt++].sdev = nside;
     ifs[if_cnt].in_dir = EOC_msg::DOWNSTREAM;
     ifs[if_cnt].out_dir = EOC_msg::UPSTREAM;    
-    ifs[if_cnt].state = EOC_OFFLINE;
+    ifs[if_cnt].state = eoc_Offline;
     ifs[if_cnt++].sdev = cside;
     type = r;
-    for(i=0;i<if_cnt;i++)
-	update_state(&ifs[i]);
+    update_state();
 }
 
 EOC_router::~EOC_router(){
@@ -99,23 +100,27 @@ EOC_router::out_direction(EOC_msg::Direction *dir){
 }
 
 inline void
-EOC_router::update_state(struct interface *iface)
+EOC_router::update_state()
 {
+    struct interface *iface;
     // get link status from device
-    EOC_dev::Linkstate link = iface->sdev->link_state();
-    // check physical link
-    if( link == EOC_dev::OFFLINE ){
-	iface->state = EOC_OFFLINE;
-	iface->sunit = unknown;
-	return;
+    for(int i=0;i<if_cnt;i++){
+	iface = &ifs[i];
+	EOC_dev::Linkstate link = iface->sdev->link_state();
+	// check physical link
+	if( link == EOC_dev::OFFLINE ){
+	    iface->state = eoc_Offline;
+	    iface->sunit = unknown;
+	    continue;
+	}
+	// check for discovery phase comlete
+	if( iface->sunit == unknown ){
+	    iface->state = eoc_Discovery;
+	    continue;
+	}
+	// online state
+	iface->state = eoc_Online;
     }
-    // check for discovery phase comlete
-    if( iface->sunit == unknown ){
-	iface->state = DISCOVERY_READY;
-	return;
-    }
-    // online state
-    iface->state = EOC_ONLINE;
 }
 
 inline EOC_msg*
@@ -128,8 +133,8 @@ EOC_router::process_discovery(int if_ind,EOC_msg *m)
     
     (*m->payload())++;    
     u = (unit)(*m->payload() + 2);
-    resp = new EOC_msg(m,DISCOVERY_RESPONSE_SZ);
-    
+    resp = new EOC_msg(m,RESP_DISCOVERY_SZ);
+
     if( !( u >=sru1 && u <= sru10) && type == repeater )
 	return NULL;
     // setup unit address information
@@ -138,16 +143,15 @@ EOC_router::process_discovery(int if_ind,EOC_msg *m)
 	ifs[if_ind].sunit = u;
     default:
 	// increment Hop count and send
-        resp->response(DISCOVERY_RESPONSE_SZ);
+        resp->response(RESP_DISCOVERY_SZ);
 	resp->src(ifs[if_ind].sunit);
         r=(resp_discovery*)resp->payload();
 	// Setup some fields	
-	strcpy(r->vendor_id,"Sigrand");
+	strcpy((char*)r->vendor_id,"Sigrand");
         r->eoc_softw_ver=1;
 	r->shdsl_ver = 0x80;
 	if( dev )
 	    r->fwd_loss = (dev->link_state()==EOC_dev::OFFLINE) ? 1 : 0;
-
     }
     return resp;
 }
@@ -188,6 +192,44 @@ EOC_router::nsunit()
     return err;
 }
 
+EOC_dev *
+EOC_router::csdev()
+{
+    int i;
+    if( !if_cnt )
+	return NULL;
+	
+    switch( type ){
+    case slave:
+	return NULL;
+    case master:
+	return ifs[0].sdev;
+    case repeater:
+	return ifs[CS_IND].sdev;
+    }
+    return NULL;
+}
+
+
+EOC_dev *
+EOC_router::nsdev()    
+{
+    int i;
+    if( !if_cnt )
+	return NULL;
+	
+    switch( type ){
+    case slave:
+	return ifs[0].sdev;
+    case master:
+	return NULL;
+    case repeater:
+	return ifs[NS_IND].sdev;
+    }
+    return NULL;
+}
+
+
 int
 EOC_router::csunit(unit u)
 {
@@ -219,21 +261,21 @@ EOC_msg *
 EOC_router::receive()
 {
     int icnt=0;
-    EOC_msg *m,*ret,*resp = NULL;
+    EOC_msg *m,*ret=NULL,*resp = NULL;
     EOC_dev *poll_dev = ifs[if_poll].sdev;
     EOC_dev *route_dev = get_route_dev(if_poll);
     EOC_msg::Direction dir = ifs[if_poll].in_dir;
     unit u = ifs[if_poll].sunit;
 
     // Side status update
-    update_state(&ifs[if_poll]);
-    if( ifs[if_poll].state == EOC_OFFLINE )
+    update_state();
+    if( ifs[if_poll].state == eoc_Offline )
 	return NULL;
 
     while( (m = poll_dev->recv()) && (icnt<max_recv_msg) ){
 	m->direction(dir);
 	
-	if( (m->type() == DISCOVERY) ){
+	if( (m->type() == REQ_DISCOVERY) ){
 	    if( resp = process_discovery(if_poll,m) ){
 		if( route_dev )
 		    route_dev->send(m);
@@ -252,7 +294,7 @@ EOC_router::receive()
 	}
 
 	if( m->dst() == u || m->dst() == BCAST ){
-	    if( ifs[if_poll].state == DISCOVERY_READY ){
+	    if( ifs[if_poll].state == eoc_Discovery ){
 		delete m;
 		icnt++;
 	        continue;		    

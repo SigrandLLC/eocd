@@ -1,13 +1,11 @@
 ifeq ($(TOPDIR),)
     TOPDIR=../../
 endif
-
 INCLUDES=$(TOPDIR)include/
-
 CPPFLAGS=-g -I$(INCLUDES)
 
-all: EOC_scheduler.o EOC_poller.o EOC_poller_req.o EOC_poller_resp.o
-	cp $^ $(TOPDIR)/build
+all: EOC_resp_handlers.o
+	cp $? $(TOPDIR)/build
 
 
 clean:
