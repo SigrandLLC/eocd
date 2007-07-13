@@ -69,3 +69,20 @@ _req_configure(sched_state stat,sched_elem el,EOC_config *cfg)
     return m;
 }
 
+EOC_msg *
+_req_test(sched_state stat,sched_elem el,EOC_config *cfg)
+{
+    if( el.type != 15 )
+	return NULL;
+    EOC_msg *m = new EOC_msg(10);
+    // TODO: make as exception!!!
+    if( !m->mptr() )
+	return NULL;
+    char *req = (char *)m->payload();
+    m->src(el.src);
+    m->dst(el.dst);
+    m->type(15);
+    memcpy(req,"aaaaaaaaaaaaaaa",10);
+    return m;
+}
+

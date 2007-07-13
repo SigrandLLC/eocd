@@ -10,5 +10,6 @@
 
 int _inventory(EOC_router *dev,EOC_msg *m);
 int _configure(EOC_router *dev,EOC_msg *m);
+int _test(EOC_router *dev,EOC_msg *m);
 
 #endif

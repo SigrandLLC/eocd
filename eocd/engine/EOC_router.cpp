@@ -33,6 +33,8 @@ EOC_router::EOC_router(dev_type r,EOC_dev *side)
     ifs[if_cnt].sdev = side;
     if_cnt++;
     type = r;
+    // loopback setup
+    loop_head = loop_tail = 0;
 }
 	
 EOC_router::EOC_router(dev_type r,EOC_dev *nside,EOC_dev *cside)
@@ -272,6 +274,19 @@ EOC_router::receive()
     if( ifs[if_poll].state == eoc_Offline )
 	return NULL;
 
+    if( m = get_loop() ){
+	if( (m->type() == REQ_DISCOVERY) ){
+	    if( resp = process_discovery(if_poll,m) ){
+		if( add_loop(resp) ){
+		    /* TODO: LOG error */
+		}
+	    } else{
+		/* TODO: LOG error */
+	    }
+	}else
+	    return m;
+    }
+    
     while( (m = poll_dev->recv()) && (icnt<max_recv_msg) ){
 	m->direction(dir);
 	
@@ -320,7 +335,9 @@ int
 EOC_router::send(EOC_msg *m)
 {
     EOC_msg::Direction dir;
-    int i;    
+    int i; 
+    int ret = 0;   
+    u8 loop_added = 0;
 
     if( m->direction() == EOC_msg::NOSTREAM ){
 	if( out_direction(&dir) ){
@@ -330,8 +347,16 @@ EOC_router::send(EOC_msg *m)
     }
     dir = m->direction();
     for(i=0;i<if_cnt;i++){
+	if( (ifs[i].sunit == m->dst() || m->dst() == BCAST) && !loop_added ){
+	// loopback
+	    EOC_msg *new_m = new EOC_msg(m);
+	    new_m->dst(ifs[i].sunit);
+	    ret += add_loop(new_m);
+	    loop_added = 1;
+	}
 	if( ifs[i].out_dir == dir ){
-	    return ifs[i].sdev->send(m);
+		ret += ifs[i].sdev->send(m);
+		return ret;
 	}
     }
     return -1;

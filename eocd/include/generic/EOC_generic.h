@@ -2,6 +2,7 @@
 #define SIGRAND_EOC_GENERIC_H
 
 #define EOC_MAX_UNITS 10
+#include <generic/EOC_types.h>
 
 enum dev_type { master,slave,repeater };
 enum shdsl_state { eoc_Offline, eoc_Discovery, eoc_Online };

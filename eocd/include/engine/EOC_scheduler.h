@@ -28,17 +28,18 @@ protected:
     int ts_offs;
     // Task queues
     sched_queue *send_q,*wait_q;
+    u32 wait_to;
     // State change functions
     void jump_Offline();
     int jump_Setup();
     int jump_Normal();
-
 public:
-    EOC_scheduler(unsigned int toffs){
-    	send_q = new sched_queue;
-	wait_q = new sched_queue;
+    EOC_scheduler(u32 toffs, u32 waitto){
+    	send_q = new sched_queue();
+	wait_q = new sched_queue();
 	statem = new state_machine;
 	ts_offs = toffs;
+	wait_to = waitto;
 	jump_Offline();
     }
     //
@@ -58,6 +59,7 @@ public:
     // Schedule request & check response to me scheduled
     int request(sched_elem &el);
     int response(EOC_msg *m);
+    int resched();
     // debug
     void print(){
     	printf("______________________________________\n");   

@@ -8,5 +8,6 @@
 int _resp_discovery(EOC_db *db,EOC_msg *m);
 int _resp_inventory(EOC_db *db,EOC_msg *m);
 int _resp_configure(EOC_db *db,EOC_msg *m);
+int _resp_test(EOC_db *db,EOC_msg *m);
 
 #endif

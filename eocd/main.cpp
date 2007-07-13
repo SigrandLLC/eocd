@@ -46,7 +46,9 @@ int main()
 
     EOC_engine *e9 = new EOC_engine(slave,(EOC_dev*)n9,"config");    
 
-    while(1){
+int k=0;
+    while(k<500){
+	/*sleep(1);*/
 	e1->schedule();
         e2->schedule();
         e3->schedule();
@@ -56,7 +58,16 @@ int main()
         e7->schedule();
         e8->schedule();
         e9->schedule();
+	k++;
     }
+    k=0;
+    printf("--------------------------------------\n");
+    while(k<1000){
+	e1->schedule();
+	k++;
+    }
+
+
     return 0;
 }
 
@@ -108,32 +119,26 @@ int main()
 */
 
 
-
-
 /*
 ROUTER TEST
 
-    EOC_msg *m = new EOC_msg;
-    char a[]={0x10,0x1,0};
-    char *p;
-    int i=0;
-
-    m = new EOC_msg;
-    p = (char*)malloc(sizeof(a));
-    memcpy(p,a,sizeof(a));
-    m->setup(p,sizeof(a));
+int main()
+{
+    dummy_channel ch1,ch2;
+    EOC_dummy1 *d1 = new EOC_dummy1(&ch1,&ch2);
+    EOC_dummy1 *d2 = new EOC_dummy1(&ch2,&ch1);
+    EOC_router *r1 = new EOC_router(master,d1);
+    EOC_router *r2 = new EOC_router(slave,d2);
+    EOC_msg *m = new EOC_msg(10);
+    memcpy(m->payload(),"aaaaaaaa",8);
+    m->resize(8);
+    m->src(stu_c);
+    m->dst(stu_c);
     r1->send(m);
-    delete m;
-    
-    r2->receive();
-    r2->receive();
-    r3->receive();    
-    m = r1->receive();    
-    r2->receive();    
-    m = r1->receive();    
-
+    m = r1->receive();
+    return 0;
+}
 */
-
 /*
  SCHEDULER TEST
 

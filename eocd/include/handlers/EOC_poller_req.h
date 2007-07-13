@@ -9,5 +9,6 @@
 EOC_msg *_req_discovery(sched_state stat,sched_elem el,EOC_config *cfg);
 EOC_msg *_req_inventory(sched_state stat,sched_elem el,EOC_config *cfg);
 EOC_msg *_req_configure(sched_state stat,sched_elem el,EOC_config *cfg);
+EOC_msg *_req_test(sched_state stat,sched_elem el,EOC_config *cfg);
 
 #endif

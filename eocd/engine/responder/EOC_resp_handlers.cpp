@@ -55,3 +55,13 @@ _configure(EOC_router *r,EOC_msg *m)
     resp->snr_marg = snr; 
     return 0;
 }
+
+int
+_test(EOC_router *r,EOC_msg *m)
+{
+    if( m->type() != 15 )
+	return -1;
+    printf("TEST_REQUEST getted\n");
+    m->response(10);
+    return 0;
+}

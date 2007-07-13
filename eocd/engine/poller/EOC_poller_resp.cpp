@@ -58,3 +58,19 @@ _resp_configure(EOC_db *db,EOC_msg *m)
     // db->add_unit(m->src(),resp);
     return 0;
 }
+
+int
+_resp_test(EOC_db *db,EOC_msg *m)
+{
+    if( m->type() != 15+128 ){
+	return -1;
+    }
+
+    if( !db )
+	return 0;
+
+    resp_configure *resp= (resp_configure *)m->payload();
+    printf("TEST_RESP FROM(%d), loop(%d),snr(%d)\n",m->src(),resp->loop_attn,resp->snr_marg);
+    // db->add_unit(m->src(),resp);
+    return 0;
+}

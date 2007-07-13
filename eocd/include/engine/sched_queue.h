@@ -11,8 +11,10 @@ class sched_queue{
 public:
 protected:
     list<sched_elem> q;
+    u32 err_no_answer;
 public:
     sched_queue(){
+	err_no_answer = 0;
 	q.clear();
     }
     ~sched_queue(){
@@ -22,7 +24,7 @@ public:
     void clear(){
 	q.clear();
     }
-
+    
     int add(unit src,unit dst,unsigned char type,__timestamp ts){
 	list<sched_elem>::iterator p = q.begin();
 	list<sched_elem>::iterator p1 = q.end();
@@ -43,29 +45,48 @@ public:
 	delete n;
 	return 0;
     }
+
+    inline int add(sched_elem &el){
+	return add(el.src,el.dst,el.type,el.tstamp);
+    }
     
-    int schedule(sched_elem &el,__timestamp cur,sched_queue &s){
+    int get_old(__timestamp cur,u32 wait_to,sched_elem &el)
+    {
+	if( !q.size() )
+	    return -1;
+
+	q.sort();
+	list<sched_elem>::iterator p = q.begin();
+
+	if( cur - p->tstamp > wait_to ){
+	    el = *p;
+	    printf("FIND_DEL: clear src(%d) dst(%d) type(%d) tstamp(%d)\n",p->src,p->dst,p->type,p->tstamp.get_val());
+	    q.pop_front();
+	    return 0;
+	}
+	return -1;
+    }	
+    
+    int schedule(sched_elem &el,__timestamp cur){
 	q.sort();
 	unit swap;
 	list<sched_elem>::iterator p = q.begin();
 	for(;p != q.end();p++ ){
 	    if( p->tstamp <= cur ){
 		el = *p;
-		swap = p->src;
-		p->src = p->dst;
-		p->dst = swap;
-		p->type += RESP_OFFSET; 
-		s.q.splice(s.q.end(),q,p);
+		q.erase(p);
 		return 0;
 	    }else
 		return -1;
-	}	
+	}
 	return -1;
     }
-    int find_del(unit src,unit dst,unsigned char type){
+
+    int find_del(unit src,unit dst,unsigned char type,__timestamp cur){
 	q.sort();
 	list<sched_elem>::iterator p = q.begin();
 	for(;p != q.end();p++ ){
+	    // search needed element
 	    unit s1 = p->src;
 	    unit d1 = p->dst;
 	    char t1 = p->type;
@@ -76,6 +97,7 @@ public:
 	}	
 	return -1;
     }
+    
     void print(){
 	q.sort();
 	list<sched_elem>::iterator p = q.begin();

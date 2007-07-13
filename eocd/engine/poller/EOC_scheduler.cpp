@@ -20,7 +20,6 @@ int
 EOC_scheduler::jump_Setup()
 {
     statem->state = Setup;
-    statem->ustates[0] = Configured; // This is stu_c - no need in remote configuration 
     // Schedule Discovery request
     return send_q->add(stu_c,BCAST,REQ_DISCOVERY,ts);
     return 0;
@@ -29,9 +28,10 @@ EOC_scheduler::jump_Setup()
 int
 EOC_scheduler::jump_Normal()
 {
+    printf("Jump Normal\n");
     statem->state = Normal;
     // Add to send queue all periodic messages (as status requests and other)    
-    int i=(int)stu_c;
+    int i=(int)stu_c-1;
     while(statem->ustates[i] != NotPresent ){
 	if( send_q->add(stu_c,(unit)(i+1),15,ts) )
 	    return -1;
@@ -50,7 +50,7 @@ EOC_scheduler::response(EOC_msg *m)
     if( !m )
 	return -1;
 
-    if( wait_q->find_del(m->src(),m->dst(),m->type()) )
+    if( wait_q->find_del(m->src(),m->dst(),m->type(),ts) )
 	return -1;
 
     
@@ -110,8 +110,40 @@ EOC_scheduler::response(EOC_msg *m)
 int
 EOC_scheduler::request(sched_elem &el)
 {
-    if( send_q->schedule(el,ts,*wait_q) ){
+    if( send_q->schedule(el,ts) ){
 	return -1;	
-    } 
+    }
+    sched_elem n = el;
+    switch( n.type ){
+    default:
+	unit swap = n.src;
+	n.src = n.dst;
+	n.dst = swap;
+	n.type += RESP_OFFSET; 
+	n.tstamp = ts;
+	wait_q->add(n);
+    }
+
+    return 0;
+}
+
+int
+EOC_scheduler::resched()
+{
+    sched_elem el;
+    int ret;
+    
+    while( !(ret=wait_q->get_old(ts,wait_to,el)) ){
+        printf("RESCHED: src(%d) dst(%d) type(%d) ts(%d)\n",el.src,el.dst,el.type,el.tstamp.get_val());
+	switch( el.type ){
+	default:
+	    unit swap = el.src;
+	    el.src = el.dst;
+	    el.dst = swap;
+	    el.type += RESP_OFFSET; 
+	    el.tstamp = ts;
+	    send_q->add(el);
+	}
+    }
     return 0;
 }

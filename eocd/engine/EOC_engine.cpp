@@ -16,14 +16,18 @@ EOC_engine::register_handlers(){
 	poll->register_request(REQ_DISCOVERY,_req_discovery);
 	poll->register_request(REQ_INVENTORY,_req_inventory);
 	poll->register_request(REQ_CONFIGURE,_req_configure);
+	poll->register_request(15,_req_test);
 
 	poll->register_response(RESP_DISCOVERY,_resp_discovery);
 	poll->register_response(RESP_INVENTORY,_resp_inventory);
 	poll->register_response(RESP_CONFIGURE,_resp_configure);
+	poll->register_response(15+128,_resp_test);
+
     }
     if( resp ){
 	resp->register_hndl(REQ_INVENTORY,_inventory);
 	resp->register_hndl(REQ_CONFIGURE,_configure);
+	resp->register_hndl(15,_test);
     }
 }
 //----------------------------------------------------------------------

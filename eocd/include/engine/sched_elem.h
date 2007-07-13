@@ -15,6 +15,11 @@ public:
     __timestamp(const __timestamp &t){ ticks = t.ticks; }
     __timestamp(__timestamp t,unsigned int offs){ ticks = t.ticks + offs; }
 
+    inline __timestamp & operator =(__timestamp &right){
+	ticks = right.ticks;
+	return *this;
+    }
+
     inline bool operator ==(__timestamp &right){
 	if( ticks == right.ticks )
 	    return 1;
@@ -39,11 +44,17 @@ public:
 	n->ticks += right.ticks;
 	return *n;
     }
-    inline __timestamp &operator+(int ofs){
-	__timestamp *n = new __timestamp(*this);
-	n->ticks += ofs;
-	return *n;
+
+    inline __timestamp operator+(int &offs){
+	__timestamp n = *this;
+	n.ticks += offs;
+	return n;
     }
+
+    inline int operator-(__timestamp &right){
+	return (this->ticks - right.ticks);
+    }
+
     int get_val(){ return ticks; }
 
 };
@@ -59,11 +70,11 @@ public:
 	    return 1;
 	return 0;
     }
-
     inline sched_elem &operator = (sched_elem &right){
 	src = right.src;
 	dst = right.dst;
 	type = right.type;
+	tstamp = right.tstamp;
 	return *this;
     }
 };

@@ -54,6 +54,8 @@ EOC_poller::gen_request(){
     sched_elem el;
     int ind;
     // get request
+    sch->resched();
+//    sch->print();
     if( sch->request(el) ){
 	sch->tick();
 	return NULL;

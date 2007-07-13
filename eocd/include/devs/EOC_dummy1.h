@@ -11,7 +11,7 @@ protected:
     struct{
 	char buf[256];
 	int len;
-    } chan[64];
+    } chan[256];
     int head,tail;
     inline int inc(int ind){
 	if( ind+1 < 256 )
