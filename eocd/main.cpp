@@ -1,9 +1,58 @@
 #include<malloc.h>
+#include <unistd.h>
+#include <stdio.h>
 #include <devs/EOC_dummy1.h>
-#include <engine/EOC_engine.h>
+#include <db/EOC_loop.h>
+#include <utils/EOC_ring_container.h>
+#include <db/EOC_db.h>
+
+/*
+typedef struct{
+    u8 :1;
+    u8 losws_alarm :1;
+    u8 loop_attn_alarm:1;
+    u8 snr_marg_alarm :1;
+    u8 dc_cont_flt:1;
+    u8 dev_flt:1;
+    u8 pwr_bckoff_st:1;
+    u8 :1;
+    s8 snr_marg;
+    s8 loop_attn;
+    u8 es;
+    u8 ses;
+    u16 crc;
+    u8 losws;
+    u8 uas;
+    u8 pwr_bckoff_base_val:4;
+    u8 cntr_rst_scur:1;
+    u8 cntr_ovfl_stur:1;
+    u8 cntr_rst_scuc:1;
+    u8 cntr_ovfl_stuc:1;
+    u8 loop_id:3;
+    u8 :4;
+    u8 pwr_bkf_ext:1;
+}
+side_perf;
+*/
+
+int main()
+{
+    EOC_loop l;
+    side_perf perf;
+    memset(&perf,0,sizeof(perf));
+
+    for(int i=0;i<1000;i++){
+	perf.es += 20;
+        l.full_status(&perf);
+	sleep(2);
+    }
+    l.print_15m();    
+    
+    return 0;
+}
 
 
-/* ENGINE TEST */
+/* ENGINE TEST  
 int main()
 {
     unit s,d;
@@ -47,8 +96,8 @@ int main()
     EOC_engine *e9 = new EOC_engine(slave,(EOC_dev*)n9,"config");    
 
 int k=0;
-    while(k<500){
-	/*sleep(1);*/
+    while(k<70){
+	//sleep(1);
 	e1->schedule();
         e2->schedule();
         e3->schedule();
@@ -60,18 +109,67 @@ int k=0;
         e9->schedule();
 	k++;
     }
+
     k=0;
     printf("--------------------------------------\n");
     while(k<1000){
 	e1->schedule();
 	k++;
     }
-
-
     return 0;
 }
 
+*/
 
+
+/* container test 
+
+
+class A{
+public:
+    int a;
+    int b;
+    int c;
+    u32 r;
+    u8 s;
+};
+
+int main()
+{
+    EOC_ring_container<shdsl_counters> cont(10);
+    cont[0]->tstamp = 1110011;
+
+/*    cont[0]->s = 0;
+    for(int i=0;i<10;i++){
+	cont.shift(1);
+	cont[0]->b = i;
+    }
+    for(int i=0;i<20;i++){
+	if(cont[i]){
+	    int k = cont[i]->b;
+	    printf("%d-i k = %d\n",i,k);
+	}else{
+	    printf("%d-i k missing\n",i);
+	}	
+    }
+
+}
+
+*/
+
+/* DB test 
+int main()
+{
+    sched_queue a;
+    unit s,d;
+    u8 type;
+    sched_elem el;
+    a.add(stu_c,BCAST,1,__timestamp(1));
+    a.schedule(el,__timestamp(1));
+    return 0;
+
+}
+*/
 
 /* TEST EOC_DUMMY1 DEVICE
 int main()
@@ -142,12 +240,18 @@ int main()
 /*
  SCHEDULER TEST
 
+int main()
+{
+    EOC_scheduler *sch = new EOC_scheduler(2,10);
+    unit s,d;
+    u8 type;
+    sched_elem el;
     EOC_msg *m = new EOC_msg(100);
     m->resize(40);
     sch->link_state(EOC_dev::ONLINE);
-    while( !sch->request(s,d,(unsigned char&)type) );
-    m->type(type+128);
-    m->dst(s);
+    while( !sch->request(el) );
+    m->type(el.type+128);
+    m->dst(el.src);
     sch->print();
     for(int i=(int)sru1;i<(int)sru4;i++){
 	m->src((unit)i);
@@ -158,15 +262,16 @@ int main()
     sch->response(m);
     sch->print();
     while( 1 ){
-	while( !sch->request(s,d,(unsigned char&)type) ){
+	while( !sch->request(el) ){
     	    sch->print();	
-	    m->type(type+128);
-	    m->dst(s);
-	    m->src(d);
+	    m->type(el.type+128);
+	    m->dst(el.src);
+	    m->src(el.dst);
 	    if( sch->response(m) )
 		return -1;
 	}
-	sleep(1);
+	//sleep(1);
 	sch->tick();
     }        
+}
 */

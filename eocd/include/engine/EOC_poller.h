@@ -24,17 +24,14 @@ private:
     EOC_scheduler *sch;
     EOC_config *cfg;
     request_handler_t req_hndl[REQUEST_QUAN];
-    response_handler_t resp_hndl[RESPONSE_QUAN];
 public:
     EOC_poller(EOC_config *c){
 	int i;
-	db = new EOC_db;
 	sch = new EOC_scheduler(TICKS_BETW_REQ,TICKS_WAIT_TO);
+	db = new EOC_db(sch);
 	cfg = c;
 	for(i=0;i<REQUEST_QUAN;i++)
 	    req_hndl[i] = NULL;
-	for(i=0;i<RESPONSE_QUAN;i++)
-	    resp_hndl[i] = NULL;
     }
     ~EOC_poller(){
 	delete db;
@@ -47,8 +44,6 @@ public:
 
     int register_request(u8 type,request_handler_t h);
     int unregister_request(u8 type);
-    int register_response(u8 type,response_handler_t h);
-    int unregister_response(u8 type);
     EOC_msg *gen_request();
     int process_msg(EOC_msg *m);
 };

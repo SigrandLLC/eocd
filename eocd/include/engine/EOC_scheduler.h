@@ -21,7 +21,7 @@ public:
 protected:
     struct state_machine{
 	// TODO: Maybe linked list ??
-	unit_state ustates[EOC_MAX_UNITS];
+	unit_state ustates[MAX_UNITS];
 	sched_state state;
     } *statem;
     __timestamp ts;
@@ -33,6 +33,7 @@ protected:
     void jump_Offline();
     int jump_Setup();
     int jump_Normal();
+    int poll_unit(int ind);
 public:
     EOC_scheduler(u32 toffs, u32 waitto){
     	send_q = new sched_queue();

@@ -10,6 +10,8 @@
 #include <generic/EOC_requests.h>
 
 #define REQ2RESP(x) (x + RESP_OFFSET)
+#define RESP2REQ(x) (x - RESP_OFFSET)
+#define RESP_IND(x) (x - RESP_OFFSET-1)
 
 // DISCOVERY response
 typedef struct{
@@ -52,6 +54,49 @@ typedef struct{
 #define RESP_CONFIGURE REQ2RESP(REQ_CONFIGURE)
 #define RESP_CONFIGURE_SZ sizeof(resp_configure)
 
+// STATUS response
+typedef struct{
+    s8 ns_snr_marg;
+    s8 cs_snr_marg;
+    u8 loop_id;
+} resp_status;
+#define RESP_STATUS REQ2RESP(REQ_STATUS)
+#define RESP_STATUS_SZ sizeof(resp_status)
 
+// SIDE PERF STATUS response
+typedef struct{
+    u8 :1;
+    u8 losws_alarm :1;
+    u8 loop_attn_alarm:1;
+    u8 snr_marg_alarm :1;
+    u8 dc_cont_flt:1;
+    u8 dev_flt:1;
+    u8 pwr_bckoff_st:1;
+    u8 :1;
+    s8 snr_marg;
+    s8 loop_attn;
+    u8 es;
+    u8 ses;
+    u16 crc;
+    u8 losws;
+    u8 uas;
+    u8 pwr_bckoff_base_val:4;
+    u8 cntr_rst_scur:1;
+    u8 cntr_ovfl_stur:1;
+    u8 cntr_rst_scuc:1;
+    u8 cntr_ovfl_stuc:1;
+    u8 loop_id:3;
+    u8 :4;
+    u8 pwr_bkf_ext:1;
+}side_perf;
+typedef side_perf resp_cside_perf;
+typedef side_perf resp_nside_perf;
+#define RESP_NSIDE_PERF 140
+#define RESP_NSIDE_PERF_SZ sizeof(resp_cside_perf)
+#define RESP_CSIDE_PERF 141
+#define RESP_CSIDE_PERF_SZ sizeof(resp_cside_perf)
+
+#define RESP_MAINT_STAT 137
+/*TODO : Add structure */
 
 #endif

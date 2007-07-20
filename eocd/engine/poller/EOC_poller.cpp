@@ -29,26 +29,6 @@ EOC_poller::unregister_request(u8 type)
     return 0;
 }
 
-int
-EOC_poller::register_response(u8 type,response_handler_t h)
-{
-    unsigned char ind = type-REQUEST_QUAN;
-    if( ind >= RESPONSE_QUAN || resp_hndl[ind] )
-	return -1;
-    resp_hndl[ind] = h;
-}
-
-int
-EOC_poller::unregister_response(u8 type)
-{
-    unsigned char ind = type-REQUEST_QUAN;
-    if( ind >= RESPONSE_QUAN || !resp_hndl[ind] )
-	return -1;
-    resp_hndl[ind] = NULL;
-    return 0;
-}
-
-
 EOC_msg *
 EOC_poller::gen_request(){
     sched_elem el;
@@ -75,11 +55,8 @@ EOC_poller::process_msg(EOC_msg *m)
     if( !m )
 	return -1;
     unsigned char type = m->type()-REQUEST_QUAN;
-    if(	!m->is_response() ||		// check that it is response
-	    resp_hndl[type](NULL,m) ||	// Check that response has right format 
-	    sch->response(m) ||		// check that we request this response
-	    type >= RESPONSE_QUAN || !resp_hndl[type] ) // check we hawe handler
+    if(	!m->is_response() || db->response_chk(m) || sch->response(m) )
 	return -1;
     // commit changes to EOC DataBase
-    return resp_hndl[type](db,m);
+    return db->response(m);
 }

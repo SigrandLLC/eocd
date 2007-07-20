@@ -12,10 +12,12 @@
 #include <generic/EOC_types.h>
 #include <generic/EOC_generic.h>
 #include <generic/EOC_msg.h>
-#include <engine/EOC_handlers.h>
-
+#include <engine/EOC_router.h>
+#include <eoc_debug.h>
 
 class EOC_responder{
+public:
+typedef int (*responder_handler_t)(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt);
 protected:
     responder_handler_t handlers[REQUEST_QUAN];
     EOC_router *r;
@@ -24,6 +26,11 @@ public:
 	r = r_in;
 	for(int i=0;i<REQUEST_QUAN;i++)
 	    handlers[i] = NULL;
+
+	handlers[REQ_INVENTORY] = _inventory;
+	handlers[REQ_CONFIGURE] = _configure;
+	handlers[REQ_STATUS] =_status;
+	handlers[15] = _test;
     }
 
     ~EOC_responder(){}
@@ -42,11 +49,17 @@ public:
 	return 0;
     }
 
-    int request(EOC_msg *m){
+    int request(EOC_msg *m,EOC_msg **&ret,int &cnt){
 	if( !m->is_request() || !handlers[m->type()])
 	    return -1;
-	return handlers[m->type()](r,m);
+	return handlers[m->type()](this,m,ret,cnt);
     }
+    
+    // Handlers
+    static int _inventory(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt);
+    static int _configure(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt);
+    static int _status(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt);
+    static int _test(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt);
 };
 
 #endif

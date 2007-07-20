@@ -9,12 +9,13 @@
 #include <generic/EOC_msg.h>
 #include <db/EOC_db.h>
 #include <engine/EOC_handlers.h>
+#include <eoc_debug.h>
 
 EOC_msg *
 _req_discovery(sched_state stat,sched_elem el,EOC_config *cfg)
 {
-    if( el.type != REQ_DISCOVERY )
-	return NULL;
+    ASSERT( el.type == REQ_DISCOVERY );
+    
     EOC_msg *m = new EOC_msg(REQ_DISCOVERY_SZ);
     m->msize();
     // TODO: make as exception!!!
@@ -32,8 +33,7 @@ _req_discovery(sched_state stat,sched_elem el,EOC_config *cfg)
 EOC_msg *
 _req_inventory(sched_state stat,sched_elem el,EOC_config *cfg)
 {
-    if( el.type != REQ_INVENTORY )
-	return NULL;
+    ASSERT( el.type == REQ_INVENTORY );
     EOC_msg *m = new EOC_msg(REQ_INVENTORY_SZ);
     // TODO: make as exception!!!
     if( !m->mptr() )
@@ -48,8 +48,7 @@ _req_inventory(sched_state stat,sched_elem el,EOC_config *cfg)
 EOC_msg *
 _req_configure(sched_state stat,sched_elem el,EOC_config *cfg)
 {
-    if( el.type != REQ_CONFIGURE )
-	return NULL;
+    ASSERT( el.type == REQ_CONFIGURE );
     EOC_msg *m = new EOC_msg(REQ_CONFIGURE_SZ);
     // TODO: make as exception!!!
     if( !m->mptr() )
@@ -68,6 +67,23 @@ _req_configure(sched_state stat,sched_elem el,EOC_config *cfg)
     req->snr_marg = cfg->snr_marg(el.dst);
     return m;
 }
+
+EOC_msg *
+_req_status(sched_state stat,sched_elem el,EOC_config *cfg)
+{
+    ASSERT( el.type == REQ_STATUS );
+    EOC_msg *m = new EOC_msg(REQ_STATUS_SZ);
+    // TODO: make as exception!!!
+    if( !m->mptr() )
+	return NULL;
+    char *req = (char *)m->payload();
+    m->src(el.src);
+    m->dst(el.dst);
+    m->type(REQ_STATUS);
+    return m;
+}
+
+
 
 EOC_msg *
 _req_test(sched_state stat,sched_elem el,EOC_config *cfg)

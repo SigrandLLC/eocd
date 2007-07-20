@@ -9,7 +9,7 @@
 void
 EOC_scheduler::jump_Offline()
 {
-    for(int i=0;i<EOC_MAX_UNITS;i++)
+    for(int i=0;i<MAX_UNITS;i++)
         statem->ustates[i] = NotPresent;
     statem->state = Offline;
     send_q->clear();
@@ -30,14 +30,17 @@ EOC_scheduler::jump_Normal()
 {
     printf("Jump Normal\n");
     statem->state = Normal;
-    // Add to send queue all periodic messages (as status requests and other)    
-    int i=(int)stu_c-1;
-    while(statem->ustates[i] != NotPresent ){
-	if( send_q->add(stu_c,(unit)(i+1),15,ts) )
-	    return -1;
-	i++;
-    }
     return 0;    
+}
+
+int
+EOC_scheduler::poll_unit(int ind)
+{
+    if(statem->ustates[ind] != Configured )
+	return -1;
+    int ret = 0;
+    ret += send_q->add(stu_c,BCAST,REQ_STATUS,ts);
+    return ret;    
 }
 
 int
@@ -85,7 +88,8 @@ EOC_scheduler::response(EOC_msg *m)
 	    return -1;
 	}
 	statem->ustates[ind] = Configured;
-	
+	poll_unit(ind);
+
 	if( statem->ustates[(int)stu_r-1] == Configured ){
 	    for(i=0;statem->ustates[i] != NotPresent;i++){
 		if( statem->ustates[i] !=Configured )
@@ -100,9 +104,14 @@ EOC_scheduler::response(EOC_msg *m)
 	    jump_Offline();
 	} 
 	break;
+    case RESP_NSIDE_PERF:
+    case RESP_CSIDE_PERF:
+    case RESP_MAINT_STAT:
+	// have no corresponding requests - responses to STATUS request
+        break;	
     default:
-	send_q->add(stu_c,m->src(),m->type()-RESP_OFFSET,ts+ts_offs);
-	break;
+        send_q->add(stu_c,m->src(),RESP2REQ(m->type()),ts+ts_offs);
+        break;
     }
     return 0;
 }
@@ -114,16 +123,27 @@ EOC_scheduler::request(sched_elem &el)
 	return -1;	
     }
     sched_elem n = el;
+    unit swap = n.src;
+    n.src = n.dst;
+    n.dst = swap;
+    n.tstamp = ts;		
     switch( n.type ){
+    case REQ_SRST_BCKOFF:
+	// no response!
+	break;
+    case REQ_STATUS:
+	// maybe 3 additional responses
+	n.type = RESP_NSIDE_PERF;
+	wait_q->add(n);
+	n.type = RESP_CSIDE_PERF;
+	wait_q->add(n);
+	n.type = RESP_MAINT_STAT;
+	wait_q->add(n);
     default:
-	unit swap = n.src;
-	n.src = n.dst;
-	n.dst = swap;
-	n.type += RESP_OFFSET; 
+	n.type = REQ2RESP(n.type);
 	n.tstamp = ts;
 	wait_q->add(n);
     }
-
     return 0;
 }
 

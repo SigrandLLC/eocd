@@ -48,6 +48,9 @@ public:
 /*    virtual int config( shdsl_config *cfg ) = 0;
     virtual shdsl_config *config() = 0;
 */
+    virtual u8 loops() = 0;
+    virtual u8 perf_change(int loop) = 0;
+    virtual int snr(int loop) = 0;
 };
 
 /*

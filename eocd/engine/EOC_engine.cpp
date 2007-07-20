@@ -7,8 +7,6 @@
 #include <engine/EOC_poller.h>
 #include <engine/EOC_engine.h>
 #include <handlers/EOC_poller_req.h>
-#include <handlers/EOC_poller_resp.h>
-#include <handlers/EOC_resp_handlers.h>
 
 int
 EOC_engine::register_handlers(){
@@ -17,17 +15,6 @@ EOC_engine::register_handlers(){
 	poll->register_request(REQ_INVENTORY,_req_inventory);
 	poll->register_request(REQ_CONFIGURE,_req_configure);
 	poll->register_request(15,_req_test);
-
-	poll->register_response(RESP_DISCOVERY,_resp_discovery);
-	poll->register_response(RESP_INVENTORY,_resp_inventory);
-	poll->register_response(RESP_CONFIGURE,_resp_configure);
-	poll->register_response(15+128,_resp_test);
-
-    }
-    if( resp ){
-	resp->register_hndl(REQ_INVENTORY,_inventory);
-	resp->register_hndl(REQ_CONFIGURE,_configure);
-	resp->register_hndl(15,_test);
     }
 }
 //----------------------------------------------------------------------
@@ -120,7 +107,7 @@ EOC_engine::setup_state()
 int
 EOC_engine::schedule()
 {
-    EOC_msg *m;
+    EOC_msg *m,**ret;
     if( !rtr || !resp ) // Constructor failed
 	return -1;
     // Receive one EOC message
@@ -128,11 +115,30 @@ EOC_engine::schedule()
 	return -1;
     
     int i=0;
+    int cnt;
+    
     while( (m = rtr->receive()) && i<recv_max){
 	if( m->is_request() ){
-	    if( resp->request(m) || rtr->send(m) ){
+	    if( resp->request(m,ret,cnt) ){
 		delete m;
 		return -1;
+	    }
+	    if( !ret ){
+	    // only one message to respond
+		if( rtr->send(m) ){
+		    delete m;
+		    return -1;
+		}
+	    }else if( ret ){
+	    // several messages to respond	
+		for(i=0;i<cnt;i++){ 
+		    if( rtr->send(m) ){
+			delete[] ret;
+			delete m;
+			return -1;
+		    }
+		}
+		delete[] ret;
 	    }
 	}else if( m->is_response() ){
 	    if( poll && poll->process_msg(m) ){

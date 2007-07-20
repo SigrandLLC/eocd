@@ -40,6 +40,9 @@ public:
 	head = inc(head);
 	return 0;
     }
+    u8 loops(){ return 1;}
+    u8 perf_change(int loop){ return 1; }
+    int snr(int loop) { return -10; }
 };
 
 
