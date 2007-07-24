@@ -4,7 +4,7 @@
 #include <engine/EOC_router.h>
 #include <generic/EOC_responses.h>
 #include <generic/EOC_requests.h>
-
+#include <eoc_debug.h>
 
 EOC_router::EOC_router(dev_type r,EOC_dev *side)
 {
@@ -202,9 +202,9 @@ EOC_router::csdev()
 	return NULL;
 	
     switch( type ){
-    case slave:
-	return NULL;
     case master:
+	return NULL;
+    case slave:
 	return ifs[0].sdev;
     case repeater:
 	return ifs[CS_IND].sdev;
@@ -221,9 +221,9 @@ EOC_router::nsdev()
 	return NULL;
 	
     switch( type ){
-    case slave:
-	return ifs[0].sdev;
     case master:
+	return ifs[0].sdev;
+    case slave:
 	return NULL;
     case repeater:
 	return ifs[NS_IND].sdev;
@@ -250,6 +250,18 @@ EOC_router::nsunit(unit u)
     return 0;
 }
 
+int
+EOC_router::loops(){
+    int nsloops = ( nsdev() ) ? nsdev()->loops() : 0;
+    int csloops = ( csdev() ) ? csdev()->loops() : 0;
+    if( nsloops && csloops ){
+	ASSERT( nsloops == csloops );
+	return csloops;
+    }else if( nsloops )
+	return nsloops;
+    else
+	return csloops;
+}
 
 int
 EOC_router::term_unit(unit u)
@@ -359,5 +371,5 @@ EOC_router::send(EOC_msg *m)
 		return ret;
 	}
     }
-    return -1;
+    return ret;
 }

@@ -14,49 +14,49 @@ EOC_engine::register_handlers(){
 	poll->register_request(REQ_DISCOVERY,_req_discovery);
 	poll->register_request(REQ_INVENTORY,_req_inventory);
 	poll->register_request(REQ_CONFIGURE,_req_configure);
+	poll->register_request(REQ_STATUS,_req_status);
 	poll->register_request(15,_req_test);
     }
 }
 //----------------------------------------------------------------------
 // Terminal constructor
-EOC_engine::EOC_engine(dev_type r,EOC_dev *d1,char *config,u16 rmax)
+EOC_engine::EOC_engine(EOC_dev *d1,int ticks_p_min,u16 rmax)
 {
+    ASSERT( d1 );
+    type = slave;
+    recv_max = rmax;
+    rtr = new EOC_router(type,d1);
+    resp = new EOC_responder(rtr);
     cfg = NULL;
     poll = NULL;
+}
 
-    if( !(r == master || r == slave) ){ 
-	// If this is repeater - error (need 2 devices)
-	rtr = NULL;
-	resp = NULL;
-	return;
-    }
-
-    type = r;
+// Terminal constructor
+EOC_engine::EOC_engine(EOC_dev_master *d1,int ticks_p_min,u16 rmax)
+{
+    ASSERT( d1 );
+    type = master;
+    cfg = NULL;
+    poll = NULL;
     recv_max = rmax;
-    rtr = new EOC_router(r,d1);
+    rtr = new EOC_router(type,(EOC_dev *)d1);
     resp = new EOC_responder(rtr);
-    if( r == master ){
-        cfg = new EOC_config(config);     
-        poll = new EOC_poller(cfg);
-    }
+    cfg = new EOC_config();     
+    poll = new EOC_poller(cfg,ticks_p_min,rtr->loops());
     register_handlers();
 }
 
+
 //----------------------------------------------------------------------
 // Repeater constructor
-EOC_engine::EOC_engine(dev_type r,EOC_dev *d1,EOC_dev *d2,u16 rmax)
+EOC_engine::EOC_engine(EOC_dev *d1,EOC_dev *d2,u16 rmax)
 {
+    ASSERT( d1 && d2 );
     poll = NULL;
     cfg = NULL;
-
-    if( !(r == repeater) ){
-	rtr = NULL;
-	resp = NULL;
-	poll = NULL;
-    } 
-    type = r;
+    type = repeater;
     recv_max = rmax;
-    rtr = new EOC_router(r,d1,d2);
+    rtr = new EOC_router(type,d1,d2);
     resp = new EOC_responder(rtr);
     register_handlers();
 }
@@ -69,8 +69,7 @@ int
 EOC_engine::setup_state()
 {
     EOC_dev *dev;
-    if( !rtr || !resp ) // error in constructor
-	return -1;
+    ASSERT( rtr && resp ); // error in constructor
 
     rtr->update_state();
         
@@ -78,11 +77,11 @@ EOC_engine::setup_state()
     case repeater:
 	return 0;
     case master:
-	if( !(dev = rtr->csdev()) )
+	if( !(dev = rtr->nsdev()) )
 	    return -1;
 	break;
     case slave:
-	if( !(dev = rtr->nsdev()) )
+	if( !(dev = rtr->csdev()) )
 	    return -1;
 	break;
     }
@@ -108,9 +107,8 @@ int
 EOC_engine::schedule()
 {
     EOC_msg *m,**ret;
-    if( !rtr || !resp ) // Constructor failed
-	return -1;
-    // Receive one EOC message
+    ASSERT( rtr && resp ); // Constructor failed
+
     if( setup_state() )
 	return -1;
     
@@ -132,7 +130,7 @@ EOC_engine::schedule()
 	    }else if( ret ){
 	    // several messages to respond	
 		for(i=0;i<cnt;i++){ 
-		    if( rtr->send(m) ){
+		    if( rtr->send(ret[i]) ){
 			delete[] ret;
 			delete m;
 			return -1;

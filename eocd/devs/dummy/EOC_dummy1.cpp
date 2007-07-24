@@ -2,10 +2,13 @@
 #include <generic/EOC_types.h>
 #include <devs/EOC_dummy1.h>
 
-EOC_dummy1::EOC_dummy1(dummy_channel *send,dummy_channel *recv)
+EOC_dummy1::EOC_dummy1(char *_name, dummy_channel *send,dummy_channel *recv)
 {
     snd = send;
     rcv = recv;
+    memset(&perf,0,sizeof(perf));
+    perf_changed = 0;
+    strcpy(name,_name);
 }
 
 int

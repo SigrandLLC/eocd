@@ -13,9 +13,6 @@
 #include <engine/EOC_handlers.h>
 #include <engine/EOC_router.h>
 
-EOC_msg *get_status(EOC_dev *dev,int loop){
-    return new EOC_msg;
-}
 
 int
 EOC_responder::_inventory(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt)
@@ -65,52 +62,109 @@ EOC_responder::_configure(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt)
 }
 
 int
+get_status(EOC_dev *dev,int loop,EOC_msg *m)
+{
+    side_perf *perf = (side_perf*)m->payload();
+    perf->losws_alarm = dev->losws_alarm(loop);
+    perf->loop_attn_alarm = dev->loop_attn_alarm(loop);
+    perf->snr_marg_alarm = dev->snr_marg_alarm(loop);
+    perf->dc_cont_flt = dev->dc_cont_flt(loop);
+    perf->dev_flt = dev->dev_flt(loop);
+    perf->pwr_bckoff_st = dev->pwr_bckoff_st(loop);
+    perf->snr_marg = dev->snr_marg(loop);
+    perf->loop_attn = dev->loop_attn(loop);
+    perf->es = dev->es(loop);
+    perf->ses = dev->ses(loop);
+    perf->crc = dev->crc(loop);
+    perf->losws = dev->losws(loop);
+    perf->uas = dev->uas(loop);
+    perf->pwr_bckoff_base_val = dev->pwr_bckoff_base_val(loop);
+    perf->cntr_rst_scur = dev->cntr_rst_scur(loop);
+    perf->cntr_ovfl_stur = dev->cntr_ovfl_stur(loop);
+    perf->cntr_rst_scuc = dev->cntr_rst_scuc(loop);
+    perf->cntr_ovfl_stuc = dev->cntr_ovfl_stuc(loop);
+    perf->loop_id = loop+1;
+    perf->pwr_bkf_ext = dev->pwr_bkf_ext(loop);
+    return 0;
+}
+
+
+int
 EOC_responder::_status(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt)
 {
     assert( in && m );
     assert(m->type() == REQ_STATUS );
     EOC_router *r = in->r;
-    EOC_dev *cs = r->nsdev();
     EOC_dev *ns = r->nsdev();
-    u8 cs_loops = (cs) ? cs->loops() : 0; 
-    u8 ns_loops = (ns) ? ns->loops() : 0;
-    assert(cs_loops == ns_loops);
-    assert(cs_loops <= MAX_LOOPS );
+    EOC_dev *cs = r->csdev();
+    int loop_num = r->loops();
     int loop,offs=0;
-    EOC_msg **array = new EOC_msg*[(MAX_LOOPS*4)*2];
-    int msgs_num = 0;
+    EOC_msg **array = new EOC_msg*[(loop_num*4)*2];
+
+    for(int i=0;i<(loop_num*4)*2;i++){
+	array[i] = NULL;
+    }
+
+    if( cs )
+	cs->status_collect();
+    if( ns )
+	ns->status_collect();
     
     // Generate status responses
     m->response(RESP_STATUS_SZ);
-    for(loop=0;loop<ns_loops;loop++){
-	array[loop+offs] = new EOC_msg(m);
-	resp_status *resp = (resp_status *)m->payload();
+    for(loop=0;loop<loop_num;loop++){
+	array[loop] = new EOC_msg(m);
+	resp_status *resp = (resp_status *)array[loop+offs]->payload();
 	memset(resp,0,RESP_STATUS_SZ);
 	if( ns ){
-	    resp->ns_snr_marg = ns->snr(loop);
+	    resp->ns_snr_marg = ns->snr_marg(loop);
 	}
 	if( cs ){
-	    resp->cs_snr_marg = cs->snr(loop);
+	    resp->cs_snr_marg = cs->snr_marg(loop);
 	}
+	resp->loop_id = loop+1;
     }
     offs += loop;
-    // Setup 
-    for(loop=0;loop<cs_loops;loop++){
-	if( cs->perf_change(loop) ){
-	    array[loop+offs] = get_status(cs,loop);
+    // Setup
+    if( cs ){
+	for(loop=0;loop<loop_num;loop++){
+	    if( cs->perf_change(loop) ){
+		if( !(array[offs] = new EOC_msg(m,SIDE_PERF_SZ)) )
+		    goto err_exit;
+		EOC_msg *t = array[offs];
+		t->type(RESP_CSIDE_PERF);
+		offs++;
+		if( get_status(cs,loop,t) )
+		    goto err_exit;
+	    }
 	}
-    }    
-    offs += loop;
-    // allocate array of messages
-    for(loop=0;loop<ns_loops;loop++){
-	if( ns->perf_change(loop) ){
-	    array[loop+offs] = get_status(ns,loop);
+    }	    
+    // network side
+    if( ns ){
+	for(loop=0;loop<loop_num;loop++){
+	    if( ns->perf_change(loop) ){
+		if( !(array[offs] = new EOC_msg(m,SIDE_PERF_SZ)) )
+		    goto err_exit;
+		EOC_msg *t = array[offs];
+		t->type(RESP_NSIDE_PERF);
+		offs++;    
+		if( get_status(ns,loop,t) )
+		    goto err_exit;
+	    }
 	}
-    }    
-    offs += loop;
+    }	    
+
     cnt = offs;
     ret = array;
     return 0;
+err_exit:
+    for(int i=0;i<offs;i++){
+	if( array[i] )
+	    delete array[i];
+    }
+    delete[] array;
+    ret = NULL;
+    return -1;
 }
 
 

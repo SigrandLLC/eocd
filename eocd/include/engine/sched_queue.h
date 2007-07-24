@@ -60,7 +60,7 @@ public:
 
 	if( cur - p->tstamp > wait_to ){
 	    el = *p;
-	    printf("FIND_DEL: clear src(%d) dst(%d) type(%d) tstamp(%d)\n",p->src,p->dst,p->type,p->tstamp.get_val());
+//	    printf("FIND_DEL: clear src(%d) dst(%d) type(%d) tstamp(%d)\n",p->src,p->dst,p->type,p->tstamp.get_val());
 	    q.pop_front();
 	    return 0;
 	}

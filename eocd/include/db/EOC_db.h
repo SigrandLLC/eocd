@@ -35,7 +35,7 @@ class EOC_db{
 	handlers[RESP_IND(RESP_CONFIGURE)] = _resp_configure;
 	handlers[RESP_IND(RESP_STATUS)] = _resp_status;
 	handlers[RESP_IND(RESP_NSIDE_PERF)] = _resp_nside_perf;
-	handlers[RESP_IND(RESP_CSIDE_PERF)] = _resp_nside_perf;
+	handlers[RESP_IND(RESP_CSIDE_PERF)] = _resp_cside_perf;
 //	handlers[RESP_DISCOVERY] = _resp_discovery;
     }
 public:

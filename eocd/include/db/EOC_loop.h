@@ -53,7 +53,7 @@ typedef struct {
 } shdsl_current;
 
 
-#define EOC_15MIN_INT_LEN 2
+#define EOC_15MIN_INT_LEN 1
 #define EOC_15MIN_INTS 96
 #define EOC_1DAY_INTS 30
 

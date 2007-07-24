@@ -89,6 +89,7 @@ typedef struct{
     u8 :4;
     u8 pwr_bkf_ext:1;
 }side_perf;
+#define SIDE_PERF_SZ sizeof(side_perf)
 typedef side_perf resp_cside_perf;
 typedef side_perf resp_nside_perf;
 #define RESP_NSIDE_PERF 140

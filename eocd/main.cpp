@@ -5,6 +5,7 @@
 #include <db/EOC_loop.h>
 #include <utils/EOC_ring_container.h>
 #include <db/EOC_db.h>
+#include <engine/EOC_engine.h>
 
 /*
 typedef struct{
@@ -34,10 +35,10 @@ typedef struct{
 }
 side_perf;
 */
-
+/*
 int main()
 {
-    EOC_loop l;
+    EOC_db db(;
     side_perf perf;
     memset(&perf,0,sizeof(perf));
 
@@ -50,39 +51,91 @@ int main()
     
     return 0;
 }
+*/
+
+/* ENGINE SHORT TEST */  
+int main()
+{
+    unit s,d;
+    char type;
+    dummy_channel mr1_1,mr1_2,r1s_1,r1s_2;
+    EOC_dummy1 *n1 = new EOC_dummy1("m-ns",&mr1_1,&mr1_2);
+    
+    EOC_dummy1 *n21 = new EOC_dummy1("r1-cs",&mr1_2,&mr1_1);
+    EOC_dummy1 *n22 = new EOC_dummy1("r1-ns",&r1s_1,&r1s_2);
+    
+    EOC_dummy1 *n3 = new EOC_dummy1("s-cs",&r1s_2,&r1s_1);
+    
+    EOC_engine *e1 = new EOC_engine((EOC_dev_master*)n1,3);
+    EOC_engine *e2 = new EOC_engine((EOC_dev*)n22,(EOC_dev*)n21);    
+    EOC_engine *e3 = new EOC_engine((EOC_dev*)n3);    
+
+int k=0;
+    side_perf S;
+    while(k<500){
+//	sleep(1);
+	e1->schedule();
+        e2->schedule();
+        e3->schedule();
+	if( k>20 ){
+		S = n1->get_current_stat()
+		S.ses++;
+		n1->setup_current_stat(S);
 
 
-/* ENGINE TEST  
+		S = n22->get_current_stat();
+		S.es++;
+		S.losws++;
+		n22->setup_current_stat(S);
+
+		S = n21->get_current_stat();
+		S.crc++;
+		S.uas++;
+		n21->setup_current_stat(S);
+
+		S = n3->get_current_stat();
+		S.es++;
+		n3->setup_current_stat(S);
+	}
+	if( k== 21 )
+	    printf("---------------- Start errors ---------------------------\n");
+	k++;
+    }
+    return 0;
+}
+
+
+/* ENGINE FULL TEST  
 int main()
 {
     unit s,d;
     char type;
     dummy_channel mr1_1,mr1_2,r1r2_1,r1r2_2,r2r3_1,r2r3_2,r3r4_1,r3r4_2,r4r5_1,r4r5_2,r5r6_1,r5r6_2,r6r7_1,r6r7_2,r7s_1,r7s_2;
-    EOC_dummy1 *n1 = new EOC_dummy1(&mr1_1,&mr1_2);
+    EOC_dummy1 *n1 = new EOC_dummy1("m-ns",&mr1_1,&mr1_2);
     
-    EOC_dummy1 *n21 = new EOC_dummy1(&mr1_2,&mr1_1);
-    EOC_dummy1 *n22 = new EOC_dummy1(&r1r2_1,&r1r2_2);
+    EOC_dummy1 *n21 = new EOC_dummy1("r1-cs",&mr1_2,&mr1_1);
+    EOC_dummy1 *n22 = new EOC_dummy1("r1-ns",&r1r2_1,&r1r2_2);
     
-    EOC_dummy1 *n31 = new EOC_dummy1(&r1r2_2,&r1r2_1);    
-    EOC_dummy1 *n32 = new EOC_dummy1(&r2r3_1,&r2r3_2);
+    EOC_dummy1 *n31 = new EOC_dummy1("r2-cs",&r1r2_2,&r1r2_1);    
+    EOC_dummy1 *n32 = new EOC_dummy1("r2-ns",&r2r3_1,&r2r3_2);
     
-    EOC_dummy1 *n41 = new EOC_dummy1(&r2r3_2,&r2r3_1);    
-    EOC_dummy1 *n42 = new EOC_dummy1(&r3r4_1,&r3r4_2);
+    EOC_dummy1 *n41 = new EOC_dummy1("r3-cs",&r2r3_2,&r2r3_1);    
+    EOC_dummy1 *n42 = new EOC_dummy1("r3-ns",&r3r4_1,&r3r4_2);
     
-    EOC_dummy1 *n51 = new EOC_dummy1(&r3r4_2,&r3r4_1);    
-    EOC_dummy1 *n52 = new EOC_dummy1(&r4r5_1,&r4r5_2);
+    EOC_dummy1 *n51 = new EOC_dummy1("r4-cs",&r3r4_2,&r3r4_1);    
+    EOC_dummy1 *n52 = new EOC_dummy1("r4-ns",&r4r5_1,&r4r5_2);
     
-    EOC_dummy1 *n61 = new EOC_dummy1(&r4r5_2,&r4r5_1);    
-    EOC_dummy1 *n62 = new EOC_dummy1(&r5r6_1,&r5r6_2);
+    EOC_dummy1 *n61 = new EOC_dummy1("r5-cs",&r4r5_2,&r4r5_1);    
+    EOC_dummy1 *n62 = new EOC_dummy1("r5-ns",&r5r6_1,&r5r6_2);
     
-    EOC_dummy1 *n71 = new EOC_dummy1(&r5r6_2,&r5r6_1);    
-    EOC_dummy1 *n72 = new EOC_dummy1(&r6r7_1,&r6r7_2);
+    EOC_dummy1 *n71 = new EOC_dummy1("r6-cs",&r5r6_2,&r5r6_1);    
+    EOC_dummy1 *n72 = new EOC_dummy1("r6-ns",&r6r7_1,&r6r7_2);
     
-    EOC_dummy1 *n81 = new EOC_dummy1(&r6r7_2,&r6r7_1);    
-    EOC_dummy1 *n82 = new EOC_dummy1(&r7s_1,&r7s_2);
+    EOC_dummy1 *n81 = new EOC_dummy1("r7-cs",&r6r7_2,&r6r7_1);    
+    EOC_dummy1 *n82 = new EOC_dummy1("r7-ns",&r7s_1,&r7s_2);
     
     
-    EOC_dummy1 *n9 = new EOC_dummy1(&r7s_2,&r7s_1);
+    EOC_dummy1 *n9 = new EOC_dummy1("s-cs",&r7s_2,&r7s_1);
     
     EOC_engine *e1 = new EOC_engine(master,(EOC_dev*)n1,"config");
     EOC_engine *e2 = new EOC_engine(repeater,(EOC_dev*)n22,(EOC_dev*)n21);    
@@ -96,7 +149,7 @@ int main()
     EOC_engine *e9 = new EOC_engine(slave,(EOC_dev*)n9,"config");    
 
 int k=0;
-    while(k<70){
+    while(k<500){
 	//sleep(1);
 	e1->schedule();
         e2->schedule();
@@ -108,6 +161,7 @@ int k=0;
         e8->schedule();
         e9->schedule();
 	k++;
+	
     }
 
     k=0;
@@ -119,9 +173,9 @@ int k=0;
     return 0;
 }
 
+
+
 */
-
-
 /* container test 
 
 

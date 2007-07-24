@@ -21,15 +21,15 @@ protected:
 public:
     EOC_unit(unit u_in,resp_inventory *resp,int loops){
 	inv_info = *resp;
-	for( int i; i<EOC_SIDES_NUM;i++)
+	for( int i=0; i<EOC_SIDES_NUM;i++)
 	    side[i] = NULL;
 	u = u_in;
 	switch( u ){
 	case stu_c:
-	    side[cust_side] = new EOC_side(loops); 
+	    side[net_side] = new EOC_side(loops); 
 	    break;
 	case stu_r:
-	    side[net_side] = new EOC_side(loops);
+	    side[cust_side] = new EOC_side(loops);
 	    break;
 	default:
 	    side[cust_side] = new EOC_side(loops); 

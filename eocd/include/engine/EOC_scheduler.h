@@ -35,12 +35,12 @@ protected:
     int jump_Normal();
     int poll_unit(int ind);
 public:
-    EOC_scheduler(u32 toffs, u32 waitto){
+    EOC_scheduler(u32 tick_per_minute){
     	send_q = new sched_queue();
 	wait_q = new sched_queue();
 	statem = new state_machine;
-	ts_offs = toffs;
-	wait_to = waitto;
+	wait_to = tick_per_minute;
+	ts_offs = tick_per_minute*2;
 	jump_Offline();
     }
     //

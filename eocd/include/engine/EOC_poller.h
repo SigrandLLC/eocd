@@ -15,9 +15,6 @@
 #include <config/EOC_config.h>
 #include <db/EOC_db.h>
 
-#define TICKS_BETW_REQ 2
-#define TICKS_WAIT_TO 100
-
 class EOC_poller{
 private:
     EOC_db *db;
@@ -25,10 +22,10 @@ private:
     EOC_config *cfg;
     request_handler_t req_hndl[REQUEST_QUAN];
 public:
-    EOC_poller(EOC_config *c){
+    EOC_poller(EOC_config *c,int ticks_per_minute,int loops){
 	int i;
-	sch = new EOC_scheduler(TICKS_BETW_REQ,TICKS_WAIT_TO);
-	db = new EOC_db(sch);
+	sch = new EOC_scheduler(ticks_per_minute);
+	db = new EOC_db(sch,loops);
 	cfg = c;
 	for(i=0;i<REQUEST_QUAN;i++)
 	    req_hndl[i] = NULL;

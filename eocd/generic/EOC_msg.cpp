@@ -40,7 +40,7 @@ EOC_msg::EOC_msg(EOC_msg *ex)
 EOC_msg::EOC_msg(EOC_msg *ex,int new_size)
 {
     bsize = new_size+EOC_HEADER;
-    size = ex->msize();
+    size = bsize;
     dir = ex->direction();
     buf = (char*)malloc(bsize);
     if( buf )    

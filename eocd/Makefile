@@ -12,9 +12,9 @@ CPPFLAGS=-g -I$(INCLUDES)
 
 .PHONY: generic engine devs
 
-#TARGS :=generic engine devs
-#OBJECTS := build/EOC_router.o build/EOC_msg.o build/EOC_scheduler.o build/EOC_dummy.o 
-#OBJECTS := build/*.o 
+TARGS :=generic engine devs
+OBJECTS := build/EOC_router.o build/EOC_msg.o build/EOC_scheduler.o build/EOC_dummy.o 
+OBJECTS := build/*.o 
 
 
 all: $(TARGS) 

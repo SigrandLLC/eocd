@@ -1,144 +1,116 @@
-In file included from eoc_db.c:2:
-include/db/eoc_db.h:6:27: ../utils/span.h: No such file or directory
-In file included from include/db/eoc_db.h:7,
-                 from eoc_db.c:2:
-include/db/conf_profile.h:23: error: syntax error before "row_status_t"
-include/db/conf_profile.h:23: warning: no semicolon at end of struct or union
-include/db/conf_profile.h:25: warning: data definition has no type or storage class
-In file included from include/db/eoc_db.h:7,
-                 from eoc_db.c:2:
-include/db/conf_profile.h:28:7: warning: no newline at end of file
-In file included from include/db/eoc_db.h:8,
-                 from eoc_db.c:2:
-include/db/alarm_profile.h:5:9: #include expects "FILENAME" or <FILENAME>
-In file included from include/db/eoc_db.h:8,
-                 from eoc_db.c:2:
-include/db/alarm_profile.h:12: error: syntax error before "row_status_t"
-include/db/alarm_profile.h:12: warning: no semicolon at end of struct or union
-include/db/alarm_profile.h:13: warning: data definition has no type or storage class
-include/db/alarm_profile.h:15:7: warning: no newline at end of file
-In file included from eoc_db.c:2:
-include/db/eoc_db.h:14: error: syntax error before "eocd_span_t"
-include/db/eoc_db.h:14: warning: no semicolon at end of struct or union
-include/db/eoc_db.h:16: error: syntax error before '*' token
-include/db/eoc_db.h:16: warning: data definition has no type or storage class
-include/db/eoc_db.h:17: error: syntax error before '*' token
-include/db/eoc_db.h:17: warning: data definition has no type or storage class
-include/db/eoc_db.h:18: error: syntax error before '}' token
-include/db/eoc_db.h:18: warning: data definition has no type or storage class
-include/db/eoc_db.h:20: error: syntax error before '*' token
-include/db/eoc_db.h:20: warning: data definition has no type or storage class
-include/db/eoc_db.h:22: error: syntax error before '*' token
-include/db/eoc_db.h:23: error: syntax error before '*' token
-include/db/eoc_db.h:23: error: syntax error before '*' token
-include/db/eoc_db.h:23: warning: data definition has no type or storage class
-include/db/eoc_db.h:25: error: syntax error before '*' token
-include/db/eoc_db.h:26: error: syntax error before '*' token
-include/db/eoc_db.h:26: error: syntax error before '*' token
-include/db/eoc_db.h:26: warning: data definition has no type or storage class
-include/db/eoc_db.h:27: error: syntax error before '*' token
-include/db/eoc_db.h:28: error: syntax error before '*' token
-include/db/eoc_db.h:28: error: syntax error before '*' token
-include/db/eoc_db.h:28: warning: data definition has no type or storage class
-include/db/eoc_db.h:32: error: syntax error before '*' token
-include/db/eoc_db.h:33: error: syntax error before '*' token
-include/db/eoc_db.h:33: error: syntax error before '*' token
-include/db/eoc_db.h:33: warning: data definition has no type or storage class
-include/db/eoc_db.h:34: error: syntax error before '*' token
-include/db/eoc_db.h:34: error: syntax error before '*' token
-include/db/eoc_db.h:34: warning: data definition has no type or storage class
-include/db/eoc_db.h:36: error: syntax error before '*' token
-include/db/eoc_db.h:37: error: syntax error before '*' token
-include/db/eoc_db.h:37: error: syntax error before '*' token
-include/db/eoc_db.h:37: warning: data definition has no type or storage class
-include/db/eoc_db.h:38: error: syntax error before '*' token
-include/db/eoc_db.h:38: error: syntax error before '*' token
-include/db/eoc_db.h:38: warning: data definition has no type or storage class
-eoc_db.c:6: error: syntax error before '*' token
-eoc_db.c: In function `db_alloc':
-eoc_db.c:9: error: `db_t' undeclared (first use in this function)
-eoc_db.c:9: error: (Each undeclared identifier is reported only once
-eoc_db.c:9: error: for each function it appears in.)
-eoc_db.c:9: error: `db' undeclared (first use in this function)
-eoc_db.c: At top level:
-eoc_db.c:16: error: syntax error before '*' token
-eoc_db.c: In function `db_add_span':
-eoc_db.c:18: error: `db' undeclared (first use in this function)
-eoc_db.c:19: error: `ERROR' undeclared (first use in this function)
-eoc_db.c:23: error: `WARNING' undeclared (first use in this function)
-eoc_db.c: At top level:
-eoc_db.c:30: error: syntax error before '*' token
-eoc_db.c:31: error: syntax error before '*' token
-eoc_db.c: In function `db_get_span':
-eoc_db.c:33: error: `num' undeclared (first use in this function)
-eoc_db.c:33: error: `db' undeclared (first use in this function)
-eoc_db.c: At top level:
-eoc_db.c:41: error: syntax error before '*' token
-eoc_db.c: In function `db_span_conf_set':
-eoc_db.c:43: error: `num' undeclared (first use in this function)
-eoc_db.c:43: error: `db' undeclared (first use in this function)
-eoc_db.c:44: error: `EARG' undeclared (first use in this function)
-eoc_db.c:45: error: `name' undeclared (first use in this function)
-eoc_db.c:46: error: `ENOENT' undeclared (first use in this function)
-eoc_db.c: At top level:
-eoc_db.c:50: error: syntax error before '*' token
-eoc_db.c:51: error: syntax error before '*' token
-eoc_db.c: In function `db_span_conf_get':
-eoc_db.c:53: error: `num' undeclared (first use in this function)
-eoc_db.c:53: error: `db' undeclared (first use in this function)
-eoc_db.c:54: warning: return makes pointer from integer without a cast
-eoc_db.c:55: error: syntax error before ')' token
-eoc_db.c: At top level:
-eoc_db.c:59: error: syntax error before '*' token
-eoc_db.c: In function `db_span_alarm_set':
-eoc_db.c:61: error: `num' undeclared (first use in this function)
-eoc_db.c:61: error: `db' undeclared (first use in this function)
-eoc_db.c:62: error: `EARG' undeclared (first use in this function)
-eoc_db.c:63: error: `name' undeclared (first use in this function)
-eoc_db.c:64: error: `ENOENT' undeclared (first use in this function)
-eoc_db.c: At top level:
-eoc_db.c:69: error: syntax error before '*' token
-eoc_db.c:70: error: syntax error before '*' token
-eoc_db.c: In function `db_span_alarm_get':
-eoc_db.c:72: error: `num' undeclared (first use in this function)
-eoc_db.c:72: error: `db' undeclared (first use in this function)
-eoc_db.c:73: warning: return makes pointer from integer without a cast
-eoc_db.c:74: error: syntax error before ')' token
-eoc_db.c: At top level:
-eoc_db.c:82: error: syntax error before '*' token
-eoc_db.c: In function `db_add_conf':
-eoc_db.c:83: error: `db' undeclared (first use in this function)
-eoc_db.c:83: error: `name' undeclared (first use in this function)
-eoc_db.c:83: warning: passing arg 3 of `htable_add' makes pointer from integer without a cast
-eoc_db.c: At top level:
-eoc_db.c:86: error: syntax error before '*' token
-eoc_db.c:87: error: syntax error before '*' token
-eoc_db.c: In function `db_get_conf_data':
-eoc_db.c:88: error: syntax error before ')' token
-eoc_db.c: At top level:
-eoc_db.c:91: error: syntax error before '*' token
-eoc_db.c:92: error: syntax error before '*' token
-eoc_db.c: In function `db_del_conf':
-eoc_db.c:93: error: syntax error before ')' token
-eoc_db.c: At top level:
-eoc_db.c:98: error: syntax error before '*' token
-eoc_db.c:98: error: redefinition of 'db_add_conf'
-eoc_db.c:82: error: previous definition of 'db_add_conf' was here
-eoc_db.c: In function `db_add_conf':
-eoc_db.c:99: error: `db' undeclared (first use in this function)
-eoc_db.c:99: error: `name' undeclared (first use in this function)
-eoc_db.c:99: warning: passing arg 3 of `htable_add' makes pointer from integer without a cast
-eoc_db.c: At top level:
-eoc_db.c:102: error: syntax error before '*' token
-eoc_db.c:103: error: syntax error before '*' token
-eoc_db.c:103: error: redefinition of 'db_get_conf_data'
-eoc_db.c:87: error: previous definition of 'db_get_conf_data' was here
-eoc_db.c: In function `db_get_conf_data':
-eoc_db.c:104: error: syntax error before ')' token
-eoc_db.c: At top level:
-eoc_db.c:107: error: syntax error before '*' token
-eoc_db.c:108: error: syntax error before '*' token
-eoc_db.c:108: error: redefinition of 'db_del_conf'
-eoc_db.c:92: error: previous definition of 'db_del_conf' was here
-eoc_db.c: In function `db_del_conf':
-eoc_db.c:109: error: syntax error before ')' token
+DISCOVERY_RESP FROM(1): hop=1,resl=0,vendor_id=134578468,fwd_loss=0
+DISCOVERY_RESP FROM(3): hop=1,resl=0,vendor_id=134578356,fwd_loss=0
+DISCOVERY_RESP FROM(4): hop=2,resl=0,vendor_id=134578492,fwd_loss=0
+m-ns: loop_attn(10) snr_marg(10)
+CONFIGURE_RESP FROM(1), loop(10),snr(10)
+DISCOVERY_RESP FROM(5): hop=3,resl=0,vendor_id=134579084,fwd_loss=0
+DISCOVERY_RESP FROM(6): hop=4,resl=0,vendor_id=134579940,fwd_loss=0
+r1-ns: loop_attn(10) snr_marg(10)
+r1-cs: loop_attn(10) snr_marg(10)
+CONFIGURE_RESP FROM(3), loop(10),snr(10)
+DISCOVERY_RESP FROM(7): hop=5,resl=0,vendor_id=134580172,fwd_loss=0
+DISCOVERY_RESP FROM(8): hop=6,resl=0,vendor_id=134579084,fwd_loss=0
+r2-ns: loop_attn(10) snr_marg(10)
+r2-cs: loop_attn(10) snr_marg(10)
+DISCOVERY_RESP FROM(9): hop=7,resl=0,vendor_id=134580172,fwd_loss=0
+CONFIGURE_RESP FROM(4), loop(10),snr(10)
+DISCOVERY_RESP FROM(2): hop=8,resl=0,vendor_id=134582292,fwd_loss=0
+r3-ns: loop_attn(10) snr_marg(10)
+r3-cs: loop_attn(10) snr_marg(10)
+r4-ns: loop_attn(10) snr_marg(10)
+r4-cs: loop_attn(10) snr_marg(10)
+CONFIGURE_RESP FROM(5), loop(10),snr(10)
+r5-ns: loop_attn(10) snr_marg(10)
+r5-cs: loop_attn(10) snr_marg(10)
+CONFIGURE_RESP FROM(6), loop(10),snr(10)
+r6-ns: loop_attn(10) snr_marg(10)
+r6-cs: loop_attn(10) snr_marg(10)
+r7-ns: loop_attn(10) snr_marg(10)
+r7-cs: loop_attn(10) snr_marg(10)
+s-cs: loop_attn(10) snr_marg(10)
+CONFIGURE_RESP FROM(7), loop(10),snr(10)
+CONFIGURE_RESP FROM(8), loop(10),snr(10)
+CONFIGURE_RESP FROM(9), loop(10),snr(10)
+Jump Normal
+CONFIGURE_RESP FROM(2), loop(10),snr(10)
+--------------------------------------
+FIND_DEL: clear src(15) dst(1) type(140) tstamp(4)
+RESCHED: src(15) dst(1) type(140) ts(4)
+FIND_DEL: clear src(15) dst(1) type(141) tstamp(4)
+RESCHED: src(15) dst(1) type(141) ts(4)
+FIND_DEL: clear src(15) dst(1) type(137) tstamp(4)
+RESCHED: src(15) dst(1) type(137) ts(4)
+FIND_DEL: clear src(15) dst(1) type(9) tstamp(4)
+RESCHED: src(15) dst(1) type(9) ts(4)
+FIND_DEL: clear src(15) dst(1) type(140) tstamp(105)
+RESCHED: src(15) dst(1) type(140) ts(105)
+FIND_DEL: clear src(15) dst(1) type(141) tstamp(105)
+RESCHED: src(15) dst(1) type(141) ts(105)
+FIND_DEL: clear src(15) dst(1) type(137) tstamp(105)
+RESCHED: src(15) dst(1) type(137) ts(105)
+FIND_DEL: clear src(15) dst(1) type(9) tstamp(105)
+RESCHED: src(15) dst(1) type(9) ts(105)
+FIND_DEL: clear src(15) dst(1) type(140) tstamp(206)
+RESCHED: src(15) dst(1) type(140) ts(206)
+FIND_DEL: clear src(15) dst(1) type(141) tstamp(206)
+RESCHED: src(15) dst(1) type(141) ts(206)
+FIND_DEL: clear src(15) dst(1) type(137) tstamp(206)
+RESCHED: src(15) dst(1) type(137) ts(206)
+FIND_DEL: clear src(15) dst(1) type(9) tstamp(206)
+RESCHED: src(15) dst(1) type(9) ts(206)
+FIND_DEL: clear src(15) dst(1) type(140) tstamp(307)
+RESCHED: src(15) dst(1) type(140) ts(307)
+FIND_DEL: clear src(15) dst(1) type(141) tstamp(307)
+RESCHED: src(15) dst(1) type(141) ts(307)
+FIND_DEL: clear src(15) dst(1) type(137) tstamp(307)
+RESCHED: src(15) dst(1) type(137) ts(307)
+FIND_DEL: clear src(15) dst(1) type(9) tstamp(307)
+RESCHED: src(15) dst(1) type(9) ts(307)
+FIND_DEL: clear src(15) dst(1) type(140) tstamp(408)
+RESCHED: src(15) dst(1) type(140) ts(408)
+FIND_DEL: clear src(15) dst(1) type(141) tstamp(408)
+RESCHED: src(15) dst(1) type(141) ts(408)
+FIND_DEL: clear src(15) dst(1) type(137) tstamp(408)
+RESCHED: src(15) dst(1) type(137) ts(408)
+FIND_DEL: clear src(15) dst(1) type(9) tstamp(408)
+RESCHED: src(15) dst(1) type(9) ts(408)
+FIND_DEL: clear src(15) dst(1) type(140) tstamp(509)
+RESCHED: src(15) dst(1) type(140) ts(509)
+FIND_DEL: clear src(15) dst(1) type(141) tstamp(509)
+RESCHED: src(15) dst(1) type(141) ts(509)
+FIND_DEL: clear src(15) dst(1) type(137) tstamp(509)
+RESCHED: src(15) dst(1) type(137) ts(509)
+FIND_DEL: clear src(15) dst(1) type(9) tstamp(509)
+RESCHED: src(15) dst(1) type(9) ts(509)
+FIND_DEL: clear src(15) dst(1) type(140) tstamp(610)
+RESCHED: src(15) dst(1) type(140) ts(610)
+FIND_DEL: clear src(15) dst(1) type(141) tstamp(610)
+RESCHED: src(15) dst(1) type(141) ts(610)
+FIND_DEL: clear src(15) dst(1) type(137) tstamp(610)
+RESCHED: src(15) dst(1) type(137) ts(610)
+FIND_DEL: clear src(15) dst(1) type(9) tstamp(610)
+RESCHED: src(15) dst(1) type(9) ts(610)
+FIND_DEL: clear src(15) dst(1) type(140) tstamp(711)
+RESCHED: src(15) dst(1) type(140) ts(711)
+FIND_DEL: clear src(15) dst(1) type(141) tstamp(711)
+RESCHED: src(15) dst(1) type(141) ts(711)
+FIND_DEL: clear src(15) dst(1) type(137) tstamp(711)
+RESCHED: src(15) dst(1) type(137) ts(711)
+FIND_DEL: clear src(15) dst(1) type(9) tstamp(711)
+RESCHED: src(15) dst(1) type(9) ts(711)
+FIND_DEL: clear src(15) dst(1) type(140) tstamp(812)
+RESCHED: src(15) dst(1) type(140) ts(812)
+FIND_DEL: clear src(15) dst(1) type(141) tstamp(812)
+RESCHED: src(15) dst(1) type(141) ts(812)
+FIND_DEL: clear src(15) dst(1) type(137) tstamp(812)
+RESCHED: src(15) dst(1) type(137) ts(812)
+FIND_DEL: clear src(15) dst(1) type(9) tstamp(812)
+RESCHED: src(15) dst(1) type(9) ts(812)
+FIND_DEL: clear src(15) dst(1) type(140) tstamp(913)
+RESCHED: src(15) dst(1) type(140) ts(913)
+FIND_DEL: clear src(15) dst(1) type(141) tstamp(913)
+RESCHED: src(15) dst(1) type(141) ts(913)
+FIND_DEL: clear src(15) dst(1) type(137) tstamp(913)
+RESCHED: src(15) dst(1) type(137) ts(913)
+FIND_DEL: clear src(15) dst(1) type(9) tstamp(913)
+RESCHED: src(15) dst(1) type(9) ts(913)

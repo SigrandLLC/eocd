@@ -1,6 +1,7 @@
 #ifndef EOC_SIDE_H
 #define EOC_SIDE_H
 
+#include <db/EOC_loop.h>
 #include <eoc_debug.h>
 
 class EOC_side{

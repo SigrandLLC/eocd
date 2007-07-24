@@ -8,7 +8,7 @@ protected:
     int a;
     char cfg_file[256];
 public:
-    EOC_config(char *file){ strncpy(cfg_file,file,256); }
+    EOC_config(){}
     char snr_marg(unit u){ return 10; }
     char loop_attn(unit u) { return 10; }
 };

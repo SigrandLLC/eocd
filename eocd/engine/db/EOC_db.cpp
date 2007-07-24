@@ -32,15 +32,15 @@ EOC_db::_resp_inventory(EOC_db *db,EOC_msg *m)
     resp_inventory *resp= (resp_inventory *)m->payload();
     int ind = (int)m->src() - 1;
     if( !db->units[ind] ){
-	db->units[ind] = new EOC_unit(resp);
+	db->units[ind] = new EOC_unit(m->src(),resp,db->loop_num);
     }else{
-	if(bd->units[ind]->chk_integrity(resp) ){
-	    for(i=ind;i<MAX_UNITS;i++){
+	// Check that units was not changed
+	if(db->units[ind]->integrity(resp) ){
+	    for(int i=ind;i<MAX_UNITS;i++){
 		if( db->units[i] ){
 		    delete db->units[i];
 		}
 	    }
-	    sch->wrong_unit(m->src);
 	}
     }
     return 0;
@@ -65,30 +65,36 @@ EOC_db::_resp_status(EOC_db *db,EOC_msg *m)
 {
     ASSERT( m->type() == RESP_STATUS );
     ASSERT( m->payload_sz() == RESP_STATUS_SZ);
+//    if( m->payload_sz() == RESP_STATUS_SZ ){
+//	printf("\n");
+//    }
+    
     ASSERT(m);
+    printf("STATUS RESPONSE: src(%d) dst(%d)\n",m->src(),m->dst());
     resp_status *resp= (resp_status*)m->payload();
-    int loop_id = resp->loop_id;
+    int loop_id = resp->loop_id-1;
     EOC_loop *nsloop=NULL,*csloop=NULL;
+    int ind = (int)m->src() - 1;
 
-    if( !db->units[m->src()] ){
+    if( !db->units[ind] ){
 	// TODO eoc_log(LOG_ERROR,"Status message from unit which not exist");
 	return -1;
     }
     
-    if( db->units[m->src]->cside() ){
-	if( !db->units[m->src()]->cside()->get_loop(loop_id) ){
+    if( db->units[ind]->cside() ){
+	if( !db->units[ind]->cside()->get_loop(loop_id) ){
 	    // TODO eoc_log(LOG_ERROR,"(Status message) Request unexisted loop");
 	    return -1;
 	}
-	csloop = db->units[m->src()]->cside()->get_loop(loop_id);
+	csloop = db->units[ind]->cside()->get_loop(loop_id);
     }
 
-    if( db->units[m->src]->nside() ){
-	if( !db->units[m->src()]->nside()->get_loop(loop_id) ){
+    if( db->units[ind]->nside() ){
+	if( !db->units[ind]->nside()->get_loop(loop_id) ){
 	    // TODO eoc_log(LOG_ERROR,"(Status message) Request unexisted loop");
 	    return -1;
 	}
-	nsloop = db->units[m->src()]->nside()->get_loop(loop_id);
+	nsloop = db->units[ind]->nside()->get_loop(loop_id);
     }
 
     if( !db )
@@ -109,24 +115,30 @@ EOC_db::_resp_nside_perf(EOC_db *db,EOC_msg *m)
 {
     ASSERT( m->type() == RESP_NSIDE_PERF );
     ASSERT( m->payload_sz() == RESP_NSIDE_PERF_SZ);
-    ASSERT(m);
+    ASSERT(m && db);
     resp_nside_perf *resp= (resp_nside_perf*)m->payload();
-    int loop_id = resp->loop_id;
+    int loop_id = resp->loop_id-1; 
     EOC_loop *nsloop=NULL;
+    int ind = (int)m->src() - 1;    
 
-    if( !db->units[m->src()] ){
-	// TODO eoc_log(LOG_ERROR,"Status message from unit which not exist");
+    printf("NET SIDE PERF RESPONSE: src(%d) dst(%d)\n",m->src(),m->dst());
+
+    if( !db->units[ind] ){
+	// TODO eoc_log(LOG_ERROR,"Network side perfomance message from unit which not exist");
+	printf("Network side perfomance message from unit which not exist\n");
 	return -1;
     }
     
-    if( db->units[m->src]->nside() ){
-	if( !db->units[m->src()]->nside()->get_loop(loop_id) ){
-	    // TODO eoc_log(LOG_ERROR,"(Status message) Request unexisted loop");
+    if( db->units[ind]->nside() ){
+	if( !db->units[ind]->nside()->get_loop(loop_id) ){
+	    // TODO eoc_log(LOG_ERROR,"(Network side perfomance) Request unexisted loop");
+	    printf("(Network side perfomance) Request unexisted loop\n");
 	    return -1;
 	}
-	nsloop = db->units[m->src()]->nside()->get_loop(loop_id);
+	nsloop = db->units[ind]->nside()->get_loop(loop_id);
     }else{
 	// TODO eoc_log(LOG_ERROR,"(Network side perf status message) Request unexisted side");
+	printf("(Network side perf status message) Request unexisted side\n");
 	return -1;
     }
 
@@ -147,22 +159,29 @@ EOC_db::_resp_cside_perf(EOC_db *db,EOC_msg *m)
     ASSERT( m->payload_sz() == RESP_CSIDE_PERF_SZ);
     ASSERT(m);
     resp_cside_perf *resp= (resp_cside_perf*)m->payload();
-    int loop_id = resp->loop_id;
+    int loop_id = resp->loop_id-1;
     EOC_loop *csloop=NULL;
+    int ind = (int)m->src() - 1;    
 
-    if( !db->units[m->src()] ){
+    printf("CUST SIDE PERF RESPONSE: src(%d) dst(%d)\n",m->src(),m->dst());
+
+
+    if( !db->units[ind] ){
 	// TODO eoc_log(LOG_ERROR,"Customer side perf status message from unit which not exist");
+	printf("Customer side perf status message from unit which not exist\n");
 	return -1;
     }
     
-    if( db->units[m->src]->cside() ){
-	if( !db->units[m->src()]->cside()->get_loop(loop_id) ){
+    if( db->units[ind]->cside() ){
+	if( !db->units[ind]->cside()->get_loop(loop_id) ){
 	    // TODO eoc_log(LOG_ERROR,"(Customer side perf status message) Request unexisted loop");
+	    printf("(Customer side perf status message) Request unexisted loop\n");
 	    return -1;
 	}
-	csloop = db->units[m->src()]->cside()->get_loop(loop_id);
+	csloop = db->units[ind]->cside()->get_loop(loop_id);
     }else{
 	// TODO eoc_log(LOG_ERROR,"(Customer side perf status message) Request unexisted side");
+	printf("(Customer side perf status message) Request unexisted side\n");
 	return -1;
     }
 

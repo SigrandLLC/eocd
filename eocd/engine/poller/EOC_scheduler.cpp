@@ -30,6 +30,7 @@ EOC_scheduler::jump_Normal()
 {
     printf("Jump Normal\n");
     statem->state = Normal;
+    
     return 0;    
 }
 
@@ -39,7 +40,7 @@ EOC_scheduler::poll_unit(int ind)
     if(statem->ustates[ind] != Configured )
 	return -1;
     int ret = 0;
-    ret += send_q->add(stu_c,BCAST,REQ_STATUS,ts);
+    ret += send_q->add(stu_c,(unit)(ind+1),REQ_STATUS,ts);
     return ret;    
 }
 
@@ -127,18 +128,21 @@ EOC_scheduler::request(sched_elem &el)
     n.src = n.dst;
     n.dst = swap;
     n.tstamp = ts;		
+
+    sched_elem n1 = n;
+
     switch( n.type ){
     case REQ_SRST_BCKOFF:
 	// no response!
 	break;
     case REQ_STATUS:
 	// maybe 3 additional responses
-	n.type = RESP_NSIDE_PERF;
-	wait_q->add(n);
-	n.type = RESP_CSIDE_PERF;
-	wait_q->add(n);
-	n.type = RESP_MAINT_STAT;
-	wait_q->add(n);
+	n1.type = RESP_NSIDE_PERF;
+	wait_q->add(n1);
+	n1.type = RESP_CSIDE_PERF;
+	wait_q->add(n1);
+	n1.type = RESP_MAINT_STAT;
+	wait_q->add(n1);
     default:
 	n.type = REQ2RESP(n.type);
 	n.tstamp = ts;
@@ -154,7 +158,7 @@ EOC_scheduler::resched()
     int ret;
     
     while( !(ret=wait_q->get_old(ts,wait_to,el)) ){
-        printf("RESCHED: src(%d) dst(%d) type(%d) ts(%d)\n",el.src,el.dst,el.type,el.tstamp.get_val());
+//        printf("RESCHED: src(%d) dst(%d) type(%d) ts(%d)\n",el.src,el.dst,el.type,el.tstamp.get_val());
 	switch( el.type ){
 	default:
 	    unit swap = el.src;

@@ -74,7 +74,8 @@ public:
     int nsunit(unit u);
     int term_unit(unit u);
     void update_state();    
-
+    int loops();
+	
 };
 
 #endif
