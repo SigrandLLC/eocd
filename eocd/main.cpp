@@ -78,7 +78,7 @@ int k=0;
         e2->schedule();
         e3->schedule();
 	if( k>20 ){
-		S = n1->get_current_stat()
+		S = n1->get_current_stat();
 		S.ses++;
 		n1->setup_current_stat(S);
 
