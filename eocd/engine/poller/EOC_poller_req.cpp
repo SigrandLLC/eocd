@@ -63,8 +63,8 @@ _req_configure(sched_state stat,sched_elem el,EOC_config *cfg)
     case EOC_scheduler::Normal:
 	req->conf_type = 1;
     }
-    req->loop_attn = cfg->loop_attn(el.dst);
-    req->snr_marg = cfg->snr_marg(el.dst);
+    req->loop_attn = cfg->loop_tresh();
+    req->snr_marg = cfg->snr_tresh();
     return m;
 }
 

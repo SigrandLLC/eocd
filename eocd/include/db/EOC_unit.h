@@ -13,10 +13,12 @@
 
 class EOC_unit{
 public:
-    enum Sides { net_side=0,cust_side };
+    typedef enum { net_side=0,cust_side } Sides;
+    typedef enum { span = 0, local } power_t;
 protected:
     unit u;
     resp_inventory inv_info;
+    power_t power;
     EOC_side *side[EOC_SIDES_NUM];
 public:
     EOC_unit(unit u_in,resp_inventory *resp,int loops){

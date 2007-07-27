@@ -12,6 +12,8 @@
 #include <generic/EOC_types.h>
 #include <generic/EOC_generic.h>
 #include <generic/EOC_msg.h>
+#include <generic/EOC_requests.h>
+#include <generic/EOC_responses.h>
 #include <engine/EOC_router.h>
 #include <eoc_debug.h>
 

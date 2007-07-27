@@ -153,7 +153,10 @@ public:
     }
     
     shdsl_config config(){ shdsl_config i; return i; }
-    int config(shdsl_config cfg){ return 0; }
+    int config(shdsl_config cfg){ 
+	printf("SET DEVICE: Rate=%d %s annex%d",cfg.lrate, (cfg.master) ? "master" : "slave",cfg.annex);
+	return 0;
+    }
 };
 
 #endif

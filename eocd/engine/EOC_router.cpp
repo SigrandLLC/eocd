@@ -43,6 +43,7 @@ EOC_router::EOC_router(dev_type r,EOC_dev *nside,EOC_dev *cside)
     // initial initialising
     zero_init();
     // setup router
+
     if( r != repeater || !nside || !cside)
 	return;
 
@@ -56,6 +57,9 @@ EOC_router::EOC_router(dev_type r,EOC_dev *nside,EOC_dev *cside)
     ifs[if_cnt++].sdev = cside;
     type = r;
     update_state();
+    // loopback setup
+    loop_head = loop_tail = 0;
+
 }
 
 EOC_router::~EOC_router(){

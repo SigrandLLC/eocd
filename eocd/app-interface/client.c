@@ -1,11 +1,13 @@
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <stdio.h>
 #include<errno.h>
 
-#include "include/unix_interface.h"
+#include <unix_interface.h>
 
+int
 main()
 {
     char *b,ch,a;
@@ -20,7 +22,7 @@ main()
     eocd_setup_msg(msg,1,2,0,8);
     eocd_set_msg_status(msg,REQUEST);
     if( eocd_init_client(d) ){
-	exit(0);
+	return (0);
     }
     for(i=0;i<2;i++){
 	b = eocd_get_dataptr(msg);
@@ -31,5 +33,5 @@ main()
 	scanf("%c",&a);
     }
     close(d->fd[0]);
-    exit(0);
+    return 0;
 }

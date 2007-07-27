@@ -6,6 +6,7 @@
 #include <utils/EOC_ring_container.h>
 #include <db/EOC_db.h>
 #include <engine/EOC_engine.h>
+#include <EOC_main.h>
 
 /*
 typedef struct{
@@ -53,7 +54,92 @@ int main()
 }
 */
 
-/* ENGINE SHORT TEST */  
+/* MAIN TEST */  
+
+
+EOC_dummy1 *n1;
+EOC_dummy1 *n21;
+EOC_dummy1 *n22;
+EOC_dummy1 *n3;
+
+
+EOC_dev_master *
+init_dev(char *name_1)
+{
+    if( !strcmp(name_1,"dsl0") ){
+	return n1;
+    }	
+    if( !strcmp(name_1,"dsl1") ){
+	return n3;
+    }
+    return NULL;
+}
+
+int main()
+{
+    unit s,d;
+    char type;
+    dummy_channel mr1_1,mr1_2,r1s_1,r1s_2;
+    
+    n1 = new EOC_dummy1("m-ns",&mr1_1,&mr1_2);
+    n21 = new EOC_dummy1("r1-cs",&mr1_2,&mr1_1);
+    n22 = new EOC_dummy1("r1-ns",&r1s_1,&r1s_2);
+    n3 = new EOC_dummy1("s-cs",&r1s_2,&r1s_1);
+
+
+
+    EOC_main m("eocd.cfg");    
+    EOC_engine *e2 = new EOC_engine(n22,n21); 
+    
+    int k=0;
+    side_perf S;
+    while(k<500){
+//	sleep(1);
+	m.poll_channels();
+        e2->schedule();
+	k++;
+    }
+
+/*
+
+int k=0;
+    side_perf S;
+    while(k<500){
+//	sleep(1);
+	e1->schedule();
+        e2->schedule();
+        e3->schedule();
+	if( k>20 ){
+		S = n1->get_current_stat();
+		S.ses++;
+		n1->setup_current_stat(S);
+
+
+		S = n22->get_current_stat();
+		S.es++;
+		S.losws++;
+		n22->setup_current_stat(S);
+
+		S = n21->get_current_stat();
+		S.crc++;
+		S.uas++;
+		n21->setup_current_stat(S);
+
+		S = n3->get_current_stat();
+		S.es++;
+		n3->setup_current_stat(S);
+	}
+	if( k== 21 )
+	    printf("---------------- Start errors ---------------------------\n");
+	k++;
+    }
+*/    
+    return 0;
+}
+
+
+
+/* ENGINE SHORT TEST   
 int main()
 {
     unit s,d;
@@ -103,7 +189,7 @@ int k=0;
     }
     return 0;
 }
-
+*/
 
 /* ENGINE FULL TEST  
 int main()

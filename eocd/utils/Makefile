@@ -1,12 +1,15 @@
-CFLAGS := -g
+ifeq ($(TOPDIR),)
+    TOPDIR=$(PWD)/../
+endif
 
-all: $(patsubst %.c,%.o,$(wildcard *.c))
+INCLUDES=$(TOPDIR)include/
+CPPFLAGS=-g -I$(INCLUDES)
+.PHONY:
 
-%.o: %.c
-	gcc $(CFLAGS) -c $<
-
-test: all
-	gcc -o test test.o list.o hash_table.o
+all: hash_table.o
+	cp $^ $(TOPDIR)/build
+#	g++ $(CPPFLAGS) -o result main.cpp hash_table.o
 
 clean:
-	rm *.o test
+	rm -f *.o
+	rm -f result

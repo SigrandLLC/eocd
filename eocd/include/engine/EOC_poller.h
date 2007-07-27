@@ -33,6 +33,7 @@ public:
     ~EOC_poller(){
 	delete db;
 	delete sch;
+	delete cfg;
     }
     inline void link_state(EOC_dev::Linkstate link){ sch->link_state(link); }
     inline EOC_dev::Linkstate link_state(){ 

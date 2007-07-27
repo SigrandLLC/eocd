@@ -1,7 +1,7 @@
 #ifndef SIGRAND_EOC_DEV_MASTER_H
 #define SIGRAND_EOC_DEV_MASTER_H
 
-#include <generic/SHDSL_config.h>
+#include <shdsl/config.h>
 #include <devs/EOC_dev.h>
 
 class EOC_dev_master: public EOC_dev{

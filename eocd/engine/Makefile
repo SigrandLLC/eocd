@@ -8,7 +8,7 @@ CPPFLAGS=-g -I$(INCLUDES)
 
 all: poller local responder db
 
-local: EOC_router.o EOC_engine.o
+local: EOC_router.o EOC_engine.o EOC_engine_act.o
 	cp $^ $(TOPDIR)/build
 
 poller:

@@ -29,6 +29,9 @@ EOC_db::_resp_inventory(EOC_db *db,EOC_msg *m)
     if( !db )
 	return 0;
 
+    printf("INVENTORY_RESP FROM(%d)\n",m->src());
+
+
     resp_inventory *resp= (resp_inventory *)m->payload();
     int ind = (int)m->src() - 1;
     if( !db->units[ind] ){

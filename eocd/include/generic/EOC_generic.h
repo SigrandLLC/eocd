@@ -11,6 +11,7 @@ enum unit {err =-1,unknown=0 ,stu_c,stu_r,sru1,sru2,sru3,sru4,sru5,sru6,
 // SHDSL standard related
 #define MAX_LOOPS 4
 #define MAX_UNITS 10
+#define MAX_REPEATERS (MAX_UNITS-2)
 
 
 
