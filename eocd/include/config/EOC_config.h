@@ -21,6 +21,9 @@ public:
 	aprof_name = an;
 	repeaters = rep;
     }
+    const char *conf_prof_name(){return cprof_name;}
+    const char *alarm_prof_name(){return cprof_name;}
+    u16 reps(){ return repeaters; }
     
     s8 snr_tresh(){ return 0;}
     s8 loop_tresh(){ return 0; }

@@ -7,7 +7,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
-#include <app_comm_srv.h>
+#include <app-interface/app_comm_srv.h>
 
 
 app_comm_srv::
@@ -175,6 +175,7 @@ send(int c_num,char *buf,size_t size)
 ssize_t app_comm_srv::
 recv(int &c_idx,char *&buf)
 {
-    c_idx = next_fd();
+    if( (c_idx = next_fd()) <0 ) 
+	return 0;
     return _recv(conn_fd[c_idx],buf);
 }

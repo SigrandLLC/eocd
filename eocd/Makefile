@@ -10,9 +10,9 @@ TOPDIR=$(PWD)
 INCLUDES=$(TOPDIR)/include/
 CPPFLAGS=-g -I$(INCLUDES)
 
-.PHONY: generic engine devs utils
+.PHONY: generic engine devs utils db
 
-TARGS :=generic engine devs utils local
+TARGS :=generic engine devs utils local db
 OBJECTS := build/*.o  libconfig++.a 
 
 
@@ -28,9 +28,10 @@ generic:
 	make -C generic/ INCLUDES=$(INCLUDES) TOPDIR=$(TOPDIR) CPPFLAGS="$(CPPFLAGS)"
 devs:
 	make -C devs/ INCLUDES=$(INCLUDES) TOPDIR=$(TOPDIR) CPPFLAGS="$(CPPFLAGS)"
-
 utils:
 	make -C utils/ INCLUDES=$(INCLUDES) TOPDIR=$(TOPDIR) CPPFLAGS="$(CPPFLAGS)"
+db:
+	make -C db/ INCLUDES=$(INCLUDES) TOPDIR=$(TOPDIR) CPPFLAGS="$(CPPFLAGS)"
 
 clean:
 	make -C engine clean

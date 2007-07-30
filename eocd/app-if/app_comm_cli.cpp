@@ -7,7 +7,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
-#include <app_comm_cli.h>
+#include <app-interface/app_comm_cli.h>
 
 app_comm_cli::
 app_comm_cli(char *sock_name):app_comm(sock_name)
@@ -19,19 +19,20 @@ app_comm_cli(char *sock_name):app_comm(sock_name)
 
     // Check path exist
     if( (ret = stat(sname,&sbuf)) ){
-	if( errno != ENOENT ){
-	    eocd_perror("Error getting info about (%s)",sname);
-	    return;
-	}
+        eocd_perror("Problem with socket (%s)",sname);
+        error_init = 1;
+        return;
     }  
     if( !S_ISSOCK(sbuf.st_mode) ){
 	eocd_log(ERROR,"Not a socket (%s)",sname);
+        error_init = 1;	
 	return;
     }
 
     // Create socket
     if ((s = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
     	eocd_perror("Cannot create socket (%s)",sname);
+        error_init = 1;
 	return;    
     }
 
@@ -41,6 +42,7 @@ app_comm_cli(char *sock_name):app_comm(sock_name)
     len = sizeof(saun.sun_family) + strlen(saun.sun_path);
     if (connect(s,(struct sockaddr*)&saun, len) < 0) {
 	eocd_perror("Cannot connect to (%s)",sname);
+        error_init = 1;
 	return;
     }
     sfd = s;
@@ -56,14 +58,14 @@ complete_wait()
 }
 
 int app_comm_cli::
-send(int conn_num,char *buf,size_t size)
+send(char *buf,size_t size)
 {
     return _send(sfd,buf,size);
 
 }
 
 ssize_t app_comm_cli::
-recv(int &conn_num,char *&buf)
+recv(char *&buf)
 {
     return _recv(sfd,buf);
 }

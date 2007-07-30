@@ -1,5 +1,7 @@
 #include <iostream>
 #include <libconfig.h++>
+
+#include <generic/EOC_generic.h>
 #include <snmp/snmp-generic.h>
 #include <utils/hash_table.h>
 #include <config/EOC_config.h>
@@ -41,7 +43,7 @@ read_config()
     }
 
     //----------- read tick per minute value ------------------//
-    // 1. Check that span_profile group exist
+    // 1. Check that conf_profile group exist
     try{
 	tick_per_min = cfg.lookup("act_per_minute");
 	if( tick_per_min < 0 ){
@@ -64,22 +66,21 @@ read_config()
 	//eoc_log("Unexpected error while parsing \"act_per_minute\" setting in %s",config_file);
 	printf("Unexpected error while parsing  \"act_per_minute\" setting in %s\n",config_file);
 	return -1;
-	
     }
     
     cout << "tick_p_min = " << tick_per_min << endl;
 
     //----------- read span configuration profiles ------------------//
-    // 1. Check that span_profile group exist
+    // 1. Check that conf_profile group exist
     try{
 	Setting &s = cfg.lookup("span_profiles");
     }catch(...){
-        // eoc_log("(%s): cannot found \"span_profiles\" section",config_file);
+        // eoc_log("(%s): cannot found \"conf_profiles\" section",config_file);
         printf("(%s): cannot found \"span_profiles\" section\n",config_file);
         return -1;
     }
 
-    // 2. read all elements of span_profiles
+    // 2. read all elements of conf_profiles
     for(i=0;1;i++){
 	name = NULL;
 	try{
@@ -90,13 +91,36 @@ read_config()
 		printf("Not enougth memory\n");
 		return -1;
 	    }
+	    
 	    int wires = s[i]["wires"];
-	    int min_rate = s[i]["min_rate"];
-	    int max_rate = s[i]["max_rate"];
+	    int min_rate = s[i]["minRate"];
+	    int max_rate = s[i]["maxRate"];
 	    int annex = s[i]["annex"];
-	    int power = s[i]["power"];
-	    int ref_clock = s[i]["ref_clock"];
-	    int line_probe = s[i]["line_probe"];
+	    int power = s[i]["powerSource"];
+	    int ref_clock = s[i]["refClock"];
+	    int line_probe = s[i]["lineProbe"];
+	    int cur_marg_down = s[i]["currCondMargDown"];
+	    int worst_marg_down = s[i]["worstCaseMargDown"];
+	    int cur_marg_up = s[i]["currCondMargUp"];
+	    int worst_marg_up = s[i]["worstCaseMargUp"];
+
+	    int use_cur_down;
+	    int use_worst_down;
+	    int use_cur_up;
+	    int use_worst_up;
+
+	    try{ use_cur_down = s[i]["useCurrCondMargDown"];
+	    }catch(...){ use_cur_down = 0; }
+
+	    try{ use_worst_down = s[i]["useWorseCaseMargDown"];
+	    }catch(...){ use_worst_down = 0; }
+
+	    try{ use_cur_up = s[i]["useCurrCondMargUp"];
+	    }catch(...){ use_cur_up = 0; }
+
+	    try{ use_worst_up = s[i]["useWorseCaseMargUp"];
+	    }catch(...){ use_worst_up = 0; }
+
 	    
 	    // Check input values
 	    if( wires > 4 || wires <= 0 ){
@@ -104,42 +128,55 @@ read_config()
 		printf("(%s): wrong \"wires\" value in %s profile: %d , may be 1-4\n",config_file,name,wires);
 		return -1;
 	    }
-	    if( annex > 3 || annex < 0){
+	    if( annex > 2 || annex <= 0){
 		//eoc_log("(%s): wrong \"annex\" value in %s profile: %d , may be 0-3",config_file,name,annex);
 		printf("(%s): wrong \"wires\" value in %s profile: %d , may be 1-4\n",config_file,name,annex);
 		return -1;
 	    }
 	    	
-	    if( power != 1 && power != 0){
+	    if( power > 3 && power <= 0){
 		//eoc_log("(%s): wrong \"power\" value in %s profile: %d , may be 0,1",config_file,name,power);
 		printf("(%s) wrong \"power\" value in %s profile: %d , may be 0,1\n",config_file,name,power);
 		return -1;
 	    }
 
-	    if( ref_clock > 3 || ref_clock < 0){
+	    if( ref_clock > 4 || ref_clock <= 0){
 		//eoc_log("(%s): wrong \"ref_clock\" value in %s profile: %d , may be 0-3",config_file,name,ref_clock);
 		printf("(%s): wrong \"ref_clock\" value in %s profile: %d , may be 1-4\n",config_file,name,ref_clock);
 		return -1;
 	    }
 	    	
-	    if( line_probe != 1 && line_probe != 0){
+	    if( line_probe != 1 && line_probe != 2){
 		//eoc_log("(%s): wrong \"line_probe\" value in %s profile: %d , may be 0,1",config_file,name,line_probe);
 		printf("(%s): wrong \"line_probe\" value in %s profile: %d , may be 0,1\n",config_file,name,line_probe);
 		return -1;
 	    }
 
-	    span_profile *nprof = new span_profile;
+	    conf_profile *nprof = new conf_profile;
 	    nprof->name = name;
 	    nprof->nsize = strlen(name);
-	    nprof->wires = wires;
-	    nprof->annex = annex;
-	    nprof->power = power;
-	    nprof->ref_clk = ref_clock;
-	    nprof->line_probe = line_probe;
-	    nprof->min_rate = min_rate;
-	    nprof->max_rate = max_rate;
+
+	    nprof->conf.annex = (annex_t)annex;
+	    nprof->conf.wires = (wires_t)wires;
+	    nprof->conf.power = (power_t)power;
+// ????	    nprof->conf.psd = 0;
+	    nprof->conf.clk = (clk_t)ref_clock;
+	    nprof->conf.line_probe = (line_probe_t)line_probe;
+// ????	    nprof->conf.remote_cfg = (remote_cfg_t)rem_cfg; 
+	    nprof->conf.min_rate = max_rate;
+	    nprof->conf.max_rate = min_rate;
+
+	    nprof->conf.use_cur_down = use_cur_down;
+	    nprof->conf.use_worst_down = use_worst_down;
+	    nprof->conf.use_cur_up = use_cur_up;
+	    nprof->conf.use_worst_up = use_worst_up;
+	    
+	    nprof->conf.cur_marg_down = cur_marg_down;
+	    nprof->conf.worst_marg_down = worst_marg_down;
+	    nprof->conf.cur_marg_up = cur_marg_up;
+	    nprof->conf.worst_marg_up = worst_marg_up;
 	    conf_profs.add(nprof);
-	    cout << "ADD: " << name << " " << wires << " " << min_rate << " " << max_rate << " " << annex << " " << power << " " << ref_clock << " " << line_probe << endl;
+
 	}catch(ConfigException& cex){
     	    if( name ){
 		// eoc_log("Error while parsing profile: %s",name);
@@ -363,6 +400,138 @@ poll_channels()
     channels.init_trace();
     while( ( el = (channel_elem*)channels.next_elem()) ){
 	el->eng->schedule();
-    }    
+    }
+}
+
+// ------------ Application requests ------------------------------//
+
+app_frame *EOC_main::
+app_listen()
+{
+
+
+
+
+}
+
+
+int EOC_main::
+app_request(app_frame *fr)
+{
+    if( fr->role() != app_frame::REQUEST )
+	return -1;
+    if( fr->chan_name() )
+	return app_chann_request(fr);
+    switch( fr->id() ){
+    case app_frame::SPAN_CONF_PROF:
+	return app_spanconf_prof(fr);
+    case app_frame::ENDP_ALARM_PROF:
+	return app_spanconf_prof(fr);
+    }
+    return -1;
+}
+
+int EOC_main::
+app_chann_request(app_frame *fr)
+{
+    // check that requested channel exist
+    channel_elem *el = (channel_elem *)
+	    channels.find((char*)fr->chan_name(),strlen(fr->chan_name()));
+    if( !el ) // No such channel on this device
+	return -1;
+    EOC_engine *eng = el->eng;
+    if( eng->get_type() != master ) // Channel do not maintain EOC DB
+	return -1;
+    EOC_engine_act *eng_a = (EOC_engine_act *)eng;
+    eng_a->app_request(fr);
+}
+
+int EOC_main::
+app_spanconf_prof(app_frame *fr)
+{
+    span_conf_prof_payload *p = (span_conf_prof_payload*)fr->payload_ptr();
+    int len = strnlen(p->ProfileName,SNMP_ADMIN_LEN+1);
+
+    conf_profile *prof;
+    switch(fr->type()){
+    case app_frame::GET:
+	if( !len ){
+	    fr->negative();
+	    return 0;
+	}
+	prof = (conf_profile *)conf_profs.find(p->ProfileName,len);
+	if( !prof ){ // No such profile
+	    fr->negative();
+	    return 0;
+	}
+	fr->response();
+	p->conf = prof->conf;
+	return 0;
+    case app_frame::GET_NEXT:
+        if( !len ){ // requested first entry 
+	    prof = (conf_profile *)conf_profs.first();
+	}else{
+	    prof = (conf_profile *)conf_profs.next(p->ProfileName,len);
+	}
+	if( !prof ){
+	    fr->negative();
+	    return 0;
+	}
+	fr->response();
+	p->conf = prof->conf;
+	return 0;
+    case app_frame::SET:
+
+/*
+	1. Узнать есть ли уже этот профиль
+	2. Если нету и не стоит пометка создать имя профиля - сброс
+	3. Если есть - внести изменения
+	4. Все интерфейсы имеющие этот профиль перенастроить
+*/
+	return 0;
+    }
+    
+}     
+
+int EOC_main::
+app_endpalarm_prof(app_frame *fr)
+{
+/*
+    endp_alarm_prof_payload *p = (endp_alarm_prof_payload*)fr->payload_ptr();
+    int len = strnlen(p->ProfileName,SNMP_ADMIN_LEN+1);
+    if( !len )
+    alarm_profile *prof;
+    switch(fr->type()){
+    case app_frame::GET:
+	prof = (alarm_profile *)alarm_profs.find(p->ProfileName,len);
+	if( !prof ){ // No such profile
+	    fr->negative();
+	    return 0;
+	}
+	fr->response();
+	p->alarm = prof->alarm;
+	return 0;
+    case app_frame::GET_NEXT:
+        if( !len ){ // requested first entry 
+	    prof = (alarm_profile *)alarm_profs.first();
+	}else{
+	    prof = (alarm_profile *)alarm_profs.next(p->ProfileName,len);
+	}
+	if( !prof ){
+	    fr->negative();
+	    return 0;
+	}
+	fr->response();
+	p->alarm = prof->alarm;
+	return 0;
+    case app_frame::SET:
+	return 0;
+/*	1. Узнать есть ли уже этот профиль
+	2. Если нету и не стоит пометка создать имя профиля - сброс
+	3. Если есть - внести изменения
+	4. Все интерфейсы имеющие этот профиль перенастроить
+    }
+*/
+    return 0;    
 }
 

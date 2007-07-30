@@ -1,116 +1,349 @@
-DISCOVERY_RESP FROM(1): hop=1,resl=0,vendor_id=134578468,fwd_loss=0
-DISCOVERY_RESP FROM(3): hop=1,resl=0,vendor_id=134578356,fwd_loss=0
-DISCOVERY_RESP FROM(4): hop=2,resl=0,vendor_id=134578492,fwd_loss=0
-m-ns: loop_attn(10) snr_marg(10)
-CONFIGURE_RESP FROM(1), loop(10),snr(10)
-DISCOVERY_RESP FROM(5): hop=3,resl=0,vendor_id=134579084,fwd_loss=0
-DISCOVERY_RESP FROM(6): hop=4,resl=0,vendor_id=134579940,fwd_loss=0
-r1-ns: loop_attn(10) snr_marg(10)
-r1-cs: loop_attn(10) snr_marg(10)
-CONFIGURE_RESP FROM(3), loop(10),snr(10)
-DISCOVERY_RESP FROM(7): hop=5,resl=0,vendor_id=134580172,fwd_loss=0
-DISCOVERY_RESP FROM(8): hop=6,resl=0,vendor_id=134579084,fwd_loss=0
-r2-ns: loop_attn(10) snr_marg(10)
-r2-cs: loop_attn(10) snr_marg(10)
-DISCOVERY_RESP FROM(9): hop=7,resl=0,vendor_id=134580172,fwd_loss=0
-CONFIGURE_RESP FROM(4), loop(10),snr(10)
-DISCOVERY_RESP FROM(2): hop=8,resl=0,vendor_id=134582292,fwd_loss=0
-r3-ns: loop_attn(10) snr_marg(10)
-r3-cs: loop_attn(10) snr_marg(10)
-r4-ns: loop_attn(10) snr_marg(10)
-r4-cs: loop_attn(10) snr_marg(10)
-CONFIGURE_RESP FROM(5), loop(10),snr(10)
-r5-ns: loop_attn(10) snr_marg(10)
-r5-cs: loop_attn(10) snr_marg(10)
-CONFIGURE_RESP FROM(6), loop(10),snr(10)
-r6-ns: loop_attn(10) snr_marg(10)
-r6-cs: loop_attn(10) snr_marg(10)
-r7-ns: loop_attn(10) snr_marg(10)
-r7-cs: loop_attn(10) snr_marg(10)
-s-cs: loop_attn(10) snr_marg(10)
-CONFIGURE_RESP FROM(7), loop(10),snr(10)
-CONFIGURE_RESP FROM(8), loop(10),snr(10)
-CONFIGURE_RESP FROM(9), loop(10),snr(10)
-Jump Normal
-CONFIGURE_RESP FROM(2), loop(10),snr(10)
---------------------------------------
-FIND_DEL: clear src(15) dst(1) type(140) tstamp(4)
-RESCHED: src(15) dst(1) type(140) ts(4)
-FIND_DEL: clear src(15) dst(1) type(141) tstamp(4)
-RESCHED: src(15) dst(1) type(141) ts(4)
-FIND_DEL: clear src(15) dst(1) type(137) tstamp(4)
-RESCHED: src(15) dst(1) type(137) ts(4)
-FIND_DEL: clear src(15) dst(1) type(9) tstamp(4)
-RESCHED: src(15) dst(1) type(9) ts(4)
-FIND_DEL: clear src(15) dst(1) type(140) tstamp(105)
-RESCHED: src(15) dst(1) type(140) ts(105)
-FIND_DEL: clear src(15) dst(1) type(141) tstamp(105)
-RESCHED: src(15) dst(1) type(141) ts(105)
-FIND_DEL: clear src(15) dst(1) type(137) tstamp(105)
-RESCHED: src(15) dst(1) type(137) ts(105)
-FIND_DEL: clear src(15) dst(1) type(9) tstamp(105)
-RESCHED: src(15) dst(1) type(9) ts(105)
-FIND_DEL: clear src(15) dst(1) type(140) tstamp(206)
-RESCHED: src(15) dst(1) type(140) ts(206)
-FIND_DEL: clear src(15) dst(1) type(141) tstamp(206)
-RESCHED: src(15) dst(1) type(141) ts(206)
-FIND_DEL: clear src(15) dst(1) type(137) tstamp(206)
-RESCHED: src(15) dst(1) type(137) ts(206)
-FIND_DEL: clear src(15) dst(1) type(9) tstamp(206)
-RESCHED: src(15) dst(1) type(9) ts(206)
-FIND_DEL: clear src(15) dst(1) type(140) tstamp(307)
-RESCHED: src(15) dst(1) type(140) ts(307)
-FIND_DEL: clear src(15) dst(1) type(141) tstamp(307)
-RESCHED: src(15) dst(1) type(141) ts(307)
-FIND_DEL: clear src(15) dst(1) type(137) tstamp(307)
-RESCHED: src(15) dst(1) type(137) ts(307)
-FIND_DEL: clear src(15) dst(1) type(9) tstamp(307)
-RESCHED: src(15) dst(1) type(9) ts(307)
-FIND_DEL: clear src(15) dst(1) type(140) tstamp(408)
-RESCHED: src(15) dst(1) type(140) ts(408)
-FIND_DEL: clear src(15) dst(1) type(141) tstamp(408)
-RESCHED: src(15) dst(1) type(141) ts(408)
-FIND_DEL: clear src(15) dst(1) type(137) tstamp(408)
-RESCHED: src(15) dst(1) type(137) ts(408)
-FIND_DEL: clear src(15) dst(1) type(9) tstamp(408)
-RESCHED: src(15) dst(1) type(9) ts(408)
-FIND_DEL: clear src(15) dst(1) type(140) tstamp(509)
-RESCHED: src(15) dst(1) type(140) ts(509)
-FIND_DEL: clear src(15) dst(1) type(141) tstamp(509)
-RESCHED: src(15) dst(1) type(141) ts(509)
-FIND_DEL: clear src(15) dst(1) type(137) tstamp(509)
-RESCHED: src(15) dst(1) type(137) ts(509)
-FIND_DEL: clear src(15) dst(1) type(9) tstamp(509)
-RESCHED: src(15) dst(1) type(9) ts(509)
-FIND_DEL: clear src(15) dst(1) type(140) tstamp(610)
-RESCHED: src(15) dst(1) type(140) ts(610)
-FIND_DEL: clear src(15) dst(1) type(141) tstamp(610)
-RESCHED: src(15) dst(1) type(141) ts(610)
-FIND_DEL: clear src(15) dst(1) type(137) tstamp(610)
-RESCHED: src(15) dst(1) type(137) ts(610)
-FIND_DEL: clear src(15) dst(1) type(9) tstamp(610)
-RESCHED: src(15) dst(1) type(9) ts(610)
-FIND_DEL: clear src(15) dst(1) type(140) tstamp(711)
-RESCHED: src(15) dst(1) type(140) ts(711)
-FIND_DEL: clear src(15) dst(1) type(141) tstamp(711)
-RESCHED: src(15) dst(1) type(141) ts(711)
-FIND_DEL: clear src(15) dst(1) type(137) tstamp(711)
-RESCHED: src(15) dst(1) type(137) ts(711)
-FIND_DEL: clear src(15) dst(1) type(9) tstamp(711)
-RESCHED: src(15) dst(1) type(9) ts(711)
-FIND_DEL: clear src(15) dst(1) type(140) tstamp(812)
-RESCHED: src(15) dst(1) type(140) ts(812)
-FIND_DEL: clear src(15) dst(1) type(141) tstamp(812)
-RESCHED: src(15) dst(1) type(141) ts(812)
-FIND_DEL: clear src(15) dst(1) type(137) tstamp(812)
-RESCHED: src(15) dst(1) type(137) ts(812)
-FIND_DEL: clear src(15) dst(1) type(9) tstamp(812)
-RESCHED: src(15) dst(1) type(9) ts(812)
-FIND_DEL: clear src(15) dst(1) type(140) tstamp(913)
-RESCHED: src(15) dst(1) type(140) ts(913)
-FIND_DEL: clear src(15) dst(1) type(141) tstamp(913)
-RESCHED: src(15) dst(1) type(141) ts(913)
-FIND_DEL: clear src(15) dst(1) type(137) tstamp(913)
-RESCHED: src(15) dst(1) type(137) ts(913)
-FIND_DEL: clear src(15) dst(1) type(9) tstamp(913)
-RESCHED: src(15) dst(1) type(9) ts(913)
+make -C generic/ INCLUDES=/home/artpol/work/snmp/eocd/eocd/include/ TOPDIR=/home/artpol/work/snmp/eocd/eocd CPPFLAGS="-g -I/home/artpol/work/snmp/eocd/eocd/include/"
+make[1]: Entering directory `/home/artpol/work/snmp/eocd/eocd/generic'
+cp EOC_msg.o /home/artpol/work/snmp/eocd/eocd/build
+make[1]: Leaving directory `/home/artpol/work/snmp/eocd/eocd/generic'
+make -C engine/ INCLUDES=/home/artpol/work/snmp/eocd/eocd/include/ TOPDIR=/home/artpol/work/snmp/eocd/eocd CPPFLAGS="-g -I/home/artpol/work/snmp/eocd/eocd/include/"
+make[1]: Entering directory `/home/artpol/work/snmp/eocd/eocd/engine'
+make -C poller TOPDIR=/home/artpol/work/snmp/eocd/eocd
+make[2]: Entering directory `/home/artpol/work/snmp/eocd/eocd/engine/poller'
+cp EOC_scheduler.o EOC_poller.o EOC_poller_req.o /home/artpol/work/snmp/eocd/eocd/build
+make[2]: Leaving directory `/home/artpol/work/snmp/eocd/eocd/engine/poller'
+cp EOC_router.o EOC_engine.o EOC_engine_act.o /home/artpol/work/snmp/eocd/eocd/build
+make -C responder TOPDIR=/home/artpol/work/snmp/eocd/eocd
+make[2]: Entering directory `/home/artpol/work/snmp/eocd/eocd/engine/responder'
+cp EOC_resp_handlers.o /home/artpol/work/snmp/eocd/eocd/build
+make[2]: Leaving directory `/home/artpol/work/snmp/eocd/eocd/engine/responder'
+make[1]: Leaving directory `/home/artpol/work/snmp/eocd/eocd/engine'
+make -C devs/ INCLUDES=/home/artpol/work/snmp/eocd/eocd/include/ TOPDIR=/home/artpol/work/snmp/eocd/eocd CPPFLAGS="-g -I/home/artpol/work/snmp/eocd/eocd/include/"
+make[1]: Entering directory `/home/artpol/work/snmp/eocd/eocd/devs'
+make -C MR17H INCLUDES=/home/artpol/work/snmp/eocd/eocd/include/ TOPDIR=/home/artpol/work/snmp/eocd/eocd CPPFLAGS="-g -I/home/artpol/work/snmp/eocd/eocd/include/"
+make[2]: Entering directory `/home/artpol/work/snmp/eocd/eocd/devs/MR17H'
+cp EOC_sg17.o /home/artpol/work/snmp/eocd/eocd/build
+make[2]: Leaving directory `/home/artpol/work/snmp/eocd/eocd/devs/MR17H'
+make -C dummy INCLUDES=/home/artpol/work/snmp/eocd/eocd/include/ TOPDIR=/home/artpol/work/snmp/eocd/eocd CPPFLAGS="-g -I/home/artpol/work/snmp/eocd/eocd/include/"
+make[2]: Entering directory `/home/artpol/work/snmp/eocd/eocd/devs/dummy'
+cp EOC_dummy.o EOC_dummy1.o /home/artpol/work/snmp/eocd/eocd/build
+make[2]: Leaving directory `/home/artpol/work/snmp/eocd/eocd/devs/dummy'
+make[1]: Leaving directory `/home/artpol/work/snmp/eocd/eocd/devs'
+make -C utils/ INCLUDES=/home/artpol/work/snmp/eocd/eocd/include/ TOPDIR=/home/artpol/work/snmp/eocd/eocd CPPFLAGS="-g -I/home/artpol/work/snmp/eocd/eocd/include/"
+make[1]: Entering directory `/home/artpol/work/snmp/eocd/eocd/utils'
+cp hash_table.o /home/artpol/work/snmp/eocd/eocd/build
+make[1]: Leaving directory `/home/artpol/work/snmp/eocd/eocd/utils'
+g++  -g -I/home/artpol/work/snmp/eocd/eocd/include/  -c -o EOC_main.o EOC_main.cpp
+In file included from EOC_main.cpp:14:
+/home/artpol/work/snmp/eocd/eocd/include/channel.h:23:7: warning: no newline at end of file
+EOC_main.cpp:477: ошибка: stray ‘\320’ in program
+EOC_main.cpp:477: ошибка: stray ‘\243’ in program
+EOC_main.cpp:477: ошибка: stray ‘\320’ in program
+EOC_main.cpp:477: ошибка: stray ‘\267’ in program
+EOC_main.cpp:477: ошибка: stray ‘\320’ in program
+EOC_main.cpp:477: ошибка: stray ‘\275’ in program
+EOC_main.cpp:477: ошибка: stray ‘\320’ in program
+EOC_main.cpp:477: ошибка: stray ‘\260’ in program
+EOC_main.cpp:477: ошибка: stray ‘\321’ in program
+EOC_main.cpp:477: ошибка: stray ‘\202’ in program
+EOC_main.cpp:477: ошибка: stray ‘\321’ in program
+EOC_main.cpp:477: ошибка: stray ‘\214’ in program
+EOC_main.cpp:477: ошибка: stray ‘\320’ in program
+EOC_main.cpp:477: ошибка: stray ‘\265’ in program
+EOC_main.cpp:477: ошибка: stray ‘\321’ in program
+EOC_main.cpp:477: ошибка: stray ‘\201’ in program
+EOC_main.cpp:477: ошибка: stray ‘\321’ in program
+EOC_main.cpp:477: ошибка: stray ‘\202’ in program
+EOC_main.cpp:477: ошибка: stray ‘\321’ in program
+EOC_main.cpp:477: ошибка: stray ‘\214’ in program
+EOC_main.cpp:477: ошибка: stray ‘\320’ in program
+EOC_main.cpp:477: ошибка: stray ‘\273’ in program
+EOC_main.cpp:477: ошибка: stray ‘\320’ in program
+EOC_main.cpp:477: ошибка: stray ‘\270’ in program
+EOC_main.cpp:477: ошибка: stray ‘\321’ in program
+EOC_main.cpp:477: ошибка: stray ‘\203’ in program
+EOC_main.cpp:477: ошибка: stray ‘\320’ in program
+EOC_main.cpp:477: ошибка: stray ‘\266’ in program
+EOC_main.cpp:477: ошибка: stray ‘\320’ in program
+EOC_main.cpp:477: ошибка: stray ‘\265’ in program
+EOC_main.cpp:477: ошибка: stray ‘\321’ in program
+EOC_main.cpp:477: ошибка: stray ‘\215’ in program
+EOC_main.cpp:477: ошибка: stray ‘\321’ in program
+EOC_main.cpp:477: ошибка: stray ‘\202’ in program
+EOC_main.cpp:477: ошибка: stray ‘\320’ in program
+EOC_main.cpp:477: ошибка: stray ‘\276’ in program
+EOC_main.cpp:477: ошибка: stray ‘\321’ in program
+EOC_main.cpp:477: ошибка: stray ‘\202’ in program
+EOC_main.cpp:477: ошибка: stray ‘\320’ in program
+EOC_main.cpp:477: ошибка: stray ‘\277’ in program
+EOC_main.cpp:477: ошибка: stray ‘\321’ in program
+EOC_main.cpp:477: ошибка: stray ‘\200’ in program
+EOC_main.cpp:477: ошибка: stray ‘\320’ in program
+EOC_main.cpp:477: ошибка: stray ‘\276’ in program
+EOC_main.cpp:477: ошибка: stray ‘\321’ in program
+EOC_main.cpp:477: ошибка: stray ‘\204’ in program
+EOC_main.cpp:477: ошибка: stray ‘\320’ in program
+EOC_main.cpp:477: ошибка: stray ‘\270’ in program
+EOC_main.cpp:477: ошибка: stray ‘\320’ in program
+EOC_main.cpp:477: ошибка: stray ‘\273’ in program
+EOC_main.cpp:477: ошибка: stray ‘\321’ in program
+EOC_main.cpp:477: ошибка: stray ‘\214’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\225’ in program
+EOC_main.cpp:478: ошибка: stray ‘\321’ in program
+EOC_main.cpp:478: ошибка: stray ‘\201’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\273’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\270’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\275’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\265’ in program
+EOC_main.cpp:478: ошибка: stray ‘\321’ in program
+EOC_main.cpp:478: ошибка: stray ‘\202’ in program
+EOC_main.cpp:478: ошибка: stray ‘\321’ in program
+EOC_main.cpp:478: ошибка: stray ‘\203’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\270’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\275’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\265’ in program
+EOC_main.cpp:478: ошибка: stray ‘\321’ in program
+EOC_main.cpp:478: ошибка: stray ‘\201’ in program
+EOC_main.cpp:478: ошибка: stray ‘\321’ in program
+EOC_main.cpp:478: ошибка: stray ‘\202’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\276’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\270’ in program
+EOC_main.cpp:478: ошибка: stray ‘\321’ in program
+EOC_main.cpp:478: ошибка: stray ‘\202’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\277’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\276’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\274’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\265’ in program
+EOC_main.cpp:478: ошибка: stray ‘\321’ in program
+EOC_main.cpp:478: ошибка: stray ‘\202’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\272’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\260’ in program
+EOC_main.cpp:478: ошибка: stray ‘\321’ in program
+EOC_main.cpp:478: ошибка: stray ‘\201’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\276’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\267’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\264’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\260’ in program
+EOC_main.cpp:478: ошибка: stray ‘\321’ in program
+EOC_main.cpp:478: ошибка: stray ‘\202’ in program
+EOC_main.cpp:478: ошибка: stray ‘\321’ in program
+EOC_main.cpp:478: ошибка: stray ‘\214’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\270’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\274’ in program
+EOC_main.cpp:478: ошибка: stray ‘\321’ in program
+EOC_main.cpp:478: ошибка: stray ‘\217’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\277’ in program
+EOC_main.cpp:478: ошибка: stray ‘\321’ in program
+EOC_main.cpp:478: ошибка: stray ‘\200’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\276’ in program
+EOC_main.cpp:478: ошибка: stray ‘\321’ in program
+EOC_main.cpp:478: ошибка: stray ‘\204’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\270’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\273’ in program
+EOC_main.cpp:478: ошибка: stray ‘\321’ in program
+EOC_main.cpp:478: ошибка: stray ‘\217’ in program
+EOC_main.cpp:478: ошибка: stray ‘\321’ in program
+EOC_main.cpp:478: ошибка: stray ‘\201’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\261’ in program
+EOC_main.cpp:478: ошибка: stray ‘\321’ in program
+EOC_main.cpp:478: ошибка: stray ‘\200’ in program
+EOC_main.cpp:478: ошибка: stray ‘\320’ in program
+EOC_main.cpp:478: ошибка: stray ‘\276’ in program
+EOC_main.cpp:478: ошибка: stray ‘\321’ in program
+EOC_main.cpp:478: ошибка: stray ‘\201’ in program
+EOC_main.cpp:479: ошибка: stray ‘\320’ in program
+EOC_main.cpp:479: ошибка: stray ‘\225’ in program
+EOC_main.cpp:479: ошибка: stray ‘\321’ in program
+EOC_main.cpp:479: ошибка: stray ‘\201’ in program
+EOC_main.cpp:479: ошибка: stray ‘\320’ in program
+EOC_main.cpp:479: ошибка: stray ‘\273’ in program
+EOC_main.cpp:479: ошибка: stray ‘\320’ in program
+EOC_main.cpp:479: ошибка: stray ‘\270’ in program
+EOC_main.cpp:479: ошибка: stray ‘\320’ in program
+EOC_main.cpp:479: ошибка: stray ‘\265’ in program
+EOC_main.cpp:479: ошибка: stray ‘\321’ in program
+EOC_main.cpp:479: ошибка: stray ‘\201’ in program
+EOC_main.cpp:479: ошибка: stray ‘\321’ in program
+EOC_main.cpp:479: ошибка: stray ‘\202’ in program
+EOC_main.cpp:479: ошибка: stray ‘\321’ in program
+EOC_main.cpp:479: ошибка: stray ‘\214’ in program
+EOC_main.cpp:479: ошибка: stray ‘\320’ in program
+EOC_main.cpp:479: ошибка: stray ‘\262’ in program
+EOC_main.cpp:479: ошибка: stray ‘\320’ in program
+EOC_main.cpp:479: ошибка: stray ‘\275’ in program
+EOC_main.cpp:479: ошибка: stray ‘\320’ in program
+EOC_main.cpp:479: ошибка: stray ‘\265’ in program
+EOC_main.cpp:479: ошибка: stray ‘\321’ in program
+EOC_main.cpp:479: ошибка: stray ‘\201’ in program
+EOC_main.cpp:479: ошибка: stray ‘\321’ in program
+EOC_main.cpp:479: ошибка: stray ‘\202’ in program
+EOC_main.cpp:479: ошибка: stray ‘\320’ in program
+EOC_main.cpp:479: ошибка: stray ‘\270’ in program
+EOC_main.cpp:479: ошибка: stray ‘\320’ in program
+EOC_main.cpp:479: ошибка: stray ‘\270’ in program
+EOC_main.cpp:479: ошибка: stray ‘\320’ in program
+EOC_main.cpp:479: ошибка: stray ‘\267’ in program
+EOC_main.cpp:479: ошибка: stray ‘\320’ in program
+EOC_main.cpp:479: ошибка: stray ‘\274’ in program
+EOC_main.cpp:479: ошибка: stray ‘\320’ in program
+EOC_main.cpp:479: ошибка: stray ‘\265’ in program
+EOC_main.cpp:479: ошибка: stray ‘\320’ in program
+EOC_main.cpp:479: ошибка: stray ‘\275’ in program
+EOC_main.cpp:479: ошибка: stray ‘\320’ in program
+EOC_main.cpp:479: ошибка: stray ‘\265’ in program
+EOC_main.cpp:479: ошибка: stray ‘\320’ in program
+EOC_main.cpp:479: ошибка: stray ‘\275’ in program
+EOC_main.cpp:479: ошибка: stray ‘\320’ in program
+EOC_main.cpp:479: ошибка: stray ‘\270’ in program
+EOC_main.cpp:479: ошибка: stray ‘\321’ in program
+EOC_main.cpp:479: ошибка: stray ‘\217’ in program
+EOC_main.cpp:480: ошибка: stray ‘\320’ in program
+EOC_main.cpp:480: ошибка: stray ‘\222’ in program
+EOC_main.cpp:480: ошибка: stray ‘\321’ in program
+EOC_main.cpp:480: ошибка: stray ‘\201’ in program
+EOC_main.cpp:480: ошибка: stray ‘\320’ in program
+EOC_main.cpp:480: ошибка: stray ‘\265’ in program
+EOC_main.cpp:480: ошибка: stray ‘\320’ in program
+EOC_main.cpp:480: ошибка: stray ‘\270’ in program
+EOC_main.cpp:480: ошибка: stray ‘\320’ in program
+EOC_main.cpp:480: ошибка: stray ‘\275’ in program
+EOC_main.cpp:480: ошибка: stray ‘\321’ in program
+EOC_main.cpp:480: ошибка: stray ‘\202’ in program
+EOC_main.cpp:480: ошибка: stray ‘\320’ in program
+EOC_main.cpp:480: ошибка: stray ‘\265’ in program
+EOC_main.cpp:480: ошибка: stray ‘\321’ in program
+EOC_main.cpp:480: ошибка: stray ‘\200’ in program
+EOC_main.cpp:480: ошибка: stray ‘\321’ in program
+EOC_main.cpp:480: ошибка: stray ‘\204’ in program
+EOC_main.cpp:480: ошибка: stray ‘\320’ in program
+EOC_main.cpp:480: ошибка: stray ‘\265’ in program
+EOC_main.cpp:480: ошибка: stray ‘\320’ in program
+EOC_main.cpp:480: ошибка: stray ‘\271’ in program
+EOC_main.cpp:480: ошибка: stray ‘\321’ in program
+EOC_main.cpp:480: ошибка: stray ‘\201’ in program
+EOC_main.cpp:480: ошибка: stray ‘\321’ in program
+EOC_main.cpp:480: ошибка: stray ‘\213’ in program
+EOC_main.cpp:480: ошибка: stray ‘\320’ in program
+EOC_main.cpp:480: ошибка: stray ‘\270’ in program
+EOC_main.cpp:480: ошибка: stray ‘\320’ in program
+EOC_main.cpp:480: ошибка: stray ‘\274’ in program
+EOC_main.cpp:480: ошибка: stray ‘\320’ in program
+EOC_main.cpp:480: ошибка: stray ‘\265’ in program
+EOC_main.cpp:480: ошибка: stray ‘\321’ in program
+EOC_main.cpp:480: ошибка: stray ‘\216’ in program
+EOC_main.cpp:480: ошибка: stray ‘\321’ in program
+EOC_main.cpp:480: ошибка: stray ‘\211’ in program
+EOC_main.cpp:480: ошибка: stray ‘\320’ in program
+EOC_main.cpp:480: ошибка: stray ‘\270’ in program
+EOC_main.cpp:480: ошибка: stray ‘\320’ in program
+EOC_main.cpp:480: ошибка: stray ‘\265’ in program
+EOC_main.cpp:480: ошибка: stray ‘\321’ in program
+EOC_main.cpp:480: ошибка: stray ‘\215’ in program
+EOC_main.cpp:480: ошибка: stray ‘\321’ in program
+EOC_main.cpp:480: ошибка: stray ‘\202’ in program
+EOC_main.cpp:480: ошибка: stray ‘\320’ in program
+EOC_main.cpp:480: ошибка: stray ‘\276’ in program
+EOC_main.cpp:480: ошибка: stray ‘\321’ in program
+EOC_main.cpp:480: ошибка: stray ‘\202’ in program
+EOC_main.cpp:480: ошибка: stray ‘\320’ in program
+EOC_main.cpp:480: ошибка: stray ‘\277’ in program
+EOC_main.cpp:480: ошибка: stray ‘\321’ in program
+EOC_main.cpp:480: ошибка: stray ‘\200’ in program
+EOC_main.cpp:480: ошибка: stray ‘\320’ in program
+EOC_main.cpp:480: ошибка: stray ‘\276’ in program
+EOC_main.cpp:480: ошибка: stray ‘\321’ in program
+EOC_main.cpp:480: ошибка: stray ‘\204’ in program
+EOC_main.cpp:480: ошибка: stray ‘\320’ in program
+EOC_main.cpp:480: ошибка: stray ‘\270’ in program
+EOC_main.cpp:480: ошибка: stray ‘\320’ in program
+EOC_main.cpp:480: ошибка: stray ‘\273’ in program
+EOC_main.cpp:480: ошибка: stray ‘\321’ in program
+EOC_main.cpp:480: ошибка: stray ‘\214’ in program
+EOC_main.cpp:480: ошибка: stray ‘\320’ in program
+EOC_main.cpp:480: ошибка: stray ‘\277’ in program
+EOC_main.cpp:480: ошибка: stray ‘\320’ in program
+EOC_main.cpp:480: ошибка: stray ‘\265’ in program
+EOC_main.cpp:480: ошибка: stray ‘\321’ in program
+EOC_main.cpp:480: ошибка: stray ‘\200’ in program
+EOC_main.cpp:480: ошибка: stray ‘\320’ in program
+EOC_main.cpp:480: ошибка: stray ‘\265’ in program
+EOC_main.cpp:480: ошибка: stray ‘\320’ in program
+EOC_main.cpp:480: ошибка: stray ‘\275’ in program
+EOC_main.cpp:480: ошибка: stray ‘\320’ in program
+EOC_main.cpp:480: ошибка: stray ‘\260’ in program
+EOC_main.cpp:480: ошибка: stray ‘\321’ in program
+EOC_main.cpp:480: ошибка: stray ‘\201’ in program
+EOC_main.cpp:480: ошибка: stray ‘\321’ in program
+EOC_main.cpp:480: ошибка: stray ‘\202’ in program
+EOC_main.cpp:480: ошибка: stray ‘\321’ in program
+EOC_main.cpp:480: ошибка: stray ‘\200’ in program
+EOC_main.cpp:480: ошибка: stray ‘\320’ in program
+EOC_main.cpp:480: ошибка: stray ‘\276’ in program
+EOC_main.cpp:480: ошибка: stray ‘\320’ in program
+EOC_main.cpp:480: ошибка: stray ‘\270’ in program
+EOC_main.cpp:480: ошибка: stray ‘\321’ in program
+EOC_main.cpp:480: ошибка: stray ‘\202’ in program
+EOC_main.cpp:480: ошибка: stray ‘\321’ in program
+EOC_main.cpp:480: ошибка: stray ‘\214’ in program
+EOC_main.cpp: In member function ‘int EOC_main::read_config()’:
+EOC_main.cpp:133: ошибка: нет декларации ‘span_profile’ в этой области видимости
+EOC_main.cpp:133: ошибка: нет декларации ‘nprof’ в этой области видимости
+EOC_main.cpp:133: ошибка: expected type-specifier before ‘span_profile’
+EOC_main.cpp:133: ошибка: expected `;' before ‘span_profile’
+EOC_main.cpp: At global scope:
+EOC_main.cpp:373: ошибка: no ‘int EOC_main::app_request(app_frame*)’ member function declared in class ‘EOC_main’
+EOC_main.cpp: In member function ‘int EOC_main::app_request(app_frame*)’:
+EOC_main.cpp:378: ошибка: нет декларации ‘app_channel_request’ в этой области видимости
+EOC_main.cpp:381: ошибка: нет декларации ‘app_spanconf_prof’ в этой области видимости
+EOC_main.cpp: At global scope:
+EOC_main.cpp:389: ошибка: no ‘int EOC_main::app_chann_request(app_frame*)’ member function declared in class ‘EOC_main’
+EOC_main.cpp: In member function ‘int EOC_main::app_chann_request(app_frame*)’:
+EOC_main.cpp:393: ошибка: некорректное преобразование из ‘const char*’ в ‘char*’
+EOC_main.cpp:393: ошибка:   при инициализации 1 -го аргумента ‘hash_elem* hash_table::find(char*, int)’
+EOC_main.cpp: At global scope:
+EOC_main.cpp:404: ошибка: no ‘int EOC_main::app_spanconf_prof(EOC_main*, app_frame*)’ member function declared in class ‘EOC_main’
+EOC_main.cpp: In member function ‘int EOC_main::app_spanconf_prof(EOC_main*, app_frame*)’:
+EOC_main.cpp:412: ошибка: нет декларации ‘prof’ в этой области видимости
+EOC_main.cpp:422: ошибка: ‘class hash_table’ has no member named ‘first’
+EOC_main.cpp:424: ошибка: ‘class hash_table’ has no member named ‘next’
+EOC_main.cpp:431: ошибка: нет декларации ‘prof_conf’ в этой области видимости
+EOC_main.cpp: At global scope:
+EOC_main.cpp:447: ошибка: no ‘int EOC_main::app_endpalarm_prof(EOC_main*, app_frame*)’ member function declared in class ‘EOC_main’
+EOC_main.cpp: In member function ‘int EOC_main::app_endpalarm_prof(EOC_main*, app_frame*)’:
+EOC_main.cpp:452: ошибка: нет декларации ‘alarm_profile’ в этой области видимости
+EOC_main.cpp:452: ошибка: нет декларации ‘prof’ в этой области видимости
+EOC_main.cpp:455: ошибка: нет декларации ‘prof’ в этой области видимости
+EOC_main.cpp:455: ошибка: нет декларации ‘alarm_profile’ в этой области видимости
+EOC_main.cpp:455: ошибка: expected primary-expression before ‘)’ token
+EOC_main.cpp:455: ошибка: expected `;' before ‘main’
+EOC_main.cpp:461: ошибка: ‘struct endp_alarm_prof_payload’ has no member named ‘alarm’
+EOC_main.cpp:465: ошибка: expected primary-expression before ‘)’ token
+EOC_main.cpp:465: ошибка: expected `;' before ‘main’
+EOC_main.cpp:467: ошибка: expected primary-expression before ‘)’ token
+EOC_main.cpp:467: ошибка: expected `;' before ‘main’
+EOC_main.cpp:474: ошибка: ‘struct endp_alarm_prof_payload’ has no member named ‘alarm’
+EOC_main.cpp:478: ошибка: expected `;' before numeric constant
+make: *** [EOC_main.o] Ошибка 1

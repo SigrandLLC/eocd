@@ -12,16 +12,16 @@
 #include <engine/EOC_handlers.h>
 #include <db/EOC_db.h>
 
-int
-EOC_poller::register_request(u8 type,request_handler_t h)
+int EOC_poller::
+register_request(u8 type,request_handler_t h)
 {
     if( type >=REQUEST_QUAN || req_hndl[type] )
 	return -1;
     req_hndl[type] = h;
 }
 
-int
-EOC_poller::unregister_request(u8 type)
+int EOC_poller::
+unregister_request(u8 type)
 {
     if( type >=REQUEST_QUAN || !req_hndl[type] )
 	return -1;
@@ -29,8 +29,8 @@ EOC_poller::unregister_request(u8 type)
     return 0;
 }
 
-EOC_msg *
-EOC_poller::gen_request(){
+EOC_msg * EOC_poller::
+gen_request(){
     sched_elem el;
     int ind;
     // get request
@@ -47,8 +47,8 @@ EOC_poller::gen_request(){
     return req_hndl[el.type](sch->state(),el,cfg);
 }
 
-int
-EOC_poller::process_msg(EOC_msg *m)
+int EOC_poller::
+process_msg(EOC_msg *m)
 {
     // Check that we have assosiated handler 
     // & we request this response
@@ -60,3 +60,47 @@ EOC_poller::process_msg(EOC_msg *m)
     // commit changes to EOC DataBase
     return db->response(m);
 }
+
+int EOC_poller::
+app_request(app_frame *fr)
+{
+
+    switch(fr->id()){
+    case app_frame::SPAN_CONF:
+    {
+	span_conf_payload *p = (span_conf_payload*)fr->payload_ptr();
+	p->nreps = cfg->reps();
+	strncpy(p->conf_prof,cfg->conf_prof_name(),SNMP_ADMIN_LEN);
+	strncpy(p->alarm_prof,cfg->alarm_prof_name(),SNMP_ADMIN_LEN);
+	break;
+    }
+    case app_frame::SPAN_STATUS:
+    {
+	span_status_payload *p = (span_status_payload*)fr->payload_ptr();
+	p->nreps = db->unit_quan() - 2;
+	// TODO get thisinfo from device
+	p->max_lrate = 0;
+	p->act_lrate = 0;
+	p->region0 = 1;
+	p->region1 = 1;
+	p->max_prate = 0;
+	p->act_prate = 0; 
+	fr->response();
+	break;
+    }
+    case app_frame::ENDP_CONF:
+    {
+	endp_conf_payload *p = (endp_conf_payload*)fr->payload_ptr();
+	if( db->check_exist((unit)p->unit,(EOC_unit::Sides)p->side,p->loop) ){
+	    fr->negative();
+	    return 0;
+	}
+	strncpy(p->alarm_prof,cfg->alarm_prof_name(),SNMP_ADMIN_LEN);
+	break;
+    }
+    default:
+	return db->app_request(fr);
+    }
+    return 0;
+}
+

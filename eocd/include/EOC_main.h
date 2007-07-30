@@ -3,6 +3,8 @@
 
 #include <utils/hash_table.h>
 #include <snmp/snmp-generic.h>
+#include <app-interface/app_frame.h>
+#include <app-interface/app_comm_srv.h>
 
 
 // TODO: consult for OS about this values
@@ -20,9 +22,10 @@ protected:
     hash_table conf_profs;
     hash_table alarm_profs;
     hash_table channels;
+    app_comm_srv srv;
 public:
     EOC_main(char *cfg) : conf_profs(SNMP_ADMIN_LEN), alarm_profs(SNMP_ADMIN_LEN),
-		     channels(MAX_IF_NAME_LEN){
+		     channels(MAX_IF_NAME_LEN), srv("./","socket"){
 	strncpy(config_file,cfg,MAX_FNAME);
 	config_file[MAX_FNAME-1] = '\0';
 	read_config();
@@ -39,6 +42,13 @@ public:
     int add_master(char *ch_name, char *conf,char *alarm,int reps,int tick);
     // process channels
     int poll_channels();
+
+    app_frame *app_listen();
+    int app_request(app_frame *fr);
+    int app_chann_request(app_frame *fr);
+    int app_spanconf_prof(app_frame *fr);
+    int app_endpalarm_prof(app_frame *fr);
+
 };
 
 

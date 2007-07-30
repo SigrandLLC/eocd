@@ -1,16 +1,89 @@
 /*
- * EOC_poller_resp.cpp
- *	EOC response process functions
- *	Prototype:
- *		int (*response_handler_t)(EOC_db *d,EOC_msg *m);
+ * EOC_db.cpp
+ *	EOC Data base unit, provide SHDSL channel information storage and 
+ *	acces to it
  */
 #include <generic/EOC_responses.h>
 #include <generic/EOC_msg.h>
 #include <db/EOC_db.h>
 #include <eoc_debug.h>
 
-int
-EOC_db::_resp_discovery(EOC_db *db,EOC_msg *m)
+int EOC_db::
+register_handlers(){
+    // register EOC responses handlers
+    handlers[RESP_IND(RESP_DISCOVERY)] = _resp_discovery;
+    handlers[RESP_IND(RESP_INVENTORY)] = _resp_inventory;
+    handlers[RESP_IND(RESP_CONFIGURE)] = _resp_configure;
+    handlers[RESP_IND(RESP_STATUS)] = _resp_status;
+    handlers[RESP_IND(RESP_NSIDE_PERF)] = _resp_nside_perf;
+    handlers[RESP_IND(RESP_CSIDE_PERF)] = _resp_cside_perf;
+	
+    // register Application requests for info
+    app_handlers[app_frame::INVENTORY] = _appreq_inventory;
+    app_handlers[app_frame::ENDP_CUR] = _appreq_endpcur;
+    app_handlers[app_frame::ENDP_15MIN] = _appreq_endp15min;
+    app_handlers[app_frame::ENDP_1DAY] = _appreq_endp1day;
+    app_handlers[app_frame::ENDP_MAINT] = _appreq_endpmaint;
+    app_handlers[app_frame::UNIT_MAINT] = _appreq_unitmaint;
+}
+
+EOC_db::
+EOC_db(EOC_scheduler *s,int lnum){
+    int i;
+    for(i=0;i<MAX_UNITS;i++)
+        units[i] = NULL;
+    for(i=0;i<RESPONSE_QUAN;i++)
+        handlers[i] = NULL;
+    register_handlers();
+    sch = s;
+    loop_num = lnum;
+}
+    
+int EOC_db::
+response(EOC_msg *m)
+{
+    u8 type = RESP_IND(m->type());
+    if( !m || !m->is_response() || !handlers[type] )
+        return -1;
+    return handlers[type](this,m);
+}
+
+// TODO: 
+// what to do if inventory information of unit differs
+int EOC_db::
+add_unit(unit u, resp_inventory *resp)
+{
+    if( u<=unknown || u>(unit)MAX_UNITS )
+        return -1;
+    if( units[(int)u-1]){
+        if( units[(int)u-1]->integrity(resp) ){
+	    for(int i = (int)u-1;i<MAX_UNITS;i++){
+		if( units[i] ){
+		    delete units[i];
+		    units[i] = NULL;
+		}
+	    }
+	    if( units[(int)stu_r-1] ){
+		delete units[(int)stu_r-1];
+		units[(int)stu_r-1] = NULL;
+	    }
+	} else {
+	    return 0;
+	}
+    }
+    units[(int)u-1] = new EOC_unit(u,resp,loop_num);
+}
+    
+int EOC_db::
+clear(){
+    for(int i=0; i<MAX_UNITS;i++){
+        if( units[i] )
+	    delete units[i];
+    }
+}
+
+int EOC_db::
+_resp_discovery(EOC_db *db,EOC_msg *m)
 {
     ASSERT(m->type() == RESP_DISCOVERY );
     if( !db )
@@ -21,8 +94,8 @@ EOC_db::_resp_discovery(EOC_db *db,EOC_msg *m)
     return 0;
 }
 
-int
-EOC_db::_resp_inventory(EOC_db *db,EOC_msg *m)
+int EOC_db::
+_resp_inventory(EOC_db *db,EOC_msg *m)
 {
     ASSERT( m->type() == RESP_INVENTORY);
     ASSERT( m->payload_sz() == RESP_INVENTORY_SZ);
@@ -49,8 +122,8 @@ EOC_db::_resp_inventory(EOC_db *db,EOC_msg *m)
     return 0;
 }
 
-int
-EOC_db::_resp_configure(EOC_db *db,EOC_msg *m)
+int EOC_db::
+_resp_configure(EOC_db *db,EOC_msg *m)
 {
     ASSERT( m->type() == RESP_CONFIGURE );
     ASSERT( m->payload_sz() == RESP_CONFIGURE_SZ);
@@ -63,8 +136,8 @@ EOC_db::_resp_configure(EOC_db *db,EOC_msg *m)
     return 0;
 }
 
-int
-EOC_db::_resp_status(EOC_db *db,EOC_msg *m)
+int EOC_db::
+_resp_status(EOC_db *db,EOC_msg *m)
 {
     ASSERT( m->type() == RESP_STATUS );
     ASSERT( m->payload_sz() == RESP_STATUS_SZ);
@@ -113,8 +186,8 @@ EOC_db::_resp_status(EOC_db *db,EOC_msg *m)
     return 0;
 }
 
-int
-EOC_db::_resp_nside_perf(EOC_db *db,EOC_msg *m)
+int EOC_db::
+_resp_nside_perf(EOC_db *db,EOC_msg *m)
 {
     ASSERT( m->type() == RESP_NSIDE_PERF );
     ASSERT( m->payload_sz() == RESP_NSIDE_PERF_SZ);
@@ -155,8 +228,8 @@ EOC_db::_resp_nside_perf(EOC_db *db,EOC_msg *m)
 }
 
 
-int
-EOC_db::_resp_cside_perf(EOC_db *db,EOC_msg *m)
+int EOC_db::
+_resp_cside_perf(EOC_db *db,EOC_msg *m)
 {
     ASSERT( m->type() == RESP_CSIDE_PERF );
     ASSERT( m->payload_sz() == RESP_CSIDE_PERF_SZ);
@@ -199,8 +272,8 @@ EOC_db::_resp_cside_perf(EOC_db *db,EOC_msg *m)
 
 
 
-int
-EOC_db::_resp_test(EOC_db *db,EOC_msg *m)
+int EOC_db::
+_resp_test(EOC_db *db,EOC_msg *m)
 {
     if( m->type() != 15+128 ){
 	return -1;
@@ -214,3 +287,65 @@ EOC_db::_resp_test(EOC_db *db,EOC_msg *m)
     // db->add_unit(m->src(),resp);
     return 0;
 }
+
+// ------------ Application requests ------------------------------//
+int EOC_db::
+app_request(app_frame *fr)
+{
+    if( !app_handlers[fr->id()] )
+	return -1;
+    return app_handlers[fr->id()](this,fr);
+}
+
+int EOC_db::
+_appreq_inventory(EOC_db *db,app_frame *fr)
+{
+    inventory_payload *p = (inventory_payload*)fr->payload_ptr();
+    if( !p )
+	return -1;
+    if( db->check_exist((unit)p->unit) ){
+	fr->negative();
+	return 0;
+    }
+    fr->response();
+    p->inv = db->units[p->unit-1]->inventory_info();
+    p->region1 = 1;
+    p->region0 = 1;
+    return 0;
+}
+
+int EOC_db::
+_appreq_endpcur(EOC_db *db,app_frame *fr)
+{
+    fr->response();
+    return 0;
+}
+
+int EOC_db::
+_appreq_endp15min(EOC_db *db,app_frame *fr)
+{
+    fr->response();
+    return 0;
+}
+
+int EOC_db::
+_appreq_endp1day(EOC_db *db,app_frame *fr)
+{
+    fr->response();
+    return 0;
+}
+
+int EOC_db::
+_appreq_endpmaint(EOC_db *db,app_frame *fr)
+{
+    fr->response();
+    return 0;
+}
+
+int EOC_db::
+_appreq_unitmaint(EOC_db *db,app_frame *fr)
+{
+    fr->response();
+    return 0;
+}
+

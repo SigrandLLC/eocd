@@ -20,34 +20,44 @@ class app_comm{
 protected:
     enum { MAX_SOCK_NAME = 256 };
     enum { BLOCK_SIZE = 256 };
+    
+    int error_init;
 
     char *sname;
     int sfd;
     fd_set socks;
     int hisock;    
     
+    int init_success(){ return !error_init; }
     int set_nonblock(int sock);
     virtual void build_select_list();
     virtual int complete_wait() = 0;
 
     // data transparency && message end/begin flags
-    char *transp(char *buf,size_t size,size_t &nsize);
-    char *untransp(char *frame,size_t frame_len);
-    
+    char *transp(char *buf,size_t size,size_t &nsize){
+	nsize = size;
+	return buf;
+    }
+    char *untransp(char *frame,size_t frame_len){
+	return frame;
+    }
 public:
     app_comm(char *sock_name){
 	sname = strndup(sock_name,MAX_SOCK_NAME);
+	error_init = 0;
     }
     app_comm(char *sock_path,char *sock_name){
 	int len = strnlen(sock_path,MAX_SOCK_NAME) + strnlen(sock_name,MAX_SOCK_NAME);
 	sname = (char*)malloc(sizeof(char) * len);
 	snprintf(sname,len,"%s/%s",sock_path,sock_name);
+	error_init = 0;
     }
     int wait();
     int _send(int fd,char *buf,size_t size);
     ssize_t _recv(int fd,char *&buf);
-    virtual int send(int conn_num,char *buf,size_t size) = 0;
-    virtual ssize_t recv(int &conn_num,char *buf) = 0;
+    int send(char *buf,size_t size);
+    ssize_t recv(char *&buf);
+
 };
 
 #endif

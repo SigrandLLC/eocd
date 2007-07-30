@@ -4,9 +4,9 @@ endif
 
 INCLUDES=$(TOPDIR)include/
 CPPFLAGS=-g -I$(INCLUDES)
-.PHONY: poller local responder db
+.PHONY: poller local responder
 
-all: poller local responder db
+all: poller local responder
 
 local: EOC_router.o EOC_engine.o EOC_engine_act.o
 	cp $^ $(TOPDIR)/build
@@ -17,11 +17,7 @@ poller:
 responder:
 	make -C responder TOPDIR=$(TOPDIR)
 
-db:
-	make -C db TOPDIR=$(TOPDIR)
-
 clean:
 	rm -f *.o
 	make -C poller clean
 	make -C responder clean
-	make -C db clean

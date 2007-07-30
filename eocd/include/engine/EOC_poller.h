@@ -21,6 +21,7 @@ private:
     EOC_scheduler *sch;
     EOC_config *cfg;
     request_handler_t req_hndl[REQUEST_QUAN];
+
 public:
     EOC_poller(EOC_config *c,int ticks_per_minute,int loops){
 	int i;
@@ -44,6 +45,8 @@ public:
     int unregister_request(u8 type);
     EOC_msg *gen_request();
     int process_msg(EOC_msg *m);
+    int app_request(app_frame *fr);
+      
 };
 
 #endif

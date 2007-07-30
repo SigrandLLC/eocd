@@ -48,7 +48,8 @@ public:
 	    return -1;
 	return 0;
     }
-
+    resp_inventory inventory_info(){ return inv_info; }
+    
 };
 
 #endif

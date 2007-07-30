@@ -6,8 +6,8 @@ INCLUDES=$(TOPDIR)include/
 
 CPPFLAGS=-g -I$(INCLUDES)
 
-all: EOC_db.o
-	cp EOC_db.o $(TOPDIR)/build
+all: EOC_db.o EOC_loop.o
+	cp $^ $(TOPDIR)/build
 
 
 clean:

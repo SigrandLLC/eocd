@@ -1,21 +1,21 @@
-#include <app_comm.h>
+#include <app-interface/app_comm.h>
 
 int app_comm::
 set_nonblock(int sock)
 {
-	int opts;
+    int opts;
 
-	opts = fcntl(sock,F_GETFL);
-	if (opts < 0) {
-		eocd_perror("fcntl(F_GETFL)");
-		return -errno;
-	}
-	opts = (opts | O_NONBLOCK);
-	if (fcntl(sock,F_SETFL,opts) < 0) {
-		eocd_perror("fcntl(F_SETFL)");
-		return -errno;
-	}
-	return 0;
+    opts = fcntl(sock,F_GETFL);
+    if (opts < 0) {
+    	eocd_perror("fcntl(F_GETFL)");
+    	return -errno;
+    }
+    opts = (opts | O_NONBLOCK);
+    if (fcntl(sock,F_SETFL,opts) < 0) {
+    	eocd_perror("fcntl(F_SETFL)");
+    	return -errno;
+    }
+    return 0;
 }
 
 void app_comm::
@@ -72,14 +72,15 @@ _recv(int fd,char *&buf)
     
     if( (frame_len = ::recv(fd,frame,BLOCK_SIZE,MSG_PEEK|MSG_DONTWAIT) ) <= 0 )
 	return -EAGAIN;
-
+/*
     
     buf = untransp(frame,frame_len);
     if( !buf )
 	return -ENOMEM;
-    
+*/    
     ret = ::recv(fd,(char*)frame,frame_len,MSG_DONTWAIT);
     if( frame_len != ret )
 	return -EAGAIN;
+
     return frame_len;
 }

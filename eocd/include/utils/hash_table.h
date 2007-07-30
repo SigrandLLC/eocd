@@ -36,8 +36,11 @@ public:
     int del(char *name,int nsize);
     // sequential trace
     int init_trace();
+    
     hash_elem *next_elem();
     
+    hash_elem *next(char *name, int nsize){ return NULL; }
+    hash_elem *first(){ return NULL; }    
 };
 
 #endif
