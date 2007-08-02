@@ -1,7 +1,7 @@
 #ifndef EOC_APP_COMM_SRV_H
 #define EOC_APP_COMM_SRV_H
 
-#include <app-interface/app_comm.h>
+#include <app-if/app_comm.h>
 
 class app_comm_srv : public app_comm {
 protected:
@@ -13,7 +13,7 @@ protected:
     // functions
     int complete_wait();
     int new_connection();
-    void build_select_list();
+    int build_select_list();
     int next_fd();
 public:
     app_comm_srv(char *sock_path,char *sock_name);

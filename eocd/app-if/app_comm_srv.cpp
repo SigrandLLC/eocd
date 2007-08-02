@@ -7,7 +7,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
-#include <app-interface/app_comm_srv.h>
+#include <app-if/app_comm_srv.h>
 
 
 app_comm_srv::
@@ -76,10 +76,12 @@ app_comm_srv(char *sock_path,char *sock_name) : app_comm(sock_path,sock_name)
 }
 
 
-void app_comm_srv::
+int app_comm_srv::
 build_select_list()
 {
     int i;
+    if( sfd < 0 )
+	return -1; 
     // blank fd set
     FD_ZERO(&socks);
     // fill fd set
@@ -90,6 +92,7 @@ build_select_list()
 	if ( conn_fd[i] > hisock)
 	    hisock = conn_fd[i];
     }
+    return 0;
 }
 
 int app_comm_srv::
@@ -177,5 +180,6 @@ recv(int &c_idx,char *&buf)
 {
     if( (c_idx = next_fd()) <0 ) 
 	return 0;
-    return _recv(conn_fd[c_idx],buf);
+    c_idx++;
+    return _recv(conn_fd[c_idx-1],buf);
 }

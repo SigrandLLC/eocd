@@ -1,7 +1,7 @@
-#include <app-interface/app_frame.h>
+#include <app-if/app_frame.h>
 
 app_frame::    
-app_frame(ids id,types type,roles role,char *dname = "\0"){
+app_frame(ids id,types type,roles role,char *dname){
 	u32 psize,csize;
 	int offs;
 	if( (offs = size_by_id(id,type,psize,csize) ) <0 ){
@@ -25,18 +25,19 @@ app_frame(ids id,types type,roles role,char *dname = "\0"){
 	hdr->role = (u8)role;
 	hdr->dname_offs = offs;
 	memcpy(buf+offs,dname,strnlen(dname,256));
-    }
+}
 
 app_frame::
 app_frame(char *b,int size){
     u32 psize,csize;
     int offs;
     buf = b;
+    buf_size = size;
     hdr = (app_frame_hdr *)buf;
     // GET correct parameters of frame
     if( (offs = size_by_id((ids)hdr->id,(types)hdr->type,psize,csize) ) <0 ){
         buf = NULL;
-        size = 0;
+        buf_size = 0;
         eocd_log(0,"Cannot get info about frame id = %d",hdr->id);
         return;
     }
@@ -44,13 +45,12 @@ app_frame(char *b,int size){
 	    (hdr->dname_offs != offs) || (!csize && hdr->type == SET) ){
         eocd_log(0,"Error in app_frame header");
         buf = NULL;
-        size = 0;
+        buf_size = 0;
     }
 }
 
 app_frame::
 ~app_frame(){
-    ASSERT(buf);
     if(buf)
         delete[] buf;
 }
@@ -109,30 +109,25 @@ size_by_id(ids id,types type,u32 &psize,u32 &csize)
 
     
     
-    const char *chan_name(){
+const char *app_frame::
+chan_name(){
 	return &buf[hdr->dname_offs];
-    }
+}
 
 
-    char *payload_ptr(){
-	ASSERT(buf);
-	if( buf )
-	    return &buf[FRAME_HEADER_SZ];
-	return NULL;
-    }    
+char *app_frame::
+payload_ptr(){
+    ASSERT( buf );
+    if( buf )
+	return &buf[FRAME_HEADER_SZ];
+    return NULL;
+}
 
-    char *changelist_ptr(){
-	ASSERT(buf && hdr->csize);
-	if( buf && hdr->csize )
-	    return &buf[FRAME_HEADER_SZ + hdr->psize];
-	return NULL;
-    }
-    char *frame_ptr(){ return buf; }
-    int frame_size(){ return buf_size; }
-    
-    ids id(){ return (ids)hdr->id; }
-    types type(){ return (types)hdr->type; }
-    roles role(){ return (roles)hdr->role; }
-};
+char * app_frame::
+changelist_ptr(){
+    ASSERT(buf && hdr->csize);
+    if( buf && hdr->csize )
+        return &buf[FRAME_HEADER_SZ + hdr->psize];
+    return NULL;
+}
 
-#endif

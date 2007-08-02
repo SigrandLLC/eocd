@@ -30,7 +30,7 @@ protected:
     
     int init_success(){ return !error_init; }
     int set_nonblock(int sock);
-    virtual void build_select_list();
+    virtual int build_select_list();
     virtual int complete_wait() = 0;
 
     // data transparency && message end/begin flags
@@ -47,7 +47,7 @@ public:
 	error_init = 0;
     }
     app_comm(char *sock_path,char *sock_name){
-	int len = strnlen(sock_path,MAX_SOCK_NAME) + strnlen(sock_name,MAX_SOCK_NAME);
+	int len = strnlen(sock_path,MAX_SOCK_NAME) + strnlen(sock_name,MAX_SOCK_NAME) + 2;
 	sname = (char*)malloc(sizeof(char) * len);
 	snprintf(sname,len,"%s/%s",sock_path,sock_name);
 	error_init = 0;

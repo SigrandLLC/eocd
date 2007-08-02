@@ -20,7 +20,10 @@ enum unit {err =-1,unknown=0 ,stu_c,stu_r,sru1,sru2,sru3,sru4,sru5,sru6,
 #define RESPONSE_QUAN 128
 #define RESP_OFFSET 128
 
-
+// OS related
+#define FNAME_SIZE 32
+#define PATH_SIZE 256
+#define FILE_PATH_SIZE PATH_SIZE+FNAME_SIZE
 
 #endif
 

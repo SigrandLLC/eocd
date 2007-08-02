@@ -1,7 +1,7 @@
 #ifndef EOCD_APP_COMM_CLIH
 #define EOCD_APP_COMM_CLI_H
 
-#include <app-interface/app_comm.h>
+#include <app-if/app_comm.h>
 
 class app_comm_cli : public app_comm {
 protected:

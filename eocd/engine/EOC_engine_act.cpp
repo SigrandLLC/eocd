@@ -10,6 +10,10 @@
 
 #include <handlers/EOC_poller_req.h>
 
+#include <span_profile.h>
+#include <shdsl/config.h>
+#include <eoc_debug.h>
+
 int EOC_engine_act::
 register_handlers(){
     if(poll){
@@ -25,11 +29,12 @@ register_handlers(){
 // Terminal constructor
 
 EOC_engine_act::
-EOC_engine_act(EOC_dev_master *d1,EOC_config *cfg,u16 ticks_p_min,u16 rmax) : 
-    EOC_engine(master,(EOC_dev*)d1,rmax)
+EOC_engine_act(EOC_dev_terminal *d1,EOC_config *c,u16 ticks_p_min,u16 rmax) : 
+    EOC_engine(d1,master,rmax)
 {
     ASSERT( d1 );
     recv_max = rmax;
+    cfg=c;
     poll = new EOC_poller(cfg,ticks_p_min,rtr->loops());
     register_handlers();
 }
@@ -130,3 +135,30 @@ schedule()
     return 0;
 }
 
+int EOC_engine_act::
+configure(char *ch_name)
+{
+    EOC_dev_terminal *dev;
+    PDEBUG(0,"start");
+    switch(type){
+    case master:
+        dev = (EOC_dev_terminal*)rtr->nsdev();
+        break;
+    case slave:
+        dev = (EOC_dev_terminal*)rtr->csdev();
+        break;
+    default:
+        return 0;
+    }
+    if( !dev ){
+        eocd_log(CONFL,"(%s): Error router initialisation",ch_name);
+        return -1;
+    }
+    conf_profile *prof = (conf_profile *)
+	    cfg->conf_tbl()->find((char*)cfg->conf_prof_name(),strlen(cfg->conf_prof_name()) );
+    if( !prof ){
+        PDEBUG(0,"Cannot find corresponding profile");
+	return -1;
+    }	
+    return dev->configure(prof->conf);
+}

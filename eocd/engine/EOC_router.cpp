@@ -79,6 +79,7 @@ EOC_router::zero_init(){
 	ifs[i].in_dir = ifs[i].out_dir = EOC_msg::NOSTREAM;
     }
     if_cnt = 0;
+    if_poll = 0;
 }
 
 inline EOC_dev *
@@ -110,6 +111,8 @@ EOC_router::update_state()
 {
     struct interface *iface;
     // get link status from device
+    PDEBUG(10,"ROUTER(%d): if_cnt = %d\n",type,if_cnt);
+
     for(int i=0;i<if_cnt;i++){
 	iface = &ifs[i];
 	EOC_dev::Linkstate link = iface->sdev->link_state();
@@ -126,6 +129,10 @@ EOC_router::update_state()
 	}
 	// online state
 	iface->state = eoc_Online;
+    }
+    for(int i=0;i<if_cnt;i++){
+	iface = &ifs[i];
+	PDEBUG(10,"ROUTER(%d): state = %d, func = %d\n",type,iface->state,iface->sdev->link_state());
     }
 }
 
@@ -275,6 +282,9 @@ EOC_router::term_unit(unit u)
     ifs[0].sunit = u;
 }
 
+
+
+
 EOC_msg *
 EOC_router::receive()
 {
@@ -287,45 +297,62 @@ EOC_router::receive()
 
     // Side status update
     update_state();
-    if( ifs[if_poll].state == eoc_Offline )
+    PDEBUG(10,"ROUTER(%d): if_poll = %d, state = %d\n",type,if_poll,ifs[if_poll].state );
+    if( ifs[if_poll].state == eoc_Offline ){
+	printf("ROUTER(%d): EOC is offline\n",type);
 	return NULL;
+    }
 
     if( m = get_loop() ){
+	PDEBUG(10,"ROUTER(%d): get loop msg\n",type);
 	if( (m->type() == REQ_DISCOVERY) ){
+	    PDEBUG(10,"ROUTER(%d): is DISCOVERY\n",type);
 	    if( resp = process_discovery(if_poll,m) ){
+		PDEBUG(10,"ROUTER(%d): process discovery success\n",type);
 		if( add_loop(resp) ){
+		    PDEBUG(10,"ROUTER(%d): error adding loop\n",type);
 		    /* TODO: LOG error */
 		}
 	    } else{
+		PDEBUG(10,"ROUTER(%d): error in process discovery\n",type);
 		/* TODO: LOG error */
 	    }
-	}else
+	}else{
+	    PDEBUG(10,"ROUTER(%d): not discovery\n",type);
 	    return m;
+	}
     }
     
     while( (m = poll_dev->recv()) && (icnt<max_recv_msg) ){
 	m->direction(dir);
-	
+        PDEBUG(10,"ROUTER(%d): message: src(%d) dst(%d) id(%d)\n",type,m->src(),m->dst(),m->type());
 	if( (m->type() == REQ_DISCOVERY) ){
+	    PDEBUG(10,"ROUTER(%d): DISCOVERY\n",type);
 	    if( resp = process_discovery(if_poll,m) ){
+		PDEBUG(10,"ROUTER(%d): success in process discovery\n",type);
 		if( route_dev )
 		    route_dev->send(m);
 		poll_dev->send(resp);
+	    }else{
+		PDEBUG(10,"ROUTER(%d): error in process discovery\n",type);    
 	    }
 	    icnt++;
 	    delete m;
 	    continue;
 	}
-
+	PDEBUG(10,"ROUTER(%d): Not REQ_DISCOVERY\n",type);
 	// retranslate Broadcast to next device	
 	if( m->dst() == BCAST && route_dev ){
+	    PDEBUG(10,"ROUTER(%d): retranslate broadcast\n",type);	    
 	    if( route_dev->send(m) ){
 		// send error handling 
 	    }
 	}
 
 	if( m->dst() == u || m->dst() == BCAST ){
+	    PDEBUG(10,"ROUTER(%d): DEST = %d\n",type,m->dst());
 	    if( ifs[if_poll].state == eoc_Discovery ){
+		PDEBUG(10,"ROUTER(%d): state is eoc_Discovery\n",type);
 		delete m;
 		icnt++;
 	        continue;		    
@@ -333,6 +360,7 @@ EOC_router::receive()
 	    ret = m;
 	    goto exit;
 	} else if( route_dev ){
+	    PDEBUG(10,"ROUTER(%d): resend to next\n",type);
 	    if( route_dev->send(m) ){
 		delete m;
 		break;
@@ -343,6 +371,7 @@ EOC_router::receive()
     }
 exit:
     if_poll = (if_poll+1)<if_cnt ?  if_poll+1 : 0;
+    PDEBUG(10,"ROUTER(%d): return :%08x\n",type,ret);
     return ret;
 }
 

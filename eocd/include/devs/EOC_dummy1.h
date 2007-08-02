@@ -3,7 +3,7 @@
 #include<string.h>
 #include<stdio.h>
 
-#include <devs/EOC_dev_master.h>
+#include <devs/EOC_dev_terminal.h>
 #include <generic/EOC_msg.h>
 #include <generic/EOC_responses.h>
 
@@ -42,11 +42,12 @@ public:
 	return 0;
     }
     
+    
 };
 
 
 
-class EOC_dummy1 : public EOC_dev_master{
+class EOC_dummy1 : public EOC_dev_terminal{
 protected:
     char name[256];
     dummy_channel *snd,*rcv;
@@ -61,6 +62,11 @@ public:
     EOC_msg *recv();
 
     Linkstate link_state();
+
+    span_conf_profile_t *cur_config() { return NULL; }
+    int configure(span_conf_profile_t &cfg){ return 0; }
+    int configure(){ return 0; }
+
 
     int setup_current_stat(side_perf p){
 	perf = p;
@@ -152,11 +158,6 @@ public:
 	return perf.pwr_bkf_ext;
     }
     
-    shdsl_config config(){ shdsl_config i; return i; }
-    int config(shdsl_config cfg){ 
-	printf("SET DEVICE: Rate=%d %s annex%d",cfg.lrate, (cfg.master) ? "master" : "slave",cfg.annex);
-	return 0;
-    }
 };
 
 #endif

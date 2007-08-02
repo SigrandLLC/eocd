@@ -1,4 +1,13 @@
-#include <app-interface/app_comm.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <stdio.h>
+#include <errno.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+
+#include <app-if/app_comm.h>
 
 int app_comm::
 set_nonblock(int sock)
@@ -18,14 +27,17 @@ set_nonblock(int sock)
     return 0;
 }
 
-void app_comm::
+int app_comm::
 build_select_list()
 {
+    if( sfd < 0 )
+	return -1;
     // blank fd set
     FD_ZERO(&socks);
     // fill fd set
     FD_SET(sfd,&socks);
     hisock = sfd;
+    return 0;
 }
 
 int app_comm::
@@ -33,31 +45,31 @@ wait()
 {
     int count=0;
     struct timeval timeout;  /* Timeout for select */	
-	
-    while(1){
-        timeout.tv_sec = 1;
-	timeout.tv_usec = 0;
-    	build_select_list();
 
-	count = select(hisock+1,&socks,(fd_set *)0,(fd_set *)0, &timeout);
-	if( count < 0) {
-	    eocd_perror("Select");
-	    return -errno;
-	}
-	if( count ){
-		return complete_wait();
-	}
+    timeout.tv_sec = 1;
+    timeout.tv_usec = 0;
+    if( build_select_list() )
+	return -1;
+
+    count = select(hisock+1,&socks,(fd_set *)0,(fd_set *)0, &timeout);
+    if( count < 0) {
+        eocd_perror("Select");
+        return -errno;
     }
+    if( count ){
+    	return complete_wait();
+    }
+    return count;
 }
 
 int app_comm::
 _send(int fd,char *buf,size_t size)
 {
     size_t nsize;
-    char *nbuf = transp(buf,size,nsize);
-    if( !nbuf )
-	return -EAGAIN;
-    if( ::send(fd,nbuf,nsize,0) != nsize )
+//    char *nbuf = transp(buf,size,nsize);
+//    if( !nbuf )
+//	return -EAGAIN;
+    if( ::send(fd,buf,size,0) != nsize )
         return -EAGAIN;
     return 0;
 }	
@@ -81,6 +93,6 @@ _recv(int fd,char *&buf)
     ret = ::recv(fd,(char*)frame,frame_len,MSG_DONTWAIT);
     if( frame_len != ret )
 	return -EAGAIN;
-
+    buf = frame;
     return frame_len;
 }

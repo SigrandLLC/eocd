@@ -11,6 +11,8 @@ class hash_elem{
 public:
     char *name;
     int nsize;
+    hash_elem *next;
+    hash_elem *prev;
     inline bool operator < (hash_elem &right){
         int len = right.nsize > nsize ? nsize : right.nsize;
         if( strncmp(name,right.name,len) < 0 )
@@ -25,9 +27,8 @@ private:
     list< hash_elem *> table[HASH_SIZE];
     int _hash(char *name);
     int max_hash_name;
-    // trace variables
-    int t_iter;
-    list< hash_elem *>::iterator l_iter;
+    // sequential list of table items
+    hash_elem *head,*tail;
 public:
     hash_table(int mhash_name);
     ~hash_table();
@@ -35,12 +36,13 @@ public:
     int add(hash_elem *el);
     int del(char *name,int nsize);
     // sequential trace
-    int init_trace();
-    
-    hash_elem *next_elem();
-    
-    hash_elem *next(char *name, int nsize){ return NULL; }
-    hash_elem *first(){ return NULL; }    
+    inline hash_elem *first(){ return head; }
+    inline hash_elem *next(char *name, int nsize){
+	hash_elem *el = find(name,nsize);
+	if( !el )
+	    return NULL;
+	return el->next;
+    }
 };
 
 #endif

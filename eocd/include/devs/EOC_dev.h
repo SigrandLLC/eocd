@@ -9,7 +9,7 @@
 
 class EOC_dev{
 public:
-    enum Linkstate { OFFLINE, ONLINE };
+    typedef enum{ OFFLINE, ONLINE } Linkstate  ;
     enum device { SG16PCI,SG17PCI,SG17R };
     enum annex_t { annexA,annexB,annexF };
     enum tcpam_t { tcpam4, tcpam8, tcpam16,tcpam32 };
@@ -35,19 +35,17 @@ public:
 protected:
     int error_init;
     device dev_type;
-    EOC_dev_cfg *cfg;
+    int valid;
 public:
+    // Initialisation check
+    int init_ok() { return valid; }
     //----- EOC functions ---------//
     virtual int send(EOC_msg *msg) = 0;
     virtual EOC_msg *recv() = 0;
     //----- SHDSL channel ----------//
     virtual Linkstate link_state() = 0;
-//    virtual int statistics(shdsl_statistics *s) = 0;
     //----- SHDSL settings ---------//
     virtual int tresholds(s8 loop_attn,s8 snr_m) = 0;
-/*    virtual int config( shdsl_config *cfg ) = 0;
-    virtual shdsl_config *config() = 0;
-*/
 
     // loop status
     virtual u8 loops() = 0;
@@ -72,12 +70,8 @@ public:
     virtual u8 cntr_rst_scuc(u8 loop) = 0;
     virtual u8 cntr_ovfl_stuc(u8 loop) = 0;
     virtual u8 pwr_bkf_ext(u8 loop) = 0;
+
 };
 
 
-
-
-/*
- 
-*/
 #endif

@@ -12,10 +12,10 @@ local: EOC_router.o EOC_engine.o EOC_engine_act.o
 	cp $^ $(TOPDIR)/build
 
 poller:
-	make -C poller TOPDIR=$(TOPDIR)
+	make -C poller TOPDIR=$(TOPDIR) CXX=$(CXX)
 
 responder:
-	make -C responder TOPDIR=$(TOPDIR)
+	make -C responder TOPDIR=$(TOPDIR) CXX=$(CXX)
 
 clean:
 	rm -f *.o

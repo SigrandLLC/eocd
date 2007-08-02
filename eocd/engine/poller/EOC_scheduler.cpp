@@ -53,18 +53,27 @@ EOC_scheduler::response(EOC_msg *m)
 
     if( !m )
 	return -1;
-
+    printf("-----------------response------------------\n");
+    wait_q->print();
     if( wait_q->find_del(m->src(),m->dst(),m->type(),ts) )
 	return -1;
+    printf("-----------------after find_del-------------\n");
+    wait_q->print();    
+    printf("-----------------end response---------------\n");
 
+    printf("RESPONSE: src(%d),dst(%d),type(%d)\n",m->src(),m->dst(),m->type());
     
     switch( m->type() ){	
     case RESP_DISCOVERY:
-	if( statem->state != Setup )
-	    return -1;
+	if( statem->state != Setup ){
+	    printf("RESPONSE DROP (not Setup): src(%d),dst(%d),type(%d)\n",m->src(),m->dst(),m->type());
+    	    return -1;
+	}
 	if( statem->ustates[ind] != NotPresent ){
+	    printf("RESPONSE DROP (not NotPresent): src(%d),dst(%d),type(%d)\n",m->src(),m->dst(),m->type());
 	    // Not in proper state - drop
-	    return -1;
+	    return wait_q->add(BCAST,stu_c,RESP_DISCOVERY,ts);
+	    return 0;
 	}
 	statem->ustates[ind] = Discovered;
 	if( send_q->add(stu_c,m->src(),REQ_INVENTORY,ts) )
@@ -123,6 +132,8 @@ EOC_scheduler::request(sched_elem &el)
     if( send_q->schedule(el,ts) ){
 	return -1;	
     }
+    if( el.type == REQ_DISCOVERY )
+	printf("REQUEST: src(%d),dst(%d),type(%d)\n",el.src,el.dst,el.type);
     sched_elem n = el;
     unit swap = n.src;
     n.src = n.dst;
@@ -145,6 +156,7 @@ EOC_scheduler::request(sched_elem &el)
 	wait_q->add(n1);
     default:
 	n.type = REQ2RESP(n.type);
+        printf("TO_WAIT_Q: src(%d),dst(%d),type(%d)\n",n.src,n.dst,n.type);
 	n.tstamp = ts;
 	wait_q->add(n);
     }
@@ -156,11 +168,16 @@ EOC_scheduler::resched()
 {
     sched_elem el;
     int ret;
-    
+    printf("RESCHED\n");
+    wait_q->print();
     while( !(ret=wait_q->get_old(ts,wait_to,el)) ){
-//        printf("RESCHED: src(%d) dst(%d) type(%d) ts(%d)\n",el.src,el.dst,el.type,el.tstamp.get_val());
 	switch( el.type ){
+	case RESP_NSIDE_PERF:
+	case RESP_CSIDE_PERF:
+	case RESP_MAINT_STAT:
+	    break;
 	default:
+    	    printf("RESCHED: src(%d) dst(%d) type(%d) ts(%d)\n",el.src,el.dst,el.type,el.tstamp.get_val());
 	    unit swap = el.src;
 	    el.src = el.dst;
 	    el.dst = swap;

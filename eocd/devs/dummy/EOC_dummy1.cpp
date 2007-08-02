@@ -14,6 +14,7 @@ EOC_dummy1::EOC_dummy1(char *_name, dummy_channel *send,dummy_channel *recv)
 int
 EOC_dummy1::send(EOC_msg *m)
 {
+//    printf("DUMMY1: Sending\n");
     return snd->enqueue(m->mptr(),m->msize());
     return 0;
 }
@@ -24,6 +25,7 @@ EOC_dummy1::recv()
 {
     char *ptr,buf[256];
     int len;
+//    printf("DUMMY1: Receiving\n");
     if( rcv->dequeue(buf,&len) )
 	return NULL;    
     ptr = (char*)malloc(len);

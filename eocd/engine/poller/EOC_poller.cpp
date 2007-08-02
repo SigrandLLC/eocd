@@ -64,12 +64,11 @@ process_msg(EOC_msg *m)
 int EOC_poller::
 app_request(app_frame *fr)
 {
-
     switch(fr->id()){
     case app_frame::SPAN_CONF:
     {
 	span_conf_payload *p = (span_conf_payload*)fr->payload_ptr();
-	p->nreps = cfg->reps();
+	p->nreps = cfg->repeaters();
 	strncpy(p->conf_prof,cfg->conf_prof_name(),SNMP_ADMIN_LEN);
 	strncpy(p->alarm_prof,cfg->alarm_prof_name(),SNMP_ADMIN_LEN);
 	break;

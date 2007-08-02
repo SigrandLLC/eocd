@@ -43,6 +43,7 @@ int EOC_db::
 response(EOC_msg *m)
 {
     u8 type = RESP_IND(m->type());
+//    printf("EOC_DB: Get response: %d\n",m->type());
     if( !m || !m->is_response() || !handlers[type] )
         return -1;
     return handlers[type](this,m);
@@ -81,6 +82,65 @@ clear(){
 	    delete units[i];
     }
 }
+
+int EOC_db::
+check_exist(unit u){
+    u8 ind = (u8)u - 1;
+    if( !(ind < MAX_UNITS) )
+	return -1;
+    if( units[(int)u - 1] )
+        return 0;
+    return -1;
+}
+
+int EOC_db::
+check_exist(unit u,EOC_unit::Sides s){
+    if( check_exist(u) )
+        return -1;
+    switch( s ){
+    case EOC_unit::net_side:
+        if( !units[(int)u-1]->nside() )
+	    return 0;
+	return -1;
+    case EOC_unit::cust_side:
+        if( !units[(int)u-1]->cside() )
+	    return 0;
+	return -1;
+    }
+    return -1;
+}
+
+int EOC_db::
+check_exist(unit u,EOC_unit::Sides s,int loop)
+{
+    if( check_exist(u,s) )
+        return -1;
+    EOC_side *side;
+    switch( s ){
+    case EOC_unit::net_side:
+        side = units[(int)u-1]->nside();
+        break;
+    case EOC_unit::cust_side:
+        side = units[(int)u-1]->cside();
+        break;
+    }
+    if( side->get_loop(loop) )
+        return 0;
+    return -1;
+}
+
+int EOC_db::
+unit_quan(){
+    int i,cnt=0;
+    for(i=0;i<MAX_UNITS && units[i];i++){
+        //printf("Count unit #%d\n",i);
+        cnt++;
+    }
+    if( cnt < 2 ) return -1;
+    return cnt;
+}
+
+//------------------- EOC responses -------------------------//
 
 int EOC_db::
 _resp_discovery(EOC_db *db,EOC_msg *m)
@@ -301,16 +361,23 @@ int EOC_db::
 _appreq_inventory(EOC_db *db,app_frame *fr)
 {
     inventory_payload *p = (inventory_payload*)fr->payload_ptr();
-    if( !p )
+    printf("DB: Inventory app request\n");
+    if( !p ){
+	printf("DB Inventory: eror !p\n");    
 	return -1;
+    }
     if( db->check_exist((unit)p->unit) ){
+	printf("DB Inventory: error check exist\n");	
 	fr->negative();
 	return 0;
     }
+    printf("DB Inventory: form response\n");	    
     fr->response();
+    printf("DB Inventory: prisvaivanie\n");	    
     p->inv = db->units[p->unit-1]->inventory_info();
     p->region1 = 1;
     p->region0 = 1;
+    printf("DB Inventory: success\n");	    
     return 0;
 }
 

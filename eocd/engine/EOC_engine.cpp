@@ -7,20 +7,10 @@
 #include <engine/EOC_poller.h>
 #include <engine/EOC_engine.h>
 #include <handlers/EOC_poller_req.h>
-
-//----------------------------------------------------------------------
-// Terminal constructor
-EOC_engine::EOC_engine(EOC_dev *d1,u16 rmax)
-{
-    ASSERT( d1 );
-    type = slave;
-    recv_max = rmax;
-    rtr = new EOC_router(type,d1);
-    resp = new EOC_responder(rtr);
-}
+#include <eocd_log.h>
 
 // Terminal constructor
-EOC_engine::EOC_engine(dev_type t,EOC_dev *d1,u16 rmax)
+EOC_engine::EOC_engine(EOC_dev_terminal *d1,dev_type t,u16 rmax)
 {
     ASSERT( d1 && (t == master || t == slave) );
     type = t;
@@ -60,6 +50,7 @@ EOC_engine::setup_state()
 int
 EOC_engine::schedule()
 {
+    static int number = -1;
     EOC_msg *m,**ret;
     ASSERT( rtr && resp ); // Constructor failed
 
@@ -68,8 +59,10 @@ EOC_engine::schedule()
     
     int i=0;
     int cnt;
-    
+    number++;
+    PDEBUG(10,"%d schedule started\n",number);
     while( (m = rtr->receive()) && i<recv_max){
+        PDEBUG(10,"%d schedule: message: src(%d) dst(%d) id(%d)\n",number,m->src(),m->dst(),m->type());
 	if( m->is_request() ){
 	    if( resp->request(m,ret,cnt) ){
 		delete m;
@@ -96,6 +89,31 @@ EOC_engine::schedule()
 	delete m;
 	i++;
     }
+    return 0;
+}
+
+int EOC_engine::
+configure(char *ch_name)
+{
+    EOC_dev_terminal *dev;
+    
+    switch(type){	
+    case master:
+        eocd_log(CONFL,"(%s): Request slave configuration for master!",ch_name);
+        return -1;
+    case slave:
+    {
+        dev = (EOC_dev_terminal*)rtr->csdev();
+        break;
+    }
+    default:
+        return 0;
+    }
+    if( !dev ){
+        eocd_log(CONFL,"(%s): Error router initialisation",ch_name);
+        return -1;
+    }
+    dev->configure();
     return 0;
 }
 

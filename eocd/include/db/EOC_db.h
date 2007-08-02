@@ -11,7 +11,7 @@
 #include <generic/EOC_msg.h>
 #include <engine/EOC_scheduler.h>
 #include <db/EOC_unit.h>
-#include <app-interface/app_frame.h>
+#include <app-if/app_frame.h>
 
 class EOC_db{
     // Poller REsponse handler prototype
@@ -51,51 +51,10 @@ public:
     int add_unit(unit u, resp_inventory *resp);
     int clear();
     int app_request(app_frame *fr);
-    inline int unit_quan(){
-	int i;
-	for(i=0;units[i]!=NULL;i++);
-	if( i<2 ) return -1;
-	return i-2;
-    }
-    int check_exist(unit u){
-	if( units[(int)u - 1] )
-	    return 0;
-	return -1;
-    }
-
-    int check_exist(unit u,EOC_unit::Sides s){
-	if( check_exist(u) )
-	    return -1;
-	switch( s ){
-	case EOC_unit::net_side:
-	    if( !units[(int)u-1]->nside() )
-		return 0;
-	    return 0;
-	case EOC_unit::cust_side:
-	    if( !units[(int)u-1]->cside() )
-		return 0;
-	    return 0;
-	}
-	return 1;
-    }
-
-    int check_exist(unit u,EOC_unit::Sides s,int loop)
-    {
-	if( check_exist(u,s) )
-	    return -1;
-	EOC_side *side;
-	switch( s ){
-	case EOC_unit::net_side:
-	    side = units[(int)u-1]->nside();
-	    break;
-	case EOC_unit::cust_side:
-	    side = units[(int)u-1]->cside();
-	    break;
-	}
-	if( side->get_loop(loop) )
-	    return 0;
-	return -1;
-    }
+    int unit_quan();
+    int check_exist(unit u);
+    int check_exist(unit u,EOC_unit::Sides s);
+    int check_exist(unit u,EOC_unit::Sides s,int loop);
 };
 
 #endif

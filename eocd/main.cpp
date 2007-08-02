@@ -1,6 +1,7 @@
 #include<malloc.h>
 #include <unistd.h>
 #include <stdio.h>
+
 #include <devs/EOC_dummy1.h>
 #include <db/EOC_loop.h>
 #include <utils/EOC_ring_container.h>
@@ -62,8 +63,8 @@ EOC_dummy1 *n21;
 EOC_dummy1 *n22;
 EOC_dummy1 *n3;
 
-
-EOC_dev_master *
+/*
+EOC_dev_terminal *
 init_dev(char *name_1)
 {
     if( !strcmp(name_1,"dsl0") ){
@@ -74,12 +75,14 @@ init_dev(char *name_1)
     }
     return NULL;
 }
-
+*/
 int main()
 {
     unit s,d;
     char type;
     dummy_channel mr1_1,mr1_2,r1s_1,r1s_2;
+    
+    printf("Hi!!!\n");
     
     n1 = new EOC_dummy1("m-ns",&mr1_1,&mr1_2);
     n21 = new EOC_dummy1("r1-cs",&mr1_2,&mr1_1);
@@ -90,50 +93,20 @@ int main()
 
     EOC_main m("eocd.cfg");    
     EOC_engine *e2 = new EOC_engine(n22,n21); 
+
+    printf("All successfull,starting\n");
     
     int k=0;
     side_perf S;
-    while(k<500){
+    while(1){//k<50){
 //	sleep(1);
+	k=0;
+	m.app_listen();
 	m.poll_channels();
-        e2->schedule();
-	k++;
     }
 
-/*
-
-int k=0;
-    side_perf S;
-    while(k<500){
-//	sleep(1);
-	e1->schedule();
-        e2->schedule();
-        e3->schedule();
-	if( k>20 ){
-		S = n1->get_current_stat();
-		S.ses++;
-		n1->setup_current_stat(S);
-
-
-		S = n22->get_current_stat();
-		S.es++;
-		S.losws++;
-		n22->setup_current_stat(S);
-
-		S = n21->get_current_stat();
-		S.crc++;
-		S.uas++;
-		n21->setup_current_stat(S);
-
-		S = n3->get_current_stat();
-		S.es++;
-		n3->setup_current_stat(S);
-	}
-	if( k== 21 )
-	    printf("---------------- Start errors ---------------------------\n");
-	k++;
+    while(1){
     }
-*/    
     return 0;
 }
 

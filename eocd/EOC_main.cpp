@@ -1,13 +1,21 @@
+// system includes
+#include <sys/types.h>
+#include <dirent.h>
+
+// lib includes
 #include <iostream>
 #include <libconfig.h++>
 
+// local includes
 #include <generic/EOC_generic.h>
 #include <snmp/snmp-generic.h>
 #include <utils/hash_table.h>
 #include <config/EOC_config.h>
 
 #include <devs/EOC_dev.h>
-#include <devs/EOC_dev_master.h>
+#include <devs/EOC_dev_terminal.h>
+#include <devs/EOC_mr17h.h>
+#include <devs/EOC_mr16h.h>
 
 #include <EOC_main.h>
 #include <span_profile.h>
@@ -16,7 +24,60 @@
 using namespace libconfig;
 using namespace std;
 
-EOC_dev_master *init_dev(char *name);
+EOC_dev_terminal *
+init_dev(char *name);
+
+
+EOC_dev_terminal *
+init_dev(char *name)
+{
+    char *path=OS_IF_PATH;
+    DIR *dir;
+    struct dirent *ent;
+    EOC_dev_terminal *dev = NULL;
+    
+    if( !(dir = opendir(path) ) ){
+	printf("Cannot open %s\n",path);
+	return NULL;
+    }
+
+    while( (ent = readdir(dir)) ){
+	if( !strcmp(ent->d_name,name) ){
+	    printf("IF %s is phisicaly present\n",name);
+	    char cfg_dir[PATH_SIZE];
+	    DIR *dir1;
+	    mr17h_conf_dir(ent->d_name,cfg_dir,PATH_SIZE);
+	    if( dir1 = opendir(cfg_dir) ){
+		printf("Seems it mr17h\n");
+		dev = (EOC_dev_terminal*)new EOC_mr17h(name);
+		closedir(dir1);
+		if( !dev->init_ok() ){
+		    printf("Error initialising %s\n",name);		    
+		    delete dev;
+		    return NULL;
+		}
+		printf("Dev %s successfully initialised\n",name);		    
+		return dev; 
+	    }
+/*	    else { 
+	        snprintf(cfg_dir,256,"/sys/bus/pci/drivers/sg16lan/%s",ent->d_name);
+		if( dir1 = opendir(cfg_dir) ){
+		    dev = new EOC_mr16h(name);
+		    closedir(dir1);
+		    if( !dev.init_ok() ){
+			delete dev;
+			return NULL;
+		    }
+		    return dev; 
+		}
+	    }
+*/
+	}
+    }
+    closedir(dir);
+    return NULL;
+}
+
 
 int EOC_main::
 read_config()
@@ -362,13 +423,14 @@ read_config()
 	    cout << "fail get element" << endl;
 	}
     }
+
     return 0;
 }
 
 int EOC_main::
 add_slave(char *name)
 {
-    EOC_dev *dev = init_dev(name);
+    EOC_dev_terminal *dev = init_dev(name);
     if( !dev )
 	return -1;
     channel_elem *el = new channel_elem(dev);
@@ -381,7 +443,7 @@ add_slave(char *name)
 int EOC_main::
 add_master(char *name,char *cprof, char *aprof,int reps,int tick_per_min)
 {
-    EOC_dev_master *dev = (EOC_dev_master *)init_dev(name);
+    EOC_dev_terminal *dev = (EOC_dev_terminal *)init_dev(name);
     if( !dev )
 	return -1;
 	
@@ -394,24 +456,52 @@ add_master(char *name,char *cprof, char *aprof,int reps,int tick_per_min)
 }
 
 int EOC_main::
+configure_channels()
+{
+    channel_elem *el = (channel_elem*)channels.first();
+    while( el ){
+	el->eng->configure(el->name);
+	el = (channel_elem*)channels.next(el->name,el->nsize);
+    }
+}
+
+
+int EOC_main::
 poll_channels()
 {
-    channel_elem *el;
-    channels.init_trace();
-    while( ( el = (channel_elem*)channels.next_elem()) ){
+    channel_elem *el = (channel_elem*)channels.first();
+    while( el ){
 	el->eng->schedule();
+	el = (channel_elem*)channels.next(el->name,el->nsize);
     }
 }
 
 // ------------ Application requests ------------------------------//
 
-app_frame *EOC_main::
+void EOC_main::
 app_listen()
 {
+    char *buff;
+    int size,conn;
+    int ret;
 
-
-
-
+    if( !app_srv.wait() )
+	return;
+	
+//    while( (size = app_srv.recv(conn,buff) ) ){
+    while( 1 ){
+	size = app_srv.recv(conn,buff);
+	if( !size )
+	    return;
+	app_frame fr(buff,size);
+	if( !fr.frame_ptr() ){
+	    delete buff;
+	    continue; 
+	}
+	if( ret = app_request(&fr) )
+	    continue;
+	app_srv.send(conn,fr.frame_ptr(),fr.frame_size());
+    }
 }
 
 
@@ -420,14 +510,17 @@ app_request(app_frame *fr)
 {
     if( fr->role() != app_frame::REQUEST )
 	return -1;
-    if( fr->chan_name() )
-	return app_chann_request(fr);
+    
+    printf("App request, ID = %d\n",fr->id());
     switch( fr->id() ){
     case app_frame::SPAN_CONF_PROF:
 	return app_spanconf_prof(fr);
     case app_frame::ENDP_ALARM_PROF:
 	return app_spanconf_prof(fr);
     }
+
+    if( fr->chan_name() )
+	return app_chann_request(fr);
     return -1;
 }
 
@@ -443,7 +536,7 @@ app_chann_request(app_frame *fr)
     if( eng->get_type() != master ) // Channel do not maintain EOC DB
 	return -1;
     EOC_engine_act *eng_a = (EOC_engine_act *)eng;
-    eng_a->app_request(fr);
+    return eng_a->app_request(fr);
 }
 
 int EOC_main::

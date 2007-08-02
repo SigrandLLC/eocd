@@ -5,7 +5,8 @@
 
 class shdsl_config {
 public:
-    u32 lrate : 20;
+    u32 max_rate : 20;
+    u32 min_rate : 20;
     u32 master : 1;
     u32 annex  :4;
 };

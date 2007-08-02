@@ -8,7 +8,7 @@ CPPFLAGS=-g -I$(INCLUDES)
 
 all: hash_table.o
 	cp $^ $(TOPDIR)/build
-#	g++ $(CPPFLAGS) -o result main.cpp hash_table.o
+	$(CXX) $(CPPFLAGS) -o result test-hash.cpp hash_table.o
 
 clean:
 	rm -f *.o
