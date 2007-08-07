@@ -6,6 +6,7 @@
 #include <eocd_log.h>
 #include <eoc_debug.h>
 #include <string.h>
+#include <time.h>
 
 #include <app-if/app_messages.h>
 
@@ -30,6 +31,8 @@ protected:
 	u8 role:1;
 	u8 error;
 	u8 dname_offs;
+	time_t tstamp;
+	u8 act_sec;
     }app_frame_hdr;
     
     app_frame_hdr *hdr;
@@ -39,7 +42,7 @@ protected:
     int size_by_id(ids id,types type,u32 &psize,u32 &csize);
     
 public:
-    app_frame(ids id,types type,roles role,char *dname = "\0");
+    app_frame(ids id,types type,roles role,u8 act_sec,char *dname = "\0");
     app_frame(char *b,int size);
     ~app_frame();
     const char *chan_name();
@@ -53,6 +56,14 @@ public:
     void negative(){ hdr->error = 1; }
     int is_negative(){ return hdr->error; }
     void response(){ hdr->role = RESPONSE; }
+    int info_uptodate(){
+	time_t cur;
+	if(time(&cur) < 0){
+	    eocd_log(0,"Error getting current time");
+	}
+	return ((cur-hdr->tstamp)<hdr->act_sec) ? 1 : 0;
+    }
+	
 };
 
 #endif

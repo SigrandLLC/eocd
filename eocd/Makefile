@@ -14,8 +14,8 @@ CPPFLAGS=-g -I$(INCLUDES)
 
 TARGS :=generic engine devs utils local db app-if
 OBJECTS := build/*.o 
-#CXX=g++
-CXX=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-g++
+CXX=g++
+#CXX=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-g++
 INCLUDES += -I$(TOPDIR)/libconfig/
 
 all: $(TARGS) 

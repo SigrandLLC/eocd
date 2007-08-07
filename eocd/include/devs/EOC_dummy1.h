@@ -77,86 +77,12 @@ public:
 	return perf;
     }
     
-    u8 loops() { return 1;};
+    int loops() { return 1;};
 
     int tresholds(s8 loopattn,s8 snr){
 	printf("%s: loop_attn(%d) snr_marg(%d)\n",name,loopattn,snr);
     }
-
-    int status_collect(){
-	    return 0;
-    }
-
-    int perf_change(u8 loop){
-	if(perf_changed){
-	    perf_changed = 0;
-	    return 1;
-	}
-	return 0;
-    }
-	    
-    
-    u8 losws_alarm(u8 loop){
-	return perf.losws_alarm;
-    }
-    
-    u8 loop_attn_alarm(u8 loop){
-	return perf.loop_attn_alarm;
-    }
-    
-    u8 snr_marg_alarm(u8 loop){
-	return perf.snr_marg_alarm;
-    }
-    u8 dc_cont_flt(u8 loop){
-	return perf.dc_cont_flt;
-    }
-    u8 dev_flt(u8 loop){
-	return perf.dev_flt;
-    }
-    u8 pwr_bckoff_st(u8 loop){
-	return perf.pwr_bckoff_st;
-    }
-    
-    s8 snr_marg(u8 loop){
-	return perf.snr_marg;
-    }
-    s8 loop_attn(u8 loop){
-	return perf.loop_attn;
-    }
-    
-    u8 es(u8 loop){
-	return perf.es;
-    }
-    u8 ses(u8 loop){
-	return perf.ses;
-    }
-    u8 crc(u8 loop){
-	return perf.crc;
-    }
-    u8 losws(u8 loop){
-	return perf.losws;
-    }
-    u8 uas(u8 loop){
-	return perf.uas;
-    }
-    u8 pwr_bckoff_base_val(u8 loop){
-	return perf.pwr_bckoff_base_val;
-    }
-    u8 cntr_rst_scur(u8 loop){
-	return perf.cntr_rst_scur;
-    }
-    u8 cntr_ovfl_stur(u8 loop){
-	return perf.cntr_ovfl_stur;
-    }
-    u8 cntr_rst_scuc(u8 loop){
-	return perf.cntr_rst_scuc;
-    }
-    u8 cntr_ovfl_stuc(u8 loop){
-	return perf.cntr_ovfl_stuc;
-    }
-    u8 pwr_bkf_ext(u8 loop){
-	return perf.pwr_bkf_ext;
-    }
+    int statistics(int loop, side_perf &perf);
     
 };
 

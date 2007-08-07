@@ -27,7 +27,8 @@ public:
     }
     
     EOC_loop* get_loop(int l){
-	if( !(l<loop_num) ){
+	if( !(l<loop_num && l>=0) ){
+	    PDEBUG(0,"error loop number = %d",l);
 	    return NULL;
 	}
 	return loops[l];

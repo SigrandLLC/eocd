@@ -13,7 +13,6 @@
 
 class EOC_unit{
 public:
-    typedef enum { net_side=0,cust_side } Sides;
     typedef enum { span = 0, local } power_t;
 protected:
     unit u;

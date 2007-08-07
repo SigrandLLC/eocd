@@ -4,7 +4,7 @@ ifeq ($(TOPDIR),)
     CPPFLAGS=-g -I$(INCLUDES)
 endif
 
-all: EOC_dummy.o EOC_dummy1.o
+all: EOC_dummy1.o
 	cp $? $(TOPDIR)/build
 
 clean:

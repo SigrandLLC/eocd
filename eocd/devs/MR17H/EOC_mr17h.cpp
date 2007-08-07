@@ -140,24 +140,63 @@ recv()
 }
 
 int EOC_mr17h::
-set_config_elem(char *name,char *val)
+set_dev_option(char *name,char *val)
 {
     int fd;
     char fname[FILE_PATH_SIZE];
-    printf("set_config_elem(%s,%s)\n",name,val); 
+    if( !valid )
+	return -1;
+	
+    printf("set_dev_option(%s,%s)\n",name,val); 
     snprintf(fname,FILE_PATH_SIZE,"%s/%s",conf_path,name);
     if( (fd = open(fname,O_WRONLY)) < 0 ){
-	printf("set_config_elem: Cannot open %s\n",fname);
+	printf("set_dev_option: Cannot open %s\n",fname);
 	return -1;
     }
     int len = strlen(val)+1;
     int cnt = write(fd,val,len);
-    printf("set_config_elem: write %d, written %d\n",len,cnt);
+    printf("set_dev_option: write %d, written %d\n",len,cnt);
     close(fd);
     if( cnt != len )
 	return -1;
     return 0;
 }
+
+int EOC_mr17h::
+get_dev_option(char *name,char *&buf)
+{
+    const int BUF_SIZE=256;
+    int fd;
+    char fname[FILE_PATH_SIZE];
+
+    if( !valid )
+	return -1;
+
+    buf = new char[BUF_SIZE];
+    printf("get_dev_option(%s)\n",name); 
+    snprintf(fname,FILE_PATH_SIZE,"%s/%s",conf_path,name);
+    if( (fd = open(fname,O_WRONLY)) < 0 ){
+	printf("get_dev_option: Cannot open %s\n",fname);
+	delete[] buf;
+	buf = NULL;
+	return -1;
+    }
+    int cnt = read(fd,buf,BUF_SIZE);
+    printf("get_dev_option: readed %d\n",cnt);
+    close(fd);
+    if( cnt < 0 ){
+	delete[] buf;
+	buf = NULL;
+	return 0;
+    }else if( !cnt ){
+	delete[] buf;
+	buf = NULL;
+	return 0;
+    }
+    buf[cnt] = 0;
+    return cnt;
+}
+
 
 span_conf_profile_t *EOC_mr17h::
 cur_config()
@@ -173,37 +212,37 @@ configure(span_conf_profile_t &cfg)
     char setting[256];
 
     // Setup
-    if( set_config_elem("mode","1") )
+    if( set_dev_option("mode","1") )
 	return -1;
     switch( cfg.annex ){
     case annex_a:
-	if( set_config_elem("annex","0") )
+	if( set_dev_option("annex","0") )
 	    return -1;
 	break;
     case annex_b:
-	if( set_config_elem("annex","1") )
+	if( set_dev_option("annex","1") )
 	    return -1;
 	break;
     default:
 	eocd_log(CONFL,"Unexpected annex value: %d, set to annex_a\n",cfg.annex);
-	if( set_config_elem("annex","0") )
+	if( set_dev_option("annex","0") )
 	    return -1;
     }	
     // TODO: pay attension to MIN rate!!!!
     snprintf(setting,256,"%d",cfg.max_rate);
-    if( set_config_elem("rate",setting) )
+    if( set_dev_option("rate",setting) )
 	return -1;
     // Уточнить значение!!!!
     if( cfg.max_rate > 3840 ){
-	if( set_config_elem("tcpam","1") )
+	if( set_dev_option("tcpam","1") )
 	    return -1;
     }else {
-	if( set_config_elem("tcpam","0") )
+	if( set_dev_option("tcpam","0") )
 	    return -1;
     }
 
     // Apply configuration    
-    if( set_config_elem("apply_cfg","1") )
+    if( set_dev_option("apply_cfg","1") )
 	return -1;
         
 }
@@ -213,104 +252,32 @@ int EOC_mr17h::
 configure()
 {
     // Setup
-    if( set_config_elem("mode","0") )
+    if( set_dev_option("mode","0") )
 	return -1;
     // Apply configuration    
-    if( set_config_elem("apply_cfg","1") )
+    if( set_dev_option("apply_cfg","1") )
 	return -1; 
 }
 
 // DEBUG_VERSION
 EOC_dev::Linkstate
 EOC_mr17h::link_state(){ return ONLINE; }
-// END DEBUG_VERSION
-/*
-/*
-    int status_collect(){
-	1;2A    return 0;
-    }
-
-    int perf_change(u8 loop){
-	if(perf_changed){
-	    perf_changed = 0;
-	    return 1;
-	}
-	return 0;
-    }
-	    
-    
-    u8 losws_alarm(u8 loop){
-	return perf.losws_alarm;
-    }
-    
-    u8 loop_attn_alarm(u8 loop){
-	return perf.loop_attn_alarm;
-    }
-    
-    u8 snr_marg_alarm(u8 loop){
-	return perf.snr_marg_alarm;
-    }
-    u8 dc_cont_flt(u8 loop){
-	return perf.dc_cont_flt;
-    }
-    u8 dev_flt(u8 loop){
-	return perf.dev_flt;
-    }
-    u8 pwr_bckoff_st(u8 loop){
-	return perf.pwr_bckoff_st;
-    }
-    
-    s8 snr_marg(u8 loop){
-	return perf.snr_marg;
-    }
-    s8 loop_attn(u8 loop){
-	return perf.loop_attn;
-    }
-    
-    u8 es(u8 loop){
-	return perf.es;
-    }
-    u8 ses(u8 loop){
-	return perf.ses;
-    }
-    u8 crc(u8 loop){
-	return perf.crc;
-    }
-    u8 losws(u8 loop){
-	return perf.losws;
-    }
-    u8 uas(u8 loop){
-	return perf.uas;
-    }
-    u8 pwr_bckoff_base_val(u8 loop){
-	return perf.pwr_bckoff_base_val;
-    }
-    u8 cntr_rst_scur(u8 loop){
-	return perf.cntr_rst_scur;
-    }
-    u8 cntr_ovfl_stur(u8 loop){
-	return perf.cntr_ovfl_stur;
-    }
-    u8 cntr_rst_scuc(u8 loop){
-	return perf.cntr_rst_scuc;
-    }
-    u8 cntr_ovfl_stuc(u8 loop){
-	return perf.cntr_ovfl_stuc;
-    }
-    u8 pwr_bkf_ext(u8 loop){
-	return perf.pwr_bkf_ext;
-    }
-    
-    shdsl_config config(){ shdsl_config i; return i; }
-    int config(shdsl_config cfg){ 
-	printf("SET DEVICE: Rate=%d %s annex%d",cfg.lrate, (cfg.master) ? "master" : "slave",cfg.annex);
-	return 0;
-    }
-*/
 
 int EOC_mr17h::
-statistics(side_perf &stat)
+statistics(int loop,side_perf &stat)
 {
+    char *buf;
+    int cnt = get_dev_option("statistics_row",buf);
+    if( cnt <= 0 )
+	return -1;
+    int params = sscanf(buf,"%d %d %u %u %u %u %u %*u %*u %u %u",
+	    stat.snr_marg,stat.loop_attn,stat.es,stat.ses,stat.crc,
+	    stat.losws,stat.uas,stat.cntr_rst_stuc,stat.cntr_ovfl_stuc);
+    if( params != 11 )
+	return -1;
+    stat.cntr_rst_stur = stat.cntr_rst_stuc;
+    stat.cntr_ovfl_stur = stat.cntr_ovfl_stuc;
 
-
+    return 0;
 }
+

@@ -5,6 +5,7 @@
 #include <generic/EOC_types.h>
 #include <generic/EOC_generic.h>
 #include <generic/EOC_msg.h>
+#include <generic/EOC_responses.h>
 
 
 class EOC_dev{
@@ -43,33 +44,12 @@ public:
     virtual int send(EOC_msg *msg) = 0;
     virtual EOC_msg *recv() = 0;
     //----- SHDSL channel ----------//
+    virtual int loops() = 0;
     virtual Linkstate link_state() = 0;
     //----- SHDSL settings ---------//
     virtual int tresholds(s8 loop_attn,s8 snr_m) = 0;
+    virtual int statistics(int loop,side_perf &stat) = 0;
 
-    // loop status
-    virtual u8 loops() = 0;
-    virtual int status_collect() = 0;
-    virtual int perf_change(u8 loop) = 0;
-    virtual u8 losws_alarm(u8 loop) = 0;
-    virtual u8 loop_attn_alarm(u8 loop) = 0;
-    virtual u8 snr_marg_alarm(u8 loop) = 0;
-    virtual u8 dc_cont_flt(u8 loop) = 0;
-    virtual u8 dev_flt(u8 loop) = 0;
-    virtual u8 pwr_bckoff_st(u8 loop) = 0;
-    virtual s8 snr_marg(u8 loop) = 0;
-    virtual s8 loop_attn(u8 loop) = 0;
-    virtual u8 es(u8 loop) = 0;
-    virtual u8 ses(u8 loop) = 0;
-    virtual u8 crc(u8 loop) = 0;
-    virtual u8 losws(u8 loop) = 0;
-    virtual u8 uas(u8 loop) = 0;
-    virtual u8 pwr_bckoff_base_val(u8 loop) = 0;
-    virtual u8 cntr_rst_scur(u8 loop) = 0;
-    virtual u8 cntr_ovfl_stur(u8 loop) = 0;
-    virtual u8 cntr_rst_scuc(u8 loop) = 0;
-    virtual u8 cntr_ovfl_stuc(u8 loop) = 0;
-    virtual u8 pwr_bkf_ext(u8 loop) = 0;
 
 };
 

@@ -7,6 +7,8 @@
 #include <utils/EOC_ring_container.h>
 #include <db/EOC_db.h>
 #include <engine/EOC_engine.h>
+#include <engine/EOC_engine_act.h>
+
 #include <EOC_main.h>
 
 /*
@@ -63,7 +65,7 @@ EOC_dummy1 *n21;
 EOC_dummy1 *n22;
 EOC_dummy1 *n3;
 
-/*
+
 EOC_dev_terminal *
 init_dev(char *name_1)
 {
@@ -75,21 +77,22 @@ init_dev(char *name_1)
     }
     return NULL;
 }
-*/
+
+
+
+
 int main()
 {
     unit s,d;
     char type;
-    dummy_channel mr1_1,mr1_2,r1s_1,r1s_2;
-    
+
     printf("Hi!!!\n");
     
+    dummy_channel mr1_1,mr1_2,r1s_1,r1s_2;
     n1 = new EOC_dummy1("m-ns",&mr1_1,&mr1_2);
     n21 = new EOC_dummy1("r1-cs",&mr1_2,&mr1_1);
     n22 = new EOC_dummy1("r1-ns",&r1s_1,&r1s_2);
     n3 = new EOC_dummy1("s-cs",&r1s_2,&r1s_1);
-
-
 
     EOC_main m("eocd.cfg");    
     EOC_engine *e2 = new EOC_engine(n22,n21); 
@@ -98,14 +101,60 @@ int main()
     
     int k=0;
     side_perf S;
-    while(1){//k<50){
+    while(k<200){
 //	sleep(1);
-	k=0;
-	m.app_listen();
+	k++;
+//	m.app_listen();
 	m.poll_channels();
+	e2->schedule();
+	if( k>40 ){
+		S = n1->get_current_stat();
+		S.ses++;
+		n1->setup_current_stat(S);
+
+
+		S = n22->get_current_stat();
+		S.es++;
+		S.losws++;
+		n22->setup_current_stat(S);
+
+		S = n21->get_current_stat();
+		S.crc++;
+		S.uas++;
+		n21->setup_current_stat(S);
+
+		S = n3->get_current_stat();
+		S.es++;
+		n3->setup_current_stat(S);
+	}
     }
 
     while(1){
+	m.poll_channels();
+	e2->schedule();
+	m.app_listen();
+/*
+	if( k &>40 ){
+		S = n1->get_current_stat();
+		S.ses++;
+		n1->setup_current_stat(S);
+
+
+		S = n22->get_current_stat();
+		S.es++;
+		S.losws++;
+		n22->setup_current_stat(S);
+
+		S = n21->get_current_stat();
+		S.crc++;
+		S.uas++;
+		n21->setup_current_stat(S);
+
+		S = n3->get_current_stat();
+		S.es++;
+		n3->setup_current_stat(S);
+	}
+*/
     }
     return 0;
 }
@@ -125,9 +174,9 @@ int main()
     
     EOC_dummy1 *n3 = new EOC_dummy1("s-cs",&r1s_2,&r1s_1);
     
-    EOC_engine *e1 = new EOC_engine((EOC_dev_master*)n1,3);
-    EOC_engine *e2 = new EOC_engine((EOC_dev*)n22,(EOC_dev*)n21);    
-    EOC_engine *e3 = new EOC_engine((EOC_dev*)n3);    
+    EOC_engine *e1 = new EOC_engine_act(n1,3);
+    EOC_engine *e2 = new EOC_engine(n22,n21);    
+    EOC_engine *e3 = new EOC_engine(n3);    
 
 int k=0;
     side_perf S;
@@ -136,7 +185,7 @@ int k=0;
 	e1->schedule();
         e2->schedule();
         e3->schedule();
-	if( k>20 ){
+	if( k>40 ){
 		S = n1->get_current_stat();
 		S.ses++;
 		n1->setup_current_stat(S);
@@ -163,7 +212,6 @@ int k=0;
     return 0;
 }
 */
-
 /* ENGINE FULL TEST  
 int main()
 {

@@ -40,3 +40,14 @@ EOC_dummy1::recv()
 
 EOC_dev::Linkstate
 EOC_dummy1::link_state(){ return ONLINE; }
+
+int EOC_dummy1:: 
+statistics(int loop, side_perf &p)
+{
+    p = perf;
+    if( perf_changed ){
+	perf_changed = 0;
+	return 1;
+    }
+    return 0;
+}

@@ -1,7 +1,7 @@
 #include <app-if/app_frame.h>
 
 app_frame::    
-app_frame(ids id,types type,roles role,char *dname){
+app_frame(ids id,types type,roles role,u8 act_seconds,char *dname){
 	u32 psize,csize;
 	int offs;
 	if( (offs = size_by_id(id,type,psize,csize) ) <0 ){
@@ -24,6 +24,9 @@ app_frame(ids id,types type,roles role,char *dname){
 	hdr->type = (u8)type;
 	hdr->role = (u8)role;
 	hdr->dname_offs = offs;
+	if( time(&hdr->tstamp) < 0)
+	    eocd_log(0,"Error getting current time");
+	hdr->act_sec = act_seconds;
 	memcpy(buf+offs,dname,strnlen(dname,256));
 }
 
@@ -106,14 +109,11 @@ size_by_id(ids id,types type,u32 &psize,u32 &csize)
     }
     return size;    
 }
-
-    
     
 const char *app_frame::
 chan_name(){
 	return &buf[hdr->dname_offs];
 }
-
 
 char *app_frame::
 payload_ptr(){

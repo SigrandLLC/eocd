@@ -4,7 +4,7 @@
 #include <snmp/snmp-generic.h>
 #include <span_profile.h>
 #include <generic/EOC_responses.h>
-
+#include <generic/EOC_types.h>
 typedef struct{
     s16 nreps;
     char conf_prof[SNMP_ADMIN_LEN+1];
@@ -46,41 +46,18 @@ typedef struct{
 // TODO: may be set request!
 #define ENDP_CONF_CH_SZ 0
 
-typedef struct{
-    u16 noDefect:1;
-    u16 powerBackoff:1;
-    u16 deviceFault:1;
-    u16 dcContFault:1;
-    u16 snrMargAlarm:1;
-    u16 loopAttnAlarm:1;
-    u16 loswFailAlarm:1;
-    u16 configInitFailure:1;
-    u16 protoInitFailure:1;
-    u16 noNeighborPresent:1;
-    u16 loopbackActive:1;
-} cur_status_t;
-
-
-typedef struct{
-    u32 es;
-    u32 ses;
-    u32 crc;
-    u32 losws;
-    u32 uas;
-} counters_t;
-
 typedef struct {
     u8 unit;
     u8 side;
     u8 loop;
-    s32 CurrAtn;
-    s32 CurrSnrMgn;
-    cur_status_t CurrStatus;
+    s32 cur_attn;
+    s32 cur_snr;
+    shdsl_status_t cur_status;
     counters_t total;
-    u32 Curr15MinElaps;
+    u32 cur_15m_elaps;
     counters_t cur15min;
-    u32 Curr1DayElapsed;
-    counters_t cur1d;
+    u32 cur_1d_elaps;    
+    counters_t cur1day;
     s32 CurrTipRingReversal;
     s32 CurrActivationState;
 } endp_cur_payload;
@@ -91,20 +68,15 @@ typedef struct {
     u8 unit;
     u8 side;
     u8 loop;
-    u32 IntervalNumber;
-    counters_t counters;
-} endp_15min_payload;
+    u32 int_num;
+    counters_t cntrs;
+} endp_int_payload;
+
+#define endp_15min_payload endp_int_payload
 #define ENDP_15MIN_PAY_SZ sizeof(endp_15min_payload)
 #define ENDP_15MIN_CH_SZ 0
 
-
-typedef struct{
-    u8 unit;
-    u8 side;
-    u8 loop;
-    u32 IntervalNumber;
-    counters_t counterd;
-} endp_1day_payload;
+#define endp_1day_payload endp_int_payload
 #define ENDP_1DAY_PAY_SZ sizeof(endp_15min_payload)
 #define ENDP_1DAY_CH_SZ 0
 

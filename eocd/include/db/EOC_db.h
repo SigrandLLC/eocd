@@ -53,8 +53,8 @@ public:
     int app_request(app_frame *fr);
     int unit_quan();
     int check_exist(unit u);
-    int check_exist(unit u,EOC_unit::Sides s);
-    int check_exist(unit u,EOC_unit::Sides s,int loop);
+    EOC_side *check_exist(unit u,side s);
+    EOC_loop *check_exist(unit u,side s,int loop);
 };
 
 #endif

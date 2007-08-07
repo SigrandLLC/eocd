@@ -90,7 +90,7 @@ app_request(app_frame *fr)
     case app_frame::ENDP_CONF:
     {
 	endp_conf_payload *p = (endp_conf_payload*)fr->payload_ptr();
-	if( db->check_exist((unit)p->unit,(EOC_unit::Sides)p->side,p->loop) ){
+	if( db->check_exist((unit)p->unit,(side)p->side,p->loop) ){
 	    fr->negative();
 	    return 0;
 	}

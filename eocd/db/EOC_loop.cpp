@@ -1,7 +1,7 @@
 #include <db/EOC_loop.h>
 
 void EOC_loop::
-status_diff(side_perf *info,shdsl_counters &cntrs)
+status_diff(side_perf *info,counters_t &cntrs)
 {
     if( !(memcmp(info,&last_msg,sizeof(last_msg))) )
         return;
@@ -97,7 +97,7 @@ short_status(s8 snr_margin)
 int EOC_loop::
 full_status(side_perf *info)
 {
-    shdsl_counters cntrs;
+    counters_t cntrs;
     status_diff(info,cntrs);
     shift_rings();	
     // change online data
@@ -105,7 +105,7 @@ full_status(side_perf *info)
     state.snr_marg = info->snr_marg;
     setup_cur_status(info);	
     // Change counters
-    state.cntrs.addit(cntrs);
+    state.elem.addit(cntrs);
     _15min_ints[0]->addit(cntrs);
     _1day_ints[0]->addit(cntrs);
 }

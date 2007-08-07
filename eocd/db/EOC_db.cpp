@@ -93,40 +93,26 @@ check_exist(unit u){
     return -1;
 }
 
-int EOC_db::
-check_exist(unit u,EOC_unit::Sides s){
+EOC_side *EOC_db::
+check_exist(unit u,side s){
     if( check_exist(u) )
-        return -1;
+        return NULL;
     switch( s ){
-    case EOC_unit::net_side:
-        if( !units[(int)u-1]->nside() )
-	    return 0;
-	return -1;
-    case EOC_unit::cust_side:
-        if( !units[(int)u-1]->cside() )
-	    return 0;
-	return -1;
+    case net_side:
+        return units[(int)u-1]->nside();
+    case cust_side:
+        return units[(int)u-1]->cside();
     }
-    return -1;
+    return NULL;
 }
 
-int EOC_db::
-check_exist(unit u,EOC_unit::Sides s,int loop)
+EOC_loop *EOC_db::
+check_exist(unit u,side s,int loop)
 {
-    if( check_exist(u,s) )
-        return -1;
-    EOC_side *side;
-    switch( s ){
-    case EOC_unit::net_side:
-        side = units[(int)u-1]->nside();
-        break;
-    case EOC_unit::cust_side:
-        side = units[(int)u-1]->cside();
-        break;
-    }
-    if( side->get_loop(loop) )
-        return 0;
-    return -1;
+    EOC_side *side = check_exist(u,s);
+    if( !side )
+	return NULL;
+    return side->get_loop(loop);
 }
 
 int EOC_db::
@@ -255,29 +241,10 @@ _resp_nside_perf(EOC_db *db,EOC_msg *m)
     resp_nside_perf *resp= (resp_nside_perf*)m->payload();
     int loop_id = resp->loop_id-1; 
     EOC_loop *nsloop=NULL;
-    int ind = (int)m->src() - 1;    
 
     printf("NET SIDE PERF RESPONSE: src(%d) dst(%d)\n",m->src(),m->dst());
-
-    if( !db->units[ind] ){
-	// TODO eoc_log(LOG_ERROR,"Network side perfomance message from unit which not exist");
-	printf("Network side perfomance message from unit which not exist\n");
-	return -1;
-    }
+    nsloop = db->check_exist(m->src(),net_side,loop_id);
     
-    if( db->units[ind]->nside() ){
-	if( !db->units[ind]->nside()->get_loop(loop_id) ){
-	    // TODO eoc_log(LOG_ERROR,"(Network side perfomance) Request unexisted loop");
-	    printf("(Network side perfomance) Request unexisted loop\n");
-	    return -1;
-	}
-	nsloop = db->units[ind]->nside()->get_loop(loop_id);
-    }else{
-	// TODO eoc_log(LOG_ERROR,"(Network side perf status message) Request unexisted side");
-	printf("(Network side perf status message) Request unexisted side\n");
-	return -1;
-    }
-
     if( !db )
 	return 0;
     
@@ -297,29 +264,10 @@ _resp_cside_perf(EOC_db *db,EOC_msg *m)
     resp_cside_perf *resp= (resp_cside_perf*)m->payload();
     int loop_id = resp->loop_id-1;
     EOC_loop *csloop=NULL;
-    int ind = (int)m->src() - 1;    
 
     printf("CUST SIDE PERF RESPONSE: src(%d) dst(%d)\n",m->src(),m->dst());
 
-
-    if( !db->units[ind] ){
-	// TODO eoc_log(LOG_ERROR,"Customer side perf status message from unit which not exist");
-	printf("Customer side perf status message from unit which not exist\n");
-	return -1;
-    }
-    
-    if( db->units[ind]->cside() ){
-	if( !db->units[ind]->cside()->get_loop(loop_id) ){
-	    // TODO eoc_log(LOG_ERROR,"(Customer side perf status message) Request unexisted loop");
-	    printf("(Customer side perf status message) Request unexisted loop\n");
-	    return -1;
-	}
-	csloop = db->units[ind]->cside()->get_loop(loop_id);
-    }else{
-	// TODO eoc_log(LOG_ERROR,"(Customer side perf status message) Request unexisted side");
-	printf("(Customer side perf status message) Request unexisted side\n");
-	return -1;
-    }
+    csloop = db->check_exist(m->src(),cust_side,loop_id);
 
     if( !db )
 	return 0;
@@ -384,13 +332,68 @@ _appreq_inventory(EOC_db *db,app_frame *fr)
 int EOC_db::
 _appreq_endpcur(EOC_db *db,app_frame *fr)
 {
+    endp_cur_payload *p = (endp_cur_payload*)fr->payload_ptr();
+    counters_elem elem;
+    time_t cur;
+    EOC_loop *loop;
+
+    printf("DB: Endpoint current app request\n");
+    if( !p ){
+	printf("DB Endp cur: eror !p\n");    
+	return -1;
+    }
+    if( !(loop = db->check_exist((unit)p->unit,(side)p->side,p->loop)) ){
+	printf("DB Endp cur: error check exist\n");	
+	fr->negative();
+	return 0;
+    }
+    printf("DB Endp cur: form response\n");	    
+    if( time(&cur) < 0 ){
+	fr->negative();
+	return 0;
+    }
+    
     fr->response();
+    p->cur_attn = loop->cur_attn();
+    p->cur_snr = loop->cur_snr();
+    p->total = loop->cur_counters();
+    p->cur_status = loop->cur_status();
+
+    loop->m15_counters(0,elem);
+    p->cur15min = elem.cntrs;
+    p->cur_15m_elaps = cur - elem.tstamp;
+
+    loop->d1_counters(0,elem);
+    p->cur1day = elem.cntrs;
+    p->cur_1d_elaps = cur - elem.tstamp;
+
     return 0;
 }
 
 int EOC_db::
 _appreq_endp15min(EOC_db *db,app_frame *fr)
 {
+    endp_15min_payload *p = (endp_15min_payload*)fr->payload_ptr();
+    EOC_loop *loop;
+    counters_elem elem;
+
+    printf("DB: Endpoint 15 min app request\n");
+    if( !p ){
+	printf("DB Endp 15min: eror !p\n");    
+	return -1;
+    }
+    if( !(loop = db->check_exist((unit)p->unit,(side)p->side,p->loop)) ){
+	printf("DB Endp 15 min: error check exist\n");	
+	fr->negative();
+	return 0;
+    }
+    printf("DB Endp 15min: form response\n");	    
+
+    if( loop->m15_counters(p->int_num,elem) ){
+	fr->negative();
+	return 0;
+    }
+    p->cntrs = elem.cntrs;
     fr->response();
     return 0;
 }
@@ -398,6 +401,27 @@ _appreq_endp15min(EOC_db *db,app_frame *fr)
 int EOC_db::
 _appreq_endp1day(EOC_db *db,app_frame *fr)
 {
+    endp_1day_payload *p = (endp_1day_payload*)fr->payload_ptr();
+    EOC_loop *loop;
+    counters_elem elem;
+
+    printf("DB: Endpoint 1 day app request\n");
+    if( !p ){
+	printf("DB Endp 1 day: eror !p\n");    
+	return -1;
+    }
+    if( !(loop = db->check_exist((unit)p->unit,(side)p->side,p->loop)) ){
+	printf("DB Endp 1 day: error check exist\n");	
+	fr->negative();
+	return 0;
+    }
+    printf("DB Endp 1 day: form response\n");	    
+
+    if( loop->d1_counters(p->int_num,elem) ){
+	fr->negative();
+	return 0;
+    }
+    p->cntrs = elem.cntrs;
     fr->response();
     return 0;
 }
@@ -405,14 +429,14 @@ _appreq_endp1day(EOC_db *db,app_frame *fr)
 int EOC_db::
 _appreq_endpmaint(EOC_db *db,app_frame *fr)
 {
-    fr->response();
+    fr->negative();
     return 0;
 }
 
 int EOC_db::
 _appreq_unitmaint(EOC_db *db,app_frame *fr)
 {
-    fr->response();
+    fr->negative();
     return 0;
 }
 

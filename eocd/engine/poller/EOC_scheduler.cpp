@@ -53,13 +53,13 @@ EOC_scheduler::response(EOC_msg *m)
 
     if( !m )
 	return -1;
-    printf("-----------------response------------------\n");
-    wait_q->print();
+//    printf("-----------------response------------------\n");
+//    wait_q->print();
     if( wait_q->find_del(m->src(),m->dst(),m->type(),ts) )
 	return -1;
-    printf("-----------------after find_del-------------\n");
-    wait_q->print();    
-    printf("-----------------end response---------------\n");
+//    printf("-----------------after find_del-------------\n");
+//    wait_q->print();    
+//    printf("-----------------end response---------------\n");
 
     printf("RESPONSE: src(%d),dst(%d),type(%d)\n",m->src(),m->dst(),m->type());
     
@@ -76,11 +76,15 @@ EOC_scheduler::response(EOC_msg *m)
 	    return 0;
 	}
 	statem->ustates[ind] = Discovered;
+
 	if( send_q->add(stu_c,m->src(),REQ_INVENTORY,ts) )
 	    return -1;
-	if( m->src() != stu_r )
-	    return wait_q->add(BCAST,stu_c,RESP_DISCOVERY,ts);
-	return 0;
+
+	if( statem->ustates[(int)stu_c-1] == Discovered &&
+	    statem->ustates[(int)stu_r-1] == Discovered )
+	    return 0;
+	
+	return wait_q->add(BCAST,stu_c,RESP_DISCOVERY,ts);
     case RESP_INVENTORY:
 	if( statem->state != Setup )
 	    return -1;

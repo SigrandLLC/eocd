@@ -81,9 +81,9 @@ typedef struct{
     u8 losws;
     u8 uas;
     u8 pwr_bckoff_base_val:4;
-    u8 cntr_rst_scur:1;
+    u8 cntr_rst_stur:1;
     u8 cntr_ovfl_stur:1;
-    u8 cntr_rst_scuc:1;
+    u8 cntr_rst_stuc:1;
     u8 cntr_ovfl_stuc:1;
     u8 loop_id:3;
     u8 :4;
