@@ -46,6 +46,7 @@ public:
     EOC_msg *gen_request();
     int process_msg(EOC_msg *m);
     int app_request(app_frame *fr);
+    inline int unit_quan(){ db->unit_quan(); }
       
 };
 

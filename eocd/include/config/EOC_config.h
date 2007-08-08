@@ -4,7 +4,7 @@
 #include <generic/EOC_types.h>
 #include <utils/hash_table.h>
 
-#include <span_profile.h>
+#include <conf_profile.h>
 
 class EOC_config{
     hash_table *conf_prof;

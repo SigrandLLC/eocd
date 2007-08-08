@@ -27,7 +27,8 @@ protected:
     app_comm_srv app_srv;
 public:
     EOC_main(char *cfg) : conf_profs(SNMP_ADMIN_LEN), alarm_profs(SNMP_ADMIN_LEN),
-		     channels(MAX_IF_NAME_LEN), app_srv("./","socket"){
+		     channels(MAX_IF_NAME_LEN), app_srv("/home/artpol/","socket")
+    {
 	strncpy(config_file,cfg,MAX_FNAME);
 	config_file[MAX_FNAME-1] = '\0';
 	read_config();
@@ -51,6 +52,7 @@ public:
 
     void app_listen();
     int app_request(app_frame *fr);
+    int app_spanname(app_frame *fr);
     int app_chann_request(app_frame *fr);
     int app_spanconf_prof(app_frame *fr);
     int app_endpalarm_prof(app_frame *fr);

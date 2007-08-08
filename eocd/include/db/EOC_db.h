@@ -20,7 +20,7 @@ class EOC_db{
 
     EOC_unit *units[MAX_UNITS];
     response_handler_t handlers[RESPONSE_QUAN];
-    app_handler_t app_handlers[app_frame::ids_num];
+    app_handler_t app_handlers[app_ids_num];
     EOC_scheduler *sch;
     u8 loop_num;
 

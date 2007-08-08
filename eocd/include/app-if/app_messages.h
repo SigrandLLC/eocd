@@ -2,9 +2,41 @@
 #define APP_MESSAGES_H
 
 #include <snmp/snmp-generic.h>
-#include <span_profile.h>
+#include <generic/span_conf_type.h>
 #include <generic/EOC_responses.h>
 #include <generic/EOC_types.h>
+
+
+typedef enum { APP_SPAN_NAME=0,APP_SPAN_PARAMS,APP_SPAN_CONF,APP_SPAN_STATUS,
+	    APP_INVENTORY,APP_ENDP_CONF,APP_ENDP_CUR,APP_ENDP_15MIN,
+	    APP_ENDP_1DAY,APP_ENDP_MAINT,APP_UNIT_MAINT,APP_SPAN_CPROF,
+	    APP_ENDP_APROF } app_ids;
+#define app_ids_num 13
+
+typedef enum { APP_SET,APP_GET,APP_GET_NEXT } app_types;
+
+/*
+1. список обслуживаемых каналов
+2. Для конкретного канала: число элементов в канале, число пар проводов
+*/
+
+#define SPAN_NAMES_NUM 4
+#define SPAN_NAME_LEN 32
+typedef struct{
+    u8 filled:7;
+    u8 last_msg:1; 
+    char name[SPAN_NAMES_NUM][SPAN_NAME_LEN];
+} span_name_payload;
+#define SPAN_NAME_PAY_SZ sizeof(span_name_payload)
+#define SPAN_NAME_CH_SZ 0
+
+typedef struct{
+    u8 units;
+    u8 loops;
+} span_params_payload;
+#define SPAN_PARAMS_PAY_SZ sizeof(span_params_payload)
+#define SPAN_PARAMS_CH_SZ 0
+
 typedef struct{
     s16 nreps;
     char conf_prof[SNMP_ADMIN_LEN+1];

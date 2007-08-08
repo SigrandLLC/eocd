@@ -10,7 +10,7 @@
 
 #include <handlers/EOC_poller_req.h>
 
-#include <span_profile.h>
+#include <conf_profile.h>
 #include <shdsl/config.h>
 #include <eoc_debug.h>
 
@@ -161,4 +161,20 @@ configure(char *ch_name)
 	return -1;
     }	
     return dev->configure(prof->conf);
+}
+
+int EOC_engine_act::
+app_request(app_frame *fr){ 
+
+    switch( fr->id() ){
+    case APP_SPAN_PARAMS:
+    {
+	span_params_payload *p = (span_params_payload *)fr->payload_ptr();
+	p->units = poll->unit_quan();
+	p->loops = rtr->loops();
+	return 0;
+    }
+    default:
+        return poll->app_request(fr);
+    }
 }

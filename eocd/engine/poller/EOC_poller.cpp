@@ -65,7 +65,7 @@ int EOC_poller::
 app_request(app_frame *fr)
 {
     switch(fr->id()){
-    case app_frame::SPAN_CONF:
+    case APP_SPAN_CONF:
     {
 	span_conf_payload *p = (span_conf_payload*)fr->payload_ptr();
 	p->nreps = cfg->repeaters();
@@ -73,7 +73,7 @@ app_request(app_frame *fr)
 	strncpy(p->alarm_prof,cfg->alarm_prof_name(),SNMP_ADMIN_LEN);
 	break;
     }
-    case app_frame::SPAN_STATUS:
+    case APP_SPAN_STATUS:
     {
 	span_status_payload *p = (span_status_payload*)fr->payload_ptr();
 	p->nreps = db->unit_quan() - 2;
@@ -87,7 +87,7 @@ app_request(app_frame *fr)
 	fr->response();
 	break;
     }
-    case app_frame::ENDP_CONF:
+    case APP_ENDP_CONF:
     {
 	endp_conf_payload *p = (endp_conf_payload*)fr->payload_ptr();
 	if( db->check_exist((unit)p->unit,(side)p->side,p->loop) ){

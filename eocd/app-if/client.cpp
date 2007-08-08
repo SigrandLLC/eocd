@@ -132,7 +132,7 @@ print_endp_cur(app_comm_cli &cli,char *chan,unit u,side s,int loop)
     endp_cur_payload *p,*p1;
     app_frame *fr, *fr1;
     
-    fr = new app_frame(app_frame::ENDP_CUR,app_frame::GET,app_frame::REQUEST,1,chan);
+    fr = new app_frame(APP_ENDP_CUR,APP_GET,app_frame::REQUEST,1,chan);
     p = (endp_cur_payload*)fr->payload_ptr();
     p->unit = u;
     p->side = s;
@@ -173,7 +173,7 @@ print_endp_15m(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
     endp_15min_payload *p,*p1;
     app_frame *fr, *fr1;
     
-    fr = new app_frame(app_frame::ENDP_15MIN,app_frame::GET,app_frame::REQUEST,1,chan);
+    fr = new app_frame(APP_ENDP_15MIN,APP_GET,app_frame::REQUEST,1,chan);
     p = (endp_15min_payload*)fr->payload_ptr();
     p->unit = u;
     p->side = s;
@@ -218,7 +218,7 @@ print_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
     endp_1day_payload *p,*p1;
     app_frame *fr, *fr1;
     
-    fr = new app_frame(app_frame::ENDP_1DAY,app_frame::GET,app_frame::REQUEST,1,chan);
+    fr = new app_frame(APP_ENDP_1DAY,APP_GET,app_frame::REQUEST,1,chan);
     p = (endp_1day_payload*)fr->payload_ptr();
     p->unit = u;
     p->side = s;
@@ -260,7 +260,7 @@ main()
 {
     char *b,ch,a;
     int i;
-    app_comm_cli cli("../socket");
+    app_comm_cli cli("/home/artpol/socket");
     printf("Connect ok\n");
 
     print_endp_cur(cli,"dsl0",stu_c,net_side,0);

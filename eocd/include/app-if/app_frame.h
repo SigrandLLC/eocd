@@ -14,13 +14,7 @@
 
 class app_frame{
 public:
-    typedef enum { SPAN_CONF=0,SPAN_STATUS,INVENTORY,ENDP_CONF,ENDP_CUR,
-	      ENDP_15MIN,ENDP_1DAY,ENDP_MAINT,UNIT_MAINT,
-	      SPAN_CONF_PROF,ENDP_ALARM_PROF} ids;
-    static const int ids_num = 11;
-    typedef enum { SET,GET,GET_NEXT } types;
     typedef enum { REQUEST,RESPONSE } roles;
-
 protected:
     typedef struct {
 	u32 len;
@@ -30,7 +24,7 @@ protected:
 	u8 type:2;
 	u8 role:1;
 	u8 error;
-	u8 dname_offs;
+	char dname[SPAN_NAME_LEN];
 	time_t tstamp;
 	u8 act_sec;
     }app_frame_hdr;
@@ -39,10 +33,10 @@ protected:
     enum {FRAME_HEADER_SZ = sizeof(app_frame_hdr) };
     char *buf;
     u32 buf_size;
-    int size_by_id(ids id,types type,u32 &psize,u32 &csize);
+    int size_by_id(app_ids id,app_types type,u32 &psize,u32 &csize);
     
 public:
-    app_frame(ids id,types type,roles role,u8 act_sec,char *dname = "\0");
+    app_frame(app_ids id,app_types type,roles role,u8 act_sec,char *dname = "\0");
     app_frame(char *b,int size);
     ~app_frame();
     const char *chan_name();
@@ -50,8 +44,8 @@ public:
     char *changelist_ptr();
     char *frame_ptr(){ return buf; }
     int frame_size(){ return buf_size; }
-    ids id(){ return (ids)hdr->id; }
-    types type(){ return (types)hdr->type; }
+    app_ids id(){ return (app_ids)hdr->id; }
+    app_types type(){ return (app_types)hdr->type; }
     roles role(){ return (roles)hdr->role; }
     void negative(){ hdr->error = 1; }
     int is_negative(){ return hdr->error; }

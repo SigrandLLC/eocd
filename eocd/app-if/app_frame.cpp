@@ -1,7 +1,7 @@
 #include <app-if/app_frame.h>
 
 app_frame::    
-app_frame(ids id,types type,roles role,u8 act_seconds,char *dname){
+app_frame(app_ids id,app_types type,roles role,u8 act_seconds,char *dname){
 	u32 psize,csize;
 	int offs;
 	if( (offs = size_by_id(id,type,psize,csize) ) <0 ){
@@ -23,11 +23,10 @@ app_frame(ids id,types type,roles role,u8 act_seconds,char *dname){
 	hdr->id = (u8)id;
 	hdr->type = (u8)type;
 	hdr->role = (u8)role;
-	hdr->dname_offs = offs;
 	if( time(&hdr->tstamp) < 0)
 	    eocd_log(0,"Error getting current time");
 	hdr->act_sec = act_seconds;
-	memcpy(buf+offs,dname,strnlen(dname,256));
+	memcpy(hdr->dname,dname,strnlen(dname,SPAN_NAME_LEN));
 }
 
 app_frame::
@@ -38,14 +37,14 @@ app_frame(char *b,int size){
     buf_size = size;
     hdr = (app_frame_hdr *)buf;
     // GET correct parameters of frame
-    if( (offs = size_by_id((ids)hdr->id,(types)hdr->type,psize,csize) ) <0 ){
+    if( (offs = size_by_id((app_ids)hdr->id,(app_types)hdr->type,psize,csize) ) <0 ){
         buf = NULL;
         buf_size = 0;
         eocd_log(0,"Cannot get info about frame id = %d",hdr->id);
         return;
     }
     if( (hdr->psize != psize) || (hdr->csize != csize) ||
-	    (hdr->dname_offs != offs) || (!csize && hdr->type == SET) ){
+	    (!csize && hdr->type == APP_SET) ){
         eocd_log(0,"Error in app_frame header");
         buf = NULL;
         buf_size = 0;
@@ -60,40 +59,48 @@ app_frame::
 
 
 int app_frame::
-size_by_id(ids id,types type,u32 &psize,u32 &csize)
+size_by_id(app_ids id,app_types type,u32 &psize,u32 &csize)
 {
     int size = FRAME_HEADER_SZ;
 
     switch(id){
-    case SPAN_CONF:
+    case APP_SPAN_NAME:
+        psize = SPAN_NAME_PAY_SZ;
+        csize = SPAN_NAME_CH_SZ;
+        break;
+    case APP_SPAN_PARAMS:
+        psize = SPAN_PARAMS_PAY_SZ;
+        csize = SPAN_PARAMS_CH_SZ;
+        break;
+    case APP_SPAN_CONF:
         psize = SPAN_CONF_PAY_SZ;
         csize = SPAN_CONF_CH_SZ;
         break;
-    case SPAN_STATUS:
+    case APP_SPAN_STATUS:
         psize = SPAN_STATUS_PAY_SZ;
         csize = SPAN_STATUS_CH_SZ;
         break;
-    case INVENTORY:
+    case APP_INVENTORY:
         psize = INVENTORY_PAY_SZ;
         csize = INVENTORY_CH_SZ;
         break;
-    case ENDP_CONF:
+    case APP_ENDP_CONF:
         psize = ENDP_CONF_PAY_SZ;
         csize = ENDP_CONF_CH_SZ;
         break;
-    case ENDP_CUR:
+    case APP_ENDP_CUR:
         psize = ENDP_CUR_PAY_SZ;
         csize = ENDP_CUR_CH_SZ;
         break;
-    case ENDP_15MIN:
+    case APP_ENDP_15MIN:
         psize = ENDP_15MIN_PAY_SZ;
         csize = ENDP_15MIN_CH_SZ;
         break;
-    case ENDP_1DAY:
+    case APP_ENDP_1DAY:
         psize = ENDP_1DAY_PAY_SZ;
         csize = ENDP_1DAY_CH_SZ;
         break;
-    case ENDP_MAINT:
+    case APP_ENDP_MAINT:
         psize = ENDP_MAINT_PAY_SZ;
         csize = ENDP_MAINT_CH_SZ;
         break;
@@ -102,7 +109,7 @@ size_by_id(ids id,types type,u32 &psize,u32 &csize)
     }
 
     size += psize;
-    if( type == SET ){
+    if( type == APP_SET ){
         size += csize;
     }else{
         csize = 0;
@@ -112,7 +119,7 @@ size_by_id(ids id,types type,u32 &psize,u32 &csize)
     
 const char *app_frame::
 chan_name(){
-	return &buf[hdr->dname_offs];
+	return hdr->dname;
 }
 
 char *app_frame::

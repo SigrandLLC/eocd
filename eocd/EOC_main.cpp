@@ -18,7 +18,7 @@
 #include <devs/EOC_mr16h.h>
 
 #include <EOC_main.h>
-#include <span_profile.h>
+#include <conf_profile.h>
 #include <channel.h>
 
 using namespace libconfig;
@@ -515,14 +515,61 @@ app_request(app_frame *fr)
     
     printf("App request, ID = %d\n",fr->id());
     switch( fr->id() ){
-    case app_frame::SPAN_CONF_PROF:
+    case APP_SPAN_NAME:
+	return app_spanname(fr);
+    case APP_SPAN_CPROF:
 	return app_spanconf_prof(fr);
-    case app_frame::ENDP_ALARM_PROF:
+    case APP_ENDP_APROF:
 	return app_spanconf_prof(fr);
     }
 
     if( fr->chan_name() )
 	return app_chann_request(fr);
+    return -1;
+}
+
+
+int EOC_main::
+app_spanname(app_frame *fr)
+{
+    span_name_payload *p = (span_name_payload*)fr->payload_ptr();
+
+    switch(fr->type()){
+    case APP_GET:
+    case APP_GET_NEXT:
+    {
+	channel_elem *el = (channel_elem*)channels.first();
+	if( !el ){
+	    fr->negative();
+	    return 0;
+	}
+	if( strnlen(fr->chan_name(),SPAN_NAME_LEN) ){ 
+	    // if first name isn't zero
+	    el = (channel_elem *)
+		channels.find((char*)fr->chan_name(),strlen(fr->chan_name()));
+	    if( !el ){
+		fr->negative();
+		return 0;
+	    }
+	    el = (channel_elem*)channels.next(el->name,el->nsize);
+	}
+	int filled = 0;
+        while( el && filled<SPAN_NAMES_NUM){
+	    if( el->eng->get_type() == master ){
+		int cp_len = (el->nsize>SPAN_NAME_LEN) ? SPAN_NAME_LEN : el->nsize;
+		strncpy(p->name[filled],el->name,cp_len);
+		filled++;
+	    }
+	    el = (channel_elem*)channels.next(el->name,el->nsize);
+	}
+	p->filled = filled;
+	p->last_msg = ( el && (filled = SPAN_NAMES_NUM) ) ? 0 : 1;
+	return 0;
+    }
+    default:
+	fr->negative();
+	return 0;
+    }
     return -1;
 }
 
@@ -532,11 +579,15 @@ app_chann_request(app_frame *fr)
     // check that requested channel exist
     channel_elem *el = (channel_elem *)
 	    channels.find((char*)fr->chan_name(),strlen(fr->chan_name()));
-    if( !el ) // No such channel on this device
-	return -1;
+    if( !el ){ // No such channel on this device
+	fr->negative();
+	return 0;
+    }
     EOC_engine *eng = el->eng;
-    if( eng->get_type() != master ) // Channel do not maintain EOC DB
-	return -1;
+    if( eng->get_type() != master ){ // Channel do not maintain EOC DB
+	fr->negative();
+	return 0;
+    }
     EOC_engine_act *eng_a = (EOC_engine_act *)eng;
     return eng_a->app_request(fr);
 }
@@ -549,7 +600,7 @@ app_spanconf_prof(app_frame *fr)
 
     conf_profile *prof;
     switch(fr->type()){
-    case app_frame::GET:
+    case APP_GET:
 	if( !len ){
 	    fr->negative();
 	    return 0;
@@ -562,7 +613,7 @@ app_spanconf_prof(app_frame *fr)
 	fr->response();
 	p->conf = prof->conf;
 	return 0;
-    case app_frame::GET_NEXT:
+    case APP_GET_NEXT:
         if( !len ){ // requested first entry 
 	    prof = (conf_profile *)conf_profs.first();
 	}else{
@@ -575,7 +626,7 @@ app_spanconf_prof(app_frame *fr)
 	fr->response();
 	p->conf = prof->conf;
 	return 0;
-    case app_frame::SET:
+    case APP_SET:
 
 /*
 	1. Узнать есть ли уже этот профиль

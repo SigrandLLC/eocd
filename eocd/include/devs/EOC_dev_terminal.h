@@ -1,7 +1,7 @@
 #ifndef SIGRAND_EOC_DEV_MASTER_H
 #define SIGRAND_EOC_DEV_MASTER_H
 
-#include <span_profile.h>
+#include <generic/span_conf_type.h>
 #include <devs/EOC_dev.h>
 
 

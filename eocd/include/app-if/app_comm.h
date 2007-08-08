@@ -19,7 +19,7 @@
 class app_comm{
 protected:
     enum { MAX_SOCK_NAME = 256 };
-    enum { BLOCK_SIZE = 256 };
+    enum { BLOCK_SIZE = 1024 };
     
     int error_init;
 
@@ -55,9 +55,7 @@ public:
     int wait();
     int _send(int fd,char *buf,size_t size);
     ssize_t _recv(int fd,char *&buf);
-    int send(char *buf,size_t size);
-    ssize_t recv(char *&buf);
-
+    int init_ok(){ return (!error_init); }
 };
 
 #endif

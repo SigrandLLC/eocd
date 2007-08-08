@@ -64,7 +64,14 @@ EOC_dummy1 *n1;
 EOC_dummy1 *n21;
 EOC_dummy1 *n22;
 EOC_dummy1 *n3;
-
+EOC_dummy1 *n4;
+EOC_dummy1 *n5;
+EOC_dummy1 *n6;
+EOC_dummy1 *n7;
+EOC_dummy1 *n8;
+EOC_dummy1 *n9;
+EOC_dummy1 *n10;
+EOC_dummy1 *n11;
 
 EOC_dev_terminal *
 init_dev(char *name_1)
@@ -75,6 +82,32 @@ init_dev(char *name_1)
     if( !strcmp(name_1,"dsl1") ){
 	return n3;
     }
+
+    if( !strcmp(name_1,"dsl2") ){
+	return n4;
+    }	
+    if( !strcmp(name_1,"dsl3") ){
+	return n5;
+    }
+    if( !strcmp(name_1,"dsl4") ){
+	return n6;
+    }	
+    if( !strcmp(name_1,"dsl5") ){
+	return n7;
+    }
+    if( !strcmp(name_1,"dsl6") ){
+	return n8;
+    }	
+    if( !strcmp(name_1,"dsl7") ){
+	return n9;
+    }
+    if( !strcmp(name_1,"dsl8") ){
+	return n10;
+    }	
+    if( !strcmp(name_1,"dsl9") ){
+	return n11;
+    }
+
     return NULL;
 }
 
@@ -89,10 +122,32 @@ int main()
     printf("Hi!!!\n");
     
     dummy_channel mr1_1,mr1_2,r1s_1,r1s_2;
+    dummy_channel tmp1_1,tmp1_2;    
+    dummy_channel tmp2_1,tmp2_2;    
+    dummy_channel tmp3_1,tmp3_2;    
+    dummy_channel tmp4_1,tmp4_2;    
+    dummy_channel tmp5_1,tmp5_2;    
+    dummy_channel tmp6_1,tmp6_2;    
+    dummy_channel tmp7_1,tmp7_2;    
+    dummy_channel tmp8_1,tmp8_2;    
+    
+    
+    
     n1 = new EOC_dummy1("m-ns",&mr1_1,&mr1_2);
     n21 = new EOC_dummy1("r1-cs",&mr1_2,&mr1_1);
     n22 = new EOC_dummy1("r1-ns",&r1s_1,&r1s_2);
     n3 = new EOC_dummy1("s-cs",&r1s_2,&r1s_1);
+
+    n4 = new EOC_dummy1("a1",&tmp1_1,&tmp1_2);
+    n5 = new EOC_dummy1("a1",&tmp2_1,&tmp2_2);
+    n6 = new EOC_dummy1("a1",&tmp3_1,&tmp3_2);
+    n7 = new EOC_dummy1("a1",&tmp4_1,&tmp4_2);
+    n8 = new EOC_dummy1("a1",&tmp5_1,&tmp5_2);
+    n9 = new EOC_dummy1("a1",&tmp6_1,&tmp6_2);
+    n10 = new EOC_dummy1("a1",&tmp7_1,&tmp7_2);
+    n11 = new EOC_dummy1("a1",&tmp8_1,&tmp8_2);
+
+
 
     EOC_main m("eocd.cfg");    
     EOC_engine *e2 = new EOC_engine(n22,n21); 

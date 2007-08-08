@@ -31,7 +31,7 @@ public:
     int setup_state_act();
     int schedule();
     int register_handlers();
-    int app_request(app_frame *fr){ return poll->app_request(fr); }
+    int app_request(app_frame *fr);
     int configure(char *ch_name); // Master configuration
 };
 

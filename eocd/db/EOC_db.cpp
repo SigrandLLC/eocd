@@ -19,12 +19,12 @@ register_handlers(){
     handlers[RESP_IND(RESP_CSIDE_PERF)] = _resp_cside_perf;
 	
     // register Application requests for info
-    app_handlers[app_frame::INVENTORY] = _appreq_inventory;
-    app_handlers[app_frame::ENDP_CUR] = _appreq_endpcur;
-    app_handlers[app_frame::ENDP_15MIN] = _appreq_endp15min;
-    app_handlers[app_frame::ENDP_1DAY] = _appreq_endp1day;
-    app_handlers[app_frame::ENDP_MAINT] = _appreq_endpmaint;
-    app_handlers[app_frame::UNIT_MAINT] = _appreq_unitmaint;
+    app_handlers[APP_INVENTORY] = _appreq_inventory;
+    app_handlers[APP_ENDP_CUR] = _appreq_endpcur;
+    app_handlers[APP_ENDP_15MIN] = _appreq_endp15min;
+    app_handlers[APP_ENDP_1DAY] = _appreq_endp1day;
+    app_handlers[APP_ENDP_MAINT] = _appreq_endpmaint;
+    app_handlers[APP_UNIT_MAINT] = _appreq_unitmaint;
 }
 
 EOC_db::
@@ -122,7 +122,6 @@ unit_quan(){
         //printf("Count unit #%d\n",i);
         cnt++;
     }
-    if( cnt < 2 ) return -1;
     return cnt;
 }
 
