@@ -12,4 +12,5 @@ all: EOC_db.o EOC_loop.o
 
 clean:
 	rm -f *.o
+	rm -Rf main
 

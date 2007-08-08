@@ -16,4 +16,4 @@ cont:
 
 clean:
 	rm -f *.o
-	rm -f result
+	rm -f result cont_test
