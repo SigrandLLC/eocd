@@ -1,0 +1,389 @@
+#include "channel_db.h"
+#include <sys/types.h>
+#include <dirent.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <math.h>
+
+#include <net-snmp/net-snmp-config.h>
+
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <ctype.h>
+#include <net-snmp/net-snmp-includes.h>
+#include <net-snmp/agent/net-snmp-agent-includes.h>
+#include <net-snmp/agent/auto_nlist.h>
+
+//#include "struct.h"
+//#include "util_funcs.h"
+//#include "../sysORTable.h"
+//#include "../interfaces.h"
+
+#include "shdsl.h"
+#include "channel_db.h"
+
+
+int eocd_init( struct eocd_if *c)
+{
+    char *path="/sys/class/net";
+    DIR *dir = opendir(path);
+    struct dirent *ent;
+    int i;
+    
+    c->ch_num = 0;
+    for(i=0;i<MAX_DSL_CHANS;i++)
+	c->ch[i] = NULL;
+    while( (ent = readdir(dir)) ){
+	if( strstr(ent->d_name,"dsl") ){
+	    struct dsl_channel *ch;
+	    char cfg_dir[256];
+	    DIR *dir1;
+	    c->ch[c->ch_num] = malloc( sizeof(struct dsl_channel) );
+	    ch = c->ch[c->ch_num];
+	    snprintf(cfg_dir,256,"/sys/class/net/%s/sg17_private",ent->d_name);
+	    if( dir1 = opendir(cfg_dir) ){
+		ch->cfg_dir = strdup(cfg_dir);
+		ch->type = SG17;
+		closedir(dir1);
+	    }else { 
+	        snprintf(cfg_dir,256,"/sys/bus/pci/drivers/sg16lan/%s",ent->d_name);
+		if( dir1 = opendir(cfg_dir) ){
+		    ch->cfg_dir = strdup(cfg_dir);
+		    ch->type = SG16;
+		    closedir(dir1);
+		}else{
+		    free(ch);
+		    continue;
+		}
+	    }
+	    ch->if_name = strdup(ent->d_name);
+	    c->ch_num++;        
+	}
+    }
+    closedir(dir);
+/*
+
+	for( i=0;i<10;i++){
+	    struct dsl_channel *ch;
+	    char cfg_dir[256];
+	    c->ch[c->ch_num] = malloc( sizeof(struct dsl_channel) );
+	    ch = c->ch[c->ch_num];
+		sprintf(cfg_dir,"/root/snmp/cfg/dsl%d",i);		
+		if( i < 5 ){
+			ch->cfg_dir = strdup(cfg_dir);
+			ch->type = SG17;
+	    }else { 
+		    ch->cfg_dir = strdup(cfg_dir);
+		    ch->type = SG16;
+		}
+		sprintf(cfg_dir,"dsl%d",i);				
+	    ch->if_name = strdup(cfg_dir);
+	    c->ch_num++;        
+	}
+*/
+}
+
+int
+eocd_chan_num(struct eocd_if *r){
+    return r->ch_num;
+}
+
+
+int 
+eocd_chan_light_descr(struct eocd_if *r,char *ifs_name[20])
+{	
+    int i;
+    for(i=0;i<r->ch_num;i++){
+	ifs_name[i] = strdup(r->ch[i]->if_name);
+    }
+    return r->ch_num;
+}
+
+int
+get_field(char *from,char *to)
+{
+    char *ptr = from;
+    char *dptr = to;
+
+    while( *ptr == ' ' ){
+	ptr++;
+    }
+    while( *ptr != '\0' && (*ptr != ' ') ){
+	*dptr = *ptr;
+	dptr++;
+	ptr++;
+    }
+    *dptr = 0;
+    return (ptr-from);
+}
+
+int
+eocd_read_static_conf(char *name,struct channel_conf *cfg)
+{
+    FILE *s = fopen("/etc/eocd/eocd.conf","r");
+    char str[256], *ptr;
+    char field[256];
+    int readed = 0;
+    int i = 0;
+
+    if( !s ){
+//	DEBUGMSGTL(("mibII/shdsl", "Cannot open config file, errno = %s\n", strerror(errno)));    
+	return -1;
+    }
+
+    while( !feof(s) ){
+	fgets(str,256,s);
+	if( str[0] == '#' )
+	    continue;
+	ptr = str;
+	i = 0;
+        memset(cfg,0,sizeof(struct channel_conf) );
+        cfg->ndevs = 2;	
+	while( readed = get_field(ptr,field) ){
+	    ptr += readed;
+	    if( strlen(field) ){
+		switch( i ){
+		case 0:
+		    cfg->name = strdup(field);
+		    break;
+		case 1:
+		    cfg->ndevs += atoi(field);
+		    break;
+		case 2:
+		    cfg->max_att_lrate = atoi(field);
+		    break;
+		case 3:
+		    cfg->pwr_src = atoi(field);
+		    break;
+		default:
+		    break;
+		}
+		i++;
+	    }
+	}
+	if( !strcmp(name,cfg->name) ){
+	    fclose(s);
+	    return 0;
+	}
+    }
+//    DEBUGMSGTL(("mibII/shdsl", "Have not find if(%s)\n",name));        
+    fclose(s);
+    return -1;    
+}
+
+
+int
+eocd_read_conf_1(char *name,struct eocd_if *r,struct channel_conf *cfg)
+{
+    int ret=0,i;
+    char fname[256], temp[256];
+    FILE *s;
+    
+    if( (ret = eocd_read_static_conf(name,cfg)) < 0 ){
+//	DEBUGMSGTL(("mibII/shdsl", "(%s)Error in eocd_read_static_conf\n", name));
+	return ret;
+    }
+    
+    for(i=0;i<r->ch_num;i++){
+	if( !strcmp(name,r->ch[i]->if_name) ){
+	    snprintf(fname,256,"%s/rate",r->ch[i]->cfg_dir);
+	    if( !(s = fopen(fname,"r")) ){
+//	    	DEBUGMSGTL(("mibII/shdsl", "Cannot open %s\n",fname));
+		return -1;
+	    }
+	    fscanf(s,"%d",&cfg->act_lrate);
+	    fclose(s);
+
+	    snprintf(fname,256,"%s/annex",r->ch[i]->cfg_dir);
+	    if( !(s = fopen(fname,"r")) ){
+//	    	DEBUGMSGTL(("mibII/shdsl", "Cannot open %s\n",fname));
+		return -1;
+	    }
+	    fscanf(s,"%s",temp);
+	    fclose(s);
+	    memset(&cfg->annex,0,sizeof(cfg->annex));
+	    if( !strcmp(temp,"Annex=B") )
+		cfg->annex.region2 = 1;
+	    else
+		cfg->annex.region1 = 1;
+	    return 0;
+	}
+    }
+//    DEBUGMSGTL(("mibII/shdsl", "Have not finded iface %s\n",name));    
+    return -1;
+}
+
+
+int
+eocd_read_conf(char *name,struct eocd_if *r,struct channel_conf *cfg)
+{
+    char fname[256];
+    unsigned char carrier = 0;
+    int ret;
+    FILE *s;
+
+    if( (ret=eocd_read_conf_1(name,r,cfg)) )
+	return ret;
+
+    snprintf(fname,256,"/sys/class/net/%s/carrier",name);
+    if( (s = fopen(fname,"r")) ){
+	fscanf(s,"%d",&carrier);
+	fclose(s);
+    }
+//    printf("%s: carrier = %d",name,carrier);	    
+    if( !carrier ){
+	cfg->act_lrate = 0;
+	cfg->max_att_lrate = 0;
+	cfg->ndevs = 1;
+    }
+//    printf("NDEVS=%d\n",cfg->ndevs);    
+    return 0;
+}
+
+int
+eocd_unit_info(int if_ind,int unit_ind,struct eocd_if *r,shdsl_unit_t *info)
+{
+    char tmp[256];
+    struct dsl_channel *ch = r->ch[if_ind];
+    
+    memset(info,0,sizeof(*info));
+    // Vendor ID
+    strncpy(info->vID,"SIGRAND",8);
+    // Model Number
+    switch( ch->type ){
+    case SG16:
+	if( unit_ind <= 2 ) 
+	    strncpy(info->vModelN,"MR16H",12);
+	else
+	    strncpy(info->vModelN,"SG16E",12);
+	break;
+    case SG17:
+	if( unit_ind <= 2 ) 
+	    strncpy(info->vModelN,"MR17H",12);
+	else
+	    strncpy(info->vModelN,"SG17E",12);
+	break;
+    }	
+    // vendor Serial Number
+    sprintf(tmp,"%d%d",hash(ch->if_name),unit_ind);
+    strncpy(info->vSerN,tmp,12);
+    // vendor EOC software version
+    info->vEOCSwVer  = 1;
+    info->StandardVer = 0x08;
+    // vendor list number
+    strcpy(info->vListNum,"1.0");
+    // issue number
+    strcpy(info->vIssueNum,"");
+    // software ver
+    strcpy(info->vSwVer,"1.0.0");    
+    // CLEI
+    *info->EqCode = '\0';
+    //Other 
+    *info->vOther = '\0';
+    // Transmission capabilities
+    info->TransModeCpb = 0xC0;
+    return 0;
+}
+
+int
+eocd_unit_maint(int if_ind,int unit_ind,struct eocd_if *r,shdsl_unit_maint_t *info)
+{
+    char tmp[256];
+    struct dsl_channel *ch = r->ch[if_ind];
+    struct channel_conf cfg;
+
+    eocd_read_conf(ch->if_name,r,&cfg);
+
+
+    info->lpb_to = 1024;
+    if( cfg.pwr_src ){
+	info->pwr_src = span;
+    }else{
+	info->pwr_src = local;
+    }
+    return 0;
+}
+
+int
+eocd_endp_maint(int if_ind,int unit_num,struct eocd_if *r,
+		shdsl_endp_maint_t *info)
+{
+    info->lpb_cfg = noLoopback;
+    info->ring_rev = normal;
+    info->pwr_backoff = default_mode;
+    info->soft_rst = ready;
+    return 0;
+}
+
+int
+prof_conf_names(char prof_names[256][32])
+{
+    strcpy(prof_names[0],"DEFAULT");
+    strcpy(prof_names[1],"sigrand1");
+    strcpy(prof_names[2],"sigrand2");    
+    strcpy(prof_names[3],"sigrand3");
+    strcpy(prof_names[4],"sigrand4");    
+
+    return 5;
+}
+
+int prof_conf_getrow(int row_ind,struct eocd_if *r,shdsl_conf_prof_t *info)
+{
+    struct channel_conf cfg;
+    char if_name[256];
+    
+    memset(info,0,sizeof(*info));    
+    if( row_ind ){
+        sprintf(if_name,"dsl%d",row_ind-1);
+//	DEBUGMSGTL(("mibII/shdsl", "Sigrand profsm if=%s\n",if_name));
+	if( eocd_read_conf_1(if_name,r,&cfg) ){
+//	    DEBUGMSGTL(("mibII/shdsl", "Error reading static conf for %s\n",if_name));	
+	    return -1;
+	}
+	info->wire_if = twoWire;
+        info->min_lrate = (64 + 8) * 1000;
+	info->max_lrate = (cfg.max_att_lrate + 8) * 1000;
+        info->psd = symmetric;
+	info->transm_mode = cfg.annex;
+        info->rem_conf = disabled;
+	if( cfg.pwr_src )
+            info->pwr_feed = powerFeed;
+	else
+	    info->pwr_feed = noPower;
+    
+        info->cur_cond_down = 0;
+	info->worst_case_down = -10;
+        info->cur_cond_up = 0;
+	info->worst_case_up = 15;
+        info->used_margins.cur_cond_down = 1;
+	info->used_margins.worst_case_down = 1;
+        info->used_margins.cur_cond_up = 1;
+        info->used_margins.worst_case_up = 1;
+    
+	info->ref_clk = localClk; //???//
+        info->line_probe = disable;
+	info->status = active;
+	return 0;
+    } else {
+	info->wire_if = twoWire;
+        info->min_lrate = 1552000;
+	info->max_lrate = 1552000;
+        info->psd = symmetric;
+	info->transm_mode.region1 = 1;
+        info->rem_conf = enabled;
+        info->pwr_feed = noPower;
+        info->cur_cond_down = 0;
+	info->worst_case_down = 0;
+        info->cur_cond_up = 0;
+	info->worst_case_up = 0;
+        info->used_margins.cur_cond_down = 1;
+	info->ref_clk = localClk;
+        info->line_probe = disable;
+	info->status = active;
+	return 0;
+    }
+}

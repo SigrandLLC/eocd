@@ -1,0 +1,138 @@
+#ifndef SIGRAND_CHANNEL_INIT_H
+#define SIGRAND_CHANNEL_INIT_H
+
+#define MAX_DSL_CHANS 20
+
+#define TERM_DEV_NUM 2
+#define STU_C 1
+#define STU_R 2
+#define SRU1 3
+#define SRU2 4
+#define SRU3 5
+#define SRU4 6
+#define SRU5 7
+#define SRU6 8
+#define SRU7 9
+#define SRU8 10
+
+#define NETWORK_SIDE 1
+#define CUSTOMER_SIDE 2
+
+#define WIRE_PAIR_1 1
+#define WIRE_PAIR_2 2
+#define WIRE_PAIR_3 3
+#define WIRE_PaIR_4 4
+
+
+enum chan_type { SG16,SG17 };
+
+struct dsl_channel{
+    enum chan_type type;
+    char *cfg_dir;
+    char *if_name;    
+};
+
+struct eocd_if {
+    int ch_num;
+    struct dsl_channel *ch[MAX_DSL_CHANS];
+};
+
+struct annex_t{
+    unsigned char region8:1;
+    unsigned char region7:1;    
+    unsigned char region6:1;
+    unsigned char region5:1;    
+    unsigned char region4:1;
+    unsigned char region3:1;    
+    unsigned char region2:1;
+    unsigned char region1:1;    
+};
+
+struct channel_conf {
+    char *name;
+    int ndevs;
+    int max_att_lrate;
+    int act_lrate;    
+    struct annex_t annex;
+    int pwr_src;
+};
+
+// data types
+// Note: sizes with respect to '\0' symbol
+typedef struct {
+    int index;
+    char vID[9];
+    char vModelN[14];
+    char vSerN[14];
+    int vEOCSwVer;
+    int StandardVer;
+    char vListNum[4];
+    char vIssueNum[3];
+    char vSwVer[7];
+    char EqCode[11];
+    char vOther[14];
+    char TransModeCpb;
+} shdsl_unit_t;
+
+
+typedef struct {
+    int lpb_to;
+    enum { local=1,span } pwr_src ;
+} shdsl_unit_maint_t;
+
+
+typedef struct {
+    enum { noLoopback=1,normalLoopback,specialLoopback } lpb_cfg;
+    enum { normal=1,reversed } ring_rev;
+    enum { default_mode=1,enchanced_mode } pwr_backoff;
+    enum { ready=1,restart } soft_rst;
+} shdsl_endp_maint_t;
+						    
+
+struct used_target_margins {
+    unsigned char :4;
+    unsigned char worst_case_up :1;
+    unsigned char cur_cond_up :1;    
+    unsigned char worst_case_down :1;    
+    unsigned char cur_cond_down :1;      
+};
+
+enum row_status { active=1,notInService,notReady,createAndGo,createAndWait,destroy };
+
+typedef struct {
+    char name[32];
+    enum { twoWire=1,fourWire,sixWire,eightWire } wire_if;
+    unsigned int min_lrate;
+    unsigned int max_lrate;
+    enum { symmetric=1,asymmetric } psd;
+    struct annex_t transm_mode;
+    enum { enabled=1,disabled } rem_conf;
+    enum { noPower=1,powerFeed,wettingCurrent } pwr_feed;
+    int cur_cond_down;
+    int worst_case_down;
+    int cur_cond_up;
+    int worst_case_up;
+    struct used_target_margins used_margins;
+    enum { localClk=1,networkClk,dataOrNetworkClk,dataClk } ref_clk;
+    enum { disable=1,enable } line_probe;
+    enum row_status status;
+} shdsl_conf_prof_t;
+
+int eocd_init(struct eocd_if *c);
+int eocd_chan_num(struct eocd_if *r);
+int eocd_chan_light_descr(struct eocd_if *r,char *ifs_name[20]);
+int eocd_read_conf(char *name,struct eocd_if *r,struct channel_conf *cfg);
+int eocd_unit_info(int if_ind,int unit_num,struct eocd_if *r,shdsl_unit_t *info);
+int eocd_unit_maint(int if_ind,int unit_num,struct eocd_if *r,
+			shdsl_unit_maint_t *info);
+int eocd_endp_maint(int if_ind,int unit_num,struct eocd_if *r,
+			shdsl_endp_maint_t *info);
+			
+
+int prof_conf_names(char prof_names[256][32]);
+int prof_conf_getrow(int row_ind,struct eocd_if *r,shdsl_conf_prof_t *info);
+
+
+
+#endif
+

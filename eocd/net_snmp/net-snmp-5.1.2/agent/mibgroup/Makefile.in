@@ -14,5 +14,8 @@ OBJS = @module_list_o@
 LOBJS = @module_list_lo@
 SRCS = @module_list_c@
 
+eoc_comm:
+	make -C mibII/shdsl CXX=$(CXX) CPPFLAGS=$(CPPFLAGS)
+
 all: standardall $(LOBJS)
 
