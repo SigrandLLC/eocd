@@ -190,11 +190,13 @@ init_shdsl(void)
  * var_len OUT     - length of variable or 0 if function returned
  * write_method
  */
+
 #define SHDSL_MAX_CHANNELS 30
 typedef struct{
-    char *name[SPAN_NAME_LEN];
+    char name[SPAN_NAME_LEN];
     int index;
 } shdsl_channel_elem;
+
 
 int
 chann_names(shdsl_channel_elem *tbl,int *min_i)
@@ -202,17 +204,20 @@ chann_names(shdsl_channel_elem *tbl,int *min_i)
     struct app_frame *fr1,*fr2;
     span_name_payload *p;
     int i;
-
+    int tbl_size = 0;
+    char ifname[SPAN_NAME_LEN];
+    ifname[0] = 0;
+    
     do{    
 	p = (span_name_payload*)
-		comm_alloc_request(APP_SPAN_NAME,APP_GET,"\0",&fr1);
+		comm_alloc_request(APP_SPAN_NAME,APP_GET,ifname,&fr1);
 
 	if( !p ){
 	    DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
-	    return;
+	    return -1;
 	}
 
-	fr2 = comm_request(c,fr1);
+	fr2 = comm_request(comm,fr1);
 	if( !fr2 ){
 	    DEBUGMSGTL(("mibII/hdsl2Shdsl","Reqest failed"));
 	    return -1;
@@ -227,6 +232,9 @@ chann_names(shdsl_channel_elem *tbl,int *min_i)
 		*min_i = i;
 	    }
 	    tbl_size++;
+	}
+	if( !p->last_msg && p->filled){
+	    strncpy(ifname,p->name[p->filled-1],SPAN_NAME_LEN);
 	}
     }while( tbl_size<SHDSL_MAX_CHANNELS && !p->last_msg );
     return tbl_size;
