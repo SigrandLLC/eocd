@@ -40,17 +40,18 @@ EOC_db(EOC_scheduler *s,int lnum){
 }
     
 int EOC_db::
-response(EOC_msg *m)
+response(EOC_msg *m,int check)
 {
     u8 type = RESP_IND(m->type());
 //    printf("EOC_DB: Get response: %d\n",m->type());
     if( !m || !m->is_response() || !handlers[type] )
         return -1;
-    return handlers[type](this,m);
+    return handlers[type](this,m,check);
 }
 
 // TODO: 
 // what to do if inventory information of unit differs
+/*
 int EOC_db::
 add_unit(unit u, resp_inventory *resp)
 {
@@ -74,6 +75,8 @@ add_unit(unit u, resp_inventory *resp)
     }
     units[(int)u-1] = new EOC_unit(u,resp,loop_num);
 }
+*/
+
     
 int EOC_db::
 clear(){
@@ -128,97 +131,98 @@ unit_quan(){
 //------------------- EOC responses -------------------------//
 
 int EOC_db::
-_resp_discovery(EOC_db *db,EOC_msg *m)
+_resp_discovery(EOC_db *db,EOC_msg *m,int check)
 {
     ASSERT(m->type() == RESP_DISCOVERY );
-    if( !db )
-	return 0;
+
     resp_discovery *resp= (resp_discovery *)m->payload();
+    int ind = (int)m->src() - 1;
+    if( check )
+	return 0;
+	
+    if( !db->units[ind] ){
+	db->units[ind] = new EOC_unit(m->src(),resp,db->loop_num);
+    }
     printf("DISCOVERY_RESP FROM(%d): hop=%d,resl=%d,vendor_id=%d,fwd_loss=%d\n",
 	    m->src(),resp->hop,resp->res1,resp->vendor_id,resp->fwd_loss);
     return 0;
 }
 
 int EOC_db::
-_resp_inventory(EOC_db *db,EOC_msg *m)
+_resp_inventory(EOC_db *db,EOC_msg *m,int check)
 {
     ASSERT( m->type() == RESP_INVENTORY);
     ASSERT( m->payload_sz() == RESP_INVENTORY_SZ);
-    if( !db )
-	return 0;
 
     printf("INVENTORY_RESP FROM(%d)\n",m->src());
-
-
     resp_inventory *resp= (resp_inventory *)m->payload();
+
     int ind = (int)m->src() - 1;
     if( !db->units[ind] ){
-	db->units[ind] = new EOC_unit(m->src(),resp,db->loop_num);
-    }else{
-	// Check that units was not changed
-	if(db->units[ind]->integrity(resp) ){
-	    for(int i=ind;i<MAX_UNITS;i++){
-		if( db->units[i] ){
-		    delete db->units[i];
-		}
-	    }
-	}
-    }
-    return 0;
-}
-
-int EOC_db::
-_resp_configure(EOC_db *db,EOC_msg *m)
-{
-    ASSERT( m->type() == RESP_CONFIGURE );
-    ASSERT( m->payload_sz() == RESP_CONFIGURE_SZ);
-    if( !db )
-	return 0;
-
-    resp_configure *resp= (resp_configure *)m->payload();
-    printf("CONFIGURE_RESP FROM(%d), loop(%d),snr(%d)\n",m->src(),resp->loop_attn,resp->snr_marg);
-    // db->add_unit(m->src(),resp);
-    return 0;
-}
-
-int EOC_db::
-_resp_status(EOC_db *db,EOC_msg *m)
-{
-    ASSERT( m->type() == RESP_STATUS );
-    ASSERT( m->payload_sz() == RESP_STATUS_SZ);
-//    if( m->payload_sz() == RESP_STATUS_SZ ){
-//	printf("\n");
-//    }
-    
-    ASSERT(m);
-    printf("STATUS RESPONSE: src(%d) dst(%d)\n",m->src(),m->dst());
-    resp_status *resp= (resp_status*)m->payload();
-    int loop_id = resp->loop_id-1;
-    EOC_loop *nsloop=NULL,*csloop=NULL;
-    int ind = (int)m->src() - 1;
-
-    if( !db->units[ind] ){
-	// TODO eoc_log(LOG_ERROR,"Status message from unit which not exist");
 	return -1;
     }
     
-    if( db->units[ind]->cside() ){
-	if( !db->units[ind]->cside()->get_loop(loop_id) ){
-	    // TODO eoc_log(LOG_ERROR,"(Status message) Request unexisted loop");
-	    return -1;
+    if( check )
+	return 0;
+
+    // Check that units was not changed
+    if( db->units[ind]->integrity(resp) ){
+	for(int i=ind+1;i<MAX_UNITS;i++){
+	    if( db->units[i] ){
+	        delete db->units[i];
+	    }
 	}
-	csloop = db->units[ind]->cside()->get_loop(loop_id);
+    }
+    db->units[ind]->set_inv_info(resp);
+    
+    return 0;
+}
+
+int EOC_db::
+_resp_configure(EOC_db *db,EOC_msg *m,int check)
+{
+    ASSERT( m->type() == RESP_CONFIGURE );
+    ASSERT( m->payload_sz() == RESP_CONFIGURE_SZ);
+
+    resp_configure *resp= (resp_configure *)m->payload();
+    printf("CONFIGURE_RESP FROM(%d), loop(%d),snr(%d)\n",m->src(),resp->loop_attn,resp->snr_marg);
+    return 0;
+}
+
+int EOC_db::
+_resp_status(EOC_db *db,EOC_msg *m,int check)
+{
+    ASSERT( m->type() == RESP_STATUS );
+    ASSERT( m->payload_sz() == RESP_STATUS_SZ);
+    ASSERT(m);
+
+    resp_status *resp= (resp_status*)m->payload();
+    int loop_id = resp->loop_id-1;
+    EOC_loop *nsloop=NULL,*csloop=NULL;
+
+    printf("STATUS RESPONSE: src(%d) dst(%d) ns_snr=%d, cs_snr=%d\n",
+	    m->src(),m->dst(),resp->ns_snr_marg,resp->cs_snr_marg);
+
+
+    nsloop = db->check_exist(m->src(),net_side,loop_id);
+    csloop = db->check_exist(m->src(),cust_side,loop_id);
+    
+    switch(m->src()){
+    case stu_c:
+	if( !nsloop )
+	    return -1;
+	break;
+    case stu_r:
+	if( !csloop )
+	    return -1;
+	break;
+    default:
+	if( !csloop || !nsloop )
+	    return -1;
+	break;
     }
 
-    if( db->units[ind]->nside() ){
-	if( !db->units[ind]->nside()->get_loop(loop_id) ){
-	    // TODO eoc_log(LOG_ERROR,"(Status message) Request unexisted loop");
-	    return -1;
-	}
-	nsloop = db->units[ind]->nside()->get_loop(loop_id);
-    }
-
-    if( !db )
+    if( check )
 	return 0;
 
     if( csloop ){
@@ -232,7 +236,7 @@ _resp_status(EOC_db *db,EOC_msg *m)
 }
 
 int EOC_db::
-_resp_nside_perf(EOC_db *db,EOC_msg *m)
+_resp_nside_perf(EOC_db *db,EOC_msg *m,int check)
 {
     ASSERT( m->type() == RESP_NSIDE_PERF );
     ASSERT( m->payload_sz() == RESP_NSIDE_PERF_SZ);
@@ -241,10 +245,11 @@ _resp_nside_perf(EOC_db *db,EOC_msg *m)
     int loop_id = resp->loop_id-1; 
     EOC_loop *nsloop=NULL;
 
-    printf("NET SIDE PERF RESPONSE: src(%d) dst(%d)\n",m->src(),m->dst());
-    nsloop = db->check_exist(m->src(),net_side,loop_id);
+//    printf("NET SIDE PERF RESPONSE: src(%d) dst(%d)\n",m->src(),m->dst());
+    if( !(nsloop = db->check_exist(m->src(),net_side,loop_id) ) )
+	return -1;
     
-    if( !db )
+    if( check )
 	return 0;
     
     if( nsloop ){
@@ -255,7 +260,7 @@ _resp_nside_perf(EOC_db *db,EOC_msg *m)
 
 
 int EOC_db::
-_resp_cside_perf(EOC_db *db,EOC_msg *m)
+_resp_cside_perf(EOC_db *db,EOC_msg *m,int check)
 {
     ASSERT( m->type() == RESP_CSIDE_PERF );
     ASSERT( m->payload_sz() == RESP_CSIDE_PERF_SZ);
@@ -264,11 +269,12 @@ _resp_cside_perf(EOC_db *db,EOC_msg *m)
     int loop_id = resp->loop_id-1;
     EOC_loop *csloop=NULL;
 
-    printf("CUST SIDE PERF RESPONSE: src(%d) dst(%d)\n",m->src(),m->dst());
+//    printf("CUST SIDE PERF RESPONSE: src(%d) dst(%d)\n",m->src(),m->dst());
 
-    csloop = db->check_exist(m->src(),cust_side,loop_id);
-
-    if( !db )
+    if( !(csloop = db->check_exist(m->src(),cust_side,loop_id)) )
+	return -1;
+	
+    if( check )
 	return 0;
     
     if( csloop ){
@@ -280,7 +286,7 @@ _resp_cside_perf(EOC_db *db,EOC_msg *m)
 
 
 int EOC_db::
-_resp_test(EOC_db *db,EOC_msg *m)
+_resp_test(EOC_db *db,EOC_msg *m,int check)
 {
     if( m->type() != 15+128 ){
 	return -1;
@@ -320,7 +326,8 @@ _appreq_inventory(EOC_db *db,app_frame *fr)
     }
     printf("DB Inventory: form response\n");	    
     fr->response();
-    printf("DB Inventory: prisvaivanie\n");	    
+    printf("DB Inventory: prisvaivanie\n");
+    p->eoc_softw_ver = db->units[p->unit-1]->eoc_softw_ver();
     p->inv = db->units[p->unit-1]->inventory_info();
     p->region1 = 1;
     p->region0 = 1;
@@ -342,7 +349,8 @@ _appreq_endpcur(EOC_db *db,app_frame *fr)
 	return -1;
     }
     if( !(loop = db->check_exist((unit)p->unit,(side)p->side,p->loop)) ){
-	printf("DB Endp cur: error check exist\n");	
+	printf("DB Endp cur: error check exist: unit(%d) side(%d) loop(%d)\n",
+	    p->unit,p->side,p->loop);	
 	fr->negative();
 	return 0;
     }

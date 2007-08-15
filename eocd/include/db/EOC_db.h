@@ -15,7 +15,7 @@
 
 class EOC_db{
     // Poller REsponse handler prototype
-    typedef int (*response_handler_t)(EOC_db *d,EOC_msg *m);
+    typedef int (*response_handler_t)(EOC_db *d,EOC_msg *m,int check);
     typedef int (*app_handler_t)(EOC_db *db,app_frame *fr);
 
     EOC_unit *units[MAX_UNITS];
@@ -24,13 +24,13 @@ class EOC_db{
     EOC_scheduler *sch;
     u8 loop_num;
 
-    static int _resp_discovery(EOC_db *db,EOC_msg *m);
-    static int _resp_inventory(EOC_db *db,EOC_msg *m);
-    static int _resp_configure(EOC_db *db,EOC_msg *m);
-    static int _resp_test(EOC_db *db,EOC_msg *m);
-    static int _resp_status(EOC_db *db,EOC_msg *m);
-    static int _resp_nside_perf(EOC_db *db,EOC_msg *m);
-    static int _resp_cside_perf(EOC_db *db,EOC_msg *m);
+    static int _resp_discovery(EOC_db *db,EOC_msg *m,int check);
+    static int _resp_inventory(EOC_db *db,EOC_msg *m,int check);
+    static int _resp_configure(EOC_db *db,EOC_msg *m,int check);
+    static int _resp_test(EOC_db *db,EOC_msg *m,int check);
+    static int _resp_status(EOC_db *db,EOC_msg *m,int check);
+    static int _resp_nside_perf(EOC_db *db,EOC_msg *m,int check);
+    static int _resp_cside_perf(EOC_db *db,EOC_msg *m,int check);
 
     static int _appreq_inventory(EOC_db *db,app_frame *fr);
     static int _appreq_endpcur(EOC_db *db,app_frame *fr);
@@ -44,11 +44,11 @@ class EOC_db{
 public:
     EOC_db(EOC_scheduler *s,int lnum);
     int response_chk(EOC_msg *m){ return 0; }
-    int response(EOC_msg *m);
+    int response(EOC_msg *m,int check = 0);
 
     // TODO: 
     // what to do if inventory information of unit differs
-    int add_unit(unit u, resp_inventory *resp);
+//    int add_unit(unit u, resp_inventory *resp);
     int clear();
     int app_request(app_frame *fr);
     int unit_quan();

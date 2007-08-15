@@ -1,18 +1,22 @@
-
+/*
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned short u32;
 typedef signed char s8;
 typedef signed short s16;
 typedef signed short s32;
-
+*/
 #include <stdlib.h>
-#include "EOC_msg.h"
-#include "EOC_sru.h"
+
+#include <generic/EOC_types.h>
+#include <generic/EOC_generic.h>
+#include <generic/EOC_msg.h>
+#include <devs/EOC_sru.h>
+
 
 EOC_sru::EOC_sru(struct sdfe4 *h,int c){
-		hwdev = h;
-		ch = c;
+    hwdev = h;
+    ch = c;
 }
 
 int
@@ -29,8 +33,35 @@ EOC_sru::recv(EOC_msg *m){
 
 int
 EOC_sru::send(EOC_msg *m){
-	return sdfe4_eoc_tx(hwdev,ch,m->mptr(),m->msize());
+    return sdfe4_eoc_tx(hwdev,ch,m->mptr(),m->msize());
 }
+
+int EOC_sru::
+loops(){
+    return 1;
+}
+
+Linkstate EOC_sru::
+link_state(){
+    // TODO: real status
+    return 1;
+
+}
+
+int EOC_sru::
+tresholds(s8 loop_attn,s8 snr_m)
+{
+    return 0;
+}
+
+int EOC_sru::
+statistics(int loop,side_perf &stat)
+{
+    // TODO: get statistic
+    return 0
+}
+
+
 
 // C-wrappers
 

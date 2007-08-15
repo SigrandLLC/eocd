@@ -173,16 +173,16 @@ get_dev_option(char *name,char *&buf)
 	return -1;
 
     buf = new char[BUF_SIZE];
-    printf("get_dev_option(%s)\n",name); 
+//    printf("get_dev_option(%s)\n",name); 
     snprintf(fname,FILE_PATH_SIZE,"%s/%s",conf_path,name);
-    if( (fd = open(fname,O_WRONLY)) < 0 ){
-	printf("get_dev_option: Cannot open %s\n",fname);
+    if( (fd = open(fname,O_RDONLY)) < 0 ){
+//	printf("get_dev_option: Cannot open %s\n",fname);
 	delete[] buf;
 	buf = NULL;
 	return -1;
     }
     int cnt = read(fd,buf,BUF_SIZE);
-    printf("get_dev_option: readed %d\n",cnt);
+//    printf("get_dev_option: readed %d\n",cnt);
     close(fd);
     if( cnt < 0 ){
 	delete[] buf;
@@ -261,22 +261,46 @@ configure()
 
 // DEBUG_VERSION
 EOC_dev::Linkstate
-EOC_mr17h::link_state(){ return ONLINE; }
+EOC_mr17h::link_state()
+{
+    char *buf;
+    int state = 0;
+    int cnt = get_dev_option("link_state",buf);
+    if( cnt <= 0 )
+	return OFFLINE;
+    int params = sscanf(buf,"%d",&state);
+    delete[] buf;
+    if( params != 1 )
+	return OFFLINE;
+    if( state ){
+//	printf("GET LINK UP\n");
+	return ONLINE;
+    }
+    return OFFLINE;
+}
 
 int EOC_mr17h::
 statistics(int loop,side_perf &stat)
 {
     char *buf;
+    u8 ovfl,rst;
     int cnt = get_dev_option("statistics_row",buf);
     if( cnt <= 0 )
 	return -1;
+    printf("STATISTICS: read params\n");
     int params = sscanf(buf,"%d %d %u %u %u %u %u %*u %*u %u %u",
+	    &stat.snr_marg,&stat.loop_attn,&stat.es,&stat.ses,&stat.crc,
+	    &stat.losws,&stat.uas,&rst,&ovfl);
+    printf("STATISTICS: readed %d params\n",params);
+    delete[] buf;
+    if( params != 9 )
+	return -1;
+    stat.cntr_rst_stur = stat.cntr_rst_stuc = rst;
+    stat.cntr_ovfl_stur = stat.cntr_ovfl_stuc = ovfl;
+
+    printf("snr(%d) attn(%d) es(%d) ses(%d) crc(%d) losws(%d) uas(%d) cntr_rst(%d) ovfl(%d)\n",
 	    stat.snr_marg,stat.loop_attn,stat.es,stat.ses,stat.crc,
 	    stat.losws,stat.uas,stat.cntr_rst_stuc,stat.cntr_ovfl_stuc);
-    if( params != 11 )
-	return -1;
-    stat.cntr_rst_stur = stat.cntr_rst_stuc;
-    stat.cntr_ovfl_stur = stat.cntr_ovfl_stuc;
 
     return 0;
 }

@@ -122,6 +122,12 @@ chan_name(){
 	return hdr->dname;
 }
 
+void app_frame::
+chan_name(char *name)
+{
+    strncpy(hdr->dname,name,SPAN_NAME_LEN);
+}
+
 char *app_frame::
 payload_ptr(){
     ASSERT( buf );

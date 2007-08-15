@@ -29,15 +29,15 @@ typedef struct{
 // IVENTORY response
 typedef struct{
     u8 shdsl_ver;
-    u8 ven_lst[3];
-    u8 ven_issue[2];
-    u8 softw_ver[6];
-    u8 unit_id_code[10];
+    u8 ven_lst[4];
+    u8 ven_issue[3];
+    u8 softw_ver[7];
+    u8 unit_id_code[11];
     u8 res1;
-    u8 ven_id[8];
-    u8 ven_model[12];
-    u8 ven_serial[12];
-    u8 other[12];
+    u8 ven_id[9];
+    u8 ven_model[14];
+    u8 ven_serial[14];
+    u8 other[14];
 } resp_inventory;
 #define RESP_INVENTORY REQ2RESP(REQ_INVENTORY)
 #define RESP_INVENTORY_SZ sizeof(resp_inventory)

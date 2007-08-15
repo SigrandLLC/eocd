@@ -64,7 +64,6 @@ setup_state_act()
 	break;
     }
 
-	
     if( dev->link_state() == EOC_dev::OFFLINE ){
 	if( poll->link_state() == EOC_dev::ONLINE )
 	    poll->link_state(EOC_dev::OFFLINE);

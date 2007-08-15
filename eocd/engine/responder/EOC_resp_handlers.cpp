@@ -25,13 +25,15 @@ EOC_responder::_inventory(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt)
     resp_inventory *resp = (resp_inventory *)m->payload();
     memset(resp,0,RESP_INVENTORY_SZ);
     resp->shdsl_ver = 0x08;
-    memcpy(resp->ven_lst,"001",3); // Hardware version
-    memcpy(resp->ven_issue,"01",2); // Usage of the unit
-    memcpy(resp->softw_ver,"000001",6); // Software version 
-//    memcpy(resp->unit_id_code,"001",3);
-    memcpy(resp->ven_id,"Sigrand",7);    
-    memcpy(resp->ven_model,"001",3);
-    memcpy(resp->ven_serial,"001",3);
+    strncpy((char*)resp->ven_lst,"001",4); // Hardware version
+    strncpy((char*)resp->ven_issue,"01",3); // Usage of the unit
+    strncpy((char*)resp->softw_ver,"000001",7); // Software version 
+    memset(resp->unit_id_code,0,sizeof(resp->unit_id_code));
+    strncpy((char*)resp->ven_id,"Sgr\0",9);    
+    strncpy((char*)resp->ven_model,"001",14);
+    strncpy((char*)resp->ven_serial,"001",14);
+    memset((char*)resp->other,0,sizeof(resp->other));
+
     return 0;
 }
 

@@ -36,6 +36,7 @@ public:
 protected:
     int error_init;
     device dev_type;
+    s8 attn_tresh,snr_tresh;
     int valid;
 public:
     // Initialisation check
@@ -47,7 +48,16 @@ public:
     virtual int loops() = 0;
     virtual Linkstate link_state() = 0;
     //----- SHDSL settings ---------//
-    virtual int tresholds(s8 loop_attn,s8 snr_m) = 0;
+    int tresholds(s8 loop_attn_tr,s8 snr_m_tr){
+	attn_tresh = loop_attn_tr;
+	snr_tresh = snr_m_tr;
+    }
+    int get_tresholds(s8 &loop_attn_tr,s8 &snr_m_tr){
+	loop_attn_tr = attn_tresh;
+	snr_m_tr = snr_tresh;
+	return 0;
+    }
+    
     virtual int statistics(int loop,side_perf &stat) = 0;
 
 

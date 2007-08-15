@@ -51,7 +51,7 @@ EOC_scheduler::response(EOC_msg *m)
     int i;
     int not_ready = 0;
 
-    if( !m )
+    if( !m || (m->src() == unknown) )
 	return -1;
 //    printf("-----------------response------------------\n");
 //    wait_q->print();
@@ -72,6 +72,11 @@ EOC_scheduler::response(EOC_msg *m)
 	if( statem->ustates[ind] != NotPresent ){
 	    printf("RESPONSE DROP (not NotPresent): src(%d),dst(%d),type(%d)\n",m->src(),m->dst(),m->type());
 	    // Not in proper state - drop
+	    if( statem->ustates[(int)stu_c-1] == Discovered &&
+		statem->ustates[(int)stu_r-1] == Discovered ){
+		printf("All is discovered!\n");
+		return 0;
+	    }
 	    return wait_q->add(BCAST,stu_c,RESP_DISCOVERY,ts);
 	    return 0;
 	}
@@ -80,11 +85,8 @@ EOC_scheduler::response(EOC_msg *m)
 	if( send_q->add(stu_c,m->src(),REQ_INVENTORY,ts) )
 	    return -1;
 
-	if( statem->ustates[(int)stu_c-1] == Discovered &&
-	    statem->ustates[(int)stu_r-1] == Discovered )
-	    return 0;
-	
 	return wait_q->add(BCAST,stu_c,RESP_DISCOVERY,ts);
+
     case RESP_INVENTORY:
 	if( statem->state != Setup )
 	    return -1;
@@ -160,7 +162,7 @@ EOC_scheduler::request(sched_elem &el)
 	wait_q->add(n1);
     default:
 	n.type = REQ2RESP(n.type);
-        printf("TO_WAIT_Q: src(%d),dst(%d),type(%d)\n",n.src,n.dst,n.type);
+//        printf("TO_WAIT_Q: src(%d),dst(%d),type(%d)\n",n.src,n.dst,n.type);
 	n.tstamp = ts;
 	wait_q->add(n);
     }
@@ -172,8 +174,8 @@ EOC_scheduler::resched()
 {
     sched_elem el;
     int ret;
-    printf("RESCHED\n");
-    wait_q->print();
+//    printf("RESCHED\n");
+//    wait_q->print();
     while( !(ret=wait_q->get_old(ts,wait_to,el)) ){
 	switch( el.type ){
 	case RESP_NSIDE_PERF:
@@ -181,7 +183,7 @@ EOC_scheduler::resched()
 	case RESP_MAINT_STAT:
 	    break;
 	default:
-    	    printf("RESCHED: src(%d) dst(%d) type(%d) ts(%d)\n",el.src,el.dst,el.type,el.tstamp.get_val());
+//    	    printf("RESCHED: src(%d) dst(%d) type(%d) ts(%d)\n",el.src,el.dst,el.type,el.tstamp.get_val());
 	    unit swap = el.src;
 	    el.src = el.dst;
 	    el.dst = swap;

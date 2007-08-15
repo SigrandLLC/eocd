@@ -4,6 +4,9 @@
 #include <engine/EOC_router.h>
 #include <generic/EOC_responses.h>
 #include <generic/EOC_requests.h>
+
+#define EOC_DEBUG
+#define DEFAULT_LEV 0
 #include <eoc_debug.h>
 
 EOC_router::EOC_router(dev_type r,EOC_dev *side)
@@ -117,7 +120,7 @@ EOC_router::update_state()
 	iface = &ifs[i];
 	EOC_dev::Linkstate link = iface->sdev->link_state();
 	// check physical link
-	if( link == EOC_dev::OFFLINE ){
+	if( link == EOC_dev::OFFLINE && type == repeater ){
 	    iface->state = eoc_Offline;
 	    iface->sunit = unknown;
 	    continue;
@@ -300,7 +303,7 @@ EOC_router::receive()
     PDEBUG(10,"ROUTER(%d): if_poll = %d, state = %d\n",type,if_poll,ifs[if_poll].state );
     if( ifs[if_poll].state == eoc_Offline ){
 	printf("ROUTER(%d): EOC is offline\n",type);
-	return NULL;
+	goto exit;
     }
 
     if( m = get_loop() ){
@@ -317,9 +320,11 @@ EOC_router::receive()
 		PDEBUG(10,"ROUTER(%d): error in process discovery\n",type);
 		/* TODO: LOG error */
 	    }
-	}else{
+	}else if( !(ifs[if_poll].state == eoc_Discovery) ){
 	    PDEBUG(10,"ROUTER(%d): not discovery\n",type);
 	    return m;
+	}else{
+	    delete m;
 	}
     }
     
@@ -340,6 +345,7 @@ EOC_router::receive()
 	    delete m;
 	    continue;
 	}
+	
 	PDEBUG(10,"ROUTER(%d): Not REQ_DISCOVERY\n",type);
 	// retranslate Broadcast to next device	
 	if( m->dst() == BCAST && route_dev ){

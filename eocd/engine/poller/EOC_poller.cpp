@@ -55,10 +55,10 @@ process_msg(EOC_msg *m)
     if( !m )
 	return -1;
     unsigned char type = m->type()-REQUEST_QUAN;
-    if(	!m->is_response() || db->response_chk(m) || sch->response(m) )
+    if(	!m->is_response() || db->response(m,1) || sch->response(m) )
 	return -1;
     // commit changes to EOC DataBase
-    return db->response(m);
+    return db->response(m,0);
 }
 
 int EOC_poller::

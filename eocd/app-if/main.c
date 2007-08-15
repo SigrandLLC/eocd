@@ -16,7 +16,7 @@ print_int_payload(endp_int_payload *p,char *display)
 int
 Interface_Index_By_Name(char *name_1,int s)
 {
-    if( !strcmp(name_1,"dsl0") ){
+    if( !strcmp(name_1,"eth0") ){
 	return 1;
     }	
     if( !strcmp(name_1,"dsl1") ){
@@ -110,14 +110,42 @@ chann_names(shdsl_channel_elem *tbl,int *min_i)
 
 
 
+//inventory_info(char 
+
 
 int main()
 {
     comm = init_comm();
     shdsl_channel_elem tbl[SHDSL_MAX_CHANNELS];
     int tbl_size,min_i;
+    int i;
+    struct app_frame *fr1,*fr2;
+    endp_int_payload *p;
+//    tbl_size = chann_names(tbl,&min_i);
 
-    tbl_size = chann_names(tbl,&min_i);
+    for(i=1;1;i++){
+        p = (endp_int_payload*)comm_alloc_request(APP_ENDP_15MIN,APP_GET,"dsl2",&fr1);
+	if( !p ){
+//	    DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
+    	    printf("Cannot allocate application frame\n");
+    	    return -1;
+	}
+
+	p->unit = stu_r;
+	p->side = cust_side;
+	p->loop = 0;
+	p->int_num = i;
+
+        fr2 = comm_request(comm,fr1);
+	if( !fr2 ){
+//	    DEBUGMSGTL(("mibII/hdsl2Shdsl","Reqest failed"));
+    	    printf("Reqest failed");
+    	    return -1;
+	}
+	
+        p = (endp_int_payload*)comm_frame_payload(fr2);
+	printf("int#%d\n",i);
+    }
 }
 
 

@@ -47,7 +47,7 @@ typedef struct{
 
 
 typedef struct{
-    u32 nreps;
+    s8 nreps;
     u32 max_lrate;
     u32 act_lrate;
     u8 region0 : 1;
@@ -61,6 +61,7 @@ typedef struct{
 
 typedef struct{
     u8 unit;
+    u8 eoc_softw_ver;
     resp_inventory inv;
     u8 region0 :1;
     u8 region1 :1;

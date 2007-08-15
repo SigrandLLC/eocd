@@ -40,10 +40,25 @@ comm_request(app_comm_cli *comm,app_frame *fr)
 }
 
 char *
-comm_frame_payload(app_frame *fr){
+comm_frame_payload(app_frame *fr)
+{
     if( !fr->frame_ptr() )
 	return NULL;
     return fr->payload_ptr();
+}
+
+void 
+set_chan_name(app_frame *fr,char *name)
+{
+    fr->chan_name(name);
+}
+
+void comm_frame_free(app_frame *fr){
+    delete fr;
+}
+
+void comm_free(app_comm_cli *cli){
+    delete cli;
 }
 
 }

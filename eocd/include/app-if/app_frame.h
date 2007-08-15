@@ -40,6 +40,7 @@ public:
     app_frame(char *b,int size);
     ~app_frame();
     const char *chan_name();
+    void chan_name(char *name);
     char *payload_ptr();
     char *changelist_ptr();
     char *frame_ptr(){ return buf; }

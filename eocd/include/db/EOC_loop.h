@@ -53,13 +53,13 @@ protected:
     // TODO: check how hardware maintain moulo counters: i.e. if counter overflow - would it count zero as addit count?
     inline u8 modulo_diff(u8 val,u8 nval,u8 modulo,char *type){
 	u32 ret = ((nval-val>=0) ? nval-val : nval + (modulo-val)+1);
-	printf("modulo_diff8(%s): val(%u) nval(%u) modulo(%u) ret(%u)\n",type,val,nval,modulo,ret);
+//	printf("modulo_diff8(%s): val(%u) nval(%u) modulo(%u) ret(%u)\n",type,val,nval,modulo,ret);
 	return ret;	
     }
 
     inline u16 modulo_diff(u16 val,u16 nval,u16 modulo,char *type){
 	u32 ret = ((nval-val>=0) ? nval-val : nval + (modulo-val)+1);
-	printf("modulo_diff16(%s): val(%u) nval(%u) modulo(%u) ret(%u)\n",type,val,nval,modulo,ret);
+//	printf("modulo_diff16(%s): val(%u) nval(%u) modulo(%u) ret(%u)\n",type,val,nval,modulo,ret);
 	return ret;	
     }
 

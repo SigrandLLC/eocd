@@ -6,7 +6,8 @@
 #***********************************************************************************
 
 
-TOPDIR=$(PWD)
+#LOC_PWD=$(PWD)
+TOPDIR=$(PWD)/eocd
 INCLUDES=$(TOPDIR)/include/
 CPPFLAGS=-g -I$(INCLUDES)
 
@@ -17,8 +18,13 @@ CXX=g++
 #CXX=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-g++
 INCLUDES += -I$(TOPDIR)/libconfig/
 
-all:  
-	make lib -C app-if/ INCLUDES=$(INCLUDES) TOPDIR=$(TOPDIR) CPPFLAGS="$(CPPFLAGS)" CXX=$(CXX)
+all:
+	@echo "TOPDIR="$(TOPDIR)  
+	make lib -C eocd/app-if/ INCLUDES=$(INCLUDES) TOPDIR=$(TOPDIR) CPPFLAGS="$(CPPFLAGS)" CXX=$(CXX)
+	mkdir -p ../../../.libs
+	cp eocd/app-if/libcomm.a ../../../.libs
 
 clean:
-	make -C app-if clean
+
+installlibs:
+install:

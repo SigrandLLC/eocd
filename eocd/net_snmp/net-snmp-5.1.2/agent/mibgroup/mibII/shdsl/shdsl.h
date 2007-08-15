@@ -5,33 +5,6 @@
 #ifndef _MIBGROUP_HDSL2SHDSL_H
 #define _MIBGROUP_HDSL2SHDSL_H
 
-/* local constants */
-#define SHDSL_MX_FILE_NAME_SIZE 256
-#define SHDSL_MX_STR_SIZE 256
-#define SHDSL_SYS_STRING_LEN 256
-
-// data types 
-typedef struct shdsl_unit_s {
-    int index;
-    u_char vID[9];//[8];
-    u_char vModelN[14];//[12];
-    u_char vSerN[14];//[12];
-    int vEOCSwVer;
-    int    StandardVer;
-    u_char vListNum[4];//[3];
-    u_char vIssueNum[3];//[2];
-    u_char vSwVer[7];//[6];
-    u_char EqCode[11];//[10];
-    u_char vOther[14];//[12];
-    u_char TransModeCpb;
-    struct shdsl_unit_s *next;
-} shdsl_unit;
-
-
-//---- initialisation ----//
-config_require(mibII/shdsl/channel_db);
-config_add_mib( HDSL2-SHDSL-LINE-MIB );
-void init_shdsl(void);
 //---- header functions ----//
 static int header_dslIfIndex(struct variable*, oid *,size_t *,
 				int,size_t*,WriteMethod**,int *);
@@ -40,10 +13,15 @@ static int header_dslIfIndex(struct variable*, oid *,size_t *,
 extern FindVarMethod var_SpanConfEntry;
 extern FindVarMethod var_SpanStatusEntry;
 extern FindVarMethod var_InventoryEntry;
+/*
 extern FindVarMethod var_EndpointConfEntry;
+*/
+
 extern FindVarMethod var_EndpointCurrEntry;
+
 extern FindVarMethod var_15MinIntervalEntry;
-extern FindVarMethod var_1DayIntervalEntry;
+//extern FindVarMethod var_1DayIntervalEntry;
+/*
 extern FindVarMethod var_EndpointMaintEntry;
 extern FindVarMethod var_UnitMaintEntry;
 // profiles
@@ -119,7 +97,7 @@ extern FindVarMethod var_NotificationEntry;
 
 
 /*
- * var_EndpointStatEntry Magic numbers 
+ * var_EndpointCurrEntry Magic numbers 
  * Represents hdsl2ShdslEndpointCurrTable:
  * - table indexed by 
  	{ifIndex, hdsl2ShdslInvIndex,hdsl2ShdslEndpointSide,
@@ -149,6 +127,46 @@ extern FindVarMethod var_NotificationEntry;
 #define ENDP_STAT_CUR_1D_CRC	20
 #define ENDP_STAT_CUR_1D_LOSWS	21
 #define ENDP_STAT_CUR_1D_UAS	22
+
+
+/*
+ * var_Endpoint15minEntry Magic numbers 
+ * Represents hdsl2Shdsl15MinIntervalTable:
+ * - table indexed by 
+ 	{ifIndex, hdsl2ShdslInvIndex,hdsl2ShdslEndpointSide,
+	 hdsl2ShdslEndpointWirePair,hdsl2Shdsl15MinIntervalNumber}
+ * - contains history of performance information for segment endpoints in 
+    HDSL2/SHDSL lines
+ * - information is NOT persistent
+ */
+
+
+#define ENDP_15M_INT	1
+#define ENDP_15M_ES	2
+#define ENDP_15M_SES	3
+#define ENDP_15M_CRC	4
+#define ENDP_15M_LOSWS	5
+#define ENDP_15M_UAS	6
+
+
+/*
+ * var_Endpoint1dayEntry Magic numbers 
+ * Represents hdsl2Shdsl1DayIntervalTable:
+ * - table indexed by 
+ 	{ifIndex, hdsl2ShdslInvIndex,hdsl2ShdslEndpointSide,
+	 hdsl2ShdslEndpointWirePair,hdsl2Shdsl1DayIntervalNumber}
+ * - contains current status and performance information
+     for segment endpoints in HDSL2/SHDSL lines
+ * - information is persistent
+ */
+
+#define ENDP_1D_INT	1
+#define ENDP_1D_ES	2
+#define ENDP_1D_SES	3
+#define ENDP_1D_CRC	4
+#define ENDP_1D_LOSWS	5
+#define ENDP_1D_UAS	6
+
 
 
 /*

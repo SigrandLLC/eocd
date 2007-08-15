@@ -26,8 +26,8 @@ using namespace std;
 
 EOC_dev_terminal *
 init_dev(char *name);
-/*
 
+/*
 EOC_dev_terminal *
 init_dev(char *name)
 {
@@ -77,9 +77,7 @@ init_dev(char *name)
     closedir(dir);
     return NULL;
 }
-
 */
-
 
 int EOC_main::
 read_config()
@@ -90,6 +88,7 @@ read_config()
     int tick_per_min = TICK_PER_MINUTE_DEF;
 
     //----------- Open config file ------------------//
+    printf("Open config file: %s\n",config_file);
     try
     {
 	cfg.readFile((const char *)config_file);
@@ -102,9 +101,10 @@ read_config()
 	printf("Cannot open configuration file: %s\n",config_file);
 	return -1;
     }catch(...){
+	printf("Error openning config file: %s\n",config_file);
 	return -1;
     }
-
+    printf("Config file opened successfull\n");
     //----------- read tick per minute value ------------------//
     // 1. Check that conf_profile group exist
     try{
@@ -131,7 +131,7 @@ read_config()
 	return -1;
     }
     
-    cout << "tick_p_min = " << tick_per_min << endl;
+    printf("tick_p_min = %d\n",tick_per_min);
 
     //----------- read span configuration profiles ------------------//
     // 1. Check that conf_profile group exist
@@ -481,20 +481,26 @@ poll_channels()
 // ------------ Application requests ------------------------------//
 
 void EOC_main::
-app_listen()
+app_listen(int seconds)
 {
     char *buff;
     int size,conn;
     int ret;
+    time_t start,cur;
+    time(&start);
+    cur = start;
 
-    if( !app_srv.wait() )
-	return;
-	
 //    while( (size = app_srv.recv(conn,buff) ) ){
-    while( 1 ){
+    while( time(&cur) >0 && time(&cur)-start < seconds ){
+
+        if( !app_srv.wait() ){
+	    continue;
+	}
+
 	size = app_srv.recv(conn,buff);
-	if( !size )
-	    return;
+	if( !size ){
+	    continue;
+	}
 	app_frame fr(buff,size);
 	if( !fr.frame_ptr() ){
 	    delete buff;
@@ -503,6 +509,7 @@ app_listen()
 	if( ret = app_request(&fr) )
 	    continue;
 	app_srv.send(conn,fr.frame_ptr(),fr.frame_size());
+	time(&cur);
     }
 }
 

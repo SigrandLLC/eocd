@@ -49,6 +49,11 @@ app_comm_cli(char *sock_name):app_comm(sock_name)
     sfd = s;
 }
 
+app_comm_cli::
+~app_comm_cli()
+{
+    close(sfd);
+}
 
 int app_comm_cli::
 complete_wait()

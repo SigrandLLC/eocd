@@ -54,9 +54,10 @@ EOC_engine::schedule()
     EOC_msg *m,**ret;
     ASSERT( rtr && resp ); // Constructor failed
 
+/*
     if( setup_state() )
 	return -1;
-    
+*/    
     int i=0;
     int cnt;
     number++;
@@ -78,10 +79,16 @@ EOC_engine::schedule()
 	    // several messages to respond	
 		for(i=0;i<cnt;i++){ 
 		    if( rtr->send(ret[i]) ){
+			for(int j=0;j<cnt;j++){
+			    delete ret[j];
+			}
 			delete[] ret;
 			delete m;
 			return -1;
 		    }
+		}
+		for(int j=0;j<cnt;j++){
+		    delete ret[j];
 		}
 		delete[] ret;
 	    }
