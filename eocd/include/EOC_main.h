@@ -27,7 +27,7 @@ protected:
     app_comm_srv app_srv;
 public:
     EOC_main(char *cfg) : conf_profs(SNMP_ADMIN_LEN), alarm_profs(SNMP_ADMIN_LEN),
-		     channels(MAX_IF_NAME_LEN), app_srv("/home/root","socket")
+		     channels(MAX_IF_NAME_LEN), app_srv("/home/artpol/","socket")
     {
 	strncpy(config_file,cfg,MAX_FNAME);
 	config_file[MAX_FNAME-1] = '\0';

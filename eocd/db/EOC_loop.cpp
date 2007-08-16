@@ -45,23 +45,31 @@ shift_rings(){
     if( get_localtime(&cur,cur_tm) || get_localtime(&_15m,_15m_tm) || get_localtime(&_1d,_1d_tm)){
         //TODO eoc_log("Cannot convert time info for 15 min timestamp"); 
         return;
-    }    
+    }
+        
     cur_int_tm = cur_tm;
     cur_int_tm.tm_min = (((int)cur_int_tm.tm_min)/EOC_15MIN_INT_LEN)*EOC_15MIN_INT_LEN;
-
     u8 _15m_int = (_15m_tm.tm_min + _15m_tm.tm_hour*60)/EOC_15MIN_INT_LEN;
     u8 _15m_int_cur = (cur_tm.tm_min + cur_tm.tm_hour*60)/EOC_15MIN_INT_LEN;
     int shift_num = modulo_diff(_15m_int,_15m_int_cur,EOC_15MIN_INTS,"15m");
     _15min_ints.shift(shift_num);
     if( shift_num ){
-        _15min_ints[0]->tstamp = mktime(&cur_int_tm);
+	time(&_15m);
+	get_localtime(&_15m,_15m_tm);
+	_15m_tm.tm_min = (((int)_15m_tm.tm_min)/EOC_15MIN_INT_LEN)*EOC_15MIN_INT_LEN;
+	_15m_tm.tm_sec = 0;    
+        _15min_ints[0]->tstamp = mktime(&_15m_tm);
     }
 	
     if( _1d_tm.tm_year == cur_tm.tm_year ){
         shift_num = _1d_tm.tm_yday - cur_tm.tm_yday;
         _1day_ints.shift(shift_num);
         if( shift_num ){
-	    _1day_ints[0]->tstamp = mktime(&cur_int_tm);
+	    _1d_tm = cur_tm;
+	    _1d_tm.tm_sec = 0;
+	    _1d_tm.tm_min = 0;
+	    _1d_tm.tm_hour = 0;
+	    _1day_ints[0]->tstamp = mktime(&_1d_tm);
 	}		
     }else{
         // TODO : count difference to different years 
@@ -71,18 +79,29 @@ shift_rings(){
             
 EOC_loop::
 EOC_loop() : _15min_ints(EOC_15MIN_INTS) , _1day_ints(EOC_1DAY_INTS) {
-    struct tm ctm;
+    struct tm _15mtm,_1dtm;
     time_t t;
     memset(&state,0,sizeof(state));
     memset(&last_msg,0,sizeof(last_msg));	
     time(&t);
-    if( get_localtime(&t,ctm)){
+    if( get_localtime(&t,_15mtm)){
         // TODO: eoc_log("Error getting time"); 
         return ;
     }
-    ctm.tm_min = (((int)ctm.tm_min)/EOC_15MIN_INT_LEN)*EOC_15MIN_INT_LEN;
-    _15min_ints[0]->tstamp = mktime(&ctm);
-    _1day_ints[0]->tstamp = mktime(&ctm);
+    if( get_localtime(&t,_1dtm)){
+        // TODO: eoc_log("Error getting time"); 
+        return ;
+    }
+
+    _15mtm.tm_min = (((int)_15mtm.tm_min)/EOC_15MIN_INT_LEN)*EOC_15MIN_INT_LEN;
+    _15mtm.tm_sec = 0;    
+    
+    _1dtm.tm_sec = 0;
+    _1dtm.tm_min = 0;
+    _1dtm.tm_hour = 0;
+
+    _15min_ints[0]->tstamp = mktime(&_15mtm);
+    _1day_ints[0]->tstamp = mktime(&_1dtm);
 }
 
 

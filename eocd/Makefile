@@ -27,6 +27,7 @@ INCLUDES += -I$(TOPDIR)/libconfig/
 
 all: $(TARGS) 
 	$(CXX) -g -I$(INCLUDES) -o result main.cpp $(OBJECTS) libconfig++.a
+	$(CXX) -g -I$(INCLUDES) -o eocd eocd.cpp $(OBJECTS) libconfig++.a
 
 all-mips: $(TARGS) 
 	$(CXX) -g -I$(INCLUDES) -o result main.cpp $(OBJECTS) libconfig/.libs/libconfig++.a

@@ -189,8 +189,8 @@ print_endp_15m(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
     } 
     if( fr1->is_negative() ){ // no such unit or no net_side
 	delete fr1;
-	printf("Requested component: unit(%s),side(%s),loop(%d) NOT FOUND\n",
-		unit2string(u),side2string(s),loop);
+	printf("Requested component: unit(%s),side(%s),loop(%d),int(%d) NOT FOUND\n",
+		unit2string(u),side2string(s),loop,inum);
 	delete fr;
 	return -1;
     } else {
@@ -234,8 +234,8 @@ print_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
     } 
     if( fr1->is_negative() ){ // no such unit or no net_side
 	delete fr1;
-	printf("Requested component: unit(%s),side(%s),loop(%d) NOT FOUND\n",
-		unit2string(u),side2string(s),loop);
+	printf("Requested component: unit(%s),side(%s),loop(%d),int(%d) NOT FOUND\n",
+		unit2string(u),side2string(s),loop,inum);
 	delete fr;
 	return -1;
     } else {
@@ -263,21 +263,47 @@ main()
     app_comm_cli cli("/home/artpol/socket");
     printf("Connect ok\n");
 
-    print_endp_cur(cli,"dsl0",stu_c,net_side,0);
-    print_endp_cur(cli,"dsl0",stu_r,cust_side,0);    
-    print_endp_cur(cli,"dsl0",sru1,net_side,0);
-    print_endp_cur(cli,"dsl0",sru1,cust_side,0);
-    
+printf("-----------------------------------------------\n");
+    print_endp_cur(cli,"dsl2",stu_c,net_side,0);
+printf("-----------------------------------------------\n");
+    print_endp_cur(cli,"dsl2",stu_r,cust_side,0);    
+printf("-----------------------------------------------\n");
+    print_endp_cur(cli,"dsl2",sru1,net_side,0);
+printf("-----------------------------------------------\n");
+    print_endp_cur(cli,"dsl2",sru1,cust_side,0);
+printf("-----------------------------------------------\n");    
+/*
     i =0;
-    while( !print_endp_15m(cli,"dsl0",sru1,cust_side,0,i) ){
+    while( !print_endp_15m(cli,"dsl2",stu_c,net_side,0,i) ){
 	i++;
     }
-
+printf("-----------------------------------------------\n");
     i =0;
-    while( !print_endp_1d(cli,"dsl0",sru1,cust_side,0,i) ){
+    while( !print_endp_15m(cli,"dsl2",stu_r,cust_side,0,i) ){
 	i++;
     }
-    
+printf("-----------------------------------------------\n");
+    i =0;
+    while( !print_endp_15m(cli,"dsl2",sru1,cust_side,0,i) ){
+	i++;
+    }
+printf("-----------------------------------------------\n");
+    i =0;
+    while( !print_endp_15m(cli,"dsl2",sru1,net_side,0,i) ){
+	i++;
+    }
+printf("-----------------------------------------------\n");
+    i =0;
+    while( !print_endp_15m(cli,"dsl2",sru2,cust_side,0,i) ){
+	i++;
+    }
+printf("-----------------------------------------------\n");
+    i =0;
+    while( !print_endp_15m(cli,"dsl2",sru2,net_side,0,i) ){
+	i++;
+    }
+printf("-----------------------------------------------\n");
+*/    
     return 0;
 }
 

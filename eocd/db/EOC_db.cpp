@@ -370,9 +370,15 @@ _appreq_endpcur(EOC_db *db,app_frame *fr)
     p->cur15min = elem.cntrs;
     p->cur_15m_elaps = cur - elem.tstamp;
 
+    printf("ENDP 15 MIN: cur=%d, tstamp = %d\n",cur,elem.tstamp);
+    
+    printf("ENDP 15 MIN: cur=%s, tstamp = %s\n",
+	asctime(localtime(&cur)),asctime(localtime(&elem.tstamp)) );
+
     loop->d1_counters(0,elem);
     p->cur1day = elem.cntrs;
     p->cur_1d_elaps = cur - elem.tstamp;
+
 
     return 0;
 }
