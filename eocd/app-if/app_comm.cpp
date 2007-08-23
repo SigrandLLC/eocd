@@ -42,12 +42,12 @@ build_select_list()
 }
 
 int app_comm::
-wait()
+wait(int sec)
 {
     int count=0;
     struct timeval timeout;  /* Timeout for select */	
 
-    timeout.tv_sec = 1;
+    timeout.tv_sec = sec;
     timeout.tv_usec = 0;
     if( build_select_list() )
 	return -1;

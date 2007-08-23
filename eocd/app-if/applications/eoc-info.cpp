@@ -6,6 +6,7 @@ extern "C"{
 #include <stdio.h>
 #include<errno.h>
 #include <string.h>
+#include <stdlib.h>
 #include <getopt.h>
 }
 
@@ -23,6 +24,7 @@ void print_usage(char *name)
 	    "  -s, --short\t\tShort info about served channels\n"
 	    "  -f, --full\t\tFull info about served channels\n"
 	    "  -i, --iface=<iface>\tFull info about channel <iface>\n"
+	    "  -u, --unit=<unit>\t(1=STU-C,2=STU-R,3-SRU1...) Use only with -i\n"
 	    "  -h, --help\t\tThis page\n",
 	    name);
 }
@@ -44,7 +46,7 @@ void print_short_chan(app_comm_cli *cli,char *chan)
     
     cli->send(req->frame_ptr(),req->frame_size());
     if( cli->wait() ){
-	printf("Error while waiting\n");
+//	printf("Error while waiting\n");
 	cli->wait();
     }
     int size = cli->recv(buf);
@@ -74,7 +76,7 @@ err_exit:
     return;
 }
 
-void print_exact(app_comm_cli *cli,char *chan)
+void print_exact(app_comm_cli *cli,char *chan,int unit)
 {
     app_frame *req = new app_frame(APP_SPAN_PARAMS,APP_GET,app_frame::REQUEST,1,chan);
     app_frame *resp;
@@ -99,8 +101,12 @@ void print_exact(app_comm_cli *cli,char *chan)
     }
 {
     span_params_payload *p = (span_params_payload *)resp->payload_ptr();
-    for(int i=0;i<p->units;i++){
-	unit_full(cli,chan,i);
+    if( unit<0 ){
+        for(int i=0;i<p->units;i++){
+	    unit_full(cli,chan,i);
+	}
+    }else{
+	unit_full(cli,chan,unit-1);
     }
 }
 err_exit:
@@ -182,7 +188,7 @@ void print_full(app_comm_cli *cli)
         span_name_payload *p = (span_name_payload*)resp->payload_ptr();
 	for(int i=0;i<p->filled;i++){
 	    printf("-----------------------------------------------------\n");
-	    print_exact(cli,p->name[i]);
+	    print_exact(cli,p->name[i],-1);
 	}	
 	if( !p->filled )
 	    break;
@@ -206,6 +212,7 @@ main(int argc, char *argv[] )
 //    char *sock_name = "/home/artpol/eocd-socket";
     typedef enum {NONE,SHORT,FULL,EXACT} type_t;
     type_t type = NONE;
+    int unit = -1;
 
     // process command line arguments here
     while (1) {
@@ -214,11 +221,12 @@ main(int argc, char *argv[] )
     	    {"short", 0, 0, 's'},
     	    {"full", 0, 0, 'f'},
     	    {"iface", 1, 0, 'i'},
+    	    {"unit", 1, 0, 'u'},
     	    {"help", 0, 0, 'h'},
     	    {0, 0, 0, 0}
 	};
 
-	int c = getopt_long (argc, argv, "sfhi:",
+	int c = getopt_long (argc, argv, "sfhi:u:",
                 long_options, &option_index);
         if (c == -1)
     	    break;
@@ -237,6 +245,15 @@ main(int argc, char *argv[] )
 		strncpy(iface,optarg,255);
 	    }
 	    break;
+	case 'u':
+	{
+	    char *endptr;
+	    unit = strtoul(optarg,&endptr,0);
+	    if( optarg == endptr ){
+		printf("Error argument of --unit option\n");
+		return 0;
+	    }
+	}
 	case 'h':
 	    break;
 	}
@@ -259,7 +276,7 @@ main(int argc, char *argv[] )
 	print_short(&cli);
 	break;
     case EXACT:
-	print_exact(&cli,iface);
+	print_exact(&cli,iface,unit);
 	break;
     case FULL:
 	print_full(&cli);
@@ -268,154 +285,3 @@ main(int argc, char *argv[] )
     return 0;
 }
 
-/*    
-    app_frame *fr = new app_frame(app_frame::SPAN_STATUS,app_frame::GET,app_frame::REQUEST,"dsl0");
-    cli.send(fr->frame_ptr(),fr->frame_size());
-    cli.wait();
-    printf("Receiving 1-st frame\n");
-    int size = cli.recv(b);
-    printf("Received %d bytes\n",size);
-    app_frame *fr1 = new app_frame(b,size);
-    if( !fr1->frame_ptr() ){
-	printf("Error in frame\n");
-	return -1;
-    }
-    span_status_payload *p = (span_status_payload *)fr1->payload_ptr();
-    printf("Act reps = %d\n",p->nreps);
-
-    fr = new app_frame(app_frame::SPAN_CONF,app_frame::GET,app_frame::REQUEST,"dsl0");
-    cli.send(fr->frame_ptr(),fr->frame_size());
-    cli.wait();
-    size = cli.recv(b);
-    fr1 = new app_frame(b,size);
-    span_conf_payload *p1 = (span_conf_payload *)fr1->payload_ptr();    
-    printf("Conf reps = %d\n",p1->nreps);
-
-    printf("Request STU-C inventory\n");
-    fr = new app_frame(app_frame::INVENTORY,app_frame::GET,app_frame::REQUEST,"dsl0");
-    inventory_payload *p2 = (inventory_payload*)fr->payload_ptr();
-    p2->unit = stu_c;
-    cli.send(fr->frame_ptr(),fr->frame_size());
-    cli.wait();
-    size = cli.recv(b);
-    fr1 = new app_frame(b,size);
-    if( !fr1->frame_ptr() || fr1->is_negative() ){
-	printf("error requesting\n");
-    } else {
-	p2 = (inventory_payload *)fr1->payload_ptr();    
-	printf("Manuf = %s\n",p2->inv.ven_id);
-    }
-
-    printf("Request STU-R inventory\n");
-    fr = new app_frame(app_frame::INVENTORY,app_frame::GET,app_frame::REQUEST,"dsl0");
-    p2 = (inventory_payload*)fr->payload_ptr();
-    p2->unit = stu_r;
-    cli.send(fr->frame_ptr(),fr->frame_size());
-    cli.wait();
-    size = cli.recv(b);
-    fr1 = new app_frame(b,size);
-    if( !fr1->frame_ptr() || fr1->is_negative() ){
-	printf("error requesting\n");
-    } else {
-	p2 = (inventory_payload *)fr1->payload_ptr();    
-	printf("Manuf = %s\n",p2->inv.ven_id);
-    }
-
-    printf("Request SRU1 inventory\n");
-    fr = new app_frame(app_frame::INVENTORY,app_frame::GET,app_frame::REQUEST,"dsl0");
-    p2 = (inventory_payload*)fr->payload_ptr();
-    p2->unit = sru1;
-    cli.send(fr->frame_ptr(),fr->frame_size());
-    cli.wait();
-    size = cli.recv(b);
-    fr1 = new app_frame(b,size);
-    if( !fr1->frame_ptr() || fr1->is_negative() ){
-	printf("error requesting\n");
-    } else {
-	p2 = (inventory_payload *)fr1->payload_ptr();    
-	printf("Manuf = %s\n",p2->inv.ven_id);
-    }
-
-    printf("Request SRU2 inventory\n");
-    fr = new app_frame(app_frame::INVENTORY,app_frame::GET,app_frame::REQUEST,"dsl0");
-    p2 = (inventory_payload*)fr->payload_ptr();
-    p2->unit = sru2;
-    cli.send(fr->frame_ptr(),fr->frame_size());
-    cli.wait();
-    size = cli.recv(b);
-    fr1 = new app_frame(b,size);
-    if( !fr1->frame_ptr() || fr1->is_negative() ){
-	printf("error requesting\n");
-    } else {
-	p2 = (inventory_payload *)fr1->payload_ptr();    
-	printf("Manuf = %s\n",p2->inv.ven_id);
-    }
-
-    // Endpoint current
-    printf("Request STU-C current info\n");
-    endp_cur_payload *p3;
-    fr = new app_frame(app_frame::ENDP_CUR,app_frame::GET,app_frame::REQUEST,"dsl0");
-    p3 = (endp_cur_payload*)fr->payload_ptr();
-    p3->unit = sru2;
-    p3->side = EOC_unit::net_side;
-    p3->loop = 1;
-    cli.send(fr->frame_ptr(),fr->frame_size());
-    cli.wait();
-    size = cli.recv(b);
-    fr1 = new app_frame(b,size);
-    if( !fr1->frame_ptr() || fr1->is_negative() ){
-	printf("error requesting\n");
-    } else {
-    }
-
-    printf("Request STU-R current info\n");
-    fr = new app_frame(app_frame::ENDP_CUR,app_frame::GET,app_frame::REQUEST,"dsl0");
-    p3 = (endp_cur_payload*)fr->payload_ptr();
-    p3->unit = sru2;
-    p3->side = EOC_unit::net_side;
-    p3->loop = 1;
-    cli.send(fr->frame_ptr(),fr->frame_size());
-    cli.wait();
-    size = cli.recv(b);
-    fr1 = new app_frame(b,size);
-    if( !fr1->frame_ptr() || fr1->is_negative() ){
-	printf("error requesting\n");
-    } else {
-    }
-
-
-    ENDP_15MIN
-
-    printf("Request SRU2 inventory\n");
-    fr = new app_frame(app_frame::INVENTORY,app_frame::GET,app_frame::REQUEST,"dsl0");
-    p2 = (inventory_payload*)fr->payload_ptr();
-    p2->unit = sru2;
-    cli.send(fr->frame_ptr(),fr->frame_size());
-    cli.wait();
-    size = cli.recv(b);
-    fr1 = new app_frame(b,size);
-    if( !fr1->frame_ptr() || fr1->is_negative() ){
-	printf("error requesting\n");
-    } else {
-	p2 = (inventory_payload *)fr1->payload_ptr();    
-	printf("Manuf = %s\n",p2->inv.ven_id);
-    }
-
-
-    ENDP_1DAY
-    printf("Request SRU2 inventory\n");
-    fr = new app_frame(app_frame::INVENTORY,app_frame::GET,app_frame::REQUEST,"dsl0");
-    p2 = (inventory_payload*)fr->payload_ptr();
-    p2->unit = sru2;
-    cli.send(fr->frame_ptr(),fr->frame_size());
-    cli.wait();
-    size = cli.recv(b);
-    fr1 = new app_frame(b,size);
-    if( !fr1->frame_ptr() || fr1->is_negative() ){
-	printf("error requesting\n");
-    } else {
-	p2 = (inventory_payload *)fr1->payload_ptr();    
-	printf("Manuf = %s\n",p2->inv.ven_id);
-    }
-
-*/

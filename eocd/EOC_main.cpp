@@ -516,7 +516,8 @@ app_listen(int seconds)
 
 //    while( (size = app_srv.recv(conn,buff) ) ){
     while( time(&cur) >0 && time(&cur)-start < seconds ){
-        if( !app_srv.wait() ){
+	int to_wait = seconds - (time(&cur)-start);
+	if( !app_srv.wait(to_wait) ){
 	    continue;
 	}
 	size = app_srv.recv(conn,buff);

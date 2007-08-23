@@ -40,19 +40,27 @@ EOC_main *m;
 static void child_handler(int signum)
 {
     switch(signum) {
-    case SIGALRM: exit(EXIT_FAILURE); break;
-    case SIGUSR1: exit(EXIT_SUCCESS); break;
-    case SIGCHLD: exit(EXIT_FAILURE); break;
+    case SIGALRM:
+	printf("Fail to start eocd daemon\n");
+	exit(EXIT_FAILURE);
+    case SIGUSR1: 
+	printf("Daemon started successfully\n");    
+        exit(EXIT_SUCCESS);
+    case SIGCHLD:
+	printf("Fail to start eocd daemon\n");    
+	exit(EXIT_FAILURE);
     }
 }
 
-static void daemonize( )
+static int
+daemonize( )
 {
     pid_t pid, sid, parent;
     int lfp = -1;
 
     // already a daemon 
-    if ( getppid() == 1 ) return;
+    if ( getppid() == 1 )
+	return -1;
 
     // TODO: Perform locking to prevent double start
 
@@ -83,6 +91,7 @@ static void daemonize( )
         //   for two seconds to elapse (SIGALRM).  pause() should not return.
         alarm(2);
         pause();
+	printf("Fail to start eocd server\n");
         exit(EXIT_FAILURE);
     }
 
@@ -119,12 +128,11 @@ static void daemonize( )
 
     // Redirect standard files to /dev/null
     freopen( "/dev/null", "r", stdin);
-//    freopen( "/dev/null", "w", stdout);
-    freopen( "/home/artpol/eocg.log", "w", stdout);
+    freopen( "/dev/null", "w", stdout);
     freopen( "/dev/null", "w", stderr);
 
     // Tell the parent process that we are A-okay
-    kill( parent, SIGUSR1 );
+    return parent;
 }
 
 
@@ -141,7 +149,8 @@ void print_usage(char *name)
 int main( int argc, char *argv[] ) {
     // Initialize the logging interface
     int need_daemonize = 0;
-    char config_path[256] = "/home/artpol/eocd.conf";
+    int parent = -1;
+    char config_path[256] = "/etc/eocd/eocd.conf";
 
     openlog( DAEMON_NAME, LOG_PID, LOG_LOCAL5 );
     syslog( LOG_INFO, "starting" );
@@ -205,7 +214,7 @@ int main( int argc, char *argv[] ) {
     // Daemonize
     if( need_daemonize ){
 	debug_lev = DOFF;
-	daemonize();
+	parent = daemonize();
     }
 
     signal(SIGPIPE,SIG_IGN);
@@ -218,6 +227,11 @@ int main( int argc, char *argv[] ) {
 	delete m;
 	return -1;
     }
+
+    if( need_daemonize && parent>0 ){
+	kill( parent, SIGUSR1 );
+    }
+
 
     int k = 0;
     side_perf S;

@@ -10,7 +10,8 @@
 TOPDIR=$(PWD)
 INCLUDES=-I$(TOPDIR)/include/
 INCLUDES += -I$(TOPDIR)/libconfig/
-CPPFLAGS=-g $(INCLUDES) 
+CPPFLAGS=$(INCLUDES) 
+#-g 
 ifeq ($(VIRT),1)
 CPPFLAGS += -DVIRTUAL_DEVS
 endif
