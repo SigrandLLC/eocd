@@ -124,7 +124,7 @@ libnetsnmpagent.$(LIB_EXTENSION)$(LIB_VERSION):    ${LLIBAGENTOBJS} libnetsnmpmi
 	$(RANLIB) libnetsnmpagent.$(LIB_EXTENSION)$(LIB_VERSION)
 
 libnetsnmpmibs.$(LIB_EXTENSION)$(LIB_VERSION):    ${LMIBOBJS}
-	$(LIB_LD_CMD) libnetsnmpmibs.$(LIB_EXTENSION)$(LIB_VERSION) .libs/libcomm.a -lstdc++${LMIBOBJS}  $(LIB_LD_LIBS)
+	$(LIB_LD_CMD) libnetsnmpmibs.$(LIB_EXTENSION)$(LIB_VERSION) .libs/libcomm.a -lstdc++ ${LMIBOBJS}  $(LIB_LD_LIBS)
 	$(RANLIB) libnetsnmpmibs.$(LIB_EXTENSION)$(LIB_VERSION)
 
 embedperlinstall:

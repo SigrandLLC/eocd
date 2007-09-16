@@ -51,6 +51,8 @@ EXEEXT		= @EXEEXT@
 
 # Misc Compiling Stuff
 CC	        = @CC@
+CXX	        = @CXX@
+
 # version number is prefixed by a 0 for a better shared library version number
 #
 # ok, use libtool proper versioning:
@@ -68,8 +70,7 @@ LIB_EXTENSION   = la
 LIB_VERSION     =
 LIB_LDCONFIG_CMD = $(LIBTOOL) --mode=finish $(libdir)
 LINK		= $(LIBTOOL) --mode=link $(CC)
-# RANLIB 	= @RANLIB@
-RANLIB		= :
+RANLIB 	= @RANLIB@
 
 # libtool definitions
 .SUFFIXES: .c .o .lo
