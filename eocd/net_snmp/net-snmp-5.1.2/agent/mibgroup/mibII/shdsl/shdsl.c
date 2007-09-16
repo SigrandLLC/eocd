@@ -178,7 +178,7 @@ init_shdsl(void)
     /*
      * register ourselves with the agent to handle our mib tree 
      */
-/*    REGISTER_MIB("mibII/hdsl2ShdslSpanConf", shdsl_spanconf, variable3,
+    REGISTER_MIB("mibII/hdsl2ShdslSpanConf", shdsl_spanconf, variable3,
                  hdsl2Shdsl_variables_oid);
 
     REGISTER_MIB("mibII/hdsl2shdslSpanStatus", shdsl_spanstat, variable3,
@@ -190,10 +190,11 @@ init_shdsl(void)
 /*
     REGISTER_MIB("mibII/hdsl2shdslEndpointConf", shdsl_endp_conf, variable3,
                  hdsl2Shdsl_variables_oid);
-
+*/
     REGISTER_MIB("mibII/hdsl2shdslEndpointCurr",shdsl_endp_currstat, variable3,
                  hdsl2Shdsl_variables_oid);
-*/
+
+/*
     REGISTER_MIB("mibII/hdsl2shdslEndpoint15min",shdsl_endp_15minstat, variable3,
                  hdsl2Shdsl_variables_oid);
 /*

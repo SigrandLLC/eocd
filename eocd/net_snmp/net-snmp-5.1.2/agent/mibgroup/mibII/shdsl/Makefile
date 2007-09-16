@@ -7,22 +7,30 @@
 
 
 #LOC_PWD=$(PWD)
-TOPDIR=$(PWD)/eocd
+TOPDIR=$(PWD)
 INCLUDES=$(TOPDIR)/include/
 CPPFLAGS=-g -I$(INCLUDES)
+
+export CXX CPPFLAGS TOPDIR 
 
 .PHONY: app-if
 
 TARGS := app-if
 CXX=g++
-#CXX=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-g++
+
+ifeq ($(RANLIB),)
+    RANLIB := ranlib
+    export RANLIB
+endif
+
 INCLUDES += -I$(TOPDIR)/libconfig/
 
+
+
 all:
-	@echo "TOPDIR="$(TOPDIR)  
-	make lib -C eocd/app-if/ INCLUDES=$(INCLUDES) TOPDIR=$(TOPDIR) CPPFLAGS="$(CPPFLAGS)" CXX=$(CXX)
+	make lib -C app-if/
 	mkdir -p ../../../.libs
-	cp eocd/app-if/libcomm.a ../../../.libs
+	cp app-if/libcomm.a ../../../.libs
 
 clean:
 
