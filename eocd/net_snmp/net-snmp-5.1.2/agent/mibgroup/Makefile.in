@@ -4,7 +4,7 @@ SUBDIRS = mibII/shdsl
 
 CPPFLAGS=-I../../include -I$(top_srcdir)/include \
 	-I. -I../.. -I$(srcdir) -I$(srcdir)/../.. \
-	-ImibII/shdsl/eocd/include \
+	-ImibII/shdsl/include \
 	-I$(srcdir)/../../snmplib -I$(srcdir)/.. -I.. @CPPFLAGS@ $(LIB_CFLAGS)
 
 # Need a special .c -> .o definition here to make sure we place the
