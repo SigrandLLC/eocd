@@ -1,4 +1,3 @@
-
 ifeq ($(TOPDIR),)
     TOPDIR=$(PWD)/../
 #    RANLIB=ranlib
@@ -26,4 +25,3 @@ lib: objects
 clean:
 	rm -f *.o *.lo
 	rm -f result libcomm.* ext cli srv
-	make -C applications clean
