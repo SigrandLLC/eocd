@@ -69,8 +69,7 @@ LIBS		= ../snmplib/libnetsnmp.$(LIB_EXTENSION)$(LIB_VERSION) @AGENTLIBS@
 OUR_AGENT_LIBS	= $(INSTALLLIBS) $(HELPERLIB) @WRAPLIBS@ $(LIBS) @DLLIBS@
 CPPFLAGS	= -I../include -I$(top_srcdir)/include \
 		  -I.. -I$(srcdir)/.. -I$(srcdir)/../snmplib \
-		  -I$(srcdir) -I. -I$(srcdir)/mibgroup -Imibgroup @CPPFLAGS@\
-		  -Lmibgroup/mibII/shdsl/app-if/
+		  -I$(srcdir) -I. -I$(srcdir)/mibgroup -Imibgroup @CPPFLAGS@
 
 #
 # Objects

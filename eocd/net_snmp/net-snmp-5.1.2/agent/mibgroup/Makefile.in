@@ -5,8 +5,6 @@ CPPFLAGS=-I../../include -I$(top_srcdir)/include \
 	-ImibII/shdsl/include \
 	-I$(srcdir)/../../snmplib -I$(srcdir)/.. -I.. @CPPFLAGS@ $(LIB_CFLAGS)
 
-SUBDIRS += mibII/shdsl
-
 # Need a special .c -> .o definition here to make sure we place the
 # object files in the sub directory.
 
