@@ -27770,6 +27770,8 @@ s,@WRAPLIBS@,$WRAPLIBS,;t t
 s,@installucdheaders@,$installucdheaders,;t t
 s,@installucdlibs@,$installucdlibs,;t t
 s,@CC@,$CC,;t t
+s,@CXX@,$CXX,;t t
+s,@AR@,$AR,;t t
 s,@CFLAGS@,$CFLAGS,;t t
 s,@LDFLAGS@,$LDFLAGS,;t t
 s,@CPPFLAGS@,$CPPFLAGS,;t t

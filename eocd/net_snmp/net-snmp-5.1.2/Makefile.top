@@ -52,6 +52,11 @@ EXEEXT		= @EXEEXT@
 
 # Misc Compiling Stuff
 CC	        = @CC@
+CXX	        = @CXX@
+AR	        = @AR@
+RANLIB		= @RANLIB@
+export CXX AR RANLIB
+
 # version number is prefixed by a 0 for a better shared library version number
 #
 # ok, use libtool proper versioning:
@@ -73,6 +78,9 @@ LINK		= $(LIBTOOL) --mode=link $(CC)
 RANLIB		= :
 
 # libtool definitions
-.SUFFIXES: .c .o .lo
+.SUFFIXES: .c .o .lo .cpp
 .c.lo:
 	$(LIBTOOL) --mode=compile $(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
+
+.cpp.lo:
+	$(LIBTOOL) --mode=compile $(CXX) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
