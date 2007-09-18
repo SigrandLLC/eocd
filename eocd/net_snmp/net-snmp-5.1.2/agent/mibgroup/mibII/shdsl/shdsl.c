@@ -226,7 +226,7 @@ init_shdsl(void)
  * var_len OUT     - length of variable or 0 if function returned
  * write_method
  */
-/*
+
 int
 ifname_to_index(char *Name, int Len)
 {
@@ -246,7 +246,7 @@ ifname_to_index(char *Name, int Len)
     return -1;
 }
 
-*/
+/*
 int
 ifname_to_index(char *name_1, int Len)
 {
@@ -284,7 +284,7 @@ ifname_to_index(char *name_1, int Len)
 
     return -1;
 }
-
+*/
 
 
 
@@ -877,13 +877,13 @@ DEBUGMSG(("mibII/shdsl", "\n"));
 	    if( (*length >= vp->namelen+3) ){
 		switch( unit ){
 		case stu_c:
-		    if( name[vp->namelen+2] != (net_side+1) )
+		    if( name[vp->namelen+2] != (cust_side+1) )
 			return MATCH_FAILED;
 		    else
 			return name[vp->namelen+2];
 		    break;
 		case stu_r:
-		    if( name[vp->namelen+2] != (cust_side+1) )		
+		    if( name[vp->namelen+2] != (net_side+1) )		
 			return MATCH_FAILED;
 		    else
 			return name[vp->namelen+2];
