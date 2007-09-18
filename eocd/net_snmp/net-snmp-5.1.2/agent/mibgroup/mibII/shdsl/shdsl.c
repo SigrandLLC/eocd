@@ -936,10 +936,10 @@ DEBUGMSG(("mibII/shdsl", "\n"));
 //    printf("endpIndex: next unit = %d\n",unit);
     switch( unit ){
     case stu_c:
-	name[vp->namelen+2] = (net_side+1);
+	name[vp->namelen+2] = (cust_side+1);
 	break;
     case stu_r:
-	name[vp->namelen+2] = (cust_side+1);    
+	name[vp->namelen+2] = (net_side+1);    
 	break;
     case sru1:
     case sru2:
