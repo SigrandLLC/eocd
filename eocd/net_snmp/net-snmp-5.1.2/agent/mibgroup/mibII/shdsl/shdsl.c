@@ -14,6 +14,7 @@
 #include <net-snmp/agent/auto_nlist.h>
 
 #include <stdio.h>
+#include <time.h>
 
 #include "shdsl.h"
 #include "struct.h"
@@ -24,14 +25,37 @@
 #include <app-if/app_messages.h>
 
 //------- Global definitions -------------//
+#define CACHE_INT 5
 #define SHDSL_MAX_CHANNELS 30
 typedef struct{
+    struct timeval tv;
     char name[SPAN_NAME_LEN];
     int index;
+    int units;
+    int wires;
 } shdsl_channel_elem;
 
+typedef struct{
+    struct timeval tv;
+    span_conf_payload p;
+} shdsl_spanconf_elem;
+
+typedef struct{
+    struct timeval tv;
+    span_status_payload p;
+} shdsl_spanstatus_elem;
+
+// -------- Served channel names cache -------------//
 shdsl_channel_elem tbl[SHDSL_MAX_CHANNELS];
 int tbl_size;
+struct timeval tbl_tv = {0,0};
+int min_i = 0;
+
+// -------- Served channels span info -------------//
+shdsl_spanconf_elem *spanconf_tbl[SHDSL_MAX_CHANNELS];
+int spanconf_tbl_size;
+shdsl_spanstatus_elem *spanstatus_tbl[SHDSL_MAX_CHANNELS];
+int spanstatus_tbl_size;
 
 
 /*---- global vars ----*/
@@ -174,6 +198,11 @@ init_shdsl(void)
 
     comm = NULL;
     memset(&perf_int,0,sizeof(perf_int));
+    memset(spanconf_tbl,0,sizeof(spanconf_tbl));
+    spanconf_tbl_size = 0;
+    memset(spanstatus_tbl,0,sizeof(spanstatus_tbl));
+    spanstatus_tbl_size = 0;
+    memset(tbl,0,sizeof(tbl));
 
     /*
      * register ourselves with the agent to handle our mib tree 
@@ -293,60 +322,63 @@ chann_names()
 {
     struct app_frame *fr1,*fr2;
     span_name_payload *p;
-    int i,min_i = 0;
+    int i;
     char ifname[SPAN_NAME_LEN];
     int index,len;
+    // caching
+    struct timeval tvcur;
+    char tverr = 0;
 
-    ifname[0] = 0;
-    tbl_size = 0;
+    if( gettimeofday(&tvcur,NULL) )
+	tverr = 1;
+	
+    if( ((tvcur.tv_sec - tbl_tv.tv_sec) > CACHE_INT) || tverr ){
 
-//    printf("mibII/shdsl CHANN_NAME start\n");
+        ifname[0] = 0;
+	tbl_size = 0;
+	p = (span_name_payload*)
+	    comm_alloc_request(APP_SPAN_NAME,APP_GET,ifname,&fr1);
 
-    p = (span_name_payload*)
-	comm_alloc_request(APP_SPAN_NAME,APP_GET,ifname,&fr1);
-
-    if( !p ){
-        DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
-        comm_frame_free(fr1);
-        return -1;
-    }
+	if( !p ){
+    	    DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
+    	    comm_frame_free(fr1);
+    	    return -1;
+	}
     
-    do{
-	set_chan_name(fr1,ifname);
-	fr2 = comm_request(comm,fr1);
-	if( !fr2 ){
-//	    DEBUGMSGTL(("mibII/hdsl2Shdsl","Reqest failed"));
-	    printf("mibII/hdsl2Shdsl Reqest failed\n");
-	    comm_frame_free(fr1);
-	    return -1;
-	}
-	p = (span_name_payload*)comm_frame_payload(fr2);
-	for(i=0;i<p->filled;i++){
-	    len = strnlen(p->name[i],SPAN_NAME_LEN);
-	    if( (index = ifname_to_index(p->name[i],len)) < 0 )
-		continue;
-	    strncpy(tbl[tbl_size].name,p->name[i],len);
-//	    printf("Get sys insex for dev %s: %d\n",p->name[i],index);
-	    tbl[tbl_size].index = index;
-	    if( (tbl_size==0) || tbl[min_i].index > tbl[i].index  ){
-		min_i = i;
+        do{
+	    set_chan_name(fr1,ifname);
+	    fr2 = comm_request(comm,fr1);
+	    if( !fr2 ){
+//	    	DEBUGMSGTL(("mibII/hdsl2Shdsl","Reqest failed"));
+		printf("mibII/hdsl2Shdsl Reqest failed\n");
+		comm_frame_free(fr1);
+		return -1;
 	    }
-	    tbl_size++;
-	}
-	if( !p->last_msg && p->filled){
-	    strncpy(ifname,p->name[p->filled-1],SPAN_NAME_LEN);
-	}
-	comm_frame_free(fr2);
-    }while( tbl_size<SHDSL_MAX_CHANNELS && !p->last_msg );
-    comm_frame_free(fr1);
-
-//    printf("mibII/shdsl CHANN_NAME tbl_size = %d\n",tbl_size);
-
-/*
-    for(i=0;i<tbl_size;i++){
-	printf("mibII/shdsl tbl.name[%d]=%s, index=%d\n",i,tbl[i].name,tbl[i].index);
+	    p = (span_name_payload*)comm_frame_payload(fr2);
+	    for(i=0;i<p->filled;i++){
+		len = strnlen(p->name[i],SPAN_NAME_LEN);
+		if( (index = ifname_to_index(p->name[i],len)) < 0 )
+		    continue;
+		strncpy(tbl[tbl_size].name,p->name[i],len);
+//	    	printf("Get sys insex for dev %s: %d\n",p->name[i],index);
+		tbl[tbl_size].index = index;
+		if( (tbl_size==0) || tbl[min_i].index > tbl[i].index  ){
+		    min_i = i;
+		}
+		tbl[tbl_size].units = -1;
+		tbl[tbl_size].wires = -1;
+		tbl[tbl_size].tv.tv_sec = 0;
+		tbl_size++;
+	    }
+	    if( !p->last_msg && p->filled){
+		strncpy(ifname,p->name[p->filled-1],SPAN_NAME_LEN);
+	    }
+	    comm_frame_free(fr2);
+	}while( tbl_size<SHDSL_MAX_CHANNELS && !p->last_msg );
+	comm_frame_free(fr1);
+	tbl_tv = tvcur;
     }
-*/    
+
     return min_i;
 }
 
@@ -463,6 +495,9 @@ var_SpanConfEntry(struct variable * vp,
     span_conf_payload *p;
     static char ConfProfile[SNMP_ADMIN_LEN];
     char *return_ptr = NULL;
+    // Cacheing
+    struct timeval tvcur;
+    int tverr = 0;
 
     DEBUGMSGTL(("mibII/shdsl", "var_SpanConfEntry: *lenght=%d namelen=%d \n",*length,vp->namelen));
     DEBUGMSGOID(("mibII/shdsl", name, *length));
@@ -470,31 +505,47 @@ var_SpanConfEntry(struct variable * vp,
 
     comm = init_comm();
     if(!comm){
-	DEBUGMSGTL(("mibII/hdsl2Shdsl","Error connecting to \"eocd\""));
-	return NULL;
+        DEBUGMSGTL(("mibII/hdsl2Shdsl","Error connecting to \"eocd\""));
+        return NULL;
     }
 
-
     if ( ( iface=header_ifIndex(vp, name, length, exact, var_len,write_method) )
-	     == MATCH_FAILED || (*length != vp->namelen+1)){
+         == MATCH_FAILED || (*length != vp->namelen+1)){
 //	DEBUGMSG(("mibII/shdsl", "SpanConf: MATCH_FAILED\n"));	
-	printf("mibII/shdsl SpanConf: MATCH_FAILED\n");	
-        goto exit;
+        printf("mibII/shdsl SpanConf: MATCH_FAILED\n");	
+	goto exit;
     }
     printf("mibII/shdsl iface= %d, %s\n", iface,tbl[interface_ind].name);
 
-    p = (span_conf_payload*)comm_alloc_request(APP_SPAN_CONF,APP_GET,tbl[interface_ind].name,&fr1);
-    if( !p ){
-	//DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
-	printf("mibII/shdsl Cannot allocate application frame");
-        goto exit;
+    if( gettimeofday(&tvcur,NULL) ){
+	printf("%s: tverr occured\n",__FUNCTION__);
+	tverr = 1;
     }
-    fr2 = comm_request(comm,fr1);
-    if( !fr2 ){
-	printf("Error requesting\n");
-        goto exit;
+
+    if( !spanconf_tbl[interface_ind] || tverr ||
+	(tvcur.tv_sec - spanconf_tbl[interface_ind]->tv.tv_sec > CACHE_INT) ){
+
+        p = (span_conf_payload*)comm_alloc_request(APP_SPAN_CONF,APP_GET,tbl[interface_ind].name,&fr1);
+	if( !p ){
+	    //DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
+	    printf("mibII/shdsl Cannot allocate application frame");
+    	    goto exit;
+	}
+	fr2 = comm_request(comm,fr1);
+        if( !fr2 ){
+	    printf("Error requesting\n");
+    	    goto exit;
+	}
+	p = (span_conf_payload*)comm_frame_payload(fr2);
+
+        // Cache data
+	if( !spanconf_tbl[interface_ind] )
+	    spanconf_tbl[interface_ind] = malloc(sizeof(shdsl_spanconf));
+	spanconf_tbl[interface_ind]->p = *p;
+	spanconf_tbl[interface_ind]->tv = tvcur;
+    }else{
+	p = &spanconf_tbl[interface_ind]->p;
     }
-    p = (span_conf_payload*)comm_frame_payload(fr2);
 
     printf("mibII/shdsl Form response\n");	
     switch (vp->magic) {
@@ -543,6 +594,9 @@ var_SpanStatusEntry(struct variable * vp,
     struct app_frame *fr1=NULL,*fr2=NULL;
     span_status_payload *p;
     char *return_ptr = NULL;
+    // Cacheing 
+    int tverr = 0;
+    struct timeval tvcur;
 
 //    DEBUGMSGTL(("mibII/shdsl", "var_SpanStatusEntry: \n"));
 //    DEBUGMSGOID(("mibII/shdsl", name, *length));
@@ -562,19 +616,35 @@ var_SpanStatusEntry(struct variable * vp,
     }
     printf("mibII/shdsl iface= %d, %s\n", iface,tbl[interface_ind].name);
 
-    p = (span_status_payload*)comm_alloc_request(APP_SPAN_STATUS,APP_GET,tbl[interface_ind].name,&fr1);
-    if( !p ){
-	//DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
-	printf("mibII/shdsl Cannot allocate application frame");
-	goto exit;
+    if( gettimeofday(&tvcur,NULL) ){
+	printf("%s: tverr occured\n",__FUNCTION__);
+	tverr = 1;
     }
-    fr2 = comm_request(comm,fr1);
-    if( !fr2 ){
-	printf("Error requesting\n");
-	goto exit;
-    }
-    p = (span_status_payload*)comm_frame_payload(fr2);
+    
+    if( !spanstatus_tbl[interface_ind] || tverr ||
+	    ((tvcur.tv_sec - spanstatus_tbl[interface_ind]->tv.tv_sec)>CACHE_INT) ){
+        p = (span_status_payload*)comm_alloc_request(APP_SPAN_STATUS,APP_GET,tbl[interface_ind].name,&fr1);
+	if( !p ){
+	    //DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
+	    printf("mibII/shdsl Cannot allocate application frame");
+	    goto exit;
+	}
+	fr2 = comm_request(comm,fr1);
+	if( !fr2 ){
+	    printf("Error requesting\n");
+	    goto exit;
+	}
+	p = (span_status_payload*)comm_frame_payload(fr2);
 
+        // Cache data
+	if( !spanstatus_tbl[interface_ind] )
+	    spanstatus_tbl[interface_ind] = malloc(sizeof(shdsl_spanstatus_elem));
+	spanstatus_tbl[interface_ind]->p = *p;
+        spanstatus_tbl[interface_ind]->tv = tvcur;
+    }else{
+	p = &spanstatus_tbl[interface_ind]->p;
+    }
+    
     //---- ack ----//
     switch (vp->magic) {
     case STATUS_NAVAILREPS:
@@ -634,34 +704,49 @@ header_unitIndex(struct variable *vp,
     *var_len = sizeof(long);    // default to 'long' results //
     struct app_frame *fr1,*fr2;
     span_params_payload *p;
+    // Cacheing
+    struct timeval tvcur;
+    int tverr = 0;
     
-    
-//printf("--------- header_unitIndex -----------\n");    
    // If OID is belong to Inventory Table
     if( (iface = header_ifIndex(vp, name, length,1/*exact = 1*/, var_len,write_method)) 
 	    != MATCH_FAILED ){ 	// OID belongs to Invetory table and ifIdex is valid
 //	printf("unitIndex: OID belong to Inv Table, if = %s\n",tbl[iface].name);
         
-	p = (span_params_payload*)comm_alloc_request(APP_SPAN_PARAMS,
+	if( gettimeofday(&tvcur,NULL) ){
+	    printf("%s: tverr occured\n",__FUNCTION__);
+	    tverr = 1;
+	}
+
+	if( ((tvcur.tv_sec - tbl[interface_ind].tv.tv_sec) > CACHE_INT) || tverr || 
+		tbl[interface_ind].units < 0 ){
+	    p = (span_params_payload*)comm_alloc_request(APP_SPAN_PARAMS,
 			APP_GET,tbl[interface_ind].name,&fr1);
-	if( !p ){
-	    DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
-	    printf("unitIndex: Cannot allocate application frame\n");
-	    return MATCH_FAILED;
+	    if( !p ){
+		DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
+		printf("unitIndex: Cannot allocate application frame\n");
+		return MATCH_FAILED;
+	    }
+	    fr2 = comm_request(comm,fr1);
+	    if( !fr2 ){
+		printf("unitIndex: Error requesting\n");
+		return MATCH_FAILED;
+	    }
+	    p = (span_params_payload*)comm_frame_payload(fr2);
+	    // Cache data
+	    tbl[interface_ind].tv = tvcur;
+	    tbl[interface_ind].units = p->units;
+	    tbl[interface_ind].wires = p->loops;
 	}
-	fr2 = comm_request(comm,fr1);
-	if( !fr2 ){
-	    printf("unitIndex: Error requesting\n");
-	    return MATCH_FAILED;
-	}
-	p = (span_params_payload*)comm_frame_payload(fr2);
+
+
 //	printf("unitIndex: Get params info for %s: units(%d) loops(%d)\n",tbl[iface].name,p->units,p->loops);
 
 	if( exact ){ // Need exact MATCH
 //	    printf("unitIndex: Exact match\n");
 	    if( (*length >= vp->namelen+2) && 
 		    (name[vp->namelen+1] > 0) && 
-		    (name[vp->namelen+1]<= p->units) ){
+		    (name[vp->namelen+1]<= tbl[interface_ind].units) ){
 //		    printf("unitIndex: Exact match - OK\n");
 		return name[vp->namelen+1];
 	    } else {
@@ -671,7 +756,7 @@ header_unitIndex(struct variable *vp,
 	} else { // Need next regenerator index
 	    if( *length >= vp->namelen+2 &&
 		    (name[vp->namelen+1]+1 > 0) &&
-		    (name[vp->namelen+1]+1 <= p->units) ){
+		    (name[vp->namelen+1]+1 <= tbl[interface_ind].units) ){
 //		printf("unitIndex: Next unit after %d\n",name[vp->namelen+1]);
 		name[vp->namelen+1]++;
 		return name[vp->namelen+1];
@@ -697,21 +782,27 @@ header_unitIndex(struct variable *vp,
 	return MATCH_FAILED;
     }
 
-    p = (span_params_payload*)comm_alloc_request(APP_SPAN_PARAMS,
-    		APP_GET,tbl[interface_ind].name,&fr1);
-    if( !p ){
-        DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
-        printf("unitIndex: Cannot allocate application frame\n");
-        return MATCH_FAILED;
+    if( ((tvcur.tv_sec - tbl[interface_ind].tv.tv_sec) > CACHE_INT) || tverr || 
+		tbl[interface_ind].units < 0 ){
+        p = (span_params_payload*)comm_alloc_request(APP_SPAN_PARAMS,
+    	    	    APP_GET,tbl[interface_ind].name,&fr1);
+	if( !p ){
+    	    DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
+    	    printf("unitIndex: Cannot allocate application frame\n");
+    	    return MATCH_FAILED;
+	}
+	fr2 = comm_request(comm,fr1);
+	if( !fr2 ){
+    	    printf("unitIndex: Error requesting\n");
+    	    return MATCH_FAILED;
+	}
+	p = (span_params_payload*)comm_frame_payload(fr2);
+	//    printf("unitIndex: Get params info for %s: units(%d) loops(%d)\n",tbl[iface].name,p->units,p->loops);    
+	tbl[interface_ind].units = p->units;
+	tbl[interface_ind].wires = p->loops;
+	tbl[interface_ind].tv = tvcur;
     }
-    fr2 = comm_request(comm,fr1);
-    if( !fr2 ){
-        printf("unitIndex: Error requesting\n");
-        return MATCH_FAILED;
-    }
-    p = (span_params_payload*)comm_frame_payload(fr2);
-//    printf("unitIndex: Get params info for %s: units(%d) loops(%d)\n",tbl[iface].name,p->units,p->loops);    
-    
+	
     name[vp->namelen+1] = stu_c;
     *length = vp->namelen + 2;
 //    printf("unitIndex: Result: unit #%d\n",name[vp->namelen+1]);
@@ -749,21 +840,51 @@ var_InventoryEntry(struct variable * vp,
     }
     printf("var_InventoryEntry: unit = %d\n",unit);
 
-    p = (inventory_payload*)comm_alloc_request(APP_INVENTORY,APP_GET,
-	    tbl[interface_ind].name,&fr1);
-    if( !p ){
-	DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
-	printf("var_InventoryEntry: Cannot allocate application frame\n");
-	goto exit;
-    }
-    p->unit = unit;
+// ------------- Need cacheing ------------------//
 
-    fr2 = comm_request(comm,fr1);
-    if( !fr2 ){
-	printf("var_InventoryEntry: Error requesting\n");
-	goto exit;
-    }
-    p = (inventory_payload*)comm_frame_payload(fr2);
+	p = (inventory_payload*)comm_alloc_request(APP_INVENTORY,APP_GET,
+		tbl[interface_ind].name,&fr1);
+	if( !p ){
+	    DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
+	    printf("var_InventoryEntry: Cannot allocate application frame\n");
+	    goto exit;
+	}
+
+	p->unit = unit;
+	fr2 = comm_request(comm,fr1);
+	if( !fr2 && exact ){
+	    printf("var_InventoryEntry: Error requesting\n");
+	    goto exit;
+	}
+    
+	while( !fr2 ){
+	    if ( ( unit = header_unitIndex(vp,name,length,exact,var_len,write_method) )
+		    == MATCH_FAILED ){
+		printf("var_InventoryEntry: Cannot find unit\n");
+		goto exit;
+	    }
+	    printf("var_InventoryEntry: unit = %d\n",unit);
+
+	    p = (inventory_payload*)comm_alloc_request(APP_INVENTORY,APP_GET,
+		tbl[interface_ind].name,&fr1);
+	    if( !p ){
+		DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
+		printf("var_InventoryEntry: Cannot allocate application frame\n");
+		goto exit;
+	    }
+	    p->unit = unit;
+	
+	    fr2 = comm_request(comm,fr1);
+	}
+    
+	if( !fr2 ){
+	    printf("var_InventoryEntry: Error requesting\n");
+	    goto exit;
+	}
+        p = (inventory_payload*)comm_frame_payload(fr2);
+
+//~~~~~~~~~~~~~~~~~~ Need cacheing ~~~~~~~~~~~~~~~~~~~~~~~~`//
+
     resp = &p->inv;
     printf("var_InventoryEntry: Result: magic=%d if=%s, unit = %d\n",vp->magic,tbl[interface_ind].name,unit);
 
@@ -857,17 +978,6 @@ header_endpIndex(struct variable *vp,
     *write_method = 0;
     *var_len = sizeof(long);    // default to 'long' results //
 
-
-/*
-DEBUGMSGTL(("mibII/shdsl", "Input OID: "));
-DEBUGMSGOID(("mibII/shdsl", name, *length));		    
-DEBUGMSG(("mibII/shdsl", "\n"));
-
-DEBUGMSGTL(("mibII/shdsl", "Local OID: "));
-DEBUGMSGOID(("mibII/shdsl", vp->name, vp->namelen));		    
-DEBUGMSG(("mibII/shdsl", "\n"));
-
-*/
     if ( ( unit = header_unitIndex(vp,name,length, 1 /*exact = 1*/,var_len,write_method) )
 	    != MATCH_FAILED ){
 //	printf("endpIndex: uinit matched: %d\n",unit);
@@ -976,8 +1086,9 @@ header_wirePairIndex(struct variable *vp,
     *var_len = sizeof(long);    // default to 'long' results //
     struct app_frame *fr1,*fr2;
     span_params_payload *p;
-
-    
+    // Cacheing
+    struct timeval tvcur;
+    int tverr = 0;
 
 // printf("----------- WirePair: start ------------\n");
 
@@ -996,26 +1107,33 @@ DEBUGMSG(("mibII/shdsl", "\n"));
     
 //	printf("wirePair: exact endpoint = %d\n",endp);
 	endp_index = endp;
-
-	p = (span_params_payload*)comm_alloc_request(APP_SPAN_PARAMS,
+	tverr = gettimeofday(&tvcur,NULL);
+	if( tverr || tbl[interface_ind].wires < 0 ||
+	    (tvcur.tv_sec - tbl[interface_ind].tv.tv_sec > CACHE_INT ) ){ 
+	    p = (span_params_payload*)comm_alloc_request(APP_SPAN_PARAMS,
 			APP_GET,tbl[interface_ind].name,&fr1);
-	if( !p ){
-	    DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
-	    printf("wirePair: Cannot allocate application frame\n");
-	    return MATCH_FAILED;
+	    if( !p ){
+		DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
+		printf("wirePair: Cannot allocate application frame\n");
+		return MATCH_FAILED;
+	    }
+	    fr2 = comm_request(comm,fr1);
+	    if( !fr2 ){
+		printf("wirePair: Error requesting\n");
+		return MATCH_FAILED;
+	    }
+	    p = (span_params_payload*)comm_frame_payload(fr2);
+	    tbl[interface_ind].units = p->units;
+	    tbl[interface_ind].wires = p->loops;
+	    tbl[interface_ind].tv = tvcur;
 	}
-	fr2 = comm_request(comm,fr1);
-	if( !fr2 ){
-	    printf("wirePair: Error requesting\n");
-	    return MATCH_FAILED;
-	}
-	p = (span_params_payload*)comm_frame_payload(fr2);
+	    
 //	printf("wirePair: Get params info for %s: units(%d) loops(%d)\n",tbl[interface_ind].name,p->units,p->loops);
 
 	if( exact ){ // Need exact MATCH
 //	    printf("wirePair: Exact Match\n");
 	    if( (*length >= vp->namelen+4) && 
-		(name[vp->namelen+3] > 0) && (name[vp->namelen+3] <= p->loops) ){
+		(name[vp->namelen+3] > 0) && (name[vp->namelen+3] <= tbl[interface_ind].wires) ){
 		return name[vp->namelen+3];
 	    } else
 		return MATCH_FAILED;
@@ -1029,7 +1147,7 @@ DEBUGMSG(("mibII/shdsl", "\n"));
 	    }else{
 		if( name[vp->namelen+3] <= 0 )
 		    return MATCH_FAILED;
-		if( name[vp->namelen+3]+1 <= p->loops ){
+		if( name[vp->namelen+3]+1 <= tbl[interface_ind].wires ){
 		    *length = vp->namelen+4;
 		    return (++name[vp->namelen+3]);
 		}
@@ -1049,9 +1167,26 @@ DEBUGMSG(("mibII/shdsl", "\n"));
 //    printf("wirePair: nonexact endpoint = %d\n",endp);
     endp_index = endp;
 
+    if( tverr || tbl[interface_ind].wires < 0 ||
+        (tvcur.tv_sec - tbl[interface_ind].tv.tv_sec > CACHE_INT ) ){ 
+        p = (span_params_payload*)comm_alloc_request(APP_SPAN_PARAMS,
+    		APP_GET,tbl[interface_ind].name,&fr1);
+        if( !p ){
+    	    DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
+	    printf("wirePair: Cannot allocate application frame\n");
+	    return MATCH_FAILED;
+	}
+	fr2 = comm_request(comm,fr1);
+	if( !fr2 ){
+	    printf("wirePair: Error requesting\n");
+	    return MATCH_FAILED;
+	}
+	p = (span_params_payload*)comm_frame_payload(fr2);
+	tbl[interface_ind].units = p->units;
+	tbl[interface_ind].wires = p->loops;
+	tbl[interface_ind].tv = tvcur;
+    }
 
-//    DEBUGMSGTL(("mibII/shdsl", "Next unit = %d \n",endp));
-    
     name[ vp->namelen+3] = 1; // First pair
     *length = vp->namelen + 4;
 //    DEBUGMSGTL(("mibII/shdsl", "Result: PAIR #%d\n",name[vp->namelen+3]));
@@ -1088,6 +1223,9 @@ var_EndpointCurrEntry(struct variable * vp,
     DEBUGMSG(("mibII/shdsl", "\n"));    
 */
 
+
+// ------------------------------ Obtain requested information ------------------------------- //
+
     if ( ( pair = header_wirePairIndex(vp,name,length,exact,var_len,write_method) )
 	    == MATCH_FAILED )
         goto exit;
@@ -1104,16 +1242,48 @@ var_EndpointCurrEntry(struct variable * vp,
     p->unit = unit_index;
     p->side = endp_index-1;
     p->loop = pair-1;
+    fr2 = comm_request(comm,fr1);
     printf("Request if(%s) unit(%d) side(%d) loop(%d)\n",
 	tbl[interface_ind].name,p->unit,p->side,p->loop);
 
-    fr2 = comm_request(comm,fr1);
-    if( !fr2 ){
-	printf("Error requesting\n");
+    
+    if( !fr2 && exact ){
+	printf("var_InventoryEntry: error requesting\n");
 	goto exit;
     }
-    p = (endp_cur_payload*)comm_frame_payload(fr2);
+    
+    while( !fr2 ){
+	if ( ( pair = header_wirePairIndex(vp,name,length,exact,var_len,write_method) )
+		== MATCH_FAILED )
+    	    goto exit;
+    
+	printf("Result (rep): if(%s) unit(%d) side(%d) pair(%d)\n",tbl[interface_ind].name,unit_index,endp_index,pair);
 
+	p = (endp_cur_payload*)comm_alloc_request(APP_ENDP_CUR,APP_GET,
+	    tbl[interface_ind].name,&fr1);
+	if( !p ){
+	    DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
+	    printf("var_InventoryEntry: Cannot allocate application frame\n");
+	    goto exit;
+	}
+	p->unit = unit_index;
+	p->side = endp_index-1;
+	p->loop = pair-1;
+	fr2 = comm_request(comm,fr1);
+
+	printf("Request (rep): if(%s) unit(%d) side(%d) loop(%d)\n",
+		tbl[interface_ind].name,p->unit,p->side,p->loop);
+
+    }
+
+    if( !fr2 ){
+	printf("var_InventoryEntry: error requesting\n");
+	goto exit;
+    }
+    
+    p = (endp_cur_payload*)comm_frame_payload(fr2);
+    
+// ------------------------------ Return requested information ------------------------------- //
 
     //---- ack ----//
     switch (vp->magic) {
