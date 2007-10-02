@@ -25,6 +25,7 @@ extern FindVarMethod var_15MinIntervalEntry;
 extern FindVarMethod var_EndpointMaintEntry;
 extern FindVarMethod var_UnitMaintEntry;
 // profiles
+*/
 extern FindVarMethod var_SpanConfProfEntry;
 
 /*

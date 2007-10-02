@@ -170,6 +170,7 @@ struct variable3 shdsl_unit_maint[] = {
     {UNIT_MAINT_LPB_TO, ASN_INTEGER, RWRITE, var_UnitMaintEntry, 3, {9,1,1}},
     {UNIT_MAINT_PWR_SRC, ASN_INTEGER, RONLY, var_UnitMaintEntry, 3, {9,1,2}},
 };
+*/
 
 struct variable3 shdsl_conf_prof[] = {
     {CONF_WIRE_IFACE, ASN_INTEGER, RWRITE, var_SpanConfProfEntry, 3, {10,1,2}},
@@ -188,7 +189,7 @@ struct variable3 shdsl_conf_prof[] = {
     {CONF_LPROBE, ASN_INTEGER, RWRITE, var_SpanConfProfEntry, 3, {10,1,15}},
     {CONF_ROW_ST, ASN_INTEGER, RWRITE, var_SpanConfProfEntry, 3, {10,1,16}},
 };
-*/
+
 
 
 
@@ -236,11 +237,9 @@ init_shdsl(void)
 
     REGISTER_MIB("mibII/hdsl2shdslUnitMaint", shdsl_unit_maint, variable3,
                  hdsl2Shdsl_variables_oid);
-
+*/
     REGISTER_MIB("mibII/hdsl2shdslSpanConf", shdsl_conf_prof, variable3,
                  hdsl2Shdsl_variables_oid);
-
-*/
 
     DEBUGMSGTL(("mibII/hdsl2Shdsl","register variables"));
 }
@@ -397,7 +396,7 @@ header_ifIndex(struct variable *vp,
 //    printf("ifIndex: DSL indexes:\n");    
     if( (min_i = chann_names()) < 0 ){
 	printf("ifIndex: Cannot get table of controlling interfaces\n");
-	return -1;
+	return MATCH_FAILED;
     }
 
 //    printf("ifIndex: name[%d]=%d\n",i,name[i]);
@@ -1950,8 +1949,8 @@ var_UnitMaintEntry(struct variable * vp,
  * 	Defines propriate Wire pair index for incoming OID
  *	(by now only 1 pair supported)
  */
-/*
-char prof_names[256][32];
+
+span_conf_prof_payload _cprof;
 
 static int 
 header_confProfIndex(struct variable *vp,
@@ -1959,121 +1958,75 @@ header_confProfIndex(struct variable *vp,
                size_t * length,
                int exact, size_t * var_len, WriteMethod ** write_method )
 {
-    oid newname[MAX_OID_LEN];
-    oid tmpname[MAX_OID_LEN];    
-    int newlen=0, tmplen=0, sublen=0;
-    int i, k, cnt, min_i=-1;
-    int result;
-    
-    
+    int base_compare;
+    int oid_min = (vp->namelen > *length) ? *length : vp->namelen;
+    char profname[MAX_OID_LEN];
     *write_method = 0;
     *var_len = sizeof(long);    // default to 'long' results //
-/*
-DEBUGMSGTL(("mibII/shdsl", "\n---------------------------------\nheader_confProfIndex:\n"));
-DEBUGMSGTL(("mibII/shdsl", "Input OID: "));
-DEBUGMSGOID(("mibII/shdsl", name, *length));		    
-DEBUGMSG(("mibII/shdsl", "\n"));
-
-DEBUGMSGTL(("mibII/shdsl", "Local OID: "));
-DEBUGMSGOID(("mibII/shdsl", vp->name, vp->namelen));		    
-DEBUGMSG(("mibII/shdsl", "\n"));
-
-*//*    
-
-    memcpy((char *) newname, (char *) vp->name,
-           (int) vp->namelen * sizeof(oid));
-    newlen = vp->namelen;
-    memcpy((char *) tmpname, (char *) vp->name,
-           (int) vp->namelen * sizeof(oid));
-    tmplen = vp->namelen;
-
-
-
-
-    struct app_frame *fr1,*fr2;
+    struct app_frame *fr1 = NULL,*fr2 = NULL;
     char *b;
-    endp_int_payload *p;
-    
+    span_conf_prof_payload *p;
 
-    p = (endp_int_payload*)comm_alloc_request(APP_ENDP_15MIN,APP_GET,"dsl0",&fr1);
-    if( !p ){
-	DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
-	return;
-    }
-    p->unit = stu_c;
-    p->side = net_side;
-    p->loop = 0;
-    p->int_num = 73;
-
-    fr2 = comm_request(c,fr1);
-    if( !fr2 ){
-	printf("Error requesting\n");
-	return -1;
-    }
-    p = (endp_int_payload*)comm_frame_payload(fr2);
-    print_int_payload(p,"1day");    
-
-
-
-
-
-    cnt = prof_conf_names(prof_names);
-    
-    for(i=0;i<cnt;i++){
-//	DEBUGMSGTL(("mibII/shdsl", "Analyse Profile: %s\n",prof_names[i]));
-	sublen = strlen(prof_names[i]);
-	for(k=0;k<sublen;k++)
-	    newname[newlen+k] = prof_names[i][k];
-//	DEBUGMSGTL(("mibII/shdsl", "Builded OID: "));
-//	DEBUGMSGOID(("mibII/shdsl", newname, newlen+sublen));		    
-//	DEBUGMSG(("mibII/shdsl", "\n"));
-	
-	result = snmp_oid_compare(newname,newlen+sublen,name,*length);
-//	DEBUGMSGTL(("mibII/shdsl", "Result of comparision: %d\n",result));
-	if( exact && !result ){
-//	    DEBUGMSGTL(("mibII/shdsl", "Exact ok\n"));
-	    return i;
-	} else if( !exact && result>0 ){
-//	    DEBUGMSGTL(("mibII/shdsl", "NonExact\n"));
-	    if( tmplen == vp->namelen ){
-//		DEBUGMSGTL(("mibII/shdsl", "First tmpname init\n"));
-		memcpy((char *)tmpname, (char *)newname,(newlen+sublen)*sizeof(oid) );
-		tmplen = newlen+sublen;
-/*		DEBUGMSGTL(("mibII/shdsl", "tmpname OID: "));
-		DEBUGMSGOID(("mibII/shdsl", tmpname, tmplen));		    
-		DEBUGMSG(("mibII/shdsl", "\n"));
-*//*		min_i = i;
-	    } else {
-/*		DEBUGMSGTL(("mibII/shdsl", "Compare newname with tmpname\n"));	    
-		DEBUGMSGTL(("mibII/shdsl", "tmpname OID: "));
-		DEBUGMSGOID(("mibII/shdsl", tmpname, tmplen));		    
-		DEBUGMSG(("mibII/shdsl", "\n"));
-*//*	    	result = snmp_oid_compare(newname,newlen+sublen,tmpname,tmplen);
-//		DEBUGMSGTL(("mibII/shdsl", "Result of comparision: %d\n",result));
-		if( result < 0 ){
-//		    DEBUGMSGTL(("mibII/shdsl", "Save new candidate in tmpname\n"));		
-		    memcpy((char *)tmpname, (char *)newname,(newlen+sublen)*sizeof(oid) );		    
-		    tmplen = newlen+sublen;
-		    min_i = i;
-		}
-	    }
-	}
-    }
-    if(min_i < 0){
+    if( (base_compare = snmp_oid_compare(name,oid_min,vp->name,oid_min)) > 0){
+	// OID is grater than supported
 	return MATCH_FAILED;
     }
-    memcpy((char *)name, (char *)tmpname,(tmplen)*sizeof(oid) );		    
-    *length = tmplen;
-/*
-    DEBUGMSGTL(("mibII/shdsl", "Result OID: "));
-    DEBUGMSGOID(("mibII/shdsl", name, *length));		    
-    DEBUGMSG(("mibII/shdsl", "\n"));
-*//*
     
-    return min_i;
+    if( exact ){
+	int len;
+	if( base_compare || (*length < vp->namelen) ){
+	    // Already incorrect
+	    return MATCH_FAILED;
+	}
+        len = *length - vp->namelen;
+        len = (len>SNMP_ADMIN_LEN) ? SNMP_ADMIN_LEN : len;
+        memcpy(profname,name+vp->namelen,len);
+	profname[len+1] = 0;	
+	p = (span_conf_prof_payload*)
+		comm_alloc_request(APP_SPAN_CONF,APP_GET,"",&fr1);
+    }else{
+	if( (base_compare < 0) || (!base_compare && *length<=vp->namelen) ){
+	    memcpy((char*)name,vp->name,((int)vp->namelen)*sizeof(oid));
+	    *length = vp->namelen;
+	    profname[0] = 0;
+	}else{
+	    int len = *length - vp->namelen;
+	    len = (len>SNMP_ADMIN_LEN) ? SNMP_ADMIN_LEN : len;
+	    memcpy(profname,name+vp->namelen,len);
+	    profname[len+1] = 0;
+	}
+	p = (span_conf_prof_payload*)
+		comm_alloc_request(APP_SPAN_CONF,APP_GET_NEXT,"",&fr1);
+    }	
+    if( !p ){
+	DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
+	if( fr1 )
+	    comm_frame_free(fr1);
+	return MATCH_FAILED;
+    }
+
+    strncpy(p->ProfileName,profname,SNMP_ADMIN_LEN+1);
+    fr2 = comm_request(comm,fr1);
+    if( !fr2 ){
+	printf("Error requesting\n");
+	if( fr1 )
+	    comm_frame_free(fr1);
+	return MATCH_FAILED;
+    }
+    p = (span_conf_prof_payload*)comm_frame_payload(fr2);
+    _cprof = *p;
+
+    memcpy((char *)name+vp->namelen,p->ProfileName,strnlen(p->ProfileName,SNMP_ADMIN_LEN+1));
+    *length += strnlen(p->ProfileName,SNMP_ADMIN_LEN+1);
+
+    if( fr1 )
+        comm_frame_free(fr1);
+    if( fr2 )
+        comm_frame_free(fr2);
+
+
+    return 1;
 }
-
-
 
 u_char *
 var_SpanConfProfEntry(struct variable * vp,
@@ -2081,72 +2034,88 @@ var_SpanConfProfEntry(struct variable * vp,
                size_t * length,
                int exact, size_t * var_len, WriteMethod ** write_method)
 {
-    int prof_ind;
-    shdsl_conf_prof_t Info, *info=&Info;
+    char *return_ptr = NULL;
+    comm = init_comm();
+    if(!comm){
+        DEBUGMSGTL(("mibII/hdsl2Shdsl","Error connecting to \"eocd\""));
+        return NULL;
+    }
     
-    if ( ( prof_ind = header_confProfIndex(vp,name,length,exact,var_len,write_method) )
+    if ( header_confProfIndex(vp,name,length,exact,var_len,write_method)
 	    == MATCH_FAILED )
         return NULL;
 
-    eocd_init(&eocd);
-    if( prof_conf_getrow(prof_ind,&eocd,info) ){
-//	DEBUGMSGTL(("mibII/shdsl", "Error gettong conf row\n"));
-	return NULL;
-    }
-    
 //    DEBUGMSGTL(("mibII/shdsl", "Result prof_ind = %d\n-------------------END------------------------\n",prof_ind));
     //---- ack ----//
     switch (vp->magic) {
     case CONF_WIRE_IFACE:
-	long_return= info->wire_if;
-	return (u_char *) & long_return;
+	long_return= _cprof.conf.wires;
+	return_ptr = (u_char *)&long_return;
+	break;
     case CONF_MIN_LRATE:
-	long_return = info->min_lrate;
-	return (u_char *) & long_return;
+	long_return = _cprof.conf.min_rate;
+	return_ptr = (u_char *)&long_return;
+	break;
     case CONF_MAX_LRATE:
-	long_return = info->max_lrate;
-	return (u_char *) & long_return;
+	long_return = _cprof.conf.max_rate;
+	return_ptr = (u_char *)&long_return;
+	break;
     case CONF_PSD:
-	long_return= info->psd;
-	return (u_char *) & long_return;
+	long_return= _cprof.conf.psd;
+	return_ptr = (u_char *)&long_return;
+	break;
+/*	
     case CONF_TRNSM_MODE:
 	*var_len = sizeof(char);
 	long_return = *((unsigned char*)&info->transm_mode);
-	return (u_char *) & long_return;
+	return_ptr = (u_char *)&long_return;
+	break; */
     case CONF_REM_ENABLE:
-	long_return= info->rem_conf;
-	return (u_char *) & long_return;
+	long_return = _cprof.conf.remote_cfg;
+	return_ptr = (u_char *)&long_return;
+	break;
     case CONF_PWR_FEED:
-	long_return= info->pwr_feed;
-	return (u_char *) & long_return;
+	long_return = _cprof.conf.power;
+	return_ptr = (u_char *)&long_return;
+	break;
     case CONF_CURR_DOWN:
-	long_return= info->cur_cond_down;
-	return (u_char *) & long_return;
+	long_return = _cprof.conf.cur_marg_down;
+	return_ptr = (u_char *)&long_return;
+	break;
     case CONF_WORST_DOWN:
-	long_return= info->worst_case_down;
-	return (u_char *) & long_return;
+	long_return = _cprof.conf.worst_marg_down;
+	return_ptr = (u_char *)&long_return;
+	break;
     case CONF_CURR_UP:
-	long_return= info->cur_cond_up;
-	return (u_char *) & long_return;
+	long_return = _cprof.conf.cur_marg_up;
+	return_ptr = (u_char *)&long_return;
+	break;
     case CONF_WORST_UP:
-	long_return= info->worst_case_up;
-	return (u_char *) & long_return;
-    case CONF_USED_MARG:
+	long_return = _cprof.conf.worst_marg_up;
+	return_ptr = (u_char *)&long_return;
+	break;
+/*    case CONF_USED_MARG:
 	*var_len = sizeof(char);
-	long_return= *((unsigned char*)&info->used_margins);
-	return (u_char *) & long_return;
+	long_return = *((unsigned char*)&info->used_margins);
+	return_ptr = (u_char *)&long_return; */
     case CONF_REF_CLK:
-	long_return= info->ref_clk;
-	return (u_char *) & long_return;
+	long_return = _cprof.conf.clk;
+	return_ptr = (u_char *)&long_return;
+	break;
     case CONF_LPROBE:
-	long_return= info->line_probe;
-	return (u_char *) & long_return;
-    case CONF_ROW_ST:
-	long_return= info->status;
-	return (u_char *) & long_return;
+	long_return = _cprof.conf.line_probe;
+	return_ptr = (u_char *)&long_return;
+	break;
+/*    case CONF_ROW_ST:
+	long_return = info->status;
+	return_ptr = (u_char *)&long_return;
+*/
     }
+    
+exit:
+    comm_free(comm);
+    comm = NULL;    
     return NULL;
 }
-	
-*/
+
 
