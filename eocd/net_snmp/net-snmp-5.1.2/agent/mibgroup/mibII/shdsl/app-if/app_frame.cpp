@@ -5,10 +5,13 @@ app_frame(app_ids id,app_types type,roles role,u8 act_seconds,char *dname){
 	u32 psize,csize;
 	int offs;
 	if( (offs = size_by_id(id,type,psize,csize) ) <0 ){
+printf("%s: Error! no such ID\n",__FUNCTION__);
 	    buf = NULL;
 	    buf_size = 0;
 	    return;
 	}
+printf("%s: offset by ID = %d\n",__FUNCTION__,offs);
+
 	int I = offs;
 	buf_size = offs + strnlen(dname,256)+1;
 	if( !(buf = new char[buf_size]) ){
@@ -105,6 +108,10 @@ size_by_id(app_ids id,app_types type,u32 &psize,u32 &csize)
         psize = ENDP_MAINT_PAY_SZ;
         csize = ENDP_MAINT_CH_SZ;
         break;
+    case APP_SPAN_CPROF:
+	psize = SPAN_CONF_PROF_PAY_SZ;
+	csize = SPAN_CONF_PROF_CH_SZ;
+	break;
     default:
         return -1;
     }

@@ -12,14 +12,16 @@ class EOC_config{
     char *cprof_name;
     char *aprof_name;
     u16 rep_num;
+    int app_cfg;
 public:
-    EOC_config(hash_table *c,hash_table *a,char *cn,char *an,u16 rep)
+    EOC_config(hash_table *c,hash_table *a,char *cn,char *an,u16 rep,int _app_cfg)
     {
 	conf_prof = c;
 	alarm_prof = a;
 	cprof_name = cn;
 	aprof_name = an;
 	rep_num = rep;
+	app_cfg = _app_cfg;
     }
     const char *conf_prof_name(){return cprof_name;}
     const char *alarm_prof_name(){return cprof_name;}
@@ -28,6 +30,7 @@ public:
     hash_table *alarm_tbl(){ return alarm_prof; }
     s8 snr_tresh(){ return 0;}
     s8 loop_tresh(){ return 0; }
+    int can_apply(){ return app_cfg; }
 };
 
 #endif

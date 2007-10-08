@@ -38,7 +38,7 @@ app_frame(char *b,int size){
     buf_size = size;
     hdr = (app_frame_hdr *)buf;
     // GET correct parameters of frame
-    if( (offs = size_by_id((app_ids)hdr->id,(app_types)hdr->type,psize,csize) ) <0 ){
+    if( (size <= 0) || (offs = size_by_id((app_ids)hdr->id,(app_types)hdr->type,psize,csize) ) <0 ){
         buf = NULL;
         buf_size = 0;
         PDEBUG(DERR,"Cannot get info about frame id = %d",hdr->id);
@@ -105,6 +105,10 @@ size_by_id(app_ids id,app_types type,u32 &psize,u32 &csize)
         psize = ENDP_MAINT_PAY_SZ;
         csize = ENDP_MAINT_CH_SZ;
         break;
+    case APP_SPAN_CPROF:
+	psize = SPAN_CONF_PROF_PAY_SZ;
+	csize = SPAN_CONF_PROF_CH_SZ;
+	break;
     default:
         return -1;
     }

@@ -141,10 +141,10 @@ configure(char *ch_name)
     PDEBUG(DINFO,"start");
     switch(type){
     case master:
-        dev = (EOC_dev_terminal*)rtr->nsdev();
+        dev = (EOC_dev_terminal*)rtr->csdev();
         break;
     case slave:
-        dev = (EOC_dev_terminal*)rtr->csdev();
+        dev = (EOC_dev_terminal*)rtr->nsdev();
         break;
     default:
         return 0;
@@ -158,7 +158,10 @@ configure(char *ch_name)
     if( !prof ){
         PDEBUG(DERR,"Cannot find corresponding profile");
 	return -1;
-    }	
+    }
+    if( !cfg->can_apply() )
+	return 0;
+    	
     return dev->configure(prof->conf);
 }
 

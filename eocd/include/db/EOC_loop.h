@@ -39,7 +39,7 @@ typedef struct {
 } shdsl_current;
 
 
-#define EOC_15MIN_INT_LEN 1
+#define EOC_15MIN_INT_LEN 15
 #define EOC_15MIN_INTS 96
 #define EOC_1DAY_INTS 30
 
@@ -89,6 +89,19 @@ public:
 	cntrs = *_15min_ints[index];
 	return 0;
     }
+
+    int m15_nx_counters(int &index,counters_elem &cntrs){
+	if( !(index < EOC_15MIN_INTS && index>=0) )
+	    return -1;
+	int i = index;
+	while( !_15min_ints[i] && i<EOC_15MIN_INTS )
+	    i++;
+	if( !_15min_ints[i] )
+	    return -1;
+	cntrs = *_15min_ints[i];
+	index = i;
+	return 0;
+    }
     
     int d1_counters(int index,counters_elem &cntrs){
 	if( !(index < EOC_1DAY_INTS && index>=0) )
@@ -96,6 +109,19 @@ public:
 	if( !_1day_ints[index] )
 	    return -1;
 	cntrs = *_1day_ints[index];
+	return 0;
+    }
+
+    int d1_nx_counters(int &index,counters_elem &cntrs){
+	if( !(index < EOC_1DAY_INTS && index>=0) )
+	    return -1;
+	int i = index;
+	while( !_1day_ints[i] && i<EOC_1DAY_INTS )
+	    i++;
+	if( !_1day_ints[i] )
+	    return -1;
+	cntrs = *_1day_ints[i];
+	index = i;
 	return 0;
     }
 

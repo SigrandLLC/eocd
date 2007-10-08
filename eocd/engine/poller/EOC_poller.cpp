@@ -76,7 +76,7 @@ app_request(app_frame *fr)
     case APP_SPAN_STATUS:
     {
 	span_status_payload *p = (span_status_payload*)fr->payload_ptr();
-	p->nreps = db->unit_quan() - 2;
+	p->nreps = db->reg_quan();
 	// TODO get thisinfo from device
 	p->max_lrate = 0;
 	p->act_lrate = 0;

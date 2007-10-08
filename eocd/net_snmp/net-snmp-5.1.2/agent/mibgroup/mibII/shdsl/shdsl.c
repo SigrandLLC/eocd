@@ -149,15 +149,16 @@ struct variable3 shdsl_endp_15minstat[] = {
     { ENDP_15M_LOSWS,ASN_UNSIGNED,RONLY,var_15MinIntervalEntry,3,{6,1,5} },
     { ENDP_15M_UAS,ASN_UNSIGNED,RONLY,var_15MinIntervalEntry,3,{6,1,6} },
 };
-/*
+
 struct variable3 shdsl_endp_1daystat[] = {
-    { ENDP_1D_ES,ASN_UNSIGNED,NOACCESS,var_1DayIntervalEntry,3,{6,1,1} },
-    { ENDP_1D_SES,ASN_UNSIGNED,RONLY,var_1DayIntervalEntry,3,{6,1,2} },
-    { ENDP_1D_CRC,ASN_UNSIGNED,RONLY,var_1DayIntervalEntry,3,{6,1,3} },
-    { ENDP_1D_LOSWS,ASN_UNSIGNED,RONLY,var_1DayIntervalEntry,3,{6,1,4} },
-    { ENDP_1D_UAS,ASN_UNSIGNED,RONLY,var_1DayIntervalEntry,3,{6,1,5} },
+    { ENDP_1D_INT,ASN_UNSIGNED,NOACCESS,var_1DayIntervalEntry,3,{7,1,1} },
+    { ENDP_1D_ES,ASN_UNSIGNED,RONLY,var_1DayIntervalEntry,3,{7,1,2} },
+    { ENDP_1D_SES,ASN_UNSIGNED,RONLY,var_1DayIntervalEntry,3,{7,1,3} },
+    { ENDP_1D_CRC,ASN_UNSIGNED,RONLY,var_1DayIntervalEntry,3,{7,1,4} },
+    { ENDP_1D_LOSWS,ASN_UNSIGNED,RONLY,var_1DayIntervalEntry,3,{7,1,5} },
+    { ENDP_1D_UAS,ASN_UNSIGNED,RONLY,var_1DayIntervalEntry,3,{7,1,6} },
 };
-*/
+
 /*
 struct variable3 shdsl_endp_maint[] = {
     { ENDP_MAINT_LOOPBACK, ASN_INTEGER, RWRITE, var_EndpointMaintEntry, 3, {8,1,1} },
@@ -224,10 +225,11 @@ init_shdsl(void)
     REGISTER_MIB("mibII/hdsl2shdslEndpointCurr",shdsl_endp_currstat, variable3,
                  hdsl2Shdsl_variables_oid);
 
-/*
+
     REGISTER_MIB("mibII/hdsl2shdslEndpoint15min",shdsl_endp_15minstat, variable3,
                  hdsl2Shdsl_variables_oid);
-/*
+
+
     REGISTER_MIB("mibII/hdsl2shdslEndpoint1day",shdsl_endp_1daystat, variable3,
                  hdsl2Shdsl_variables_oid);
 
@@ -238,7 +240,7 @@ init_shdsl(void)
     REGISTER_MIB("mibII/hdsl2shdslUnitMaint", shdsl_unit_maint, variable3,
                  hdsl2Shdsl_variables_oid);
 */
-    REGISTER_MIB("mibII/hdsl2shdslSpanConf", shdsl_conf_prof, variable3,
+    REGISTER_MIB("mibII/hdsl2shdslSpanConfProfile", shdsl_conf_prof, variable3,
                  hdsl2Shdsl_variables_oid);
 
     DEBUGMSGTL(("mibII/hdsl2Shdsl","register variables"));
@@ -511,10 +513,9 @@ var_SpanConfEntry(struct variable * vp,
     if ( ( iface=header_ifIndex(vp, name, length, exact, var_len,write_method) )
          == MATCH_FAILED || (*length != vp->namelen+1)){
 //	DEBUGMSG(("mibII/shdsl", "SpanConf: MATCH_FAILED\n"));	
-        printf("mibII/shdsl SpanConf: MATCH_FAILED\n");	
+//        printf("mibII/shdsl SpanConf: MATCH_FAILED\n");	
 	goto exit;
     }
-    printf("mibII/shdsl iface= %d, %s\n", iface,tbl[interface_ind].name);
 
     if( gettimeofday(&tvcur,NULL) ){
 	printf("%s: tverr occured\n",__FUNCTION__);
@@ -546,7 +547,6 @@ var_SpanConfEntry(struct variable * vp,
 	p = &spanconf_tbl[interface_ind]->p;
     }
 
-    printf("mibII/shdsl Form response\n");	
     switch (vp->magic) {
     case CONF_NREPS:
 	*var_len=sizeof(int);
@@ -610,10 +610,9 @@ var_SpanStatusEntry(struct variable * vp,
     if ( ( iface=header_ifIndex(vp, name, length, exact, var_len,write_method) )
 	     == MATCH_FAILED || (*length != vp->namelen+1)){
 //	DEBUGMSG(("mibII/shdsl", "SpanConf: MATCH_FAILED\n"));	
-	printf("mibII/shdsl SpanConf: MATCH_FAILED\n");	
+//	printf("mibII/shdsl SpanConf: MATCH_FAILED\n");	
         goto exit;
     }
-    printf("mibII/shdsl iface= %d, %s\n", iface,tbl[interface_ind].name);
 
     if( gettimeofday(&tvcur,NULL) ){
 	printf("%s: tverr occured\n",__FUNCTION__);
@@ -837,7 +836,6 @@ var_InventoryEntry(struct variable * vp,
 	printf("var_InventoryEntry: Cannot find unit\n");
 	goto exit;
     }
-    printf("var_InventoryEntry: unit = %d\n",unit);
 
 // ------------- Need cacheing ------------------//
 
@@ -862,7 +860,6 @@ var_InventoryEntry(struct variable * vp,
 		printf("var_InventoryEntry: Cannot find unit\n");
 		goto exit;
 	    }
-	    printf("var_InventoryEntry: unit = %d\n",unit);
 
 	    p = (inventory_payload*)comm_alloc_request(APP_INVENTORY,APP_GET,
 		tbl[interface_ind].name,&fr1);
@@ -885,7 +882,6 @@ var_InventoryEntry(struct variable * vp,
 //~~~~~~~~~~~~~~~~~~ Need cacheing ~~~~~~~~~~~~~~~~~~~~~~~~`//
 
     resp = &p->inv;
-    printf("var_InventoryEntry: Result: magic=%d if=%s, unit = %d\n",vp->magic,tbl[interface_ind].name,unit);
 
     //---- ack ----//
     switch (vp->magic) {
@@ -1083,87 +1079,93 @@ header_wirePairIndex(struct variable *vp,
     int endp = 0;
     *write_method = 0;
     *var_len = sizeof(long);    // default to 'long' results //
-    struct app_frame *fr1,*fr2;
+    struct app_frame *fr1=NULL,*fr2=NULL;
     span_params_payload *p;
+    int ret_val = MATCH_FAILED;
     // Cacheing
     struct timeval tvcur;
     int tverr = 0;
 
-// printf("----------- WirePair: start ------------\n");
-
-/*
-DEBUGMSGTL(("mibII/shdsl", "Input OID: "));
-DEBUGMSGOID(("mibII/shdsl", name, *length));		    
-DEBUGMSG(("mibII/shdsl", "\n"));
-
-DEBUGMSGTL(("mibII/shdsl", "Local OID: "));
-DEBUGMSGOID(("mibII/shdsl", vp->name, vp->namelen));		    
-DEBUGMSG(("mibII/shdsl", "\n"));
-*/
-
     if ( ( endp = header_endpIndex(vp,name,length, 1 /*exact = 1*/,var_len,write_method) )
 	    != MATCH_FAILED ){
     
-//	printf("wirePair: exact endpoint = %d\n",endp);
+	printf("wirePair: interface_ind = %d,exact endpoint = %d\n",interface_ind,endp);
+	printf("wirePair: Get params info for %s\n",tbl[interface_ind].name);
+
 	endp_index = endp;
 	tverr = gettimeofday(&tvcur,NULL);
+	printf("%s: before if 1\n",__FUNCTION__);
+	int k = tbl[interface_ind].wires;
+	printf("%s: before if 2\n",__FUNCTION__);
+	int k1 = tvcur.tv_sec - tbl[interface_ind].tv.tv_sec;
+	printf("%s: before if 3\n",__FUNCTION__);
 	if( tverr || tbl[interface_ind].wires < 0 ||
 	    (tvcur.tv_sec - tbl[interface_ind].tv.tv_sec > CACHE_INT ) ){ 
+printf("%s: 1\n",__FUNCTION__);
 	    p = (span_params_payload*)comm_alloc_request(APP_SPAN_PARAMS,
 			APP_GET,tbl[interface_ind].name,&fr1);
+printf("%s: 2\n",__FUNCTION__);
 	    if( !p ){
 		DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
 		printf("wirePair: Cannot allocate application frame\n");
-		return MATCH_FAILED;
+		goto exit;
 	    }
+printf("%s: 3\n",__FUNCTION__);	    
 	    fr2 = comm_request(comm,fr1);
+printf("%s: 4\n",__FUNCTION__);
 	    if( !fr2 ){
 		printf("wirePair: Error requesting\n");
-		return MATCH_FAILED;
+		goto exit;
 	    }
+printf("%s: 5\n",__FUNCTION__);	    
 	    p = (span_params_payload*)comm_frame_payload(fr2);
 	    tbl[interface_ind].units = p->units;
 	    tbl[interface_ind].wires = p->loops;
 	    tbl[interface_ind].tv = tvcur;
 	}
-	    
-//	printf("wirePair: Get params info for %s: units(%d) loops(%d)\n",tbl[interface_ind].name,p->units,p->loops);
+printf("%s: after if\n",__FUNCTION__);
+	printf("wirePair: Get params info for %s: units(%d) loops(%d)\n",tbl[interface_ind].name,p->units,p->loops);
 
 	if( exact ){ // Need exact MATCH
-//	    printf("wirePair: Exact Match\n");
+	    printf("wirePair: Exact Match\n");
 	    if( (*length >= vp->namelen+4) && 
 		(name[vp->namelen+3] > 0) && (name[vp->namelen+3] <= tbl[interface_ind].wires) ){
-		return name[vp->namelen+3];
-	    } else
-		return MATCH_FAILED;
+		ret_val =  name[vp->namelen+3];
+		goto exit;
+	    } else {
+		goto exit;
+	    }
 	} else { // Nonexact match
 	    // Because we have only one wire pair - we change it only 
 	    // if field is empty
 	    if( *length == vp->namelen+3 ){
 	        name[vp->namelen+3] = 1; // first pair
 	        *length = vp->namelen+4;
-		return name[vp->namelen+3];
+		ret_val = name[vp->namelen+3];
+		goto exit;
 	    }else{
 		if( name[vp->namelen+3] <= 0 )
-		    return MATCH_FAILED;
+		    goto exit;
 		if( name[vp->namelen+3]+1 <= tbl[interface_ind].wires ){
 		    *length = vp->namelen+4;
-		    return (++name[vp->namelen+3]);
+		    ret_val = (++name[vp->namelen+3]);
+		    goto exit;
 		}
 	    }
 	}
     }
 	
+    printf("%s: Exact match failed\n",__FUNCTION__);
     if( exact ){
-	return MATCH_FAILED;
+	goto exit;
     }
     
     if( (endp = header_endpIndex(vp, name, length, exact, var_len,write_method)) 
 	    == MATCH_FAILED ){ // No next interface or In OID is lager than Inventory Table OIDs
-	return MATCH_FAILED;
+	goto exit;
     }
 
-//    printf("wirePair: nonexact endpoint = %d\n",endp);
+    printf("wirePair: nonexact endpoint = %d\n",endp);
     endp_index = endp;
 
     if( tverr || tbl[interface_ind].wires < 0 ||
@@ -1173,12 +1175,12 @@ DEBUGMSG(("mibII/shdsl", "\n"));
         if( !p ){
     	    DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
 	    printf("wirePair: Cannot allocate application frame\n");
-	    return MATCH_FAILED;
+	    goto exit;
 	}
 	fr2 = comm_request(comm,fr1);
 	if( !fr2 ){
 	    printf("wirePair: Error requesting\n");
-	    return MATCH_FAILED;
+	    goto exit;
 	}
 	p = (span_params_payload*)comm_frame_payload(fr2);
 	tbl[interface_ind].units = p->units;
@@ -1188,9 +1190,15 @@ DEBUGMSG(("mibII/shdsl", "\n"));
 
     name[ vp->namelen+3] = 1; // First pair
     *length = vp->namelen + 4;
-//    DEBUGMSGTL(("mibII/shdsl", "Result: PAIR #%d\n",name[vp->namelen+3]));
-//    printf("wirePair: returning\n");
-    return name[vp->namelen+3];
+    ret_val = name[vp->namelen+3];
+exit:
+    printf("%s: exit\n",__FUNCTION__);
+    if( fr1 )
+	comm_frame_free(fr1);
+    if( fr2 )
+	comm_frame_free(fr2);
+    printf("%s: returning\n",__FUNCTION__);
+    return ret_val;
 }
 
 
@@ -1216,12 +1224,6 @@ var_EndpointCurrEntry(struct variable * vp,
     }
 
     printf("EndpointCurStatEntry: start\n");
-
-/*
-    DEBUGMSGOID(("mibII/shdsl", name, *length));
-    DEBUGMSG(("mibII/shdsl", "\n"));    
-*/
-
 
 // ------------------------------ Obtain requested information ------------------------------- //
 
@@ -1257,14 +1259,6 @@ var_EndpointCurrEntry(struct variable * vp,
     	    goto exit;
     
 	printf("Result (rep): if(%s) unit(%d) side(%d) pair(%d)\n",tbl[interface_ind].name,unit_index,endp_index,pair);
-
-	p = (endp_cur_payload*)comm_alloc_request(APP_ENDP_CUR,APP_GET,
-	    tbl[interface_ind].name,&fr1);
-	if( !p ){
-	    DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
-	    printf("var_InventoryEntry: Cannot allocate application frame\n");
-	    goto exit;
-	}
 	p->unit = unit_index;
 	p->side = endp_index-1;
 	p->loop = pair-1;
@@ -1370,19 +1364,21 @@ var_EndpointCurrEntry(struct variable * vp,
 
 
 exit:
+    printf("%s: exit\n",__FUNCTION__);
     if( fr1 )
 	comm_frame_free(fr1);
     if( fr2 )
 	comm_frame_free(fr2);
     comm_free(comm);
     comm = NULL;
+    printf("%s: returning %p\n",__FUNCTION__,return_ptr);
     return return_ptr;
 }
 
 // ----------------- Perfomance/Status intervals ------------------//
 
 static int 
-header_interval15Index(struct variable *vp,
+header_intervalIndex(struct variable *vp,
                oid * name,
                size_t * length,
                int exact, size_t * var_len, WriteMethod ** write_method,app_ids msg_id)
@@ -1390,13 +1386,14 @@ header_interval15Index(struct variable *vp,
     int wire = 0;
     *write_method = 0;
     *var_len = sizeof(long);    // default to 'long' results //
-    struct app_frame *fr1,*fr2;
+    struct app_frame *fr1=NULL,*fr2=NULL;
     endp_int_payload *p;
-    int int_num;
-    printf("\n----------------------- interval15Index ----------------------\n");
-    printf("Input: if(%d) unit(%d) side(%d) pair(%d) int(%d)\n",
-	    name[vp->namelen],name[vp->namelen+1],name[vp->namelen+2],
-	    name[vp->namelen+3],name[vp->namelen+4]);
+    int int_num,ret_val = MATCH_FAILED;
+    
+    
+    printf("%s(Input): if(%d) unit(%d) side(%d) pair(%d) int(%d) id(%d)\n",
+	    __FUNCTION__,name[vp->namelen],name[vp->namelen+1],name[vp->namelen+2],
+	    name[vp->namelen+3],name[vp->namelen+4],msg_id);
 
 
 // printf("----------- WirePair: start ------------\n");
@@ -1404,19 +1401,10 @@ header_interval15Index(struct variable *vp,
     if ( ( wire = header_wirePairIndex(vp,name,length, 1 /*exact = 1*/,var_len,write_method) )
 	    != MATCH_FAILED ){
     
-	printf("interval15Index: exact wire = %d\n",wire);
 	wire_index = wire;
-	
 	if( exact ){
 	    if( *length != vp->namelen+5 )
-		return MATCH_FAILED;
-	    p = (endp_int_payload*)comm_alloc_request(msg_id,APP_GET,
-			tbl[interface_ind].name,&fr1);
-	    if( !p ){
-		DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
-		printf("interval15Index: Cannot allocate application frame\n");
-		return MATCH_FAILED;
-	    }
+		goto exit;
 	    int_num = name[vp->namelen+4];
 	} else {
 	    if( *length < vp->namelen+4 ){
@@ -1424,13 +1412,17 @@ header_interval15Index(struct variable *vp,
 	    } else if( *length == vp->namelen+3 ){
 		int_num = 1;
 	    }else{
-//		printf("interval15Index: Shift interval: %d to %d"
 		int_num = name[vp->namelen+4]+1;
 	    }
 	}
 
-	p = (endp_int_payload*)comm_alloc_request(msg_id,APP_GET,
-		tbl[interface_ind].name,&fr1);
+	if( exact ){
+	    p = (endp_int_payload*)comm_alloc_request(msg_id,APP_GET,
+		    tbl[interface_ind].name,&fr1);
+	}else{
+	    p = (endp_int_payload*)comm_alloc_request(msg_id,APP_GET_NEXT,
+		    tbl[interface_ind].name,&fr1);
+	}	
 	if( !p ){
 	    DEBUGMSGTL(("mibII/hdsl2Shdsl","interval15Index: Cannot allocate application frame"));
 	    printf("interval15Index: Cannot allocate application frame\n");
@@ -1450,30 +1442,34 @@ header_interval15Index(struct variable *vp,
 	    p = (endp_int_payload*)comm_frame_payload(fr2);
 	    //	printf("wirePair: Get params info for %s: units(%d) loops(%d)\n",tbl[interface_ind].name,p->units,p->loops);
 	    perf_int = p->cntrs;
-	    name[vp->namelen+4] = int_num;
+	    name[vp->namelen+4] = p->int_num;
 	    *length = vp->namelen+5;
-	    return name[vp->namelen+4];
+	    ret_val = name[vp->namelen+4];
+	    return ;
 	}
     }
     
     if( exact ){
-	return MATCH_FAILED;
+	goto exit;
     }
     
     //-------------- Switch to next wire_pair ----------------//
     if ( ( wire = header_wirePairIndex(vp,name,length, exact,var_len,write_method) )
 	    == MATCH_FAILED ){
-	return MATCH_FAILED;
+	goto exit;
     }
     wire_index = wire;
-    printf("interval15Index: nonexact wire = %d\n",wire);
-
-    p = (endp_int_payload*)comm_alloc_request(msg_id,APP_GET,
+    if( !fr1 ){
+	p = (endp_int_payload*)comm_alloc_request(msg_id,APP_GET_NEXT,
     		tbl[interface_ind].name,&fr1);
+    }else{
+	p = (endp_int_payload*)comm_frame_payload(fr1);
+    }
+    
     if( !p ){
 	DEBUGMSGTL(("mibII/hdsl2Shdsl","interval15Index: Cannot allocate application frame"));
 	printf("interval15Index: Cannot allocate application frame\n");
-	return MATCH_FAILED;
+	goto exit;
     }
 
     p->unit = unit_index;
@@ -1488,16 +1484,27 @@ header_interval15Index(struct variable *vp,
     if( !fr2 ){
     	DEBUGMSGTL(("mibII/hdsl2Shdsl","interval15Index: Error requesting\n"));
     	printf("interval15Index: Error requesting\n");
-	return MATCH_FAILED;
+	goto exit;
     }
 
-    printf("Request successfull\n");
+    printf("Request successfull, p =%p\n",p);
     p = (endp_int_payload*)comm_frame_payload(fr2);
+    if( !p ){
+	goto exit;
+    }
     //	printf("wirePair: Get params info for %s: units(%d) loops(%d)\n",tbl[interface_ind].name,p->units,p->loops);
     perf_int = p->cntrs;
     name[vp->namelen+4] = p->int_num;
+    ret_val = name[vp->namelen+4];
     *length = vp->namelen+5;
-    return name[vp->namelen+4];
+    printf("%s: exit\n",__FUNCTION__);
+exit:
+    if( fr1 )
+	comm_frame_free(fr1);
+    if( fr2 )
+	comm_frame_free(fr2);
+    printf("%s: returning\n",__FUNCTION__);
+    return ret_val;
 }
 
 
@@ -1505,14 +1512,12 @@ header_interval15Index(struct variable *vp,
 /*
  * Segment Endpoint 15-Minute Interval Status/Performance Group 
  */
-
 u_char *
 var_15MinIntervalEntry(struct variable * vp,
                oid * name,
                size_t * length,
                int exact, size_t * var_len, WriteMethod ** write_method)
 {
-    struct app_frame *fr1=NULL,*fr2=NULL;
     endp_int_payload *p15,*p1d;
     char *return_ptr = NULL;
     int int_num;
@@ -1523,17 +1528,11 @@ var_15MinIntervalEntry(struct variable * vp,
 	return NULL;
     }
 
-
-/*
-    DEBUGMSGOID(("mibII/shdsl", name, *length));
-    DEBUGMSG(("mibII/shdsl", "\n"));    
-*/
-
-    if ( (int_num = header_interval15Index(vp,name,length,exact,var_len,write_method,APP_ENDP_15MIN) )
+    if ( (int_num = header_intervalIndex(vp,name,length,exact,var_len,write_method,APP_ENDP_15MIN) )
 	    == MATCH_FAILED )
         goto exit;
     
-    printf("Result : if(%s) unit(%d) side(%d) pair(%d) int(%d)\n",tbl[interface_ind].name,unit_index,endp_index,wire_index,int_num);
+//    printf("Result : if(%s) unit(%d) side(%d) pair(%d) int(%d)\n",tbl[interface_ind].name,unit_index,endp_index,wire_index,int_num);
 
     //---- ack ----//
     switch (vp->magic) {
@@ -1563,32 +1562,28 @@ var_15MinIntervalEntry(struct variable * vp,
 
 
 exit:
-    if( fr1 )
-	comm_frame_free(fr1);
-    if( fr2 )
-	comm_frame_free(fr2);
+    printf("%s: exit\n",__FUNCTION__);
     comm_free(comm);
     comm = NULL;
+    printf("%s: returning, %p\n",__FUNCTION__,return_ptr);
     return return_ptr;
 }
-
 
 
 /*
  * Segment Endpoint 1-Day Interval Status/Performance Group
  */
-/*
 u_char *
-var_EndpointCurrEntry(struct variable * vp,
+var_1DayIntervalEntry(struct variable * vp,
                oid * name,
                size_t * length,
                int exact, size_t * var_len, WriteMethod ** write_method)
 {
-    struct app_frame *fr1=NULL,*fr2=NULL;
-    endp_cur_payload *p;
-    endp_int_payload *p15,*p1d;
+    endp_int_payload *p1d;
     char *return_ptr = NULL;
-    int pair,endp;
+    int int_num;
+
+printf("%s: start\n",__FUNCTION__);
 
     comm = init_comm();
     if(!comm){
@@ -1596,130 +1591,38 @@ var_EndpointCurrEntry(struct variable * vp,
 	return NULL;
     }
 
-    printf("EndpointCurStatEntry: start\n");
-
-/*
-    DEBUGMSGOID(("mibII/shdsl", name, *length));
-    DEBUGMSG(("mibII/shdsl", "\n"));    
-*//*
-
-    if ( ( pair = header_wirePairIndex(vp,name,length,exact,var_len,write_method) )
+    if ( (int_num = header_intervalIndex(vp,name,length,exact,var_len,write_method,APP_ENDP_1DAY) )
 	    == MATCH_FAILED )
         goto exit;
     
-    printf("Result : if(%s) unit(%d) side(%d) pair(%d)\n",tbl[interface_ind].name,unit_index,endp_index,pair);
-
-    p = (endp_cur_payload*)comm_alloc_request(APP_ENDP_CUR,APP_GET,
-	    tbl[interface_ind].name,&fr1);
-    if( !p ){
-	DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
-	printf("var_InventoryEntry: Cannot allocate application frame\n");
-	goto exit;
-    }
-    p->unit = unit_index;
-    p->side = endp_index-1;
-    p->loop = pair-1;
-    printf("Request if(%s) unit(%d) side(%d) loop(%d)\n",
-	tbl[interface_ind].name,p->unit,p->side,p->loop);
-
-    fr2 = comm_request(comm,fr1);
-    if( !fr2 ){
-	printf("Error requesting\n");
-	goto exit;
-    }
-    p = (endp_cur_payload*)comm_frame_payload(fr2);
-
+    printf("(Result) : if(%s) unit(%d) side(%d) pair(%d) int(%d)\n",tbl[interface_ind].name,unit_index,endp_index,wire_index,int_num);
 
     //---- ack ----//
     switch (vp->magic) {
-    case ENDP_STAT_CUR_ATN:
-	long_return = p->cur_attn;
-	return_ptr = (char*)&long_return;
-	break;
-    case ENDP_STAT_CUR_SNRMGN:
-	long_return = p->cur_snr;
-	return_ptr = (char*)&long_return;
-	break;
-    case ENDP_STAT_CUR_STATUS:
-	break;
-    case ENDP_STAT_CUR_ES:
-	long_return = (u_long)p->total.es;
+    case ENDP_1D_ES:
+	long_return = (u_long)perf_int.es;
 	return_ptr = (u_char*)&long_return;
 	break;
-    case ENDP_STAT_CUR_SES:
-	long_return = (u_long)p->total.ses;
+    case ENDP_1D_SES:
+	long_return = (u_long)perf_int.ses;
 	return_ptr = (u_char*)&long_return;
 	break;
-    case ENDP_STAT_CUR_CRC:
-	long_return = (u_long)p->total.crc;
+    case ENDP_1D_CRC:
+	long_return = (u_long)perf_int.crc;
 	return_ptr = (u_char*)&long_return;
 	break;
-    case ENDP_STAT_CUR_LOSWS:
-	long_return = (u_long)p->total.losws;
+    case ENDP_1D_LOSWS:
+	long_return = (u_long)perf_int.losws;
 	return_ptr = (u_char*)&long_return;
 	break;
-    case ENDP_STAT_CUR_UAS:
-	long_return = (u_long)p->total.uas;
+    case ENDP_1D_UAS:
+	long_return = (u_long)perf_int.uas;
 	return_ptr = (u_char*)&long_return;
-	break;
-    case ENDP_STAT_CUR_15MEL:
-	long_return = p->cur_15m_elaps;
-	return_ptr = (char*)&long_return;
-	break;
-    case ENDP_STAT_CUR_15M_ES:
-	long_return = p->cur15min.es;
-	return_ptr = (char*)&long_return;
-	break;
-    case ENDP_STAT_CUR_15M_SES:
-	long_return = p->cur15min.ses;
-	return_ptr = (char*)&long_return;
-	break;
-    case ENDP_STAT_CUR_15M_CRC:
-	long_return = p->cur15min.crc;
-	return_ptr = (char*)&long_return;
-	break;
-    case ENDP_STAT_CUR_15M_LOSWS:
-	long_return = p->cur15min.losws;
-	return_ptr = (char*)&long_return;
-	break;
-    case ENDP_STAT_CUR_15M_UAS:
-	long_return = p->cur15min.uas;
-	return_ptr = (char*)&long_return;
-	break;
-    case ENDP_STAT_CUR_1DEL:
-	long_return = p->cur_1d_elaps;
-	return_ptr = (char*)&long_return;
-	break;
-    case ENDP_STAT_CUR_1D_ES:
-	long_return = p->cur1day.es;
-	return_ptr = (char*)&long_return;
-	break;
-    case ENDP_STAT_CUR_1D_SES:
-	long_return = p->cur1day.ses;
-	return_ptr = (char*)&long_return;
-	break;
-    case ENDP_STAT_CUR_1D_CRC:
-	long_return = p->cur1day.crc;
-	return_ptr = (char*)&long_return;
-	break;
-    case ENDP_STAT_CUR_1D_LOSWS:
-	long_return = p->cur1day.losws;
-	return_ptr = (char*)&long_return;
-	break;
-    case ENDP_STAT_CUR_1D_UAS:
-	long_return = p->cur1day.uas;
-	return_ptr = (char*)&long_return;
 	break;
     default:
 	break;
     }
-
-
 exit:
-    if( fr1 )
-	comm_frame_free(fr1);
-    if( fr2 )
-	comm_frame_free(fr2);
     comm_free(comm);
     comm = NULL;
     return return_ptr;
@@ -1966,6 +1869,21 @@ header_confProfIndex(struct variable *vp,
     struct app_frame *fr1 = NULL,*fr2 = NULL;
     char *b;
     span_conf_prof_payload *p;
+    int i,l;
+
+/*
+printf("%s: Start\n",__FUNCTION__);
+
+    printf("%s: name:\n",__FUNCTION__);
+    for(i=0;i<*length;i++){
+	if( (name[i]>='a' && name[i]<='z') || (name[i]>='0' && name[i]<='9') || name[i]=='#' )
+	    printf("%c.",name[i]);
+	else
+	    printf("%d.",name[i]);
+    }
+    printf("\n");
+
+*/
 
     if( (base_compare = snmp_oid_compare(name,oid_min,vp->name,oid_min)) > 0){
 	// OID is grater than supported
@@ -1983,20 +1901,25 @@ header_confProfIndex(struct variable *vp,
         memcpy(profname,name+vp->namelen,len);
 	profname[len+1] = 0;	
 	p = (span_conf_prof_payload*)
-		comm_alloc_request(APP_SPAN_CONF,APP_GET,"",&fr1);
+		comm_alloc_request(APP_SPAN_CPROF,APP_GET,"",&fr1);
     }else{
 	if( (base_compare < 0) || (!base_compare && *length<=vp->namelen) ){
 	    memcpy((char*)name,vp->name,((int)vp->namelen)*sizeof(oid));
 	    *length = vp->namelen;
 	    profname[0] = 0;
+//printf("%s: nonexact, first request\n",__FUNCTION__);
 	}else{
 	    int len = *length - vp->namelen;
 	    len = (len>SNMP_ADMIN_LEN) ? SNMP_ADMIN_LEN : len;
-	    memcpy(profname,name+vp->namelen,len);
-	    profname[len+1] = 0;
+	    for(i=0;i<len;i++){
+		profname[i] = name[vp->namelen+i];
+	    }
+	    profname[len] = 0;
+	    *length = vp->namelen;	    
+//printf("%s: nonexact, profname=%s\n",__FUNCTION__,profname);
 	}
 	p = (span_conf_prof_payload*)
-		comm_alloc_request(APP_SPAN_CONF,APP_GET_NEXT,"",&fr1);
+		comm_alloc_request(APP_SPAN_CPROF,APP_GET_NEXT,"",&fr1);
     }	
     if( !p ){
 	DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
@@ -2006,26 +1929,53 @@ header_confProfIndex(struct variable *vp,
     }
 
     strncpy(p->ProfileName,profname,SNMP_ADMIN_LEN+1);
+//    printf("%s: Request profile:\n",__FUNCTION__);//,p->ProfileName);
     fr2 = comm_request(comm,fr1);
+//    printf("%s, request successfull\n",__FUNCTION__);
     if( !fr2 ){
-	printf("Error requesting\n");
+	printf("%s: Error requesting\n",__FUNCTION__);
 	if( fr1 )
 	    comm_frame_free(fr1);
 	return MATCH_FAILED;
     }
+    
     p = (span_conf_prof_payload*)comm_frame_payload(fr2);
+    
     _cprof = *p;
 
-    memcpy((char *)name+vp->namelen,p->ProfileName,strnlen(p->ProfileName,SNMP_ADMIN_LEN+1));
-    *length += strnlen(p->ProfileName,SNMP_ADMIN_LEN+1);
+/*
+    printf("%s: name:\n",__FUNCTION__);
+    for(i=0;i<*length;i++){
+	if( (name[i]>='a' && name[i]<='z') || (name[i]>='0' && name[i]<='9') || name[i]=='#' )
+	    printf("%c.",name[i]);
+	else 
+	    printf("%d.",name[i]);
+    }
+    printf("\n");
 
+*/    
+//    printf("%s: get profile - %s,len=%d,vp->namelen=%d\n",__FUNCTION__,p->ProfileName,strnlen(p->ProfileName,SNMP_ADMIN_LEN+1),vp->namelen);
+    l = strnlen(p->ProfileName,SNMP_ADMIN_LEN+1);
+    for(i=0;i<l;i++){
+	name[vp->namelen+i] = p->ProfileName[i];
+    }
+    *length += strnlen(p->ProfileName,SNMP_ADMIN_LEN+1);
+/*
+    printf("%s: name:\n",__FUNCTION__);
+    for(i=0;i<*length;i++){
+	if( (name[i]>='a' && name[i]<='z') || (name[i]>='0' && name[i]<='9') || name[i]=='#' )
+	    printf("%c.",name[i]);
+	else 
+	    printf("%d.",name[i]);
+    }
+    printf("\n");
+
+*/
     if( fr1 )
         comm_frame_free(fr1);
     if( fr2 )
         comm_frame_free(fr2);
-
-
-    return 1;
+    return !(MATCH_FAILED);
 }
 
 u_char *
@@ -2035,6 +1985,8 @@ var_SpanConfProfEntry(struct variable * vp,
                int exact, size_t * var_len, WriteMethod ** write_method)
 {
     char *return_ptr = NULL;
+    int i;
+
     comm = init_comm();
     if(!comm){
         DEBUGMSGTL(("mibII/hdsl2Shdsl","Error connecting to \"eocd\""));
@@ -2042,15 +1994,29 @@ var_SpanConfProfEntry(struct variable * vp,
     }
     
     if ( header_confProfIndex(vp,name,length,exact,var_len,write_method)
-	    == MATCH_FAILED )
-        return NULL;
+	    == MATCH_FAILED ){
+	printf("%s: returning NULL\n",__FUNCTION__);
+        goto exit;
+    }
+/*
+    printf("%s: name:\n",__FUNCTION__);
+    for(i=0;i<*length;i++){
+	if( (name[i]>='a' && name[i]<='z') || (name[i]>='0' && name[i]<='9') || name[i]=='#' ){
+	    printf("%c.",name[i]);
+	}else {
+	    printf("%d.",name[i]);
+	}
+    }
+    printf("\n");
+*/
 
-//    DEBUGMSGTL(("mibII/shdsl", "Result prof_ind = %d\n-------------------END------------------------\n",prof_ind));
+
     //---- ack ----//
     switch (vp->magic) {
     case CONF_WIRE_IFACE:
 	long_return= _cprof.conf.wires;
 	return_ptr = (u_char *)&long_return;
+	printf("WIRE_IFACE: ret=%d", _cprof.conf.wires);
 	break;
     case CONF_MIN_LRATE:
 	long_return = _cprof.conf.min_rate;
@@ -2115,7 +2081,7 @@ var_SpanConfProfEntry(struct variable * vp,
 exit:
     comm_free(comm);
     comm = NULL;    
-    return NULL;
+    return return_ptr;
 }
 
 

@@ -66,7 +66,10 @@ shift_rings(){
     }
 	
     if( _1d_tm.tm_year == cur_tm.tm_year ){
-        shift_num = _1d_tm.tm_yday - cur_tm.tm_yday;
+	
+	printf("shift days: sshift_val=%d\n",
+	    _1d_tm.tm_yday - cur_tm.tm_yday);
+        shift_num = cur_tm.tm_yday - _1d_tm.tm_yday;
         _1day_ints.shift(shift_num);
         if( shift_num ){
 	    _1d_tm = cur_tm;

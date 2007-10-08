@@ -228,8 +228,8 @@ read_config()
 	    	
 	    if( line_probe != 1 && line_probe != 2){
 		//eoc_log("(%s): wrong \"line_probe\" value in %s profile: %d , may be 0,1",config_file,name,line_probe);
-		syslog(LOG_ERR,"(%s): wrong \"line_probe\" value in %s profile: %d , may be 0,1",config_file,name,line_probe);
-		PDEBUG(DERR,"(%s): wrong \"line_probe\" value in %s profile: %d , may be 0,1",config_file,name,line_probe);
+		syslog(LOG_ERR,"(%s): wrong \"line_probe\" value in %s profile: %d , may be 1,2",config_file,name,line_probe);
+		PDEBUG(DERR,"(%s): wrong \"line_probe\" value in %s profile: %d , may be 1,2",config_file,name,line_probe);
 		return -1;
 	    }
 
@@ -256,6 +256,7 @@ read_config()
 	    nprof->conf.worst_marg_down = worst_marg_down;
 	    nprof->conf.cur_marg_up = cur_marg_up;
 	    nprof->conf.worst_marg_up = worst_marg_up;
+	    
 	    conf_profs.add(nprof);
 
 	}catch(ConfigException& cex){
@@ -429,8 +430,14 @@ read_config()
 		return -1;
 	    }
 	    
+	    int eocd_apply = 0;
+	    try{ eocd_apply = s[i]["apply_conf"]; }
+	    catch(...){ eocd_apply = 0; }
+	    
+	    PDEBUG(DINFO,"%s: apply config from cfg-file = %d",name,eocd_apply);
+	    
 	    // TODO: Add alarm handling
-	    if( add_master(name,cprof,NULL,repeaters,tick_per_min) ){
+	    if( add_master(name,cprof,NULL,repeaters,tick_per_min,eocd_apply) ){
 		//eoc_log("(%s): cannot add channel \"%s\" - no such device",config_file,name);
 		syslog(LOG_ERR,"(%s): cannot add channel \"%s\" - no such device",config_file,name);
 		PDEBUG(DERR,"(%s): cannot add channel \"%s\" - no such device",config_file,name);
@@ -467,13 +474,13 @@ add_slave(char *name)
 }
 
 int EOC_main::
-add_master(char *name,char *cprof, char *aprof,int reps,int tick_per_min)
+add_master(char *name,char *cprof, char *aprof,int reps,int tick_per_min,int app_cfg)
 {
     EOC_dev_terminal *dev = (EOC_dev_terminal *)init_dev(name);
     if( !dev )
 	return -1;
 	
-    EOC_config *cfg = new EOC_config(&conf_profs,&alarm_profs,cprof,aprof,reps);
+    EOC_config *cfg = new EOC_config(&conf_profs,&alarm_profs,cprof,aprof,reps,app_cfg);
     channel_elem *el = new channel_elem(dev,cfg,tick_per_min);
     el->name = name;
     el->nsize = strlen(name);
@@ -486,6 +493,7 @@ configure_channels()
 {
     channel_elem *el = (channel_elem*)channels.first();
     while( el ){
+	
 	el->eng->configure(el->name);
 	el = (channel_elem*)channels.next(el->name,el->nsize);
     }
@@ -514,28 +522,23 @@ app_listen(int seconds)
     time(&start);
     cur = start;
 
-//    while( (size = app_srv.recv(conn,buff) ) ){
     while( time(&cur) >0 && time(&cur)-start < seconds ){
 	int to_wait = seconds - (time(&cur)-start);
 	if( !app_srv.wait(to_wait) ){
 	    continue;
 	}
-	size = app_srv.recv(conn,buff);
-	if( size<=0 ){
-	    continue;
-	}
+	while( (size = app_srv.recv(conn,buff)) ){ 
+	    app_frame fr(buff,size);
+	    if( !fr.frame_ptr() ){
+		delete buff;
+		continue; 
+	    }
 
-	app_frame fr(buff,size);
-	if( !fr.frame_ptr() ){
-	    delete buff;
-	    continue; 
+	    if( ret = app_request(&fr) ){
+		continue;
+	    }
+    	    ret = app_srv.send(conn,fr.frame_ptr(),fr.frame_size());
 	}
-
-	if( ret = app_request(&fr) ){
-	    continue;
-	}
-
-	ret = app_srv.send(conn,fr.frame_ptr(),fr.frame_size());
 	time(&cur);
     }
 }
@@ -633,6 +636,8 @@ app_spanconf_prof(app_frame *fr)
     span_conf_prof_payload *p = (span_conf_prof_payload*)fr->payload_ptr();
     int len = strnlen(p->ProfileName,SNMP_ADMIN_LEN+1);
 
+PDEBUG(DERR,"Start");
+
     conf_profile *prof;
     switch(fr->type()){
     case APP_GET:
@@ -649,20 +654,26 @@ app_spanconf_prof(app_frame *fr)
 	p->conf = prof->conf;
 	return 0;
     case APP_GET_NEXT:
+PDEBUG(DERR,"GET_NEXT");
         if( !len ){ // requested first entry 
+PDEBUG(DERR,"First entry");
 	    prof = (conf_profile *)conf_profs.first();
 	}else{
+PDEBUG(DERR,"Next after %s",p->ProfileName);
 	    prof = (conf_profile *)conf_profs.next(p->ProfileName,len);
 	}
 	if( !prof ){
+PDEBUG(DERR,"prof = 0");
 	    fr->negative();
 	    return 0;
 	}
 	fr->response();
+PDEBUG(DERR,"Gen response");
 	p->conf = prof->conf;
+	
+	strncpy(p->ProfileName,prof->name,prof->nsize+1);
 	return 0;
     case APP_SET:
-
 /*
 	1. Узнать есть ли уже этот профиль
 	2. Если нету и не стоит пометка создать имя профиля - сброс

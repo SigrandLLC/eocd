@@ -1,7 +1,7 @@
 #ifndef EOC_DEBUG_H
 #define EOC_DEBUG_H
 
-//#define EOC_DEBUG
+#define EOC_DEBUG
 
 extern int debug_lev;
 

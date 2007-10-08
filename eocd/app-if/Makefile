@@ -1,10 +1,10 @@
 
 ifeq ($(TOPDIR),)
     TOPDIR=$(PWD)/../
-    CC=gcc
-    CXX=g++
-    AR=ar
-    RANLIB=ranlib
+#    CC=gcc
+#    CXX=g++
+#    AR=ar
+#    RANLIB=ranlib
 endif
 
 .PHONY: install lib objects apps

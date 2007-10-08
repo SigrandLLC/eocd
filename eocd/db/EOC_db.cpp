@@ -132,6 +132,16 @@ unit_quan(){
 }
 
 int EOC_db::
+reg_quan(){
+    int i,cnt=0;
+    for(i=2;i<MAX_UNITS ;i++){
+	if( units_discov[i] )
+    	    cnt++;
+    }
+    return cnt;
+}
+
+int EOC_db::
 link_established()
 {
     if( units_discov[1] ){
@@ -463,13 +473,31 @@ _appreq_endp15min(EOC_db *db,app_frame *fr)
     }
     PDEBUG(DINFO,"DB Endp 15min: form response");
 
-    if( loop->m15_counters(p->int_num,elem) ){
-	fr->negative();
+    switch(fr->type()){
+    case APP_GET:
+	if( loop->m15_counters(p->int_num,elem) ){
+	    fr->negative();
+	    return 0;
+	}
+	p->cntrs = elem.cntrs;
+	fr->response();
+	return 0;
+    case APP_GET_NEXT:
+    {
+	int int_num = p->int_num;
+	if( loop->m15_nx_counters(int_num,elem) ){
+	    fr->negative();
+    	    return 0;
+	}
+	p->cntrs = elem.cntrs;
+	p->int_num = int_num;
+	fr->response();
+        return 0;
+    }
+    default:
+        fr->negative();
 	return 0;
     }
-    p->cntrs = elem.cntrs;
-    fr->response();
-    return 0;
 }
 
 int EOC_db::
@@ -491,13 +519,31 @@ _appreq_endp1day(EOC_db *db,app_frame *fr)
     }
     PDEBUG(DINFO,"DB Endp 1 day: form response");
 
-    if( loop->d1_counters(p->int_num,elem) ){
-	fr->negative();
+    switch(fr->type()){
+    case APP_GET:
+	if( loop->d1_counters(p->int_num,elem) ){
+	    fr->negative();
+	    return 0;
+	}
+	p->cntrs = elem.cntrs;
+	fr->response();
+	return 0;
+    case APP_GET_NEXT:
+    {
+	int int_num = p->int_num;
+	if( loop->d1_nx_counters(int_num,elem) ){
+	    fr->negative();
+    	    return 0;
+	}
+	p->cntrs = elem.cntrs;
+	p->int_num = int_num;
+	fr->response();
+        return 0;
+    }
+    default:
+        fr->negative();
 	return 0;
     }
-    p->cntrs = elem.cntrs;
-    fr->response();
-    return 0;
 }
 
 int EOC_db::

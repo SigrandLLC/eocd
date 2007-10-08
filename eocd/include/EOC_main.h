@@ -35,7 +35,7 @@ public:
 	config_file[MAX_FNAME-1] = '\0';
 	if( read_config() )
 	    return;
-//	configure_channels();
+	configure_channels();
 	valid = 1;
     }
     ~EOC_main(){
@@ -48,7 +48,7 @@ public:
     // Add (initialise) or change slave channel with name "ch_name"
     int add_slave(char *ch_name);
     // Add (initialise) or change master channel with name "ch_name"
-    int add_master(char *ch_name, char *conf,char *alarm,int reps,int tick);
+    int add_master(char *ch_name, char *conf,char *alarm,int reps,int tick,int app_cfg);
     //
     int configure_channels();    
     // process channels

@@ -54,6 +54,7 @@ public:
     int clear();
     int app_request(app_frame *fr);
     int unit_quan();
+    int reg_quan();
     int link_established();
 
     int check_exist(unit u);

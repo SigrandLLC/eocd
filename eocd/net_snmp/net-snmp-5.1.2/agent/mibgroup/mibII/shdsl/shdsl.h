@@ -20,7 +20,7 @@ extern FindVarMethod var_EndpointConfEntry;
 extern FindVarMethod var_EndpointCurrEntry;
 
 extern FindVarMethod var_15MinIntervalEntry;
-//extern FindVarMethod var_1DayIntervalEntry;
+extern FindVarMethod var_1DayIntervalEntry;
 /*
 extern FindVarMethod var_EndpointMaintEntry;
 extern FindVarMethod var_UnitMaintEntry;

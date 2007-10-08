@@ -210,7 +210,7 @@ print_endp_15m(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
 
 
 int
-print_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
+print_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int &inum)
 {
     char *b;
     int size;
@@ -218,7 +218,7 @@ print_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
     endp_1day_payload *p,*p1;
     app_frame *fr, *fr1;
     
-    fr = new app_frame(APP_ENDP_1DAY,APP_GET,app_frame::REQUEST,1,chan);
+    fr = new app_frame(APP_ENDP_1DAY,APP_GET_NEXT,app_frame::REQUEST,1,chan);
     p = (endp_1day_payload*)fr->payload_ptr();
     p->unit = u;
     p->side = s;
@@ -246,6 +246,7 @@ print_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
 	    delete fr1;
 	    return -1;
 	}
+	inum = p1->int_num;
 	print_int_payload(p1,"1day");
 	delete fr1;
     }
@@ -253,17 +254,52 @@ print_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
     return 0;
 }
 
-
-
 int
 main()
 {
     char *b,ch,a;
     int i;
     char *iface = "dsl0";
-    app_comm_cli cli("/home/artpol/socket");
+    app_comm_cli cli("/var/eocd/eocd-socket");
     printf("Connect ok\n");
+    
+/*
+    // profile test
+    span_conf_prof_payload *p,*p1;
+    app_frame *fr, *fr1;
+    char curprof[33];
+    
+    curprof[0] = 0;
+    while(1){
+	fr = new app_frame(APP_SPAN_CPROF,APP_GET_NEXT,app_frame::REQUEST,1,"");
+	if( !fr->frame_ptr() ){
+	    printf("Error forming request frame\n");
+	    return 0;
+	}
+	p = (span_conf_prof_payload*)fr->payload_ptr();
+	strcpy(p->ProfileName,curprof);
+	cli.send(fr->frame_ptr(),fr->frame_size());
+	cli.wait();
+	int size = cli.recv(b);
+	fr1 = new app_frame(b,size);
+	if( !fr1->frame_ptr() ){
+	    printf("error requesting\n");
+	    return -1;
+	}else if(fr1->is_negative() ){
+	    printf("-------- End -------------\n");
+	    break;
+	}
+	p1 = (span_conf_prof_payload*)fr1->payload_ptr();
+	printf("%s: annex=%d,min_rate=%d,mxrate=%d,lprobe=%d,wires=%d\n",
+		p1->ProfileName,p1->conf.annex,p1->conf.min_rate,
+		p1->conf.max_rate,p1->conf.line_probe,
+		p1->conf.wires);
+	curprof[0] = 0;
+	strcpy(curprof,p1->ProfileName);
+    }
 
+    
+/*
 printf("-----------------------------------------------\n");
     print_endp_cur(cli,iface,stu_c,net_side,0);
 printf("-----------------------------------------------\n");
@@ -273,11 +309,12 @@ printf("-----------------------------------------------\n");
 printf("-----------------------------------------------\n");
     print_endp_cur(cli,iface,sru1,cust_side,0);
 printf("-----------------------------------------------\n");    
-/*
+*/
     i =0;
-    while( !print_endp_15m(cli,"dsl2",stu_c,net_side,0,i) ){
+    while( !print_endp_1d(cli,"dsl2",stu_c,cust_side,0,i) ){
 	i++;
     }
+/*
 printf("-----------------------------------------------\n");
     i =0;
     while( !print_endp_15m(cli,"dsl2",stu_r,cust_side,0,i) ){
