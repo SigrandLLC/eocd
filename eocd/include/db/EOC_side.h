@@ -33,6 +33,21 @@ public:
 	}
 	return loops[l];
     }
+	inline void link_up(){
+		for(int i=0;i<loop_num;i++)
+			if(loops[i])
+				loops[i]->link_up();
+	}
+	inline void link_down(){
+		PDEBUG(DERR,"side func");
+		for(int i=0;i<loop_num;i++){
+			if(loops[i]){
+				PDEBUG(DERR,"try down loop#%d",i);
+				loops[i]->link_down();
+				PDEBUG(DERR,"try down loop#%d - success",i);
+			}
+		}
+	}
     
 };
 

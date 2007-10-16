@@ -20,11 +20,8 @@ comm_alloc_request(app_ids id,app_types type,char *chname,app_frame **fr)
 {
     *fr = new app_frame(id,type,app_frame::REQUEST,1,chname);
     if( !(*fr)->frame_ptr() ){
-	printf("Error while creating frame!\n");
 	return NULL;
     }
-    printf("Ok creating frame, ptr=%p\n",(*fr)->frame_ptr());
-    
     return (*fr)->payload_ptr();
 }
 
@@ -32,13 +29,30 @@ app_frame *
 comm_request(app_comm_cli *comm,app_frame *fr)
 {
     char *b;
-    comm->send(fr->frame_ptr(),fr->frame_size());
-    comm->wait();
-    int size = comm->recv(b);
-    app_frame *fr1 = new app_frame(b,size);
-    if( !fr1->frame_ptr() || fr1->is_negative() ){
-	delete fr1;
-	return NULL;
+    app_frame *fr1 = NULL;
+    int i = 0;
+    
+    while(i<3){
+	comm->send(fr->frame_ptr(),fr->frame_size());
+	comm->wait();
+	int size = comm->recv(b);
+	if( size <=0 ){
+	    i++;
+	    continue;
+	}
+	    
+	fr1 = new app_frame(b,size);
+	if( !fr1->frame_ptr() ){
+	    delete fr1;
+	    fr1 = NULL;
+	    i++;
+	    continue;
+        }
+	if( fr1->is_negative() ){
+	    delete fr1;
+	    return NULL;
+	}
+	break;
     }
     return fr1;
 }

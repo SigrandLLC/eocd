@@ -48,6 +48,10 @@ public:
 	snprintf(sname,len,"%s/%s",sock_path,sock_name);
 	error_init = 0;
     }
+    ~app_comm(){
+//	printf("Call destructor\n");
+	free(sname);
+    }
     int wait(int sec = 4);
     int _send(int fd,char *buf,size_t size);
     ssize_t _recv(int fd,char *&buf);

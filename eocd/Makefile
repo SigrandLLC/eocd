@@ -21,14 +21,14 @@ endif
 TARGS :=generic engine devs utils local db app-if
 OBJECTS := build/*.o 
 
-ifneq ($(VIRT),1)
+#ifneq ($(VIRT),1)
 CC=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-gcc
 CXX=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-g++
 AR=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-ar
 RANLIB=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-ranlib
-else
-RANLIB=ranlib
-endif
+#else
+#RANLIB=ranlib
+#endif
 
 export CXX AR RANLIB CC TOPDIR INCLUDES CPPFLAGS
 
@@ -40,6 +40,11 @@ all: $(TARGS)
 all-mips: $(TARGS) 
 #	$(CXX) -g $(INCLUDES) -o result main.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
 	$(CXX) -g $(INCLUDES) -o eocd eocd.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
+
+fake-mips: $(TARGS) 
+#	$(CXX) -g $(INCLUDES) -o result main.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
+	$(CXX) -g $(INCLUDES) -o eocd-fake eocd-fake.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
+
 
 local: EOC_main.o
 	cp $^ build/    
@@ -66,7 +71,7 @@ clean:
 	make -C db clean
 	make -C app-if clean
 	rm -f *.o
-	rm -f result eocd
+	rm -f result eocd eocd-fake
 	rm -f build/*.o
 
 

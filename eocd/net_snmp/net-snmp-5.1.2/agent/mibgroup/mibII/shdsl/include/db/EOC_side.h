@@ -33,6 +33,16 @@ public:
 	}
 	return loops[l];
     }
+	inline void link_up(){
+		for(int i=0;i<MAX_LOOPS;i++)
+			if(loops[i])
+				loops[i]->link_up();
+	}
+	inline void link_down(){
+		for(int i=0;i<MAX_LOOPS;i++)
+			if(loops[i])
+				loops[i]->link_down();
+	}
     
 };
 

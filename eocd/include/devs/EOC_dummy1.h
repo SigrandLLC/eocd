@@ -2,6 +2,8 @@
 #define EOC_DUMMY_1_H
 #include<string.h>
 #include<stdio.h>
+#include<sys/time.h>
+#include<time.h>
 
 #include <devs/EOC_dev_terminal.h>
 #include <generic/EOC_msg.h>
@@ -52,8 +54,8 @@ protected:
     char name[256];
     dummy_channel *snd,*rcv;
     int valid;
+    time_t start_ts, last_ts;
     side_perf perf;
-    int perf_changed;
 public:
     EOC_dummy1(char *name,dummy_channel *snd,dummy_channel *rcv);
     ~EOC_dummy1();    
@@ -69,8 +71,7 @@ public:
 
 
     int setup_current_stat(side_perf p){
-	perf = p;
-	perf_changed = 1;
+	return 0;
     }
 
     side_perf get_current_stat(){

@@ -36,16 +36,23 @@ comm_request(app_comm_cli *comm,app_frame *fr)
 	comm->send(fr->frame_ptr(),fr->frame_size());
 	comm->wait();
 	int size = comm->recv(b);
+	if( size <=0 ){
+	    i++;
+	    continue;
+	}
+	    
 	fr1 = new app_frame(b,size);
 	if( !fr1->frame_ptr() ){
 	    delete fr1;
 	    fr1 = NULL;
+	    i++;
+	    continue;
         }
 	if( fr1->is_negative() ){
 	    delete fr1;
 	    return NULL;
 	}
-	i++;
+	break;
     }
     return fr1;
 }

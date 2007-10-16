@@ -171,10 +171,15 @@ app_request(app_frame *fr){
     switch( fr->id() ){
     case APP_SPAN_PARAMS:
     {
+printf("1:\n");
 	span_params_payload *p = (span_params_payload *)fr->payload_ptr();
+printf("2:\n");
 	p->units = poll->unit_quan();
+printf("3:\n");
 	p->loops = rtr->loops();
+printf("4:\n");
 	p->link_establ = poll->link_established();
+printf("5:\n");
 	return 0;
     }
     default:

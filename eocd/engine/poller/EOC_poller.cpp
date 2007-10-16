@@ -107,7 +107,10 @@ void EOC_poller::
 link_state(EOC_dev::Linkstate link)
 {
     sch->link_state(link);
-    if( link == EOC_dev::OFFLINE ){
-	db->link_down();
-    }
+	switch(link){
+	case EOC_dev::OFFLINE:
+		db->link_down();
+    case EOC_dev::ONLINE:
+		db->link_up();
+	}
 }

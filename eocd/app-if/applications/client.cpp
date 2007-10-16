@@ -234,8 +234,8 @@ print_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int &inum)
     } 
     if( fr1->is_negative() ){ // no such unit or no net_side
 	delete fr1;
-	printf("Requested component: unit(%s),side(%s),loop(%d),int(%d) NOT FOUND\n",
-		unit2string(u),side2string(s),loop,inum);
+//	printf("Requested component: unit(%s),side(%s),loop(%d),int(%d) NOT FOUND\n",
+//		unit2string(u),side2string(s),loop,inum);
 	delete fr;
 	return -1;
     } else {
@@ -248,6 +248,7 @@ print_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int &inum)
 	}
 	inum = p1->int_num;
 	print_int_payload(p1,"1day");
+	printf("MONISECS=%d\n",p1->cntrs.mon_sec);
 	delete fr1;
     }
     delete fr;
@@ -314,6 +315,12 @@ printf("-----------------------------------------------\n");
     while( !print_endp_1d(cli,"dsl2",stu_c,cust_side,0,i) ){
 	i++;
     }
+    i =0;
+    while( !print_endp_1d(cli,"dsl2",stu_r,net_side,0,i) ){
+	i++;
+    }
+
+
 /*
 printf("-----------------------------------------------\n");
     i =0;

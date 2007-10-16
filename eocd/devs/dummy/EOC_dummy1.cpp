@@ -2,12 +2,14 @@
 #include <generic/EOC_types.h>
 #include <devs/EOC_dummy1.h>
 
+
 EOC_dummy1::EOC_dummy1(char *_name, dummy_channel *send,dummy_channel *recv)
 {
     snd = send;
     rcv = recv;
     memset(&perf,0,sizeof(perf));
-    perf_changed = 0;
+    time(&start_ts);
+    time(&last_ts);
     strcpy(name,_name);
 }
 
@@ -44,10 +46,25 @@ EOC_dummy1::link_state(){ return ONLINE; }
 int EOC_dummy1:: 
 statistics(int loop, side_perf &p)
 {
-    p = perf;
-    if( perf_changed ){
-	perf_changed = 0;
-	return 1;
+    int ret = 0;
+    time_t cur;
+    time(&cur);
+    time_t last_min_ts = (last_ts/60)*60;
+    if( cur-last_min_ts > 60 ){
+	int addit = (cur - last_ts)/60 + (((cur - last_ts)%60)? 1:0);
+        perf.es += addit*10;
+	perf.ses += addit*40;
+        perf.crc += addit*70;
+	ret = 1;
     }
-    return 0;
+
+    time_t last_15sec_ts = (last_ts/15)*15;
+    if( cur - last_15sec_ts > 15 ){
+	int addit = (cur - last_ts)/15 + (((cur - last_ts)%15)? 1:0);
+	perf.losws += addit*10;
+	ret = 1;
+    }
+    p = perf;
+    last_ts = cur;
+    return ret;
 }

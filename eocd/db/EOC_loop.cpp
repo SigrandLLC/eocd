@@ -57,27 +57,30 @@ shift_rings(){
     int shift_num = modulo_diff(_15m_int,_15m_int_cur,EOC_15MIN_INTS,"15m");
     _15min_ints.shift(shift_num);
     if( shift_num ){
-	time(&_15m);
-	get_localtime(&_15m,_15m_tm);
-	_15m_tm.tm_min = (((int)_15m_tm.tm_min)/EOC_15MIN_INT_LEN)*EOC_15MIN_INT_LEN;
-	_15m_tm.tm_sec = 0;    
-        _15min_ints[0]->tstamp = mktime(&_15m_tm);
+		time(&_15m);
+		get_localtime(&_15m,_15m_tm);
+		_15m_tm.tm_min = (((int)_15m_tm.tm_min)/EOC_15MIN_INT_LEN)*EOC_15MIN_INT_LEN;
+		_15m_tm.tm_sec = 0;    
+		_15min_ints[0]->tstamp = mktime(&_15m_tm);
 	
     }
 	
     if( _1d_tm.tm_year == cur_tm.tm_year ){
 	
-	printf("shift days: sshift_val=%d\n",
-	    _1d_tm.tm_yday - cur_tm.tm_yday);
+		printf("shift days: sshift_val=%d\n",
+			   _1d_tm.tm_yday - cur_tm.tm_yday);
         shift_num = cur_tm.tm_yday - _1d_tm.tm_yday;
+
+		_1d_tm = cur_tm;
+		_1d_tm.tm_sec = 0;
+		_1d_tm.tm_min = 0;
+		_1d_tm.tm_hour = 0;
+		time_t cur_ts = mktime(&_1d_tm);
+		// Monitor Seconds counter update
         _1day_ints.shift(shift_num);
         if( shift_num ){
-	    _1d_tm = cur_tm;
-	    _1d_tm.tm_sec = 0;
-	    _1d_tm.tm_min = 0;
-	    _1d_tm.tm_hour = 0;
-	    _1day_ints[0]->tstamp = mktime(&_1d_tm);
-	}		
+			_1day_ints[0]->tstamp = cur_ts;
+		}		
     }else{
         // TODO : count difference to different years 
     }
@@ -89,6 +92,7 @@ EOC_loop() : _15min_ints(EOC_15MIN_INTS) , _1day_ints(EOC_1DAY_INTS) {
     struct tm _15mtm,_1dtm;
     time_t t;
     memset(&state,0,sizeof(state));
+	first_msg = 0;
     memset(&last_msg,0,sizeof(last_msg));	
     time(&t);
     if( get_localtime(&t,_15mtm)){
@@ -109,6 +113,11 @@ EOC_loop() : _15min_ints(EOC_15MIN_INTS) , _1day_ints(EOC_1DAY_INTS) {
 
     _15min_ints[0]->tstamp = mktime(&_15mtm);
     _1day_ints[0]->tstamp = mktime(&_1dtm);
+
+	// Link UP/DOWN status
+	lstate = 0;
+	time(&moni_ts);
+
 }
 
 
@@ -118,12 +127,22 @@ short_status(s8 snr_margin)
     shift_rings();	
     // change online data
     state.snr_marg = snr_margin;
+	if( lstate ){
+		time_t cur;
+		time(&cur);
+		_1day_ints[0]->cntrs.mon_sec += cur - moni_ts;
+	}
 }
 
 int EOC_loop::
 full_status(side_perf *info)
 {
     counters_t cntrs;
+	if( !first_msg ){
+		first_msg = 1;
+		memcpy(&last_msg,info,sizeof(side_perf));
+		return 0;
+	}
     status_diff(info,cntrs);
     PDEBUG(DINFO,"FULL STATUS: info->es=%u,cntrs.es=%u, last.es=%u\n",info->es,cntrs.es,last_msg.es);
     shift_rings();	
@@ -135,4 +154,9 @@ full_status(side_perf *info)
     state.elem.addit(cntrs);
     _15min_ints[0]->addit(cntrs);
     _1day_ints[0]->addit(cntrs);
+	if( lstate ){
+		time_t cur;
+		time(&cur);
+		_1day_ints[0]->cntrs.mon_sec += cur - moni_ts;
+	}
 }

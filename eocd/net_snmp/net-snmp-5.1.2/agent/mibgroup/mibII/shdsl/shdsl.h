@@ -7,14 +7,14 @@
 
 //---- header functions ----//
 static int header_dslIfIndex(struct variable*, oid *,size_t *,
-				int,size_t*,WriteMethod**,int *);
+							 int,size_t*,WriteMethod**,int *);
 
 /*---- callbacks ----*/
 extern FindVarMethod var_SpanConfEntry;
 extern FindVarMethod var_SpanStatusEntry;
 extern FindVarMethod var_InventoryEntry;
 /*
-extern FindVarMethod var_EndpointConfEntry;
+  extern FindVarMethod var_EndpointConfEntry;
 */
 
 extern FindVarMethod var_EndpointCurrEntry;
@@ -22,15 +22,15 @@ extern FindVarMethod var_EndpointCurrEntry;
 extern FindVarMethod var_15MinIntervalEntry;
 extern FindVarMethod var_1DayIntervalEntry;
 /*
-extern FindVarMethod var_EndpointMaintEntry;
-extern FindVarMethod var_UnitMaintEntry;
-// profiles
-*/
+  extern FindVarMethod var_EndpointMaintEntry;
+  extern FindVarMethod var_UnitMaintEntry;
+  // profiles
+  */
 extern FindVarMethod var_SpanConfProfEntry;
 
 /*
-extern FindVarMethod var_EndpointAlermEntry;
-extern FindVarMethod var_NotificationEntry;
+  extern FindVarMethod var_EndpointAlermEntry;
+  extern FindVarMethod var_NotificationEntry;
 */
 
 /*---- Magic values ----*/
@@ -65,7 +65,7 @@ extern FindVarMethod var_NotificationEntry;
  * - table indexed by {ifIndex,hdsl2ShdslInvIndex}
  * - info retreive via EOC from units in SHDSL line
  * - each entry represents inventory information for a single unit in 
-     SHDSL line
+ SHDSL line
  * - information is NOT persistent
  */
 #define INV_INDEX	0
@@ -86,8 +86,8 @@ extern FindVarMethod var_NotificationEntry;
  * var_EndpointConfEntry Magic numbers 
  * Represents hdsl2ShdslEndpointConfTable:
  * - table indexed by 
- 	{ifIndex, hdsl2ShdslInvIndex,hdsl2ShdslEndpointSide,
-	 hdsl2ShdslEndpointWirePair}
+ {ifIndex, hdsl2ShdslInvIndex,hdsl2ShdslEndpointSide,
+ hdsl2ShdslEndpointWirePair}
  * - Configuration of alarm profile is setted by user
  * - represents a single segment endpoint in an HDSL2/SHDSL line
  * - information is persistent
@@ -101,10 +101,10 @@ extern FindVarMethod var_NotificationEntry;
  * var_EndpointCurrEntry Magic numbers 
  * Represents hdsl2ShdslEndpointCurrTable:
  * - table indexed by 
- 	{ifIndex, hdsl2ShdslInvIndex,hdsl2ShdslEndpointSide,
-	 hdsl2ShdslEndpointWirePair}
+ {ifIndex, hdsl2ShdslInvIndex,hdsl2ShdslEndpointSide,
+ hdsl2ShdslEndpointWirePair}
  * - contains current status and performance information
-     for segment endpoints in HDSL2/SHDSL lines
+ for segment endpoints in HDSL2/SHDSL lines
  * - information is persistent
  */
  
@@ -134,16 +134,16 @@ extern FindVarMethod var_NotificationEntry;
  * var_Endpoint15minEntry Magic numbers 
  * Represents hdsl2Shdsl15MinIntervalTable:
  * - table indexed by 
- 	{ifIndex, hdsl2ShdslInvIndex,hdsl2ShdslEndpointSide,
-	 hdsl2ShdslEndpointWirePair,hdsl2Shdsl15MinIntervalNumber}
+ {ifIndex, hdsl2ShdslInvIndex,hdsl2ShdslEndpointSide,
+ hdsl2ShdslEndpointWirePair,hdsl2Shdsl15MinIntervalNumber}
  * - contains history of performance information for segment endpoints in 
-    HDSL2/SHDSL lines
+ HDSL2/SHDSL lines
  * - information is NOT persistent
  */
 
 
-#define ENDP_15M_INT	1
-#define ENDP_15M_ES	2
+#define ENDP_15M_INT 1
+#define ENDP_15M_ES 2
 #define ENDP_15M_SES	3
 #define ENDP_15M_CRC	4
 #define ENDP_15M_LOSWS	5
@@ -154,19 +154,20 @@ extern FindVarMethod var_NotificationEntry;
  * var_Endpoint1dayEntry Magic numbers 
  * Represents hdsl2Shdsl1DayIntervalTable:
  * - table indexed by 
- 	{ifIndex, hdsl2ShdslInvIndex,hdsl2ShdslEndpointSide,
-	 hdsl2ShdslEndpointWirePair,hdsl2Shdsl1DayIntervalNumber}
+ {ifIndex, hdsl2ShdslInvIndex,hdsl2ShdslEndpointSide,
+ hdsl2ShdslEndpointWirePair,hdsl2Shdsl1DayIntervalNumber}
  * - contains current status and performance information
-     for segment endpoints in HDSL2/SHDSL lines
+ for segment endpoints in HDSL2/SHDSL lines
  * - information is persistent
  */
 
 #define ENDP_1D_INT	1
-#define ENDP_1D_ES	2
-#define ENDP_1D_SES	3
-#define ENDP_1D_CRC	4
-#define ENDP_1D_LOSWS	5
-#define ENDP_1D_UAS	6
+#define ENDP_1D_MONSECS 2
+#define ENDP_1D_ES	3
+#define ENDP_1D_SES	4
+#define ENDP_1D_CRC	5
+#define ENDP_1D_LOSWS	6
+#define ENDP_1D_UAS	7
 
 
 

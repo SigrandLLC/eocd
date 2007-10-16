@@ -24,6 +24,7 @@ typedef struct{
  
 
 typedef struct{
+	u32 mon_sec;
     u32 es;
     u32 ses;
     u32 crc;

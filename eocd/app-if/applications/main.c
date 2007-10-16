@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <string.h>
-
+#include <time.h>
+#include <sys/time.h>
 #include "../comm.h"
-
+/*
 int 
 print_int_payload(endp_int_payload *p,char *display)
 {
@@ -107,12 +108,181 @@ chann_names(shdsl_channel_elem *tbl,int *min_i)
     }while( tbl_size<SHDSL_MAX_CHANNELS && !p->last_msg );
     return tbl_size;
 }
+*/
+
+struct app_comm *comm;
+
+#define CACHE_INT 1
+#define SHDSL_MAX_CHANNELS 30
+typedef struct{
+    struct timeval tv;
+    char name[SPAN_NAME_LEN];
+    int index;
+    int units;
+    int wires;
+} shdsl_channel_elem;
+
+typedef struct{
+    struct timeval tv;
+    span_conf_payload p;
+} shdsl_spanconf_elem;
+
+typedef struct{
+    struct timeval tv;
+    span_status_payload p;
+} shdsl_spanstatus_elem;
+
+// -------- Served channel names cache -------------//
+shdsl_channel_elem tbl[SHDSL_MAX_CHANNELS];
+int tbl_size;
+struct timeval tbl_tv = {0,0};
+int min_i = 0;
+
+char interface_ind;
+
+int
+ifname_to_index(char *Name, int Len)
+{
+    short ifIndex = 0;
+    char ifName[20];
+    char found = 0;
+    if( !strcmp(Name,"dsl2") )
+	return 10;
+    return -1;
+}
+/*
+int
+Interface_Index_By_Name(char *name_1,int s)
+{
+    if( !strcmp(name_1,"eth0") ){
+	return 1;
+    }	
+    if( !strcmp(name_1,"dsl1") ){
+	return 2;
+    }
+
+    if( !strcmp(name_1,"dsl2") ){
+	return 3;
+    }	
+    if( !strcmp(name_1,"dsl3") ){
+	return 4;
+    }
+    if( !strcmp(name_1,"dsl4") ){
+	return 5;
+    }	
+    if( !strcmp(name_1,"dsl5") ){
+	return 6;
+    }
+    if( !strcmp(name_1,"dsl6") ){
+	return 7;
+    }	
+    if( !strcmp(name_1,"dsl7") ){
+	return 8;
+    }
+    if( !strcmp(name_1,"dsl8") ){
+	return 9;
+    }	
+    if( !strcmp(name_1,"dsl9") ){
+	return 10;
+    }
+
+    return -1;
+}
+*/
+
+
+int
+chann_names()
+{
+    struct app_frame *fr1,*fr2;
+    span_name_payload *p;
+    int i=0 ;
+    char ifname[SPAN_NAME_LEN];
+    int index,len;
+    // caching
+    struct timeval tvcur;
+    char tverr = 0;
+
+    if( gettimeofday(&tvcur,NULL) )
+	tverr = 1;
+	
+//    if( ((tvcur.tv_sec - tbl_tv.tv_sec) > CACHE_INT) || tverr ){
+
+        ifname[0] = 0;
+	tbl_size = 0;
+
+	p = (span_name_payload*)
+	    comm_alloc_request(APP_SPAN_NAME,APP_GET,ifname,&fr1);
+
+	if( !p ){
+	
+    	    return -1;
+	}
+    
+        do{
+	    set_chan_name(fr1,ifname);
+	    fr2 = comm_request(comm,fr1);
+	    if( !fr2 ){
+		printf("mibII/hdsl2Shdsl Reqest failed\n");
+		comm_frame_free(fr1);
+		return -1;
+	    }
+	    p = (span_name_payload*)comm_frame_payload(fr2);
+	    for(i=0;i<p->filled;i++){
+		len = strnlen(p->name[i],SPAN_NAME_LEN);
+		if( (index = ifname_to_index(p->name[i],len)) < 0 )
+		    continue;
+		tbl[tbl_size].name[0];
+		strncpy(tbl[tbl_size].name,p->name[i],len);
+//	    	printf("Get sys insex for dev %s: %d\n",p->name[i],index);
+		tbl[tbl_size].index = index;
+		if( (tbl_size==0) || tbl[min_i].index > tbl[i].index  ){
+		    min_i = i;
+		}
+		tbl[tbl_size].units = -1;
+		tbl[tbl_size].wires = -1;
+		tbl[tbl_size].tv.tv_sec = 0;
+		tbl_size++;
+	    }
+
+	    if( !p->last_msg && p->filled){
+		strncpy(ifname,p->name[p->filled-1],SPAN_NAME_LEN);
+	    }
+	    comm_frame_free(fr2);
+	}while( tbl_size<SHDSL_MAX_CHANNELS && !p->last_msg );
+	comm_frame_free(fr1);
+	tbl_tv = tvcur;
+//    }
+    return min_i;
+}
+
+
+
+int main()
+{
+    int i = 0,j;
+    while(1){
+	i++;
+        if( !(comm = init_comm()) ){
+	    printf("Error while connecting\n");
+	    return 0;
+	}
+	chann_names();
+	printf("Iter %d:\n",i);
+	for(j=0;j<tbl_size;j++){
+	    printf("%s ",tbl[j].name);
+	}
+	printf("\n");
+	comm_free(comm);
+    }
+    return 0;
+}
 
 
 
 //inventory_info(char 
 
-
+/*
 int main()
 {
     comm = init_comm();
