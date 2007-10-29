@@ -26,6 +26,7 @@ protected:
     hash_table channels;
     app_comm_srv app_srv;
     int valid;
+	int tick_per_min;
 public:
     EOC_main(char *cfg,char *sockpath) : conf_profs(SNMP_ADMIN_LEN), alarm_profs(SNMP_ADMIN_LEN),
 		     channels(MAX_IF_NAME_LEN), app_srv(sockpath,"eocd-socket")
@@ -43,6 +44,7 @@ public:
     int get_valid(){ return valid; }
     // Read configuration file and initialise or change channels
     int read_config();
+	int write_config();
     // Write configuration to config file (when it changes from network)
 //    int write_config();
     // Add (initialise) or change slave channel with name "ch_name"

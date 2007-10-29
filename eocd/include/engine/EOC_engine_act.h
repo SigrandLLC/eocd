@@ -17,17 +17,17 @@
 
 
 class EOC_engine_act : public EOC_engine {
-protected:
+ protected:
     EOC_poller *poll;
     EOC_config *cfg;
-public:
+ public:
     EOC_engine_act(EOC_dev_terminal *d1,EOC_config *cfg,u16 ticks_p_min=0,u16 rmax = 10);
     inline ~EOC_engine_act(){
-	if( rtr ) delete rtr;
-	if( resp ) delete resp;
-	if( poll ) delete poll;
+		if( rtr ) delete rtr;
+		if( resp ) delete resp;
+		if( poll ) delete poll;
     }
-
+	EOC_config *config(){ return cfg; }
     int setup_state_act();
     int schedule();
     int register_handlers();
@@ -36,3 +36,4 @@ public:
 };
 
 #endif
+

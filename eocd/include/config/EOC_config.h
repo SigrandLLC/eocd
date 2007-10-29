@@ -13,24 +13,47 @@ class EOC_config{
     char *aprof_name;
     u16 rep_num;
     int app_cfg;
-public:
-    EOC_config(hash_table *c,hash_table *a,char *cn,char *an,u16 rep,int _app_cfg)
-    {
-	conf_prof = c;
-	alarm_prof = a;
-	cprof_name = cn;
-	aprof_name = an;
-	rep_num = rep;
-	app_cfg = _app_cfg;
-    }
-    const char *conf_prof_name(){return cprof_name;}
-    const char *alarm_prof_name(){return cprof_name;}
+ public:
+    EOC_config(hash_table *c,hash_table *a,char *cn,char *an,u16 rep,int _app_cfg){
+		conf_prof = c;
+		alarm_prof = a;
+		cprof_name = cn;
+		aprof_name = an;
+		rep_num = rep;
+		app_cfg = _app_cfg;
+	}
+    const char *cprof(){return cprof_name;}
+    const char *aprof(){return aprof_name;}
+    int cprof(char *p){
+		free(cprof_name);
+		cprof_name = p;
+	}
+    int aprof(char *p){
+		free(aprof_name);
+		aprof_name = p;
+	}
+
     u16 repeaters(){ return rep_num; }
-    hash_table *conf_tbl(){ return conf_prof; }
-    hash_table *alarm_tbl(){ return alarm_prof; }
+    int repeaters(u16 rnum){ 
+		if( rnum <= MAX_REPEATERS ){
+			rep_num = rnum;
+			return 0;
+		}
+		return -1;
+	}
+    hash_elem *conf(){
+		return conf_prof->find(cprof_name,strlen(cprof_name));
+	}
+    hash_elem *alarm(){
+		return alarm_prof->find(aprof_name,strlen(aprof_name));
+	}
     s8 snr_tresh(){ return 0;}
     s8 loop_tresh(){ return 0; }
     int can_apply(){ return app_cfg; }
+    int can_apply(u8 _app){ 
+		app_cfg = _app;
+	}
+
 };
 
 #endif

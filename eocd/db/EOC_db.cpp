@@ -573,3 +573,26 @@ _appreq_unitmaint(EOC_db *db,app_frame *fr)
 	return 0;
 }
 
+int EOC_db::
+_appreq_cntrst(EOC_db *db,app_frame *fr)
+{
+	endp_cntrst *p = (endp_cntrst*)fr->payload_ptr();
+	EOC_side *s;
+
+	PDEBUG(DINFO,"DB: Endpoint counters reset");
+	if( !p ){
+		PDEBUG(DERR,"Error !p");    
+		return -1;
+	}
+	s = db->check_exist((unit)p->unit,(side)p->side);
+	if( !s ){
+		PDEBUG(DERR,"DB Endpoint reset counters: error check exist: unit(%d) side(%d)",
+			   p->unit,p->side);	
+		fr->negative();
+		return 0;
+	}
+	PDEBUG(DINFO,"DB Endpoint reset counters: form response");
+	fr->response();
+	s->reset_counters();
+	return 0;
+}

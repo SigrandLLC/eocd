@@ -11,17 +11,17 @@
 #define RECV_ONCE 10
 
 class EOC_engine{
-protected:
+ protected:
     dev_type type;
     EOC_router *rtr;
     EOC_responder *resp;
     u16 recv_max;
-public:
+ public:
     EOC_engine(EOC_dev_terminal *d1,dev_type t = slave,u16 rmax = RECV_ONCE);
     EOC_engine(EOC_dev *d1,EOC_dev *d2, u16 rmax = RECV_ONCE);
     inline ~EOC_engine(){
-	if( rtr ) delete rtr;
-	if( resp ) delete resp;
+		if( rtr ) delete rtr;
+		if( resp ) delete resp;
     }
     int setup_state();
     virtual int schedule();

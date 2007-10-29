@@ -1,5 +1,6 @@
 ifeq ($(TOPDIR),)
-    TOPDIR=$(PWD)/../
+TOPDIR=$(PWD)/../
+CPPFLAGS=-g -I$(TOPDIR)/include
 endif
 
 all: hash_table.o

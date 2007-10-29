@@ -109,10 +109,8 @@ configure(char *ch_name)
         PDEBUG(DERR,"(%s): Request slave configuration for master!",ch_name);
         return -1;
     case slave:
-    {
-        dev = (EOC_dev_terminal*)rtr->csdev();
+        dev = (EOC_dev_terminal*)rtr->nsdev();
         break;
-    }
     default:
         return 0;
     }

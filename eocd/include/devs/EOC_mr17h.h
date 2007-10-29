@@ -11,13 +11,14 @@ mr17h_conf_dir(char *name,char *buf,int max_size){
 }
 
 class EOC_mr17h : public EOC_dev_terminal{
-protected:
+ protected:
 
     //DEBUG
     side_perf perf;
     int perf_changed;
+	enum {OPT_BUFSZ=128,MSG_BUFSZ=1024};
     
-public:
+ public:
     EOC_mr17h(char *_ifname);
     ~EOC_mr17h();
     
@@ -32,7 +33,7 @@ public:
     int set_dev_option(char *name,char *val);
     int get_dev_option(char *name,char *&buf);
 
-    span_conf_profile_t *cur_config();
+    int cur_config(span_conf_profile_t &cfg,int &mode,int &tcpam);
     int configure(span_conf_profile_t &cfg);
     int configure();
 
@@ -41,15 +42,15 @@ public:
     int loops() { return 1;};
 
     int tresholds(s8 attn,s8 snr){
-	snr_tresh = snr;
-	attn_tresh = attn;
+		snr_tresh = snr;
+		attn_tresh = attn;
     }
     
     
     
     int statistics(int loop,side_perf &stat);
     void 	dbg_last_msg(){
-	printf("LAST MSG:\nes(%u) ses(%u) losws(%u) crc(%u)\n",last_perf.es,last_perf.ses,last_perf.losws,last_perf.crc);
+		printf("LAST MSG:\nes(%u) ses(%u) losws(%u) crc(%u)\n",last_perf.es,last_perf.ses,last_perf.losws,last_perf.crc);
     }
 
 };

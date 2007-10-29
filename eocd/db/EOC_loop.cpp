@@ -92,7 +92,7 @@ EOC_loop() : _15min_ints(EOC_15MIN_INTS) , _1day_ints(EOC_1DAY_INTS) {
     struct tm _15mtm,_1dtm;
     time_t t;
     memset(&state,0,sizeof(state));
-	first_msg = 0;
+	is_first_msg = 1;
     memset(&last_msg,0,sizeof(last_msg));	
     time(&t);
     if( get_localtime(&t,_15mtm)){
@@ -132,19 +132,25 @@ short_status(s8 snr_margin)
 		time(&cur);
 		_1day_ints[0]->cntrs.mon_sec += cur - moni_ts;
 	}
+	PDEBUG(DERR,"SHORT INFO: snr=%d\n",snr_margin);
 }
 
 int EOC_loop::
 full_status(side_perf *info)
 {
     counters_t cntrs;
-	if( !first_msg ){
-		first_msg = 1;
+	side_perf last = last_msg;
+	memset(&cntrs,0,sizeof(cntrs)); /// DEBUG - TODO: delete
+    PDEBUG(DINFO,"FULL STATUS: attn=%d SNR=%d\n",info->loop_attn,info->snr_marg);
+	if( is_first_msg ){
+		is_first_msg = 0;
 		memcpy(&last_msg,info,sizeof(side_perf));
-		return 0;
+	    state.loop_attn = info->loop_attn;
+    	state.snr_marg = info->snr_marg;
+		goto exit; // DEBUG, TODO: delete
+		//		return 0; 
 	}
     status_diff(info,cntrs);
-    PDEBUG(DINFO,"FULL STATUS: info->es=%u,cntrs.es=%u, last.es=%u\n",info->es,cntrs.es,last_msg.es);
     shift_rings();	
     // change online data
     state.loop_attn = info->loop_attn;
@@ -159,4 +165,13 @@ full_status(side_perf *info)
 		time(&cur);
 		_1day_ints[0]->cntrs.mon_sec += cur - moni_ts;
 	}
+ exit:
+    PDEBUG(DERR,"FULL STATUS:\n"
+		   "\tinfo: es(%u) ses(%u) crc(%u) losws(%u) uas(%u)\n"
+		   "\tcntrs: es(%u) ses(%u) crc(%u) losws(%u) uas(%u)\n"
+		   "\tlast: es(%u) ses(%u) crc(%u) losws(%u) uas(%u)\n",
+		   info->es,info->ses,info->crc,info->losws,info->uas,
+		   cntrs.es,cntrs.ses,cntrs.crc,cntrs.losws,cntrs.uas,
+		   last.es,last.ses,last.crc,last.losws,last.uas);
+	return 0;
 }

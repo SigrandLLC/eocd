@@ -1,0 +1,137 @@
+#act_per_minute = 20;
+
+channels = (
+    {
+	name = "dsl0";
+	master = 1;
+	repeaters = 1;
+	conf_profile = "span#1";
+    }/*,
+    {
+	name = "dsl1";
+	master = 1;
+	repeaters = 1;
+	conf_profile = "span#1";
+    },
+    {
+	name = "dsl2";
+	master = 1;
+	repeaters = 1;
+	conf_profile = "span#1";
+    },
+    {
+	name = "dsl3";
+	master = 1;
+	repeaters = 1;
+	conf_profile = "span#1";
+    },
+    {
+	name = "dsl4";
+	master = 1;
+	repeaters = 1;
+	conf_profile = "span#1";
+    },
+    {
+	name = "dsl5";
+	master = 1;
+	repeaters = 1;
+	conf_profile = "span#1";
+    },
+    {
+	name = "dsl6";
+	master = 1;
+	repeaters = 1;
+	conf_profile = "span#1";
+    },
+    {
+	name = "dsl7";
+	master = 1;
+	repeaters = 1;
+	conf_profile = "span#1";
+    },
+    {
+	name = "dsl8";
+	master = 1;
+	repeaters = 1;
+	conf_profile = "span#1";
+    },
+    {
+	name = "dsl9";
+	master = 1;
+	repeaters = 1;
+	conf_profile = "span#1";
+    },
+    {
+	name = "dsl10";
+	master = 1;
+	repeaters = 1;
+	conf_profile = "span#1";
+    },
+    {
+	name = "dsl11";
+	master = 1;
+	repeaters = 1;
+	conf_profile = "span#1";
+    },
+    {
+	name = "dsl12";
+	master = 1;
+	repeaters = 1;
+	conf_profile = "span#1";
+    },
+    {
+	name = "dsl13";
+	master = 1;
+	repeaters = 1;
+	conf_profile = "span#1";
+    },
+    {
+	name = "dsl14";
+	master = 1;
+	repeaters = 1;
+	conf_profile = "span#1";
+    }
+*/
+);
+
+
+span_profiles = (
+    {
+	name = "default";
+	wires = 1;
+	minRate = 2304;
+	maxRate = 2304;
+	annex = 1;
+	power = 1;
+	refClock = 1;
+	lineProbe = 1;
+	powerSource = 1;
+	currCondMargDown = 12;
+	worstCaseMargDown= 20;
+	currCondMargUp = 14;
+	worstCaseMargUp = 15;
+	useCurrCondMargDown = 0;
+	useWorseCaseMargDown = 1;
+	useCurrCondMargUp = 0;
+	useWorseCaseMargUp = 1;
+    },
+    {
+	name = "span#1";
+	wires = 1;
+	minRate = 5696;
+	maxRate = 5696;
+	annex = 1;
+	power = 1;
+	refClock = 1;
+	lineProbe = 1;
+	powerSource = 1;
+	currCondMargDown = 12;
+	worstCaseMargDown= 20;
+	currCondMargUp = 14;
+	worstCaseMargUp = 15;
+	useCurrCondMargDown = 0;
+	useWorseCaseMargDown = 1;
+	useCurrCondMargUp = 0;
+	useWorseCaseMargUp = 1;
+    }
+);

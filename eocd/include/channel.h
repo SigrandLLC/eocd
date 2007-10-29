@@ -14,16 +14,21 @@
 #include <engine/EOC_engine_act.h>
 
 class channel_elem : public hash_elem{
-public:
+ protected:
+ public:
     EOC_engine *eng;
     channel_elem(EOC_dev_terminal *dev){
-	eng = new EOC_engine(dev);
+		eng = new EOC_engine(dev);
     }
     channel_elem(EOC_dev_terminal *dev,EOC_config *c,u32 tick_per_min){
-	eng = new EOC_engine_act(dev,c,tick_per_min);
+		eng = new EOC_engine_act(dev,c,tick_per_min);
     }
     ~channel_elem(){
-	delete eng;
+		if( eng->get_type() == master ){
+			delete (EOC_engine_act*)eng;
+		}else{
+			delete eng;
+		}
     }
 };
 

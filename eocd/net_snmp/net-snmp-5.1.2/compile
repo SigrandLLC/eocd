@@ -1,0 +1,5 @@
+#!/bin/sh
+
+STAGING_DIR=../../../staging_dir_mipsel/
+make LDFLAGS="-L${STAGING_DIR}/usr/lib -L${STAGING_DIR}/lib -static" INSTALL_PREFIX="/root/net_snmp" all install
+

@@ -322,7 +322,7 @@ chann_names()
 			if( !fr2 ){
 				printf("mibII/hdsl2Shdsl Reqest failed\n");
 				comm_frame_free(fr1);
-				return -1;
+				return min_i;
 			}
 			p = (span_name_payload*)comm_frame_payload(fr2);
 			for(i=0;i<p->filled;i++){

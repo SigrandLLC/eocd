@@ -48,7 +48,11 @@ public:
 			}
 		}
 	}
-    
+	inline void reset_counters(){
+		for(int i=0;i<loop_num;i++){
+			loops[i]->reset_counters();
+		}
+	}    
 };
 
 #endif

@@ -27,7 +27,9 @@ class counters_elem{
 		cntrs.losws += cnt.losws;
 		cntrs.uas += cnt.uas;
     }
-    
+	void reset(){
+		memset(&cntrs,0,sizeof(cntrs));
+	}
 };
 
 typedef struct {
@@ -50,7 +52,7 @@ class EOC_loop{
     shdsl_current state;
     EOC_ring_container<counters_elem> _15min_ints;
     EOC_ring_container<counters_elem> _1day_ints;
-	u8 first_msg;
+	u8 is_first_msg;
     side_perf last_msg;
 	char lstate; // link state
 	time_t moni_ts; // last moniSecs refresh
@@ -132,11 +134,16 @@ class EOC_loop{
 		if( lstate )
 			return;
 		lstate = 1;
+		is_first_msg = 1;
 	}
 	inline void link_down(){
 		if( !lstate )
 			return;
 		lstate  = 0;
+	}
+
+	inline void reset_counters(){
+		state.elem.reset();
 	}
 
     // TODO: removethis DEBUG

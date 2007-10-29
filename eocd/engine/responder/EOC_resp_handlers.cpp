@@ -53,10 +53,10 @@ EOC_responder::_configure(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt)
     resp_configure *resp = (resp_configure *)m->payload();
     memset(resp,0,RESP_CONFIGURE_SZ);
     if( normal ){
-	if( r->csdev() && r->csdev()->tresholds(loop,snr) )
-	    resp->utc = 1;
-	if( r->nsdev() && r->nsdev()->tresholds(loop,snr) )
-	    resp->utc = 1;
+		if( r->csdev() && r->csdev()->tresholds(loop,snr) )
+			resp->utc = 1;
+		if( r->nsdev() && r->nsdev()->tresholds(loop,snr) )
+			resp->utc = 1;
     }
     resp->loop_attn = loop;
     resp->snr_marg = snr; 
@@ -71,18 +71,19 @@ collect_statistic(EOC_dev *dev,int loop_num,side_perf *perf,int *perf_change)
         int k=-1,ret;
         do{
     	    ret = dev->statistics(loop,perf[loop]);
-	    k++;
-	}while( (ret < 0) && (k<3) );
+			PDEBUG(DFULL,"Dev return nonzero statistic");
+			k++;
+		}while( (ret < 0) && (k<3) );
 	
-	if( ret<0 )
-	    return -1;
+		if( ret<0 )
+	    	return -1;
 	
-	if( !ret ){
-	    perf_change[loop] = 0;
-	    continue;
-	}
-	perf_change[loop] = 1;
-	ch_counter++;
+		if( !ret ){
+			perf_change[loop] = 0;
+			continue;
+		}
+		perf_change[loop] = 1;
+		ch_counter++;
     }
     return ch_counter;
 }
@@ -108,86 +109,86 @@ EOC_responder::_status(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt)
     memset(cs_perf,0,sizeof(cs_perf));
 
     if( cs ){
-	if( (cs_loops_ch = collect_statistic(cs,loop_num,cs_perf,cs_perf_ch)) < 0 )
-	    return -1;
+		if( (cs_loops_ch = collect_statistic(cs,loop_num,cs_perf,cs_perf_ch)) < 0 )
+			return -1;
     }
     if( ns ){
-	if( (ns_loops_ch = collect_statistic(ns,loop_num,ns_perf,ns_perf_ch)) < 0 )
-	    return -1;
+		if( (ns_loops_ch = collect_statistic(ns,loop_num,ns_perf,ns_perf_ch)) < 0 )
+			return -1;
     }
     
     int array_len = loop_num + cs_loops_ch + ns_loops_ch;
     array = new EOC_msg*[array_len];
     for(int i=0;i<array_len;i++){
-	array[i] = NULL;
+		array[i] = NULL;
     }
 
     // Generate status responses
     m->response(RESP_STATUS_SZ);
     for(loop=0;loop<loop_num;loop++){
-	array[loop] = new EOC_msg(m);
-	resp_status *resp = (resp_status *)array[loop+offs]->payload();
-	memset(resp,0,RESP_STATUS_SZ);
-	resp->ns_snr_marg = ns_perf[loop].snr_marg;
-	resp->cs_snr_marg = cs_perf[loop].snr_marg;
-	resp->loop_id = loop+1;
+		array[loop] = new EOC_msg(m);
+		resp_status *resp = (resp_status *)array[loop+offs]->payload();
+		memset(resp,0,RESP_STATUS_SZ);
+		resp->ns_snr_marg = ns_perf[loop].snr_marg;
+		resp->cs_snr_marg = cs_perf[loop].snr_marg;
+		resp->loop_id = loop+1;
     }
     offs += loop;
     // Setup
     if( cs ){
-	for(loop=0;loop<loop_num;loop++){
-	    if( cs_perf_ch[loop] ){
-		if( !(array[offs] = new EOC_msg(m,SIDE_PERF_SZ)) )
-		    goto err_exit;
-		EOC_msg *t = array[offs];
-		t->type(RESP_CSIDE_PERF);
-		offs++;
-		*(side_perf*)t->payload() = cs_perf[loop];
-		((side_perf*)t->payload())->loop_id = loop+1;	 
-	    }
-	}
+		for(loop=0;loop<loop_num;loop++){
+			if( cs_perf_ch[loop] ){
+				if( !(array[offs] = new EOC_msg(m,SIDE_PERF_SZ)) )
+					goto err_exit;
+				EOC_msg *t = array[offs];
+				t->type(RESP_CSIDE_PERF);
+				offs++;
+				*(side_perf*)t->payload() = cs_perf[loop];
+				((side_perf*)t->payload())->loop_id = loop+1;	 
+			}
+		}
     }	    
     // network side
     if( ns ){
-	for(loop=0;loop<loop_num;loop++){
-	    if( ns_perf_ch[loop] ){
-		if( !(array[offs] = new EOC_msg(m,SIDE_PERF_SZ)) )
-		    goto err_exit;
-		EOC_msg *t = array[offs];
-		t->type(RESP_NSIDE_PERF);
-		offs++;
-		*(side_perf*)t->payload() = ns_perf[loop]; 
-		((side_perf*)t->payload())->loop_id = loop+1;	 
-	    }
-	}
+		for(loop=0;loop<loop_num;loop++){
+			if( ns_perf_ch[loop] ){
+				if( !(array[offs] = new EOC_msg(m,SIDE_PERF_SZ)) )
+					goto err_exit;
+				EOC_msg *t = array[offs];
+				t->type(RESP_NSIDE_PERF);
+				offs++;
+				*(side_perf*)t->payload() = ns_perf[loop]; 
+				((side_perf*)t->payload())->loop_id = loop+1;	 
+			}
+		}
     }	    
 
 #ifdef REPEATER
     extern u8 sensor_alarm_1,sensor_alarm_2,sensor_alarm_3;
-     if( sensor_alarm_1 || sensor_alarm_2 || sensor_alarm_3 ){
-	if( !(array[offs] = new EOC_msg(m,RESP_SENSOR_STATE_SZ)) )
+	if( sensor_alarm_1 || sensor_alarm_2 || sensor_alarm_3 ){
+		if( !(array[offs] = new EOC_msg(m,RESP_SENSOR_STATE_SZ)) )
             goto err_exit;
-	EOC_msg *t = array[offs];
-	t->type(RESP_SENSOR_STATE);
-	offs++;
-	resp_sensor_state *resp = (resp_sensor_state *)t->payload();
-	resp->sensor1 = sensor_alarm_1;
-	resp->sensor2 = sensor_alarm_2;
-	resp->sensor3 = sensor_alarm_3;
+		EOC_msg *t = array[offs];
+		t->type(RESP_SENSOR_STATE);
+		offs++;
+		resp_sensor_state *resp = (resp_sensor_state *)t->payload();
+		resp->sensor1 = sensor_alarm_1;
+		resp->sensor2 = sensor_alarm_2;
+		resp->sensor3 = sensor_alarm_3;
 	 
-	sensor_alarm_1 = 0;
-	sensor_alarm_2 = 0;
-	sensor_alarm_3 = 0;
-}
+		sensor_alarm_1 = 0;
+		sensor_alarm_2 = 0;
+		sensor_alarm_3 = 0;
+	}
 #endif
 
     cnt = offs;
     ret = array;
     return 0;
-err_exit:
+ err_exit:
     for(int i=0;i<offs;i++){
-	if( array[i] )
-	    delete array[i];
+		if( array[i] )
+			delete array[i];
     }
     delete[] array;
     ret = NULL;
@@ -199,7 +200,7 @@ int
 EOC_responder::_test(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt)
 {
     if( m->type() != 15 )
-	return -1;
+		return -1;
     printf("TEST_REQUEST getted\n");
     m->response(10);
     return 0;

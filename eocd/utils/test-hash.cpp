@@ -2,16 +2,89 @@
 #include <stdlib.h>
 #include <utils/hash_table.h>
 
+int debug_lev = 1;
+
 class hash_el : public hash_elem{
 public:
     int val;
     hash_el(int v){
         val = v;
     }
+    hash_el(){
+        val = 0;
+    }
 };
 		    
+int main()
+{
+    hash_table t(32);
+    char name[200];
+	hash_el *a;
+    
+	a = new hash_el();
+	a->name = strdup("default");
+	a->nsize = strlen("default");
+	t.add(a);
+
+	a = new hash_el();
+	a->name = strdup("abcde");
+	a->nsize = strlen("abcde");
+	t.add(a);
+
+	a = new hash_el();
+	a->name = strdup("default1");
+	a->nsize = strlen("default1");
+	t.add(a);
 
 
+	a = new hash_el();
+	a->name = strdup("span#2");
+	a->nsize = strlen("span#2");
+	t.add(a);
+
+	a = new hash_el();
+	a->name = strdup("span#1");
+	a->nsize = strlen("span#1");
+	t.add(a);
+
+	a = new hash_el();
+	a->name = strdup("span#0");
+	a->nsize = strlen("span#1");
+	t.add(a);
+
+	a = new hash_el();
+	a->name = strdup("zpan#0");
+	a->nsize = strlen("zpan#1");
+	t.add(a);
+
+	
+	a = new hash_el();
+	a->name = strdup("span#3");
+	a->nsize = strlen("span#1");
+	t.add(a);
+
+	
+    printf("\n------------- Before ----------------------\n");
+    hash_el *el = (hash_el*)t.first();
+    while( el ){
+		printf("%s: %d\n",el->name,el->val);
+		el = (hash_el*)t.next(el->name,el->nsize);
+    } 
+	
+	t.sort();
+
+    printf("\n------------- After ----------------------\n");
+    el = (hash_el*)t.first();
+    while( el ){
+		printf("%s: %d\n",el->name,el->val);
+		el = (hash_el*)t.next(el->name,el->nsize);
+    } 
+	
+	return 0;
+}
+
+
+/*
 int main()
 {
     hash_table t(32);
@@ -82,14 +155,14 @@ t.add(a);
     
     printf("\n");
 
-/*
+
     for(k=0;k<500;k++){
 	i = rand() % len;
 	sprintf(name,"item%d",i);
 	tmp = ((hash_el*)t->find(name))->val;
 	printf("%s: %d\n",name,tmp);
     }
-*/    
+    
     printf("\n!!!!!!!!!!!!!!!!!!!!! Try sequential !!!!!!!!!!!!!!!!!!!!\n");
     hash_el *el = (hash_el*) t.first();
     while( el ){
@@ -137,3 +210,4 @@ t.add(a);
 }
 
 
+*/

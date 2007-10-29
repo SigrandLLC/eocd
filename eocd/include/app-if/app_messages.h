@@ -10,7 +10,7 @@
 typedef enum { APP_SPAN_NAME=0,APP_SPAN_PARAMS,APP_SPAN_CONF,APP_SPAN_STATUS,
 	    APP_INVENTORY,APP_ENDP_CONF,APP_ENDP_CUR,APP_ENDP_15MIN,
 	    APP_ENDP_1DAY,APP_ENDP_MAINT,APP_UNIT_MAINT,APP_SPAN_CPROF,
-	    APP_ENDP_APROF } app_ids;
+	    APP_ENDP_APROF,APP_ENDP_CNTRST } app_ids;
 #define app_ids_num 13
 
 typedef enum { APP_SET,APP_GET,APP_GET_NEXT } app_types;
@@ -191,5 +191,12 @@ typedef struct{
     u8 hdsl2ShdslEndpointThreshUAS:1;
 } endp_alarm_prof_changes;
 #define ENDP_ALARM_PROF_CH_SZ sizeof(endp_alarm_prof_changes)
+
+typedef struct{
+    u8 unit;
+    u8 side;
+} endp_cntrst;
+#define ENDP_CNTRST sizeof(endp_cntrst)
+
 
 #endif
