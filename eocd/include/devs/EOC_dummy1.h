@@ -48,7 +48,6 @@ public:
 };
 
 
-
 class EOC_dummy1 : public EOC_dev_terminal{
 protected:
     char name[256];

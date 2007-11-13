@@ -63,6 +63,11 @@ public:
     int app_chann_request(app_frame *fr);
     int app_spanconf_prof(app_frame *fr);
     int app_endpalarm_prof(app_frame *fr);
+	int app_add_cprof(app_frame *fr);
+	int app_del_cprof(app_frame *fr);
+	int app_add_chan(app_frame *fr);
+	int app_del_chan(app_frame *fr);
+	int app_chng_chan(app_frame *fr);
 
 };
 

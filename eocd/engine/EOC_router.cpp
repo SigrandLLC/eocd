@@ -14,24 +14,24 @@ EOC_router::EOC_router(dev_type r,EOC_dev *side)
     int i;
     // initial initialising
     if( !side ) 
-	return;
+		return;
     zero_init();
     // setup router
     switch(r){
     case master:	
         ifs[if_cnt].sunit = stu_c;
-	ifs[if_cnt].out_dir = EOC_msg::DOWNSTREAM;
-	ifs[if_cnt].in_dir = EOC_msg::UPSTREAM;
-	ifs[if_cnt].state = eoc_Offline;
-	break;
+		ifs[if_cnt].out_dir = EOC_msg::DOWNSTREAM;
+		ifs[if_cnt].in_dir = EOC_msg::UPSTREAM;
+		ifs[if_cnt].state = eoc_Offline;
+		break;
     case slave:
         ifs[if_cnt].sunit = stu_r;
-	ifs[if_cnt].in_dir = EOC_msg::DOWNSTREAM;
-	ifs[if_cnt].out_dir = EOC_msg::UPSTREAM;
-	ifs[if_cnt].state = eoc_Offline;
-	break;
+		ifs[if_cnt].in_dir = EOC_msg::DOWNSTREAM;
+		ifs[if_cnt].out_dir = EOC_msg::UPSTREAM;
+		ifs[if_cnt].state = eoc_Offline;
+		break;
     default:
-	return;
+		return;
     }
     ifs[if_cnt].sdev = side;
     if_cnt++;
@@ -48,7 +48,7 @@ EOC_router::EOC_router(dev_type r,EOC_dev *nside,EOC_dev *cside)
     // setup router
 
     if( r != repeater || !nside || !cside)
-	return;
+		return;
 
     ifs[net_side].in_dir = EOC_msg::UPSTREAM;
     ifs[net_side].out_dir = EOC_msg::DOWNSTREAM;    
@@ -69,7 +69,7 @@ EOC_router::EOC_router(dev_type r,EOC_dev *nside,EOC_dev *cside)
 EOC_router::~EOC_router(){
     int i;
     for(i=0;i<if_cnt;i++){
-	delete ifs[i].sdev;
+		delete ifs[i].sdev;
     }
 }
 
@@ -80,7 +80,7 @@ EOC_router::zero_init(){
     for(i=0;i<SHDSL_MAX_IF;i++){
         ifs[i].sdev = NULL;
         ifs[i].sunit = unknown;
-	ifs[i].in_dir = ifs[i].out_dir = EOC_msg::NOSTREAM;
+		ifs[i].in_dir = ifs[i].out_dir = EOC_msg::NOSTREAM;
     }
     if_cnt = 0;
     if_poll = 0;
@@ -98,14 +98,14 @@ EOC_router::get_route_dev(int if_ind){
 inline int
 EOC_router::out_direction(EOC_msg::Direction *dir){
     if( !if_cnt || (type==repeater) )
-	return -1;
+		return -1;
     switch(type){
     case master:
-	*dir = EOC_msg::DOWNSTREAM;
-	return 0;
+		*dir = EOC_msg::DOWNSTREAM;
+		return 0;
     case slave:
-	*dir = EOC_msg::UPSTREAM;
-	return 0;
+		*dir = EOC_msg::UPSTREAM;
+		return 0;
     }
     return -1;
 }
@@ -118,25 +118,25 @@ EOC_router::update_state()
     PDEBUG(DFULL,"ROUTER(%d): if_cnt = %d",type,if_cnt);
 
     for(int i=0;i<if_cnt;i++){
-	iface = &ifs[i];
-	EOC_dev::Linkstate link = iface->sdev->link_state();
-	// check physical link
-	if( link == EOC_dev::OFFLINE && type == repeater ){
-	    iface->state = eoc_Offline;
-	    iface->sunit = unknown;
-	    continue;
-	}
-	// check for discovery phase comlete
-	if( iface->sunit == unknown ){
-	    iface->state = eoc_Discovery;
-	    continue;
-	}
-	// online state
-	iface->state = eoc_Online;
+		iface = &ifs[i];
+		EOC_dev::Linkstate link = iface->sdev->link_state();
+		// check physical link
+		if( link == EOC_dev::OFFLINE && type == repeater ){
+			iface->state = eoc_Offline;
+			iface->sunit = unknown;
+			continue;
+		}
+		// check for discovery phase comlete
+		if( iface->sunit == unknown ){
+			iface->state = eoc_Discovery;
+			continue;
+		}
+		// online state
+		iface->state = eoc_Online;
     }
     for(int i=0;i<if_cnt;i++){
-	iface = &ifs[i];
-	PDEBUG(DFULL,"ROUTER(%d): state = %d, func = %d",type,iface->state,iface->sdev->link_state());
+		iface = &ifs[i];
+		PDEBUG(DFULL,"ROUTER(%d): state = %d, func = %d",type,iface->state,iface->sdev->link_state());
     }
 }
 
@@ -153,22 +153,22 @@ EOC_router::process_discovery(int if_ind,EOC_msg *m)
     resp = new EOC_msg(m,RESP_DISCOVERY_SZ);
 
     if( !( u >=sru1 && u <= sru10) && type == repeater )
-	return NULL;
+		return NULL;
     // setup unit address information
     switch( type ){
     case repeater:
-	ifs[if_ind].sunit = u;
+		ifs[if_ind].sunit = u;
     default:
-	// increment Hop count and send
+		// increment Hop count and send
         resp->response(RESP_DISCOVERY_SZ);
-	resp->src(ifs[if_ind].sunit);
+		resp->src(ifs[if_ind].sunit);
         r=(resp_discovery*)resp->payload();
-	// Setup some fields	
-	strcpy((char*)r->vendor_id,"Sigrand");
+		// Setup some fields	
+		strcpy((char*)r->vendor_id,"Sigrand");
         r->eoc_softw_ver=1;
-	r->shdsl_ver = 0x80;
-	if( dev )
-	    r->fwd_loss = (dev->link_state()==EOC_dev::OFFLINE) ? 1 : 0;
+		r->shdsl_ver = 0x80;
+		if( dev )
+			r->fwd_loss = (dev->link_state()==EOC_dev::OFFLINE) ? 1 : 0;
     }
     return resp;
 }
@@ -178,15 +178,15 @@ EOC_router::csunit()
 {
     int i;
     if( !if_cnt )
-	return err;
+		return err;
 	
     switch( type ){
     case slave:
-	return stu_c;
+		return stu_c;
     case master:
-	return err;
+		return err;
     case repeater:
-	return ifs[cust_side].sunit;
+		return ifs[cust_side].sunit;
     }
     return err;
 }
@@ -196,15 +196,15 @@ EOC_router::nsunit()
 {
     int i;
     if( !if_cnt )
-	return err;
+		return err;
 	
     switch( type ){
     case slave:
-	return stu_r;
+		return stu_r;
     case master:
-	return err;
+		return err;
     case repeater:
-	return ifs[net_side].sunit;
+		return ifs[net_side].sunit;
     }
     return err;
 }
@@ -214,15 +214,15 @@ EOC_router::csdev()
 {
     int i;
     if( !if_cnt )
-	return NULL;
+		return NULL;
 	
     switch( type ){
     case master:
-	return ifs[0].sdev;
+		return ifs[0].sdev;
     case slave:
-	return NULL;
+		return NULL;
     case repeater:
-	return ifs[cust_side].sdev;
+		return ifs[cust_side].sdev;
     }
     return NULL;
 }
@@ -233,15 +233,15 @@ EOC_router::nsdev()
 {
     int i;
     if( !if_cnt )
-	return NULL;
+		return NULL;
 	
     switch( type ){
     case master:
-	return NULL;
+		return NULL;
     case slave:
-	return ifs[0].sdev;
+		return ifs[0].sdev;
     case repeater:
-	return ifs[net_side].sdev;
+		return ifs[net_side].sdev;
     }
     return NULL;
 }
@@ -251,7 +251,7 @@ int
 EOC_router::csunit(unit u)
 {
     if( !if_cnt || type == master || type == slave )
-	return -1;
+		return -1;
     ifs[cust_side].sunit = u;
     return 0;
 }
@@ -260,7 +260,7 @@ int
 EOC_router::nsunit(unit u)
 {
     if( !if_cnt || type == master || type == slave )
-	return -1;
+		return -1;
     ifs[net_side].sunit = u;
     return 0;
 }
@@ -270,24 +270,21 @@ EOC_router::loops(){
     int nsloops = ( nsdev() ) ? nsdev()->loops() : 0;
     int csloops = ( csdev() ) ? csdev()->loops() : 0;
     if( nsloops && csloops ){
-	ASSERT( nsloops == csloops );
-	return csloops;
+		ASSERT( nsloops == csloops );
+		return csloops;
     }else if( nsloops )
-	return nsloops;
+		return nsloops;
     else
-	return csloops;
+		return csloops;
 }
 
 int
 EOC_router::term_unit(unit u)
 {
     if( !if_cnt || type == repeater )
-	return -1;
+		return -1;
     ifs[0].sunit = u;
 }
-
-
-
 
 EOC_msg *
 EOC_router::receive()
@@ -303,80 +300,80 @@ EOC_router::receive()
     update_state();
     PDEBUG(DFULL,"ROUTER(%d): if_poll = %d, state = %d",type,if_poll,ifs[if_poll].state );
     if( ifs[if_poll].state == eoc_Offline ){
-	printf("ROUTER(%d): EOC is offline",type);
-	goto exit;
+		printf("ROUTER(%d): EOC is offline",type);
+		goto exit;
     }
 
     if( m = get_loop() ){
-	PDEBUG(DFULL,"ROUTER(%d): get loop msg",type);
-	if( (m->type() == REQ_DISCOVERY) ){
-	    PDEBUG(DFULL,"ROUTER(%d): is DISCOVERY",type);
-	    if( resp = process_discovery(if_poll,m) ){
-		PDEBUG(DFULL,"ROUTER(%d): process discovery success",type);
-		if( add_loop(resp) ){
-		    PDEBUG(DFULL,"ROUTER(%d): error adding loop",type);
-		    /* TODO: LOG error */
+		PDEBUG(DFULL,"ROUTER(%d): get loop msg",type);
+		if( (m->type() == REQ_DISCOVERY) ){
+			PDEBUG(DFULL,"ROUTER(%d): is DISCOVERY",type);
+			if( resp = process_discovery(if_poll,m) ){
+				PDEBUG(DFULL,"ROUTER(%d): process discovery success",type);
+				if( add_loop(resp) ){
+					PDEBUG(DFULL,"ROUTER(%d): error adding loop",type);
+					/* TODO: LOG error */
+				}
+			} else{
+				PDEBUG(DFULL,"ROUTER(%d): error in process discovery",type);
+				/* TODO: LOG error */
+			}
+		}else if( !(ifs[if_poll].state == eoc_Discovery) ){
+			PDEBUG(DFULL,"ROUTER(%d): not discovery",type);
+			return m;
+		}else{
+			delete m;
 		}
-	    } else{
-		PDEBUG(DFULL,"ROUTER(%d): error in process discovery",type);
-		/* TODO: LOG error */
-	    }
-	}else if( !(ifs[if_poll].state == eoc_Discovery) ){
-	    PDEBUG(DFULL,"ROUTER(%d): not discovery",type);
-	    return m;
-	}else{
-	    delete m;
-	}
     }
     
     while( (m = poll_dev->recv()) && (icnt<max_recv_msg) ){
-	m->direction(dir);
+		m->direction(dir);
         PDEBUG(DFULL,"ROUTER(%d): message: src(%d) dst(%d) id(%d)",type,m->src(),m->dst(),m->type());
-	if( (m->type() == REQ_DISCOVERY) ){
-	    PDEBUG(DFULL,"ROUTER(%d): DISCOVERY",type);
-	    if( resp = process_discovery(if_poll,m) ){
-		PDEBUG(DFULL,"ROUTER(%d): success in process discovery",type);
-		if( route_dev )
-		    route_dev->send(m);
-		poll_dev->send(resp);
-	    }else{
-		PDEBUG(DFULL,"ROUTER(%d): error in process discovery",type);    
-	    }
-	    icnt++;
-	    delete m;
-	    continue;
-	}
+		if( (m->type() == REQ_DISCOVERY) ){
+			PDEBUG(DFULL,"ROUTER(%d): DISCOVERY",type);
+			if( resp = process_discovery(if_poll,m) ){
+				PDEBUG(DFULL,"ROUTER(%d): success in process discovery",type);
+				if( route_dev )
+					route_dev->send(m);
+				poll_dev->send(resp);
+			}else{
+				PDEBUG(DFULL,"ROUTER(%d): error in process discovery",type);    
+			}
+			icnt++;
+			delete m;
+			continue;
+		}
 	
-	PDEBUG(DFULL,"ROUTER(%d): Not REQ_DISCOVERY",type);
-	// retranslate Broadcast to next device	
-	if( m->dst() == BCAST && route_dev ){
-	    PDEBUG(DFULL,"ROUTER(%d): retranslate broadcast",type);	    
-	    if( route_dev->send(m) ){
-		// send error handling 
-	    }
-	}
+		PDEBUG(DFULL,"ROUTER(%d): Not REQ_DISCOVERY",type);
+		// retranslate Broadcast to next device	
+		if( m->dst() == BCAST && route_dev ){
+			PDEBUG(DFULL,"ROUTER(%d): retranslate broadcast",type);	    
+			if( route_dev->send(m) ){
+				// send error handling 
+			}
+		}
 
-	if( m->dst() == u || m->dst() == BCAST ){
-	    PDEBUG(DFULL,"ROUTER(%d): DEST = %d",type,m->dst());
-	    if( ifs[if_poll].state == eoc_Discovery ){
-		PDEBUG(DFULL,"ROUTER(%d): state is eoc_Discovery",type);
+		if( m->dst() == u || m->dst() == BCAST ){
+			PDEBUG(DFULL,"ROUTER(%d): DEST = %d",type,m->dst());
+			if( ifs[if_poll].state == eoc_Discovery ){
+				PDEBUG(DFULL,"ROUTER(%d): state is eoc_Discovery",type);
+				delete m;
+				icnt++;
+				continue;		    
+			}
+			ret = m;
+			goto exit;
+		} else if( route_dev ){
+			PDEBUG(DFULL,"ROUTER(%d): resend to next",type);
+			if( route_dev->send(m) ){
+				delete m;
+				break;
+			}
+		}
 		delete m;
 		icnt++;
-	        continue;		    
-	    }
-	    ret = m;
-	    goto exit;
-	} else if( route_dev ){
-	    PDEBUG(DFULL,"ROUTER(%d): resend to next",type);
-	    if( route_dev->send(m) ){
-		delete m;
-		break;
-	    }
-	}
-	delete m;
-	icnt++;
     }
-exit:
+ exit:
     if_poll = (if_poll+1)<if_cnt ?  if_poll+1 : 0;
     PDEBUG(DFULL,"ROUTER(%d): return :%08x",type,ret);
     return ret;
@@ -392,24 +389,25 @@ EOC_router::send(EOC_msg *m)
     u8 loop_added = 0;
 
     if( m->direction() == EOC_msg::NOSTREAM ){
-	if( out_direction(&dir) ){
-	    return -1;
-	}
-	m->direction(dir);
+		if( out_direction(&dir) ){
+			return -1;
+		}
+		m->direction(dir);
     }
     dir = m->direction();
     for(i=0;i<if_cnt;i++){
-	if( (ifs[i].sunit == m->dst() || m->dst() == BCAST) && !loop_added ){
-	// loopback
-	    EOC_msg *new_m = new EOC_msg(m);
-	    new_m->dst(ifs[i].sunit);
-	    ret += add_loop(new_m);
-	    loop_added = 1;
-	}
-	if( ifs[i].out_dir == dir ){
-		ret += ifs[i].sdev->send(m);
-		return ret;
-	}
+		if( (ifs[i].sunit == m->dst() || m->dst() == BCAST) && !loop_added ){
+			// loopback
+			EOC_msg *new_m = new EOC_msg(m);
+			new_m->dst(ifs[i].sunit);
+			ret += add_loop(new_m);
+			loop_added = 1;
+		}
+		if( ifs[i].out_dir == dir ){
+			if( ifs[i].state != eoc_Offline )
+				ret += ifs[i].sdev->send(m);
+			return ret;
+		}
     }
     return ret;
 }

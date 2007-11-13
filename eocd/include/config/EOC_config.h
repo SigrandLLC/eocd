@@ -9,8 +9,8 @@
 class EOC_config{
     hash_table *conf_prof;
     hash_table *alarm_prof;
-    char *cprof_name;
-    char *aprof_name;
+    char *cprof_name,*cprof_name_old;
+    char *aprof_name,*aprof_name_old;
     u16 rep_num;
     int app_cfg;
  public:
@@ -18,19 +18,43 @@ class EOC_config{
 		conf_prof = c;
 		alarm_prof = a;
 		cprof_name = cn;
+		cprof_name_old = NULL;
 		aprof_name = an;
+		aprof_name_old = NULL;
 		rep_num = rep;
 		app_cfg = _app_cfg;
 	}
     const char *cprof(){return cprof_name;}
     const char *aprof(){return aprof_name;}
     int cprof(char *p){
-		free(cprof_name);
+		if( cprof_name_old)
+			free(cprof_name_old);
+		cprof_name_old = cprof_name;
 		cprof_name = p;
 	}
+	int cprof_revert(){
+		if( cprof_name_old ){
+			free(cprof_name);
+			cprof_name = cprof_name_old;
+			cprof_name_old = NULL;
+			return 0;
+		}
+		return -1;
+	}
     int aprof(char *p){
-		free(aprof_name);
+		if( aprof_name_old )
+			free(aprof_name_old);
+		aprof_name_old = aprof_name;
 		aprof_name = p;
+	}
+	int aprof_revert(){
+		if( aprof_name_old ){
+			free(aprof_name);
+			aprof_name = aprof_name_old;
+			aprof_name_old = NULL;
+			return 0;
+		}
+		return -1;
 	}
 
     u16 repeaters(){ return rep_num; }

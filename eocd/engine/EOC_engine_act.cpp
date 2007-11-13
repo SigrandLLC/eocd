@@ -1,3 +1,5 @@
+#include <syslog.h>
+
 #include <generic/EOC_generic.h>
 #include <generic/EOC_msg.h>
 #include <generic/EOC_requests.h>
@@ -90,6 +92,7 @@ schedule()
     int i=0;
     int cnt;
     
+	PDEBUG(DERR,"Receiving");
     while( (m = rtr->receive()) && i<recv_max){
 		if( m->is_request() ){
 			if( resp->request(m,ret,cnt) ){
@@ -123,6 +126,7 @@ schedule()
 		i++;
     }
 
+	PDEBUG(DERR,"Sending");
     // Send one EOC request
     while( m = poll->gen_request() ){
 		if( rtr->send(m) ){
@@ -131,6 +135,7 @@ schedule()
 		}
 		delete m;
     }
+	PDEBUG(DERR,"exit");
     return 0;
 }
 
@@ -155,8 +160,15 @@ configure(char *ch_name)
     }
     conf_profile *prof = (conf_profile *)cfg->conf();
     if( !prof ){
-        PDEBUG(DERR,"Cannot find corresponding profile");
-		return -1;
+		syslog(LOG_ERR,"Profile %s not exist. Try revert to old.",cfg->cprof());
+		PDEBUG(DERR,"Profile %s not exist. Try revert to old.",cfg->cprof());
+		cfg->cprof_revert();
+		prof = (conf_profile *)cfg->conf();
+		if( !prof ){
+			syslog(LOG_ERR,"Old profile %s not exist. Failed to configure.",cfg->cprof());
+			PDEBUG(DERR,"Old profile %s not exist. Failed to configure.",cfg->cprof());
+			return -1;
+		}
     }
 
 	// If this interface configured manually or 
@@ -171,20 +183,17 @@ int EOC_engine_act::
 app_request(app_frame *fr){ 
 
     switch( fr->id() ){
-    case APP_SPAN_PARAMS:
-		{
-			printf("1:\n");
-			span_params_payload *p = (span_params_payload *)fr->payload_ptr();
-			printf("2:\n");
-			p->units = poll->unit_quan();
-			printf("3:\n");
-			p->loops = rtr->loops();
-			printf("4:\n");
-			p->link_establ = poll->link_established();
-			printf("5:\n");
-			return 0;
-		}
-    default:
-        return poll->app_request(fr);
+    case APP_SPAN_PARAMS: {
+		span_params_payload *p = (span_params_payload *)fr->payload_ptr();
+		p->units = poll->unit_quan();
+		p->loops = rtr->loops();
+		p->link_establ = poll->link_established();
+		return 0;
+	}
+	default:{
+		if(poll->app_request(fr))
+			fr->negative();
+		return 0;
     }
+	}
 }

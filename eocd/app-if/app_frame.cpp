@@ -44,8 +44,7 @@ app_frame(char *b,int size){
         PDEBUG(DERR,"Cannot get info about frame id = %d",hdr->id);
         return;
     }
-    if( (hdr->psize != psize) || (hdr->csize != csize) ||
-	    (!csize && hdr->type == APP_SET) ){
+    if( (hdr->psize != psize) || (hdr->csize != csize) ){
         PDEBUG(DERR,"Error in app_frame header");
         buf = NULL;
         buf_size = 0;
@@ -106,9 +105,29 @@ size_by_id(app_ids id,app_types type,u32 &psize,u32 &csize)
         csize = ENDP_MAINT_CH_SZ;
         break;
     case APP_SPAN_CPROF:
-	psize = SPAN_CONF_PROF_PAY_SZ;
-	csize = SPAN_CONF_PROF_CH_SZ;
-	break;
+		psize = SPAN_CONF_PROF_PAY_SZ;
+		csize = SPAN_CONF_PROF_CH_SZ;
+		break;
+    case APP_ADD_CPROF:
+		psize = SPAN_ADD_CPROF_PAY_SZ;
+		csize = SPAN_ADD_CPROF_CH_SZ;
+		break;
+    case APP_DEL_CPROF:
+		psize = SPAN_DEL_CPROF_PAY_SZ;
+		csize = SPAN_DEL_CPROF_CH_SZ;
+		break;
+    case APP_ADD_CHAN:
+		psize = CHAN_ADD_PAY_SZ;
+		csize = CHAN_ADD_CH_SZ;
+		break;
+    case APP_DEL_CHAN:
+		psize = CHAN_DEL_PAY_SZ;
+		csize = CHAN_DEL_CH_SZ;
+		break;
+    case APP_CHNG_CHAN:
+		psize = CHAN_CHNG_PAY_SZ;
+		csize = CHAN_CHNG_CH_SZ;
+		break;
     default:
         return -1;
     }
@@ -137,7 +156,7 @@ char *app_frame::
 payload_ptr(){
     ASSERT( buf );
     if( buf )
-	return &buf[FRAME_HEADER_SZ];
+		return &buf[FRAME_HEADER_SZ];
     return NULL;
 }
 

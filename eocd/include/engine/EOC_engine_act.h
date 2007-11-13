@@ -36,4 +36,3 @@ class EOC_engine_act : public EOC_engine {
 };
 
 #endif
-

@@ -252,7 +252,9 @@ int main( int argc, char *argv[] ) {
     int k = 0;
     side_perf S;
     while(1){
+		PDEBUG(DERR,"-------------------- POLL--------------------");
 		m->poll_channels();
+		PDEBUG(DERR,"-------------------- LISTEN --------------------");
 		m->app_listen(1);
     }
 

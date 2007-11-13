@@ -32,7 +32,7 @@ int app_comm::
 build_select_list()
 {
     if( sfd < 0 )
-	return -1;
+		return -1;
     // blank fd set
     FD_ZERO(&socks);
     // fill fd set
@@ -50,7 +50,7 @@ wait(int sec)
     timeout.tv_sec = sec;
     timeout.tv_usec = 0;
     if( build_select_list() )
-	return -1;
+		return -1;
 
     count = select(hisock+1,&socks,(fd_set *)0,(fd_set *)0, &timeout);
     if( count < 0) {
@@ -82,12 +82,16 @@ _recv(int fd,char *&buf)
     int frame_len;
     int ret;
     
-    
-    if( (frame_len = ::recv(fd,frame,BLOCK_SIZE,MSG_PEEK|MSG_DONTWAIT) ) <= 0 )
-	return -EAGAIN;
+    if( (frame_len = ::recv(fd,frame,BLOCK_SIZE,MSG_PEEK|MSG_DONTWAIT) ) <= 0 ){
+		delete[] frame;
+		return -EAGAIN;
+	}
     ret = ::recv(fd,(char*)frame,frame_len,MSG_DONTWAIT);
-    if( frame_len != ret )
-	return -EAGAIN;
+    if( frame_len != ret ){
+		delete[] frame;
+		return -EAGAIN;
+	}
+
     buf = frame;
     return frame_len;
 }

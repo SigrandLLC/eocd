@@ -22,11 +22,12 @@
 #include <conf_profile.h>
 #include <channel.h>
 
+#include <app-if/err_codes.h>
+
 using namespace libconfig;
 using namespace std;
 //---------------------------------------------------------------------//
-EOC_dev_terminal *
-init_dev(char *name);
+EOC_dev_terminal *init_dev(char *name);
 
 
 #ifndef VIRTUAL_DEVS
@@ -726,16 +727,17 @@ app_listen(int seconds)
 		if( !app_srv.wait(to_wait) ){
 			continue;
 		}
+		PDEBUG(DERR,"Get new message");
 		while( (size = app_srv.recv(conn,buff)) ){ 
 			app_frame fr(buff,size);
 			if( !fr.frame_ptr() ){
 				delete buff;
 				continue; 
 			}
-
 			if( ret = app_request(&fr) ){
 				continue;
 			}
+			fr.response();
 			ret = app_srv.send(conn,fr.frame_ptr(),fr.frame_size());
 		}
 		time(&cur);
@@ -754,9 +756,26 @@ app_request(app_frame *fr)
 	case APP_SPAN_NAME:
 		return app_spanname(fr);
 	case APP_SPAN_CPROF:
+		PDEBUG(DERR,"APP_SPAN_CPROF");
 		return app_spanconf_prof(fr);
+	case APP_ADD_CPROF:
+		PDEBUG(DERR,"APP_ADD_CPROF");
+		return app_add_cprof(fr);
+	case APP_DEL_CPROF:
+		PDEBUG(DERR,"APP_DEL_CPROF");
+		return app_del_cprof(fr);
+	case APP_ADD_CHAN:
+		PDEBUG(DERR,"APP_ADD_CHAN");
+		return app_add_chan(fr);
+	case APP_DEL_CHAN:
+		PDEBUG(DERR,"APP_DEL_CHAN");
+		return app_del_chan(fr);
+	case APP_CHNG_CHAN:
+		PDEBUG(DERR,"APP_CHANG_CHAN");
+		return app_chng_chan(fr);
 	case APP_ENDP_APROF:
-		return app_spanconf_prof(fr);
+		PDEBUG(DERR,"APP_ENDP_APEOF");
+		return 0;
 	}
 
 	if( fr->chan_name() )
@@ -772,42 +791,38 @@ app_spanname(app_frame *fr)
 
 	switch(fr->type()){
 	case APP_GET:
-	case APP_GET_NEXT:
-		{
-			channel_elem *el = (channel_elem*)channels.first();
-			if( !el ){
-				fr->negative();
-				return 0;
-			}
-			if( strnlen(fr->chan_name(),SPAN_NAME_LEN) ){ 
-				// if first name isn't zero
-				el = (channel_elem *)
-					channels.find((char*)fr->chan_name(),strlen(fr->chan_name()));
-				if( !el ){
-					fr->negative();
-					return 0;
-				}
-				el = (channel_elem*)channels.next(el->name,el->nsize);
-			}
-			int filled = 0;
-			while( el && filled<SPAN_NAMES_NUM){
-
-				if( el->eng->get_type() == master ){
-					int cp_len = (el->nsize>SPAN_NAME_LEN) ? SPAN_NAME_LEN : el->nsize;
-					strncpy(p->name[filled],el->name,cp_len);
-					filled++;
-				}
-				el = (channel_elem*)channels.next(el->name,el->nsize);
-			}
-			p->filled = filled;
-			p->last_msg = ( el && (filled = SPAN_NAMES_NUM) ) ? 0 : 1;
+	case APP_GET_NEXT:{
+		channel_elem *el = (channel_elem*)channels.first();
+		if( !el ){
+			fr->negative(ERCHNEXIST);
 			return 0;
 		}
-	default:
-		fr->negative();
+		if( strnlen(fr->chan_name(),SPAN_NAME_LEN) ){ 
+			// if first name isn't zero
+			el = (channel_elem *)
+				channels.find((char*)fr->chan_name(),strnlen(fr->chan_name(),SPAN_NAME_LEN));
+			if( !el ){
+				fr->negative(ERCHNEXIST);
+				return 0;
+			}
+			el = (channel_elem*)channels.next(el->name,el->nsize);
+		}
+		int filled = 0;
+		while( el && filled<SPAN_NAMES_NUM){
+			if( el->eng->get_type() == master ){
+				int cp_len = (el->nsize>SPAN_NAME_LEN) ? SPAN_NAME_LEN : el->nsize;
+				strncpy(p->name[filled],el->name,cp_len);
+				filled++;
+			}
+			el = (channel_elem*)channels.next(el->name,el->nsize);
+		}
+		p->filled = filled;
+		p->last_msg = ( el && (filled = SPAN_NAMES_NUM) ) ? 0 : 1;
 		return 0;
 	}
-	return -1;
+	}
+	fr->negative(ERTYPE);
+	return 0;
 }
 
 int EOC_main::
@@ -815,25 +830,27 @@ app_chann_request(app_frame *fr)
 {
 	// check that requested channel exist
 	channel_elem *el = (channel_elem *)
-		channels.find((char*)fr->chan_name(),strlen(fr->chan_name()));
+		channels.find((char*)fr->chan_name(),strnlen(fr->chan_name(),SPAN_NAME_LEN));
 	if( !el ){ // No such channel on this device
-		fr->negative();
+		fr->negative(ERCHNEXIST);
 		return 0;
 	}
 	EOC_engine *eng = el->eng;
 	if( eng->get_type() != master ){ // Channel do not maintain EOC DB
-		fr->negative();
+		fr->negative(ERNODB);
 		return 0;
 	}
 	EOC_engine_act *eng_a = (EOC_engine_act *)eng;
-	return eng_a->app_request(fr);
+	eng_a->app_request(fr);
+	return 0;
 }
 
 int EOC_main::
 app_spanconf_prof(app_frame *fr)
 {
 	span_conf_prof_payload *p = (span_conf_prof_payload*)fr->payload_ptr();
-	int len = strnlen(p->ProfileName,SNMP_ADMIN_LEN+1);
+	span_conf_profile_t *mconf = &p->conf;
+	int len = strnlen(p->pname,SNMP_ADMIN_LEN+1);
 
 	PDEBUG(DERR,"Start");
 
@@ -841,15 +858,14 @@ app_spanconf_prof(app_frame *fr)
 	switch(fr->type()){
 	case APP_GET:
 		if( !len ){
-			fr->negative();
+			fr->negative(ERPARAM);
 			return 0;
 		}
-		prof = (conf_profile *)conf_profs.find(p->ProfileName,len);
+		prof = (conf_profile *)conf_profs.find(p->pname,len);
 		if( !prof ){ // No such profile
-			fr->negative();
+			fr->negative(ERPNEXIST);
 			return 0;
 		}
-		fr->response();
 		p->conf = prof->conf;
 		return 0;
 	case APP_GET_NEXT:
@@ -858,31 +874,372 @@ app_spanconf_prof(app_frame *fr)
 			PDEBUG(DERR,"First entry");
 			prof = (conf_profile *)conf_profs.first();
 		}else{
-			PDEBUG(DERR,"Next after %s",p->ProfileName);
-			prof = (conf_profile *)conf_profs.next(p->ProfileName,len);
+			PDEBUG(DERR,"Next after %s",p->pname);
+			prof = (conf_profile *)conf_profs.next(p->pname,len);
 		}
 		if( !prof ){
 			PDEBUG(DERR,"prof = 0");
-			fr->negative();
+			fr->negative(ERPNEXIST);
 			return 0;
 		}
-		fr->response();
 		PDEBUG(DERR,"Gen response");
 		p->conf = prof->conf;
-	
-		strncpy(p->ProfileName,prof->name,prof->nsize+1);
+		strncpy(p->pname,prof->name,prof->nsize+1);
 		return 0;
-	case APP_SET:
-		/*
-		  1. œô¨Ãœô¨×œô¨Ýœô¨Ðœô¨âœô¨ì œô¨Õœô¨áœô¨âœô¨ì œô¨Ûœô¨Ø œô¨ãœô¨Öœô¨Õ œô¨íœô¨âœô¨Þœô¨â œô¨ßœô¨àœô¨Þœô¨äœô¨Øœô¨Ûœô¨ì
-		  2. œô¨µœô¨áœô¨Ûœô¨Ø œô¨Ýœô¨Õœô¨âœô¨ã œô¨Ø œô¨Ýœô¨Õ œô¨áœô¨âœô¨Þœô¨Øœô¨â œô¨ßœô¨Þœô¨Üœô¨Õœô¨âœô¨Úœô¨Ð œô¨áœô¨Þœô¨×œô¨Ôœô¨Ðœô¨âœô¨ì œô¨Øœô¨Üœô¨ï œô¨ßœô¨àœô¨Þœô¨äœô¨Øœô¨Ûœô¨ï - œô¨áœô¨Ñœô¨àœô¨Þœô¨á
-		  3. œô¨µœô¨áœô¨Ûœô¨Ø œô¨Õœô¨áœô¨âœô¨ì - œô¨Òœô¨Ýœô¨Õœô¨áœô¨âœô¨Ø œô¨Øœô¨×œô¨Üœô¨Õœô¨Ýœô¨Õœô¨Ýœô¨Øœô¨ï
-		  4. œô¨²œô¨áœô¨Õ œô¨Øœô¨Ýœô¨âœô¨Õœô¨àœô¨äœô¨Õœô¨Ùœô¨áœô¨ë œô¨Øœô¨Üœô¨Õœô¨îœô¨éœô¨Øœô¨Õ œô¨íœô¨âœô¨Þœô¨â œô¨ßœô¨àœô¨Þœô¨äœô¨Øœô¨Ûœô¨ì œô¨ßœô¨Õœô¨àœô¨Õœô¨Ýœô¨Ðœô¨áœô¨âœô¨àœô¨Þœô¨Øœô¨âœô¨ì
-		*/
+	case APP_SET:{
+		// Requested profile exist?
+		prof = (conf_profile*)conf_profs.find(p->pname,len);
+		if( !prof ){ // Profile already exist - cannot create
+			fr->negative(ERPNEXIST);
+			PDEBUG(DERR,"Requested profile \"%s\" not exist",p->pname);
+			return 0;
+		}
+		span_conf_profile_t *pconf = &prof->conf;
+		// Changes
+		span_conf_prof_changes *c = (span_conf_prof_changes *)fr->changelist_ptr();
+		
+		if( c->annex ){
+			pconf->annex = mconf->annex;
+		}
+		if( c->wires ){
+			pconf->wires = mconf->wires;
+		}
+		if( c->power ){
+			pconf->power = mconf->power;
+		}
+		if( c->psd ){
+			pconf->psd = mconf->psd;
+		}
+		if( c->clk ){
+			pconf->clk = mconf->clk;
+		}
+		if( c->line_probe ){
+			pconf->line_probe = mconf->line_probe;
+		}
+		if( c->remote_cfg ){
+			pconf->remote_cfg = mconf->remote_cfg;
+		}
+		if( c->use_cur_down ){
+			pconf->use_cur_down = mconf->use_cur_down;
+		}
+		if( c->use_worst_down ){
+			pconf->use_worst_down = mconf->use_worst_down;
+		}
+		if( c->use_cur_up ){
+			pconf->use_cur_up = mconf->use_cur_up;
+		}
+		if( c->use_worst_up ){
+			pconf->use_worst_up = mconf->use_worst_up;
+		}
+
+		if( c->min_rate ){
+			pconf->min_rate = mconf->min_rate;
+		}
+		if( c->max_rate ){
+			pconf->max_rate = mconf->max_rate;
+		}
+		if( c->cur_marg_down ){
+			pconf->cur_marg_down = mconf->cur_marg_down;
+		}
+		if( c->worst_marg_down ){
+			pconf->worst_marg_down = mconf->worst_marg_down;
+		}
+		if( c->cur_marg_up ){
+			pconf->cur_marg_up = mconf->cur_marg_up;
+		}
+		if( c->worst_marg_up ){
+			pconf->worst_marg_up = mconf->worst_marg_up;
+		}
+		PDEBUG(DERR,"Commit Changes");
+		configure_channels();
 		return 0;
 	}
-    
+	}
 }     
+
+int EOC_main::
+app_add_cprof(app_frame *fr)
+{
+	span_add_cprof_payload *p = (span_add_cprof_payload*)fr->payload_ptr();
+
+	switch( fr->type() ){
+	case APP_SET:
+		break;
+	default: // Only set operation
+		fr->negative(ERTYPE);
+		return 0;
+	}
+
+	// check that adding profile not exist already
+	int len = strnlen(p->pname,SNMP_ADMIN_LEN+1);
+	if( !len ){
+		fr->negative(ERPARAM);
+		return 0;
+	}
+	conf_profile *prof = (conf_profile*)conf_profs.find(p->pname,len);
+	if( prof ){ // Profile already exist - cannot create
+		fr->negative(ERPEXIST);
+		return 0;
+	}
+
+	conf_profile *nprof = new conf_profile;
+	memset(nprof,0,sizeof(conf_profile));
+	if( !(nprof->name = strndup(p->pname,len) ) ){
+		// Not enough memory
+		fr->negative(ERNOMEM);
+		return 0;
+	}
+	nprof->nsize = len;
+	// Default configuration
+	nprof->conf.annex = annex_a;
+	nprof->conf.wires = twoWire;
+	nprof->conf.power = noPower;
+	nprof->conf.clk = localClk;
+	nprof->conf.line_probe = disable;
+	nprof->conf.min_rate = 192;
+	nprof->conf.max_rate = 192;
+	nprof->conf.use_cur_down = 0;
+	nprof->conf.use_worst_down = 0;
+	nprof->conf.use_cur_up = 0;
+	nprof->conf.use_worst_up = 0;
+	nprof->conf.cur_marg_down = 0;
+	nprof->conf.worst_marg_down = 0;
+	nprof->conf.cur_marg_up = 0;
+	nprof->conf.worst_marg_up = 0;
+	conf_profs.add(nprof);
+	conf_profs.sort();
+	return 0;
+}
+
+int EOC_main::
+app_del_cprof(app_frame *fr)
+{
+	span_add_cprof_payload *p = (span_add_cprof_payload*)fr->payload_ptr();
+	switch( fr->type() ){
+	case APP_SET:
+		break;
+	default: // Only set operation
+		fr->negative(ERTYPE);
+		return 0;
+	}
+
+	// check that adding profile not exist already
+	int len = strnlen(p->pname,SNMP_ADMIN_LEN+1);
+	if( !len ){
+		fr->negative(ERPNAME);
+		return 0;
+	}
+
+	conf_profile *prof = (conf_profile*)conf_profs.find(p->pname,len);
+	if( !prof ){ // Profile not exist so cannot create
+		fr->negative(ERPNEXIST);
+		return 0;
+	}
+
+	// Check that no channel is associated with this profile
+	channel_elem *el = (channel_elem *)channels.first();
+	while( el ){
+		if( el->eng->get_type() == master ){			
+			const char *cprof = ((EOC_engine_act*)el->eng)->config()->cprof();
+			if( !strncmp(prof->name,cprof,SNMP_ADMIN_LEN) ){
+				// Cannot delete profile - associated with this channel
+				fr->negative(ERPBUSY);
+				return 0;
+			}
+		}
+		el = (channel_elem *)channels.next(el->name,el->nsize);
+	}
+	conf_profs.del(prof->name,prof->nsize);	
+	return 0;
+}
+
+int EOC_main::
+app_add_chan(app_frame *fr)
+{
+	int len = strnlen(fr->chan_name(),SPAN_NAME_LEN);
+	char *name = strndup(fr->chan_name(),len);
+	chan_add_payload *p = (chan_add_payload *)fr->payload_ptr();
+
+	switch( fr->type() ){
+	case APP_SET:
+		break;
+	default: // Only set operation
+		fr->negative(ERTYPE);
+		return 0;
+	}
+
+	// check that requested channel exist
+	channel_elem *el = (channel_elem *)
+		channels.find((char*)fr->chan_name(),strnlen(fr->chan_name(),SPAN_NAME_LEN));
+	if( el ){ // Channel already exist
+		fr->negative(ERCHEXIST);
+		return 0;
+	}
+
+	if( !p->master ){
+		if( add_slave(name) ){
+			fr->negative(ERNODEV);
+			return 0;
+		}
+	}else{
+		hash_elem *el = conf_profs.first();
+		if( !el ){
+			// No configuration profiles!
+			fr->negative(ERPNEXIST);
+			return 0;
+		}
+		char *cprof = strndup(el->name,SNMP_ADMIN_LEN+1);
+		if( !cprof ){
+			syslog(LOG_ERR,"Not enought memory");
+			PDEBUG(DERR,"Not enought memory");
+			fr->negative(ERNOMEM);
+			return 0;
+		}
+		if( add_master(name,cprof,NULL,0/*repeaters*/,tick_per_min,1/*can apply*/) ){
+			syslog(LOG_ERR,"(%s): cannot add channel \"%s\" - no such device",
+				   config_file,name);
+			PDEBUG(DERR,"(%s): cannot add channel \"%s\" - no such device",
+				   config_file,name);
+			fr->negative(ERNODEV);
+			return 0;
+		}
+	}
+	configure_channels();
+	return 0;
+}
+
+int EOC_main::
+app_del_chan(app_frame *fr)
+{
+	// check that requested channel exist
+	channel_elem *el = (channel_elem *)
+		channels.find((char*)fr->chan_name(),strnlen(fr->chan_name(),SPAN_NAME_LEN));
+
+	switch( fr->type() ){
+	case APP_SET:
+		break;
+	default: // Only set operation
+		fr->negative(ERTYPE);
+		return 0;
+	}
+
+	if( !el ){ // Nothing to delete
+		fr->negative(ERCHNEXIST);
+		return 0;
+	}
+	channels.del(el->name,el->nsize);
+	configure_channels();
+	return 0;
+}
+
+int EOC_main::
+app_chng_chan(app_frame *fr)
+{
+	u8 new_changes = 0;
+	int ret = 0;
+	switch( fr->type() ){
+	case APP_SET:
+		break;
+	default: // Only set operation
+		fr->negative(ERTYPE);
+		return 0;
+	}
+
+	PDEBUG(DERR,"Start");
+
+	// check that requested channel exist
+	channel_elem *el;
+	el = (channel_elem *)
+		channels.find((char*)fr->chan_name(),strnlen(fr->chan_name(),SPAN_NAME_LEN));
+	if( !el ){ // Nothing to change
+		PDEBUG(DERR,"No such channel %s",fr->chan_name());
+		fr->negative(ERCHNEXIST);
+		return 0;
+	}
+	chan_chng_payload *p;
+	p = (chan_chng_payload *)fr->payload_ptr();
+
+	if( p->master_ch ){
+		if( el->eng->get_type() == master && !p->master ){
+			char *name = strndup(el->name,el->nsize);
+			if( add_slave(name) ){
+				fr->negative(ERNODEV);
+				return 0;
+			}
+			configure_channels();
+			return 0;
+		}else if( el->eng->get_type() == slave && p->master ){
+			char *name = strndup(el->name,el->nsize);
+			hash_elem *prof = conf_profs.first();
+			if( !prof ){
+				// No configuration profiles!
+				PDEBUG(DERR,"No configuration profiles");
+				fr->negative(ERNOPROF);
+				return 0;
+			}
+			char *cprof = strndup(prof->name,SNMP_ADMIN_LEN+1);
+			if( !cprof ){
+				syslog(LOG_ERR,"Not enought memory");
+				PDEBUG(DERR,"Not enought memory");
+				fr->negative(ERNOMEM);
+				return 0;
+			}
+			if( add_master(name,cprof,NULL,0/*repeaters*/,tick_per_min,1/*can apply*/) ){
+				syslog(LOG_ERR,"(%s): cannot add channel \"%s\" - no such device",
+					   config_file,name);
+				PDEBUG(DERR,"(%s): cannot add channel \"%s\" - no such device",
+					   config_file,name);
+				fr->negative(ERNODEV);
+				return 0;
+			}
+		}
+		el = (channel_elem *)
+			channels.find((char*)fr->chan_name(),strnlen(fr->chan_name(),SPAN_NAME_LEN));
+		if( !el ){ // Nothing to change
+			PDEBUG(DERR,"No such channel %s",fr->chan_name());
+			fr->negative(ERCHNEXIST);
+			return 0;
+		}
+	}
+
+	PDEBUG(DERR,"Change configuration");
+	EOC_config *cfg;
+	cfg = ((EOC_engine_act*)el->eng)->config();
+	PDEBUG(DERR,"Set repeaters num");
+	if( p->rep_num_ch ){
+		new_changes++;
+		if( cfg->repeaters(p->rep_num) )
+			ret = -1;
+	}
+	PDEBUG(DERR,"Set conf profle");
+	if( p->cprof_ch ){
+		new_changes++;
+		PDEBUG(DERR,"Cprof=%s",p->cprof);
+		if( !conf_profs.find(p->cprof,strnlen(p->cprof,SNMP_ADMIN_LEN)) ){
+			syslog(LOG_ERR,"Wrong configuration profile name %s",p->cprof);
+			PDEBUG(DERR,"No such profile=%s",p->cprof);
+			ret = -1;
+		}else{
+			char *cprof = strndup(p->cprof,SNMP_ADMIN_LEN);
+			cfg->cprof(cprof);
+		}
+	}
+	PDEBUG(DERR,"Set can apply");
+	if( p->apply_conf_ch ){
+		new_changes++;
+		cfg->can_apply(p->apply_conf);
+	}
+
+	PDEBUG(DERR,"Configure channels");
+	if( new_changes ){
+		configure_channels();
+	}
+
+	if( ret ){
+		fr->negative(ERPARAM);
+	}
+	return 0;
+}
 
 int EOC_main::
 app_endpalarm_prof(app_frame *fr)
@@ -923,6 +1280,8 @@ app_endpalarm_prof(app_frame *fr)
 	  4. œô¨²œô¨áœô¨Õ œô¨Øœô¨Ýœô¨âœô¨Õœô¨àœô¨äœô¨Õœô¨Ùœô¨áœô¨ë œô¨Øœô¨Üœô¨Õœô¨îœô¨éœô¨Øœô¨Õ œô¨íœô¨âœô¨Þœô¨â œô¨ßœô¨àœô¨Þœô¨äœô¨Øœô¨Ûœô¨ì œô¨ßœô¨Õœô¨àœô¨Õœô¨Ýœô¨Ðœô¨áœô¨âœô¨àœô¨Þœô¨Øœô¨âœô¨ì
 	  }
 	*/
+ err_exit:
+	fr->negative();
 	return 0;    
 }
 

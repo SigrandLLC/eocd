@@ -20,35 +20,35 @@ app_comm_srv(char *sock_path,char *sock_name) : app_comm(sock_path,sock_name)
     
     // Check path exist
     if( (ret = stat(sock_path,&sbuf)) ){
-	if( errno != ENOENT ){
-	    PERROR("Error getting info about %s",sock_path);
-	    return;
-	}
-	if( mkdir(sock_path,(S_IRWXU | S_IRGRP | S_IXGRP)) ){
-	    PERROR("Cannot create dir %s",sock_path);
-	    return;
-	}
-	if( stat(sock_path,&sbuf) ){
-	    PERROR("Error creating dir %s",sock_path);
-	    return;
-	}
+		if( errno != ENOENT ){
+			PERROR("Error getting info about %s",sock_path);
+			return;
+		}
+		if( mkdir(sock_path,(S_IRWXU | S_IRGRP | S_IXGRP)) ){
+			PERROR("Cannot create dir %s",sock_path);
+			return;
+		}
+		if( stat(sock_path,&sbuf) ){
+			PERROR("Error creating dir %s",sock_path);
+			return;
+		}
     }  
     if( !S_ISDIR(sbuf.st_mode) ){
-	PDEBUG(DERR,"Error: %s is not directory",sock_path);
-	return;
+		PDEBUG(DERR,"Error: %s is not directory",sock_path);
+		return;
     }
 
     // Create socket
     if ((s = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
     	PERROR("Cannot create socket");
-	return;    
+		return;    
     }
 			    
     if( unlink(sname) ){
-	if( errno != ENOENT ){
-	    PERROR("Cannot unlink (%s)",sname);
-	    return;
-	}
+		if( errno != ENOENT ){
+			PERROR("Cannot unlink (%s)",sname);
+			return;
+		}
     }
     
     saun.sun_family = AF_UNIX;
@@ -56,17 +56,17 @@ app_comm_srv(char *sock_path,char *sock_name) : app_comm(sock_path,sock_name)
     len = sizeof(saun.sun_family) + strlen(saun.sun_path);
     if(bind(s, (const sockaddr*)&saun, len) < 0) {
     	PERROR("Cannot bind server with socket (%s)",sname);
-	return;
+		return;
     }
     // open socket for listening
     if(listen(s,MAX_CONNECTIONS) < 0) {
     	PERROR("Error trying listen socket (%s)",sname);
-	return;
+		return;
     }
     
     // setup non blocking
     if( set_nonblock(s) )
-	return; /* ?? */
+		return; /* ?? */
 
     // setup descriptor
     sfd = s;
@@ -81,7 +81,7 @@ build_select_list()
 {
     int i;
     if( sfd < 0 )
-	return -1; 
+		return -1; 
     // blank fd set
     FD_ZERO(&socks);
     // fill fd set
@@ -89,8 +89,8 @@ build_select_list()
     hisock = sfd;
     for(i=0; i < conn_num; i++) {
         FD_SET(conn_fd[i],&socks);
-	if ( conn_fd[i] > hisock)
-	    hisock = conn_fd[i];
+		if ( conn_fd[i] > hisock)
+			hisock = conn_fd[i];
     }
     return 0;
 }
@@ -130,23 +130,23 @@ complete_wait()
 	
     memset(conn_act,0,sizeof(conn_act));	
     for (i=0; i<conn_num; i++) {
-	if (FD_ISSET(conn_fd[i],&socks)){
-	    if( ::recv(conn_fd[i],&tmp,1,MSG_PEEK|MSG_DONTWAIT) < 1 ){
-		PDEBUG(DINFO,"Connection closed");
-		close(conn_fd[i]);
-		// shift descriptors
-		for(j=i;j<conn_num;j++)
-		    conn_fd[j]=conn_fd[j+1];
-		conn_num--;
-		i--;
-	    }else{
-		conn_act[i] = 1;
-		num_act++;
-	    }
-	}
+		if (FD_ISSET(conn_fd[i],&socks)){
+			if( ::recv(conn_fd[i],&tmp,1,MSG_PEEK|MSG_DONTWAIT) < 1 ){
+				PDEBUG(DINFO,"Connection closed");
+				close(conn_fd[i]);
+				// shift descriptors
+				for(j=i;j<conn_num;j++)
+					conn_fd[j]=conn_fd[j+1];
+				conn_num--;
+				i--;
+			}else{
+				conn_act[i] = 1;
+				num_act++;
+			}
+		}
     }
     if (FD_ISSET(sfd,&socks))
-	new_connection();
+		new_connection();
     return num_act;
 }
 
@@ -155,10 +155,10 @@ int app_comm_srv::
 next_fd(){
     int i;
     for(i=0;i<conn_num;i++){
-	if( conn_act[i] ){
-	    conn_act[i] = 0;
-	    return i;
-	}
+		if( conn_act[i] ){
+			conn_act[i] = 0;
+			return i;
+		}
     }
     return -1;
 }
@@ -167,11 +167,11 @@ int app_comm_srv::
 send(int c_num,char *buf,size_t size)
 {
     if( !c_num ){
-	return _send(sfd,buf,size);
+		return _send(sfd,buf,size);
     }else{
-	if( c_num > conn_num )
-	    return -1;
-	return _send(conn_fd[c_num-1],buf,size);
+		if( c_num > conn_num )
+			return -1;
+		return _send(conn_fd[c_num-1],buf,size);
     }
 }
 
@@ -179,7 +179,7 @@ ssize_t app_comm_srv::
 recv(int &c_idx,char *&buf)
 {
     if( (c_idx = next_fd()) <0 ) 
-	return 0;
+		return 0;
     c_idx++;
     return _recv(conn_fd[c_idx-1],buf);
 }
