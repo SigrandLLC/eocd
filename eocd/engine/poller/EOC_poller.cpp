@@ -10,6 +10,7 @@
 #include <engine/EOC_scheduler.h>
 #include <engine/EOC_poller.h>
 #include <engine/EOC_handlers.h>
+#include <app-if/err_codes.h>
 #include <db/EOC_db.h>
 
 int EOC_poller::
@@ -88,23 +89,23 @@ app_request(app_frame *fr)
 		   
 		break;
 	}
-	case APP_SPAN_STATUS:{
-		span_status_payload *p = (span_status_payload*)fr->payload_ptr();
-		p->nreps = db->reg_quan();
-		// TODO get thisinfo from device
-		p->max_lrate = 0;
-		p->act_lrate = 0;
-		p->region0 = 1;
-		p->region1 = 1;
-		p->max_prate = 0;
-		p->act_prate = 0; 
-		fr->response();
-		break;
-	}
+// 	case APP_SPAN_STATUS:{
+// 		span_status_payload *p = (span_status_payload*)fr->payload_ptr();
+// 		p->nreps = db->reg_quan();
+// 		// TODO get thisinfo from device
+// 		p->max_lrate = 0;
+// 		p->act_lrate = 0;
+// 		p->region0 = 1;
+// 		p->region1 = 1;
+// 		p->max_prate = 0;
+// 		p->act_prate = 0; 
+// 		fr->response();
+// 		break;
+// 	}
 	case APP_ENDP_CONF:{
 		endp_conf_payload *p = (endp_conf_payload*)fr->payload_ptr();
 		if( db->check_exist((unit)p->unit,(side)p->side,p->loop) ){
-			fr->negative();
+			fr->negative(ERNOELEM);
 			return 0;
 		}
 		strncpy(p->alarm_prof,cfg->aprof(),SNMP_ADMIN_LEN);

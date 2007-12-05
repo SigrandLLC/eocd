@@ -404,8 +404,12 @@ EOC_router::send(EOC_msg *m)
 			loop_added = 1;
 		}
 		if( ifs[i].out_dir == dir ){
-			if( ifs[i].state != eoc_Offline )
+			struct interface *iface = &ifs[i];
+			EOC_dev::Linkstate link = iface->sdev->link_state();
+			PDEBUG(DERR,"Sending message");
+			if( link != EOC_dev::OFFLINE )
 				ret += ifs[i].sdev->send(m);
+			PDEBUG(DERR,"Sending message - complete");
 			return ret;
 		}
     }

@@ -7,7 +7,7 @@ typedef enum { master,slave,repeater } dev_type;
 typedef enum { eoc_Offline, eoc_Discovery, eoc_Online } shdsl_state;
 typedef enum {err =-1,unknown=0 ,stu_c,stu_r,sru1,sru2,sru3,sru4,sru5,sru6,
 			sru7,sru8,sru9,sru10,BCAST=0xf} unit;
-typedef enum { net_side=0,cust_side } side;
+typedef enum { no_side=-1,net_side=0,cust_side } side;
 
 // SHDSL standard related
 #define MAX_LOOPS 4

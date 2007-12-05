@@ -47,6 +47,7 @@ class EOC_poller{
     int process_msg(EOC_msg *m);
     int app_request(app_frame *fr);
     inline int unit_quan(){ db->unit_quan(); }
+    inline int reg_quan(){ db->reg_quan(); }
     inline int link_established(){ db->link_state(); }
       
 };

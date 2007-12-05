@@ -10,6 +10,8 @@
 #include <engine/EOC_poller.h>
 #include <engine/EOC_engine_act.h>
 
+#include <app-if/err_codes.h>
+
 #include <handlers/EOC_poller_req.h>
 
 #include <conf_profile.h>
@@ -190,10 +192,40 @@ app_request(app_frame *fr){
 		p->link_establ = poll->link_established();
 		return 0;
 	}
+	case APP_SPAN_STATUS:{
+		span_status_payload *p = (span_status_payload*)fr->payload_ptr();
+		p->nreps = poll->reg_quan();
+		if( !rtr->csdev() ){
+			fr->negative(ERUNEXP);
+			break;
+		}
+		span_conf_profile_t cfg;
+		int mode,tcpam;
+		if( ((EOC_dev_terminal*)rtr->csdev())->cur_config(cfg,mode,tcpam) ){
+			PDEBUG(DERR,"Error requesting configuration");
+			fr->negative(ERUNEXP);
+			break;
+		}
+
+		p->max_lrate = cfg.rate;
+		p->act_lrate = cfg.rate;
+		switch( cfg.annex ){
+		case annex_a:
+			p->region0 = 1;
+			break;
+		case annex_b:
+			p->region1 = 1;
+			break;
+		}
+		p->max_prate = cfg.rate;
+		p->act_prate = cfg.rate; 
+		break;
+	}
 	default:{
-		if(poll->app_request(fr))
-			fr->negative();
+		PDEBUG(DERR,"Poller request");
+		poll->app_request(fr);
 		return 0;
     }
 	}
+	return 0;
 }

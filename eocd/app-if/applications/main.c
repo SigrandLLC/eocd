@@ -263,7 +263,7 @@ int main()
     int i = 0,j;
     while(1){
 	i++;
-        if( !(comm = init_comm()) ){
+        if( !(comm = init_comm(1)) ){
 	    printf("Error while connecting\n");
 	    return 0;
 	}

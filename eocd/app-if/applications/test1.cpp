@@ -36,16 +36,16 @@ main(int argc, char *argv[] )
  
 	{
 		printf("Change profile span#3-------------------------\n");
-		app_frame *req = new app_frame(APP_SPAN_CPROF,APP_SET,app_frame::REQUEST,1,"");
-		span_conf_prof_payload *p = (span_conf_prof_payload*)req->payload_ptr();
+		app_frame *req = new app_frame(APP_CPROF,APP_SET,app_frame::REQUEST,1,"");
+		cprof_payload *p = (cprof_payload*)req->payload_ptr();
 		span_conf_profile_t *mconf = &p->conf;
-		span_conf_prof_changes *c = (span_conf_prof_changes *)req->changelist_ptr();
+		cprof_changes *c = (cprof_changes *)req->changelist_ptr();
 	
 		memset(p,0,sizeof(*p));
 		memset(c,0,sizeof(*c));
 		strcpy(p->pname,"span#3");
-		mconf->max_rate = 2304;
-		c->max_rate = 1;
+		mconf->rate = 2304;
+		c->rate = 1;
 
 
 		cli.send(req->frame_ptr(),req->frame_size());

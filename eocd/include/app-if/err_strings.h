@@ -11,10 +11,12 @@ char *err_strings[] = {
 "No memory",
 "Cannot find device",
 "Some of command parameters is wrong",
-"Wrong configuration profile name",
 "Configuration profile not exist",
 "Configuration profile already exist",
-"Configuration profile is in use"
+"Configuration profile is in use",
+"Channel not maintain SHDSL data base",
+"Unexpected error",
+"Requested element not exist"
 };
 
 #define ERR_STR_SIZE sizeof(err_codes)

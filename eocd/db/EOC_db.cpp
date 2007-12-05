@@ -7,25 +7,27 @@
 #include <generic/EOC_msg.h>
 #include <db/EOC_db.h>
 #include <eoc_debug.h>
+#include <app-if/err_codes.h>
 
 int EOC_db::
 register_handlers(){
     // register EOC responses handlers
-    handlers[RESP_IND(RESP_DISCOVERY)] = _resp_discovery;
-    handlers[RESP_IND(RESP_INVENTORY)] = _resp_inventory;
-    handlers[RESP_IND(RESP_CONFIGURE)] = _resp_configure;
-    handlers[RESP_IND(RESP_STATUS)] = _resp_status;
-    handlers[RESP_IND(RESP_NSIDE_PERF)] = _resp_nside_perf;
-    handlers[RESP_IND(RESP_CSIDE_PERF)] = _resp_cside_perf;
+    handlers[RESP_IND(RESP_DISCOVERY)]    = _resp_discovery;
+    handlers[RESP_IND(RESP_INVENTORY)]    = _resp_inventory;
+    handlers[RESP_IND(RESP_CONFIGURE)]    = _resp_configure;
+    handlers[RESP_IND(RESP_STATUS)]       = _resp_status;
+    handlers[RESP_IND(RESP_NSIDE_PERF)]   = _resp_nside_perf;
+    handlers[RESP_IND(RESP_CSIDE_PERF)]   = _resp_cside_perf;
     handlers[RESP_IND(RESP_SENSOR_STATE)] = _resp_sensor_state;
 	
     // register Application requests for info
-    app_handlers[APP_INVENTORY] = _appreq_inventory;
-    app_handlers[APP_ENDP_CUR] = _appreq_endpcur;
+    app_handlers[APP_INVENTORY]  = _appreq_inventory;
+    app_handlers[APP_ENDP_CUR]   = _appreq_endpcur;
     app_handlers[APP_ENDP_15MIN] = _appreq_endp15min;
-    app_handlers[APP_ENDP_1DAY] = _appreq_endp1day;
+    app_handlers[APP_ENDP_1DAY]  = _appreq_endp1day;
     app_handlers[APP_ENDP_MAINT] = _appreq_endpmaint;
     app_handlers[APP_UNIT_MAINT] = _appreq_unitmaint;
+    app_handlers[APP_LOOP_RCNTRST] = _appreq_cntrst;
 }
 
 EOC_db::
@@ -187,6 +189,7 @@ _resp_discovery(EOC_db *db,EOC_msg *m,int check)
 	if( !db->units[ind] ){
 		PDEBUG(DERR,"Add new unit %d",ind);
 		db->units[ind] = new EOC_unit(m->src(),resp,db->loop_num);
+		db->units[ind]->link_up();
 	}
 	db->units_discov[ind] = 1;
 	PDEBUG(DINFO,"DISCOVERY_RESP FROM(%d): hop=%d,resl=%d,vendor_id=%d,fwd_loss=%d",
@@ -387,6 +390,7 @@ _resp_test(EOC_db *db,EOC_msg *m,int check)
 int EOC_db::
 app_request(app_frame *fr)
 {
+	PDEBUG(DERR,"Start");
 	if( !app_handlers[fr->id()] )
 		return -1;
 	return app_handlers[fr->id()](this,fr);
@@ -398,16 +402,15 @@ _appreq_inventory(EOC_db *db,app_frame *fr)
 	inventory_payload *p = (inventory_payload*)fr->payload_ptr();
 	PDEBUG(DINFO,"DB: Inventory app request");
 	if( !p ){
+		fr->negative(ERPARAM);
 		PDEBUG(DERR,"DB Inventory: eror !p");    
 		return -1;
 	}
 	if( db->check_exist((unit)p->unit) ){
 		PDEBUG(DERR,"DB Inventory: error check exist");
-		fr->negative();
+		fr->negative(ERNOELEM);
 		return 0;
 	}
-	PDEBUG(DINFO,"DB Inventory: form response");	    
-	fr->response();
 	PDEBUG(DINFO,"DB Inventory: prisvaivanie");
 	p->eoc_softw_ver = db->units[p->unit-1]->eoc_softw_ver();
 	p->inv = db->units[p->unit-1]->inventory_info();
@@ -427,43 +430,43 @@ _appreq_endpcur(EOC_db *db,app_frame *fr)
 
 	PDEBUG(DINFO,"DB: Endpoint current app request");
 	if( !p ){
+		fr->negative(ERPARAM);
 		PDEBUG(DERR,"DB Endp cur: eror !p");    
 		return -1;
 	}
 	if( !(loop = db->check_exist((unit)p->unit,(side)p->side,p->loop)) ){
 		PDEBUG(DERR,"DB Endp cur: error check exist: unit(%d) side(%d) loop(%d)",
 			   p->unit,p->side,p->loop);	
-		fr->negative();
+		fr->negative(ERNOELEM);
 		return 0;
 	}
 	PDEBUG(DINFO,"DB Endp cur: form response");
 	if( time(&cur) < 0 ){
-		fr->negative();
+		fr->negative(ERUNEXP);
 		return 0;
 	}
     
-	fr->response();
 	p->cur_attn = loop->cur_attn();
 	p->cur_snr = loop->cur_snr();
 	p->total = loop->cur_counters();
 	p->cur_status = loop->cur_status();
 
+	// Relative counters
+	p->relative = loop->cur_tcounters();
+	p->relative_ts = 0;
+	PDEBUG(DERR,"RELATIVE_TS1=%d, LOOP=%d",p->relative_ts,loop->cur_ttstamp());
+	p->relative_ts = loop->cur_ttstamp();
+	PDEBUG(DERR,"RELATIVE_TS2=%d",p->relative_ts);
+
+	// Current 15-min interval
 	loop->m15_counters(0,elem);
 	p->cur15min = elem.cntrs;
 	p->cur_15m_elaps = cur - elem.tstamp;
-	/*
-	  PDEBUG(DINFO,"ENDP 15 MIN: cur=%d, tstamp = %d",cur,elem.tstamp);
-    
-	  PDEBUG(DINFO,"ENDP 15 MIN: cur=%s, tstamp = %s",
-	  asctime(localtime(&cur)),asctime(localtime(&elem.tstamp)) );
-	*/
-	PDEBUG(DINFO,"ENDP CUR: es=%d",p->cur15min.es );
-
+	// Current 1Day interval
 	loop->d1_counters(0,elem);
 	p->cur1day = elem.cntrs;
 	p->cur_1d_elaps = cur - elem.tstamp;
-
-
+	PDEBUG(DERR,"RELATIVE_TS3=%d",p->relative_ts);
 	return 0;
 }
 
@@ -476,12 +479,13 @@ _appreq_endp15min(EOC_db *db,app_frame *fr)
 
 	PDEBUG(DINFO,"DB: Endpoint 15 min app request");
 	if( !p ){
+		fr->negative(ERPARAM);
 		PDEBUG(DERR,"DB Endp 15min: eror !p");
 		return -1;
 	}
 	if( !(loop = db->check_exist((unit)p->unit,(side)p->side,p->loop)) ){
 		PDEBUG(DERR,"DB Endp 15 min: error check exist");
-		fr->negative();
+		fr->negative(ERNOELEM);
 		return 0;
 	}
 	PDEBUG(DINFO,"DB Endp 15min: form response");
@@ -489,26 +493,33 @@ _appreq_endp15min(EOC_db *db,app_frame *fr)
 	switch(fr->type()){
 	case APP_GET:
 		if( loop->m15_counters(p->int_num,elem) ){
-			fr->negative();
+			fr->negative(ERNOELEM);
 			return 0;
 		}
 		p->cntrs = elem.cntrs;
-		fr->response();
 		return 0;
 	case APP_GET_NEXT:
 		{
-			int int_num = p->int_num;
-			if( loop->m15_nx_counters(int_num,elem) ){
-				fr->negative();
-				return 0;
-			}
+			PDEBUG(DERR,"Get nonzero interval");
+			int int_num = p->int_num - 1;
+			int flag = 0;
+			do{
+				int_num++;
+				PDEBUG(DERR,"Check %d interval",int_num);
+				if( loop->m15_nx_counters(int_num,elem) ){
+					PDEBUG(DERR,"Error checking %d interval",int_num);
+					fr->negative(ERNOELEM);
+					return 0;
+				}
+				flag = elem.cntrs.es + elem.cntrs.ses + elem.cntrs.crc + elem.cntrs.losws + elem.cntrs.uas;
+				PDEBUG(DERR,"Interval %d exist, flag=%d",int_num,flag);
+			}while( !flag );
 			p->cntrs = elem.cntrs;
 			p->int_num = int_num;
-			fr->response();
 			return 0;
 		}
 	default:
-		fr->negative();
+		fr->negative(ERTYPE);
 		return 0;
 	}
 }
@@ -522,12 +533,13 @@ _appreq_endp1day(EOC_db *db,app_frame *fr)
 
 	PDEBUG(DINFO,"DB: Endpoint 1 day app request");
 	if( !p ){
+		fr->negative(ERPARAM);
 		PDEBUG(DERR,"DB Endp 1 day: eror !p");    
 		return -1;
 	}
 	if( !(loop = db->check_exist((unit)p->unit,(side)p->side,p->loop)) ){
 		PDEBUG(DERR,"DB Endp 1 day: error check exist");
-		fr->negative();
+		fr->negative(ERNOELEM);
 		return 0;
 	}
 	PDEBUG(DINFO,"DB Endp 1 day: form response");
@@ -535,26 +547,33 @@ _appreq_endp1day(EOC_db *db,app_frame *fr)
 	switch(fr->type()){
 	case APP_GET:
 		if( loop->d1_counters(p->int_num,elem) ){
-			fr->negative();
+			fr->negative(ERNOELEM);
 			return 0;
 		}
 		p->cntrs = elem.cntrs;
-		fr->response();
 		return 0;
 	case APP_GET_NEXT:
 		{
-			int int_num = p->int_num;
-			if( loop->d1_nx_counters(int_num,elem) ){
-				fr->negative();
-				return 0;
-			}
+			int int_num = p->int_num - 1;
+			int flag = 0;
+			PDEBUG(DERR,"Get-NEXT");
+			do{
+				int_num++;
+				PDEBUG(DERR,"Process int#%d",int_num);
+				if( loop->d1_nx_counters(int_num,elem) ){
+					fr->negative(ERNOELEM);
+					PDEBUG(DERR,"Fail at int#%d",int_num);
+					return 0;
+				}
+				flag = elem.cntrs.es + elem.cntrs.ses + elem.cntrs.crc + elem.cntrs.losws + elem.cntrs.uas;
+				PDEBUG(DERR,"Int#%d -ok, flag=%d",int_num,flag);
+			}while( !flag );
 			p->cntrs = elem.cntrs;
 			p->int_num = int_num;
-			fr->response();
 			return 0;
 		}
 	default:
-		fr->negative();
+		fr->negative(ERTYPE);
 		return 0;
 	}
 }
@@ -576,23 +595,22 @@ _appreq_unitmaint(EOC_db *db,app_frame *fr)
 int EOC_db::
 _appreq_cntrst(EOC_db *db,app_frame *fr)
 {
-	endp_cntrst *p = (endp_cntrst*)fr->payload_ptr();
-	EOC_side *s;
+	loop_rcntrst_payload *p = (loop_rcntrst_payload*)fr->payload_ptr();
+	EOC_loop *l;
 
-	PDEBUG(DINFO,"DB: Endpoint counters reset");
+	PDEBUG(DERR,"DB: Endpoint counters reset");
 	if( !p ){
+		fr->negative(ERPARAM);
 		PDEBUG(DERR,"Error !p");    
 		return -1;
 	}
-	s = db->check_exist((unit)p->unit,(side)p->side);
-	if( !s ){
+	if( !(l=db->check_exist((unit)p->unit,(side)p->side,p->loop)) ){
 		PDEBUG(DERR,"DB Endpoint reset counters: error check exist: unit(%d) side(%d)",
 			   p->unit,p->side);	
-		fr->negative();
+		fr->negative(ERNOELEM);
 		return 0;
 	}
-	PDEBUG(DINFO,"DB Endpoint reset counters: form response");
-	fr->response();
-	s->reset_counters();
+	PDEBUG(DERR,"DB Endpoint reset counters: form response");
+	l->reset_tcounters();
 	return 0;
 }

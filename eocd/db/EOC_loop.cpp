@@ -52,21 +52,23 @@ shift_rings(){
         
     cur_int_tm = cur_tm;
     cur_int_tm.tm_min = (((int)cur_int_tm.tm_min)/EOC_15MIN_INT_LEN)*EOC_15MIN_INT_LEN;
-    u8 _15m_int = (_15m_tm.tm_min + _15m_tm.tm_hour*60)/EOC_15MIN_INT_LEN;
-    u8 _15m_int_cur = (cur_tm.tm_min + cur_tm.tm_hour*60)/EOC_15MIN_INT_LEN;
-    int shift_num = modulo_diff(_15m_int,_15m_int_cur,EOC_15MIN_INTS,"15m");
-    _15min_ints.shift(shift_num);
+    int _15m_int = (_15m_tm.tm_min + _15m_tm.tm_hour*60 + _15m_tm.tm_yday*60*24 )/EOC_15MIN_INT_LEN;
+    int _15m_int_cur = (cur_tm.tm_min + cur_tm.tm_hour*60 + cur_tm.tm_yday*60*24)/EOC_15MIN_INT_LEN;
+    int shift_num = int_diff(_15m_int,_15m_int_cur,EOC_15MIN_INTS,"15m");
+	PDEBUG(DERR,"SHIFT=%d,cur=%d,last=%d",shift_num,_15m_int_cur,_15m_int);
     if( shift_num ){
+		PDEBUG(DERR,"----------- Shift 15MINUTES ---------------");
+		update_mon_sec();
+		_15min_ints.shift(shift_num);
 		time(&_15m);
 		get_localtime(&_15m,_15m_tm);
 		_15m_tm.tm_min = (((int)_15m_tm.tm_min)/EOC_15MIN_INT_LEN)*EOC_15MIN_INT_LEN;
 		_15m_tm.tm_sec = 0;    
 		_15min_ints[0]->tstamp = mktime(&_15m_tm);
-	
     }
 	
     if( _1d_tm.tm_year == cur_tm.tm_year ){
-	
+		PDEBUG(DERR,"----------- Shift 1DAYS ---------------");
 		printf("shift days: sshift_val=%d\n",
 			   _1d_tm.tm_yday - cur_tm.tm_yday);
         shift_num = cur_tm.tm_yday - _1d_tm.tm_yday;
@@ -77,8 +79,9 @@ shift_rings(){
 		_1d_tm.tm_hour = 0;
 		time_t cur_ts = mktime(&_1d_tm);
 		// Monitor Seconds counter update
-        _1day_ints.shift(shift_num);
-        if( shift_num ){
+		if( shift_num ){
+			// update_mon_sec(); - dont need it, because in 15min part all work is done
+			_1day_ints.shift(shift_num);       
 			_1day_ints[0]->tstamp = cur_ts;
 		}		
     }else{
@@ -127,11 +130,11 @@ short_status(s8 snr_margin)
     shift_rings();	
     // change online data
     state.snr_marg = snr_margin;
-	if( lstate ){
-		time_t cur;
-		time(&cur);
-		_1day_ints[0]->cntrs.mon_sec += cur - moni_ts;
-	}
+
+	PDEBUG(DERR,"Lstate=%d",lstate);
+	// Monitoring seconds
+	update_mon_sec();
+
 	PDEBUG(DERR,"SHORT INFO: snr=%d\n",snr_margin);
 }
 
@@ -147,8 +150,7 @@ full_status(side_perf *info)
 		memcpy(&last_msg,info,sizeof(side_perf));
 	    state.loop_attn = info->loop_attn;
     	state.snr_marg = info->snr_marg;
-		goto exit; // DEBUG, TODO: delete
-		//		return 0; 
+		goto exit;
 	}
     status_diff(info,cntrs);
     shift_rings();	
@@ -158,13 +160,11 @@ full_status(side_perf *info)
     setup_cur_status(info);	
     // Change counters
     state.elem.addit(cntrs);
+	tstate.addit(cntrs);
     _15min_ints[0]->addit(cntrs);
     _1day_ints[0]->addit(cntrs);
-	if( lstate ){
-		time_t cur;
-		time(&cur);
-		_1day_ints[0]->cntrs.mon_sec += cur - moni_ts;
-	}
+	// Monitoring seconds
+	update_mon_sec();
  exit:
     PDEBUG(DERR,"FULL STATUS:\n"
 		   "\tinfo: es(%u) ses(%u) crc(%u) losws(%u) uas(%u)\n"

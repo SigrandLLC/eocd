@@ -5,6 +5,7 @@ app_frame(app_ids id,app_types type,roles role,u8 act_seconds,char *dname){
 	u32 psize,csize;
 	int offs;
 	if( (offs = size_by_id(id,type,psize,csize) ) <0 ){
+		PDEBUG(DERR,"Wrong size");
 	    buf = NULL;
 	    buf_size = 0;
 	    return;
@@ -45,7 +46,8 @@ app_frame(char *b,int size){
         return;
     }
     if( (hdr->psize != psize) || (hdr->csize != csize) ){
-        PDEBUG(DERR,"Error in app_frame header");
+        PDEBUG(DERR,"Error in app_frame header: psize=(%d not %d), csize=(%d not %d)",
+			   hdr->psize,psize,hdr->csize,csize);
         buf = NULL;
         buf_size = 0;
     }
@@ -104,17 +106,21 @@ size_by_id(app_ids id,app_types type,u32 &psize,u32 &csize)
         psize = ENDP_MAINT_PAY_SZ;
         csize = ENDP_MAINT_CH_SZ;
         break;
-    case APP_SPAN_CPROF:
-		psize = SPAN_CONF_PROF_PAY_SZ;
-		csize = SPAN_CONF_PROF_CH_SZ;
+    case APP_CPROF:
+		psize = CPROF_PAY_SZ;
+		csize = CPROF_CH_SZ;
+		break;
+    case APP_LIST_CPROF:
+		psize = CPROF_LIST_PAY_SZ;
+		csize = CPROF_LIST_CH_SZ;
 		break;
     case APP_ADD_CPROF:
-		psize = SPAN_ADD_CPROF_PAY_SZ;
-		csize = SPAN_ADD_CPROF_CH_SZ;
+		psize = CPROF_ADD_PAY_SZ;
+		csize = CPROF_ADD_CH_SZ;
 		break;
     case APP_DEL_CPROF:
-		psize = SPAN_DEL_CPROF_PAY_SZ;
-		csize = SPAN_DEL_CPROF_CH_SZ;
+		psize = CPROF_DEL_PAY_SZ;
+		csize = CPROF_DEL_CH_SZ;
 		break;
     case APP_ADD_CHAN:
 		psize = CHAN_ADD_PAY_SZ;
@@ -127,6 +133,10 @@ size_by_id(app_ids id,app_types type,u32 &psize,u32 &csize)
     case APP_CHNG_CHAN:
 		psize = CHAN_CHNG_PAY_SZ;
 		csize = CHAN_CHNG_CH_SZ;
+		break;
+    case APP_LOOP_RCNTRST:
+		psize = LOOP_RCNTRST_PAY_SZ;
+		csize = LOOP_RCNTRST_CH_SZ;
 		break;
     default:
         return -1;

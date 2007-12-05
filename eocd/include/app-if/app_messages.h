@@ -8,12 +8,13 @@
 
 
 typedef enum { APP_SPAN_NAME=0,APP_SPAN_PARAMS,APP_SPAN_CONF,APP_SPAN_STATUS,
-			   APP_INVENTORY,APP_ENDP_CONF,APP_ENDP_CUR,APP_ENDP_15MIN,
-			   APP_ENDP_1DAY,APP_ENDP_MAINT,APP_UNIT_MAINT,APP_SPAN_CPROF,
-			   APP_ENDP_APROF,APP_ENDP_CNTRST,APP_ADD_CHAN,APP_DEL_CHAN,
-			   APP_CHNG_CHAN, APP_ADD_CPROF,APP_DEL_CPROF 
+			   APP_INVENTORY, APP_ENDP_CONF, APP_ENDP_CUR, APP_ENDP_15MIN,
+			   APP_ENDP_1DAY, APP_ENDP_MAINT, APP_UNIT_MAINT, APP_CPROF,
+			   APP_LIST_CPROF, APP_ADD_CPROF, APP_DEL_CPROF, APP_LOOP_RCNTRST,
+			   APP_ADD_CHAN, APP_DEL_CHAN, APP_CHNG_CHAN, APP_ENDP_APROF
 } app_ids;
-#define app_ids_num 13
+
+#define app_ids_num 20
 
 typedef enum { APP_SET,APP_GET,APP_GET_NEXT } app_types;
 
@@ -24,6 +25,7 @@ typedef enum { APP_SET,APP_GET,APP_GET_NEXT } app_types;
 
 #define SPAN_NAMES_NUM 4
 #define SPAN_NAME_LEN 32
+
 typedef struct{
     u8 filled:7;
     u8 last_msg:1; 
@@ -89,6 +91,8 @@ typedef struct {
     s32 cur_snr;
     shdsl_status_t cur_status;
     counters_t total;
+    counters_t relative;
+	time_t relative_ts;
     u32 cur_15m_elaps;
     counters_t cur15min;
     u32 cur_1d_elaps;    
@@ -148,23 +152,23 @@ typedef struct{
 
 typedef struct{
     char pname[SNMP_ADMIN_LEN+1];
-} span_add_cprof_payload;
-#define SPAN_ADD_CPROF_PAY_SZ sizeof(span_add_cprof_payload)
-#define SPAN_ADD_CPROF_CH_SZ 0
+} cprof_add_payload;
+#define CPROF_ADD_PAY_SZ sizeof(cprof_add_payload)
+#define CPROF_ADD_CH_SZ 0
 
 
 typedef struct{
     char pname[SNMP_ADMIN_LEN+1];
-} span_del_cprof_payload;
-#define SPAN_DEL_CPROF_PAY_SZ sizeof(span_del_cprof_payload)
-#define SPAN_DEL_CPROF_CH_SZ 0
+} cprof_del_payload;
+#define CPROF_DEL_PAY_SZ sizeof(cprof_del_payload)
+#define CPROF_DEL_CH_SZ 0
 
 
 typedef struct{
     char pname[SNMP_ADMIN_LEN+1];
     span_conf_profile_t conf;
-} span_conf_prof_payload;
-#define SPAN_CONF_PROF_PAY_SZ sizeof(span_conf_prof_payload)
+} cprof_payload;
+#define CPROF_PAY_SZ sizeof(cprof_payload)
 
 typedef struct{
     u8 annex :1;
@@ -174,8 +178,7 @@ typedef struct{
     u8 clk:1;
     u8 line_probe:1;
     u8 remote_cfg:1;
-    u8 min_rate:1;
-    u8 max_rate:1;
+    u8 rate:1;
     s8 cur_marg_down:1;
     s8 worst_marg_down:1;
     s8 cur_marg_up:1;
@@ -184,8 +187,18 @@ typedef struct{
     u8 use_worst_down :1;                                                  
     u8 use_cur_up :1;                                                     
     u8 use_worst_up :1;
-} span_conf_prof_changes;
-#define SPAN_CONF_PROF_CH_SZ sizeof(span_conf_prof_changes)
+} cprof_changes;
+#define CPROF_CH_SZ sizeof(cprof_changes)
+
+
+#define PROF_NAMES_NUM 8
+typedef struct{
+    u8 filled:7;
+    u8 last_msg:1; 
+    char pname[PROF_NAMES_NUM][SNMP_ADMIN_LEN+1];
+} cprof_list_payload;
+#define CPROF_LIST_PAY_SZ sizeof(cprof_list_payload)
+#define CPROF_LIST_CH_SZ 0
 
 //--------------- Endpoint Alarm -----------------//
 
@@ -217,8 +230,10 @@ typedef struct{
 typedef struct{
     u8 unit;
     u8 side;
-} endp_cntrst;
-#define ENDP_CNTRST sizeof(endp_cntrst)
+	u8 loop;
+} loop_rcntrst_payload;
+#define LOOP_RCNTRST_PAY_SZ sizeof(loop_rcntrst_payload)
+#define LOOP_RCNTRST_CH_SZ 0
 
 //----------- Channel add/del/change -------------//
 

@@ -7,7 +7,7 @@
 struct app_comm;
 struct app_frame;
 
-struct app_comm *init_comm();
+struct app_comm *init_comm(int q);
 char *comm_alloc_request(app_ids id,app_types type,char *chname,struct app_frame **fr);
 struct app_frame *comm_request(struct app_comm *comm,struct app_frame *fr);
 char *comm_frame_payload(struct app_frame *fr);

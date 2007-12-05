@@ -173,8 +173,7 @@ read_config()
 				return -1;
 			}
 			int wires = s[i]["wires"];
-			int min_rate = s[i]["minRate"];
-			int max_rate = s[i]["maxRate"];
+			int rate = s[i]["rate"];
 			int annex = s[i]["annex"];
 			int power = s[i]["powerSource"];
 			int ref_clock = s[i]["refClock"];
@@ -254,8 +253,7 @@ read_config()
 			nprof->conf.clk = (clk_t)ref_clock;
 			nprof->conf.line_probe = (line_probe_t)line_probe;
 			// ????	    nprof->conf.remote_cfg = (remote_cfg_t)rem_cfg; 
-			nprof->conf.min_rate = max_rate;
-			nprof->conf.max_rate = min_rate;
+			nprof->conf.rate = rate;
 
 			nprof->conf.use_cur_down = use_cur_down;
 			nprof->conf.use_worst_down = use_worst_down;
@@ -576,12 +574,9 @@ write_config()
 			// Channel name
 			cprofs[i].add("name",TypeString);
 			cprofs[i]["name"] = p->name;
-			// Min rate
-			cprofs[i].add("minRate",TypeInt);
-			cprofs[i]["minRate"] = (int)(p->conf.min_rate);
-			// Max rate
-			cprofs[i].add("maxRate",TypeInt);
-			cprofs[i]["maxRate"] = (int)(p->conf.max_rate);
+			// Rate
+			cprofs[i].add("rate",TypeInt);
+			cprofs[i]["rate"] = (int)(p->conf.rate);
 			// Annex
 			cprofs[i].add("annex",TypeInt);
 			cprofs[i]["annex"] = p->conf.annex;
@@ -729,15 +724,23 @@ app_listen(int seconds)
 		}
 		PDEBUG(DERR,"Get new message");
 		while( (size = app_srv.recv(conn,buff)) ){ 
+			// Form & check incoming request
 			app_frame fr(buff,size);
 			if( !fr.frame_ptr() ){
 				delete buff;
+				PDEBUG(DERR,"Error request");
 				continue; 
 			}
+
+			// Fill response payload
 			if( ret = app_request(&fr) ){
+				PDEBUG(DERR,"Failed to serv app request");
 				continue;
 			}
+
+			// Form response
 			fr.response();
+			// Send response
 			ret = app_srv.send(conn,fr.frame_ptr(),fr.frame_size());
 		}
 		time(&cur);
@@ -751,13 +754,16 @@ app_request(app_frame *fr)
 	if( fr->role() != app_frame::REQUEST )
 		return -1;
     
-	PDEBUG(DINFO,"App request, ID = %d",fr->id());
+	PDEBUG(DERR,"App request, ID = %d",fr->id());
 	switch( fr->id() ){
 	case APP_SPAN_NAME:
 		return app_spanname(fr);
-	case APP_SPAN_CPROF:
+	case APP_CPROF:
 		PDEBUG(DERR,"APP_SPAN_CPROF");
-		return app_spanconf_prof(fr);
+		return app_cprof(fr);
+	case APP_LIST_CPROF:
+		PDEBUG(DERR,"APP_SPAN_CPROF_LIST");
+		return app_list_cprof(fr);
 	case APP_ADD_CPROF:
 		PDEBUG(DERR,"APP_ADD_CPROF");
 		return app_add_cprof(fr);
@@ -778,6 +784,7 @@ app_request(app_frame *fr)
 		return 0;
 	}
 
+	PDEBUG(DERR,"Channel request");
 	if( fr->chan_name() )
 		return app_chann_request(fr);
 	return -1;
@@ -841,14 +848,17 @@ app_chann_request(app_frame *fr)
 		return 0;
 	}
 	EOC_engine_act *eng_a = (EOC_engine_act *)eng;
+	PDEBUG(DERR,"Engine request");
 	eng_a->app_request(fr);
 	return 0;
 }
 
+// -------------- Span configuration profiles requests ----------------//
+
 int EOC_main::
-app_spanconf_prof(app_frame *fr)
+app_cprof(app_frame *fr)
 {
-	span_conf_prof_payload *p = (span_conf_prof_payload*)fr->payload_ptr();
+	cprof_payload *p = (cprof_payload*)fr->payload_ptr();
 	span_conf_profile_t *mconf = &p->conf;
 	int len = strnlen(p->pname,SNMP_ADMIN_LEN+1);
 
@@ -896,7 +906,7 @@ app_spanconf_prof(app_frame *fr)
 		}
 		span_conf_profile_t *pconf = &prof->conf;
 		// Changes
-		span_conf_prof_changes *c = (span_conf_prof_changes *)fr->changelist_ptr();
+		cprof_changes *c = (cprof_changes *)fr->changelist_ptr();
 		
 		if( c->annex ){
 			pconf->annex = mconf->annex;
@@ -932,11 +942,8 @@ app_spanconf_prof(app_frame *fr)
 			pconf->use_worst_up = mconf->use_worst_up;
 		}
 
-		if( c->min_rate ){
-			pconf->min_rate = mconf->min_rate;
-		}
-		if( c->max_rate ){
-			pconf->max_rate = mconf->max_rate;
+		if( c->rate ){
+			pconf->rate = mconf->rate;
 		}
 		if( c->cur_marg_down ){
 			pconf->cur_marg_down = mconf->cur_marg_down;
@@ -958,9 +965,64 @@ app_spanconf_prof(app_frame *fr)
 }     
 
 int EOC_main::
+app_list_cprof(app_frame *fr)
+{
+	cprof_list_payload *p = (cprof_list_payload*)fr->payload_ptr();
+
+	switch(fr->type()){
+	case APP_GET:
+	case APP_GET_NEXT:{
+		conf_profile *prof;
+		int len;
+		PDEBUG(DERR,"start,pname[0][0]=%d",(int)p->pname[0][0]);
+		if( (len=strnlen(p->pname[0],SNMP_ADMIN_LEN)) ){ 
+			// if first name isn't zero
+			PDEBUG(DERR,"requested prof=%s\n",p->pname[0]);
+			prof = (conf_profile *)conf_profs.find(p->pname[0],len);
+			if( !prof ){
+				fr->negative(ERPNEXIST);
+				return 0;
+			}
+			PDEBUG(DERR,"prof-name=%s",prof->name);
+			prof = (conf_profile*)conf_profs.next(prof->name,prof->nsize);
+		}else{
+			PDEBUG(DERR,"prof-name=NULL");
+			prof = (conf_profile *)conf_profs.first();
+			if( !prof ){
+				fr->negative(ERPNEXIST);
+				return 0;
+			}
+		}
+		if( prof )
+			PDEBUG(DERR,"Fill response for %s",prof->name);
+		int filled = 0;
+		while( prof && filled<PROF_NAMES_NUM){
+			int cp_len = (prof->nsize>SNMP_ADMIN_LEN) ? SNMP_ADMIN_LEN : prof->nsize+1;
+			strncpy(p->pname[filled],prof->name,cp_len+1);
+			PDEBUG(DERR,"add %s,cp_len=%d",prof->name,cp_len);
+			filled++;
+			prof = (conf_profile*)conf_profs.next(prof->name,prof->nsize);
+		}
+		p->filled = filled;
+		p->last_msg = ( prof && (filled = PROF_NAMES_NUM) ) ? 0 : 1;
+
+
+		for(int i=0;i<filled;i++)
+			PDEBUG(DERR,"pname[%d]=%s",i,p->pname[i]);
+
+
+		return 0;
+	}
+	}
+	fr->negative(ERTYPE);
+	return 0;
+}
+
+
+int EOC_main::
 app_add_cprof(app_frame *fr)
 {
-	span_add_cprof_payload *p = (span_add_cprof_payload*)fr->payload_ptr();
+	cprof_add_payload *p = (cprof_add_payload*)fr->payload_ptr();
 
 	switch( fr->type() ){
 	case APP_SET:
@@ -996,8 +1058,7 @@ app_add_cprof(app_frame *fr)
 	nprof->conf.power = noPower;
 	nprof->conf.clk = localClk;
 	nprof->conf.line_probe = disable;
-	nprof->conf.min_rate = 192;
-	nprof->conf.max_rate = 192;
+	nprof->conf.rate = 192;
 	nprof->conf.use_cur_down = 0;
 	nprof->conf.use_worst_down = 0;
 	nprof->conf.use_cur_up = 0;
@@ -1014,7 +1075,7 @@ app_add_cprof(app_frame *fr)
 int EOC_main::
 app_del_cprof(app_frame *fr)
 {
-	span_add_cprof_payload *p = (span_add_cprof_payload*)fr->payload_ptr();
+	cprof_del_payload *p = (cprof_del_payload*)fr->payload_ptr();
 	switch( fr->type() ){
 	case APP_SET:
 		break;
@@ -1026,12 +1087,14 @@ app_del_cprof(app_frame *fr)
 	// check that adding profile not exist already
 	int len = strnlen(p->pname,SNMP_ADMIN_LEN+1);
 	if( !len ){
-		fr->negative(ERPNAME);
+		PDEBUG(DERR,"Profile name zero len");
+		fr->negative(ERPNEXIST);
 		return 0;
 	}
 
 	conf_profile *prof = (conf_profile*)conf_profs.find(p->pname,len);
-	if( !prof ){ // Profile not exist so cannot create
+	if( !prof ){ // Profile not exist so cannot delete
+		PDEBUG(DERR,"Profile %s not exist",prof->name);
 		fr->negative(ERPNEXIST);
 		return 0;
 	}
@@ -1043,6 +1106,7 @@ app_del_cprof(app_frame *fr)
 			const char *cprof = ((EOC_engine_act*)el->eng)->config()->cprof();
 			if( !strncmp(prof->name,cprof,SNMP_ADMIN_LEN) ){
 				// Cannot delete profile - associated with this channel
+				PDEBUG(DERR,"Profile %s is busy",prof->name);
 				fr->negative(ERPBUSY);
 				return 0;
 			}

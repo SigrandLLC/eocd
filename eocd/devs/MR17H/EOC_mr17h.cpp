@@ -214,15 +214,15 @@ cur_config(span_conf_profile_t &cfg,int &mode,int &tcpam)
 	if( (cnt=get_dev_option("rate",buf)) < 0 )
 		return -1;
 	if( cnt ){
-		cfg.max_rate = strtoul(buf,&endp,0);
+		cfg.rate = strtoul(buf,&endp,0);
 		if( buf == endp )
 			return -1;
 		delete[] buf;
 
 	}else{
-		cfg.max_rate = 0;
+		cfg.rate = 0;
 	}
-	PDEBUG(DERR,"Rate=%d",cfg.max_rate);
+	PDEBUG(DERR,"Rate=%d",cfg.rate);
 
 	// Device ANNEX setup
 	if( (cnt=get_dev_option("tcpam",buf)) < 0 )
@@ -253,9 +253,9 @@ configure(span_conf_profile_t &cfg)
 	PDEBUG(DERR,"Master configuration of %s",ifname);
 	if( !cur_config(ocfg,mode,tcpam) ){
 		if( mode == 1 && cfg.annex == ocfg.annex &&
-			cfg.max_rate == ocfg.max_rate ){
-			if( (cfg.max_rate > 3840 && tcpam ==1) ||
-				(cfg.max_rate <= 3840 && tcpam == 0 ) ){
+			cfg.rate == ocfg.rate ){
+			if( (cfg.rate > 3840 && tcpam ==1) ||
+				(cfg.rate <= 3840 && tcpam == 0 ) ){
 				PDEBUG(DERR,"Device configuration left unchanged");
 				return 0;
 			}
@@ -284,11 +284,11 @@ configure(span_conf_profile_t &cfg)
 			return -1;
     }	
     // TODO: pay attension to MIN rate!!!!
-    snprintf(setting,256,"%d",cfg.max_rate);
+    snprintf(setting,256,"%d",cfg.rate);
     if( set_dev_option("rate",setting) )
 		return -1;
     // Уточнить значение!!!!
-    if( cfg.max_rate > 3840 ){
+    if( cfg.rate > 3840 ){
 		if( set_dev_option("tcpam","1") )
 			return -1;
     }else {

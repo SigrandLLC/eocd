@@ -17,7 +17,7 @@ class counters_elem{
 
     counters_elem(){
 		memset(&cntrs,0,sizeof(cntrs));
-		tstamp = 0;
+		tstamp = time(NULL);
     }
     int addit(counters_t cnt){
 		//	printf("addit: %d to es\n",cnt.es);
@@ -28,7 +28,9 @@ class counters_elem{
 		cntrs.uas += cnt.uas;
     }
 	void reset(){
+		PDEBUG(DERR,"reset");
 		memset(&cntrs,0,sizeof(cntrs));
+		tstamp = time(NULL);
 	}
 };
 
@@ -41,6 +43,8 @@ typedef struct {
 } shdsl_current;
 
 
+#define EOC_15MIN_SECS 15*60
+#define EOC_1DAY_SECS 24*60*60
 #define EOC_15MIN_INT_LEN 15
 #define EOC_15MIN_INTS 96
 #define EOC_1DAY_INTS 30
@@ -50,6 +54,7 @@ class EOC_loop{
  protected:
     // current situation
     shdsl_current state;
+	counters_elem tstate;
     EOC_ring_container<counters_elem> _15min_ints;
     EOC_ring_container<counters_elem> _1day_ints;
 	u8 is_first_msg;
@@ -70,9 +75,17 @@ class EOC_loop{
 		return ret;	
     }
 
+    inline int int_diff(u32 val,u32 nval,u32 modulo,char *type){
+		if( val > nval )
+			return 0;
+		if( (nval-val)/modulo )
+			return modulo;
+		return (nval-val)%modulo;
+    }
+
     void status_diff(side_perf *info,counters_t &cntrs);
     int setup_cur_status(side_perf *info);
-    inline int get_localtime(time_t *t,struct tm &ret);
+    int get_localtime(time_t *t,struct tm &ret);
     void shift_rings();
  public:
     EOC_loop();
@@ -83,8 +96,10 @@ class EOC_loop{
     // output interface
     s32 cur_snr(){ return state.snr_marg; }
     s32 cur_attn(){ return state.loop_attn; }
-    counters_t cur_counters(){ return state.elem.cntrs; }
     shdsl_status_t cur_status(){ return state.stat; }
+    counters_t cur_counters(){ return state.elem.cntrs; }
+    counters_t cur_tcounters(){ return tstate.cntrs; }
+    time_t cur_ttstamp(){ return tstate.tstamp; }
     int m15_counters(int index,counters_elem &cntrs){
 		if( !(index < EOC_15MIN_INTS && index>=0) )
 			return -1;
@@ -131,19 +146,63 @@ class EOC_loop{
 
 	// Link status change handling
 	inline void link_up(){
+		PDEBUG(DERR,"LINK IS UP!!!!!!!!!!!!!!!!");
 		if( lstate )
 			return;
 		lstate = 1;
 		is_first_msg = 1;
+		moni_ts = time(NULL);
 	}
 	inline void link_down(){
+		PDEBUG(DERR,"LINK IS DOWN!!!!!!!!!!!!!!!!");
 		if( !lstate )
 			return;
 		lstate  = 0;
 	}
 
-	inline void reset_counters(){
-		state.elem.reset();
+	void update_mon_sec()
+	{
+		time_t cur = time(NULL);
+		
+
+		if( !lstate )
+			return;
+		
+		if( (_15min_ints[0]->tstamp + EOC_15MIN_SECS) > moni_ts ){
+			if( (_15min_ints[0]->tstamp + EOC_15MIN_SECS) < cur ){ 
+				// if 15min interval exceeds. 
+				// If also 1day exceeds => 15min too - so dont need to chech 1day int
+				int bkp = cur;
+				cur = _15min_ints[0]->tstamp + EOC_15MIN_SECS;			
+				_15min_ints[0]->cntrs.mon_sec += cur-moni_ts;
+				_1day_ints[0]->cntrs.mon_sec += cur-moni_ts;
+				moni_ts = cur;
+				PDEBUG(DERR,"Int exceeds: cur=%d,tmp_cur=%d\nmoni_ts=%d",bkp,cur,moni_ts);
+			}else{
+				PDEBUG(DERR,"Normal: cur=%d, moni_ts=%d",cur,moni_ts);
+				_15min_ints[0]->cntrs.mon_sec += cur-moni_ts;
+				_1day_ints[0]->cntrs.mon_sec += cur-moni_ts;
+				moni_ts = cur;
+			}
+			return;
+		}
+
+		if( (_1day_ints[0]->tstamp + EOC_1DAY_SECS) > moni_ts ){
+			if( (_1day_ints[0]->tstamp + EOC_1DAY_SECS) > cur){
+				_1day_ints[0]->cntrs.mon_sec += cur-moni_ts;
+				moni_ts = cur;
+			}else{
+				cur = _1day_ints[0]->tstamp + EOC_1DAY_SECS;
+				_1day_ints[0]->cntrs.mon_sec += cur-moni_ts;
+				moni_ts = cur;
+			}	
+		}
+	}
+
+
+	inline void reset_tcounters(){
+		PDEBUG(DERR,"Reset Counters");
+		tstate.reset();
 	}
 
     // TODO: removethis DEBUG
