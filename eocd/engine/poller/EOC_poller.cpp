@@ -66,29 +66,6 @@ int EOC_poller::
 app_request(app_frame *fr)
 {
     switch(fr->id()){
-    case APP_SPAN_CONF:{
-		switch( fr->type() ){
-		case APP_GET:
-		case APP_GET_NEXT:{
-			PDEBUG(DERR,"SPAN_CONF:");
-			span_conf_payload *p = (span_conf_payload*)fr->payload_ptr();
-			p->nreps = cfg->repeaters();
-			PDEBUG(DERR,"rep = %d",cfg->repeaters());
-			PDEBUG(DERR,"conf prof = %s",cfg->cprof());
-			PDEBUG(DERR,"alarm prof = %s",cfg->aprof());
-			strncpy(p->conf_prof,cfg->cprof(),SNMP_ADMIN_LEN);
-			if( !cfg->aprof() ){
-				strncpy(p->alarm_prof,"no_profile",SNMP_ADMIN_LEN);
-			}else{
-				strncpy(p->alarm_prof,cfg->aprof(),SNMP_ADMIN_LEN);
-			}
-			PDEBUG(DERR,"SPAN_CONF:");
-			break;
-		}
-		}
-		   
-		break;
-	}
 // 	case APP_SPAN_STATUS:{
 // 		span_status_payload *p = (span_status_payload*)fr->payload_ptr();
 // 		p->nreps = db->reg_quan();

@@ -42,8 +42,10 @@ hash_table::find(char *name,int nsize)
 {
     int i = _hash(name);
 
-    if( !table[i].size() ) // hash list is empty
+    if( !table[i].size() ){ // hash list is empty
 		return NULL;
+	}
+
     list<hash_elem *>::iterator p = table[i].begin();
 
     for(;p!=table[i].end();p++){
@@ -165,7 +167,7 @@ hash_table::sort(){
 				// Change sequence in list
 				if( el == head && nel == tail ){ // Have only 2 elements in list
 					tail = el;
-					head = el;
+					head = nel;
 					el->prev = nel;
 					el->next = NULL;
 					nel->next = el;
@@ -181,7 +183,7 @@ hash_table::sort(){
 					tail = el;
 					nel->next = el;
 					nel->prev = el->prev;
-					nel->prev->next = nel;
+					el->prev->next = nel;
 					el->prev = nel;
 					el->next = NULL;
 				}else{

@@ -66,7 +66,7 @@ int app_comm_cli::
 complete_wait()
 {
     if( sfd < 0 ){
-		PDEBUG(DERR,"Error wile initialisation\n");
+		//PDEBUG(DERR,"Error wile initialisation\n");
 		return -1;
     }
 
@@ -79,7 +79,7 @@ int app_comm_cli::
 send(char *buf,size_t size)
 {
     if( sfd < 0 ){
-		PDEBUG(DERR,"Error wile initialisation\n");
+		//PDEBUG(DERR,"Error wile initialisation\n");
 		return -1;
     }
     return _send(sfd,buf,size);
@@ -90,9 +90,8 @@ ssize_t app_comm_cli::
 recv(char *&buf)
 {
     if( sfd < 0 ){
-		PDEBUG(DERR,"Error wile initialisation\n");
+		//PDEBUG(DERR,"Error wile initialisation\n");
 		return -1;
     }
-
     return _recv(sfd,buf);
 }

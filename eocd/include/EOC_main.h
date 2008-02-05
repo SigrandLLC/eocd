@@ -48,9 +48,9 @@ public:
     // Write configuration to config file (when it changes from network)
 //    int write_config();
     // Add (initialise) or change slave channel with name "ch_name"
-    int add_slave(char *ch_name);
+    int add_slave(char *ch_name,char *conf,int app_cfg=1);
     // Add (initialise) or change master channel with name "ch_name"
-    int add_master(char *ch_name, char *conf,char *alarm,int reps,int tick,int app_cfg);
+    int add_master(char *ch_name, char *conf,char *alarm,int reps,int tick,int app_cfg=1);
     //
     int configure_channels();    
     // process channels
@@ -60,6 +60,7 @@ public:
     void app_listen(int);
     int app_request(app_frame *fr);
     int app_spanname(app_frame *fr);
+    int app_spanconf(app_frame *fr);
     int app_chann_request(app_frame *fr);
     int app_cprof(app_frame *fr);
     int app_list_cprof(app_frame *fr);

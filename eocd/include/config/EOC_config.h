@@ -24,6 +24,27 @@ class EOC_config{
 		rep_num = rep;
 		app_cfg = _app_cfg;
 	}
+    EOC_config(hash_table *c,char *cn,int _app_cfg){
+		conf_prof = c;
+		alarm_prof = NULL;
+		cprof_name = cn;
+		cprof_name_old = NULL;
+		aprof_name = NULL;
+		aprof_name_old = NULL;
+		app_cfg = _app_cfg;
+	}
+
+    ~EOC_config(){
+		if( cprof_name )
+			free(cprof_name);
+		if( cprof_name_old )
+			free(cprof_name_old);
+		if( aprof_name )
+			free(aprof_name);
+		if( aprof_name_old )
+			free(aprof_name_old);
+	}
+
     const char *cprof(){return cprof_name;}
     const char *aprof(){return aprof_name;}
     int cprof(char *p){
@@ -66,9 +87,13 @@ class EOC_config{
 		return -1;
 	}
     hash_elem *conf(){
+		if( !conf_prof )
+			return NULL;
 		return conf_prof->find(cprof_name,strlen(cprof_name));
 	}
     hash_elem *alarm(){
+		if( !alarm_prof )
+			return NULL;
 		return alarm_prof->find(aprof_name,strlen(aprof_name));
 	}
     s8 snr_tresh(){ return 0;}

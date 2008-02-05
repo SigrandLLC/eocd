@@ -27,7 +27,7 @@ output_mode mode = NORMAL;
 
 
 typedef enum {NONE,CHANNEL,CONF_PROF} type_t;
-typedef enum {NOACT,ADD,DEL,CHNG} action_t;
+typedef enum {NOACT,ADD,DEL,CHNG,DUMP} action_t;
 app_comm_cli *cli;
 
 void print_usage(char *name)
@@ -50,8 +50,9 @@ void print_usage(char *name)
 		   "  -n  --annex={AnnexA | AnnexB}\tSetup annex\n"
 		   "  -l, --lrate=<rate>\tSet line rate value\n"
 		   "  -f, --pwr-feed={on|off}\tSet SHDSL channel power feed\n"
+		   "  -u, --dump\tDump configuration to conf file (use without other options)\n"
 		   "Output mode (default is user normal):\n"
-		   "  -s, --shell-out\tShell capable output\n"
+		   "  -s, --row-shell\tShell capable output\n"
 		   ,name);
 }
 
@@ -83,7 +84,6 @@ process_channel(char *name,int action,int master,int reg_num,char *cprof,int act
 			print_error("Bad message from eocd\n");
 			goto exit;
 		} 
-		printf("step3\n");
 		if( ret = resp->is_negative() ){ // no such unit or no net_side
 			print_error("Cannot add channel \"%s\": %s\n",name,err_strings[ret-1]);
 			goto exit;
@@ -311,6 +311,35 @@ process_profile(char *name,action_t action,annex_t annex,power_t power,int lrate
 	return 0;
 }	
 
+int dump_configuration()
+{
+	app_frame *req=NULL, *resp=NULL;
+ 	int ret = 0;
+ 	char *buf;
+	u8 add_and_config = 0;
+
+	req = new app_frame(APP_DUMP_CFG,APP_SET,app_frame::REQUEST,1,"");
+	cli->send(req->frame_ptr(),req->frame_size());
+	cli->wait();
+	int size = cli->recv(buf);
+	if( size<=0 ){
+		print_error("Bad message from eocd\n");
+		return 0;
+	}
+	resp = new app_frame(buf,size);
+	if( !resp->frame_ptr() ){
+		print_error("Bad message from eocd\n");
+		return 0;
+	} 
+	if( (ret=resp->is_negative()) ){ // no such unit or no net_side
+		print_error("Cannot dump configuration to disk: %s\n",err_strings[ret-1]);
+		if( mode == SHELL )
+			printf("err_string=\"Cannot dump configuration to disk: %s\"\n",err_strings[ret-1]);				
+		return 0;
+	}
+	return 0;
+}
+
 int
 main(int argc, char *argv[] )
 {
@@ -346,11 +375,12 @@ main(int argc, char *argv[] )
 			{"pwr-feed",1,0,'f'},
 			{"lrate",1,0,'l'},
 			{"row-shell",0,0, 's'},
+			{"dump",0,0, 'u'},
 			{"help", 0, 0, 'h'},
 			{0, 0, 0, 0}
 		};
 
-		int c = getopt_long (argc, argv, "o:a:d:c:m:r:p:v:f:n:l:sh",
+		int c = getopt_long (argc, argv, "o:a:d:c:m:r:p:v:f:n:l:shu",
 							 long_options, &option_index);
         if (c == -1)
     	    break;
@@ -425,11 +455,11 @@ main(int argc, char *argv[] )
 		case 's':
 			mode = SHELL;
 			break;
+		case 'u':
+			action = DUMP;
+			break;
 		}
 	}
-
-	if( type == NONE )	
-		print_usage(argv[0]);
 
 	if( mode == NORMAL ){
 		printf("----------------- Summary cmdline options -------------------\n");
@@ -442,11 +472,22 @@ main(int argc, char *argv[] )
 		printf("----------------- Summary cmdline options -------------------\n");
 	}
 
+	if( type == NONE && action != DUMP ){
+		print_usage(argv[0]);
+		return 0;
+	}
+
     cli = new app_comm_cli(sock_name);
     if( !cli->init_ok() ){
 		print_error("Cannot connect to %s\n",sock_name);
 		return 0;
     }
+
+	if( type == NONE && action == DUMP ){
+		dump_configuration();
+		return 0;
+	}
+
 
 	if( !name ){
 		print_error("Error: action option or option argument is missing\n");

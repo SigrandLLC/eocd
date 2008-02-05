@@ -24,6 +24,8 @@
 
 #include <app-if/err_codes.h>
 
+#define CONF_FILE_NAME "/etc/eocd/eocd.conf"
+
 using namespace libconfig;
 using namespace std;
 //---------------------------------------------------------------------//
@@ -417,17 +419,6 @@ read_config()
 				return -1;
 			}
 
-			// If channel is slave - only responder part
-			if( !master ){
-				if( add_slave(name) ){
-					syslog(LOG_ERR,"(%s): cannot add channel \"%s\" - no such device",
-						   config_file,name);
-					PDEBUG(DERR,"(%s): cannot add channel \"%s\" - no such device",
-						   config_file,name);
-				}    
-				continue;
-			}
-	    
 			char *cprof = strndup(s[i]["conf_profile"],SNMP_ADMIN_LEN);
 			if( !cprof ){
 				syslog(LOG_ERR,"(%s): Not enought memory",
@@ -436,6 +427,7 @@ read_config()
 					   config_file);
 				return -1;
 			}
+
 			if( !conf_profs.find((char*)cprof,strlen(str)) ){
 				syslog(LOG_ERR,"(%s) wrong \"conf_profile\" value in %s channel: %s, no such profile",
 					   config_file,name,cprof);
@@ -443,6 +435,22 @@ read_config()
 					   config_file,name,cprof);
 				return -1;
 			}
+
+			int eocd_apply = 0;
+			try{ eocd_apply = s[i]["apply_conf"]; }
+			catch(...){ eocd_apply = 0; }
+
+			// If channel is slave - only responder part
+			if( !master ){
+				if( add_slave(name,cprof) ){
+					syslog(LOG_ERR,"(%s): cannot add channel \"%s\" - no such device",
+						   config_file,name);
+					PDEBUG(DERR,"(%s): cannot add channel \"%s\" - no such device",
+						   config_file,name);
+				}    
+				continue;
+			}
+	    
 			/*
 			  char *aprof = strndup(s[i]["alarm_profile"],SNMP_ADMIN_LEN);
 			  if( !aprof ){
@@ -467,9 +475,6 @@ read_config()
 				return -1;
 			}
 	    
-			int eocd_apply = 0;
-			try{ eocd_apply = s[i]["apply_conf"]; }
-			catch(...){ eocd_apply = 0; }
 	    
 			PDEBUG(DINFO,"%s: apply config from cfg-file = %d",name,eocd_apply);
 	    
@@ -499,6 +504,7 @@ read_config()
 
 	PDEBUG(DERR,"Clear Channels table from old channels");
 	channels.clear();
+	channels.sort();
 
     return 0;
 }
@@ -536,24 +542,31 @@ write_config()
 			}else if( ch->eng->get_type() == slave ){
 				// We dont need to proceed with other options
 				chans[i]["master"] = 0;
-				i++;
-				el = channels.next(el->name,el->nsize);
-				continue;
 			}else{
 				// Must not happend!
 				syslog(LOG_ERR,"Found unknown device type: %s",ch->eng->get_type());
 				PDEBUG(DERR,"Found unknown device type: %s",ch->eng->get_type());
 			}
 			PDEBUG(DERR,"\tMaster filled");
+
+			// Channel configuration profile
+			PDEBUG(DERR,"CONFPROF=%p",ch->eng->config()->cprof());
+			PDEBUG(DERR,"CONFPROF=%s",ch->eng->config()->cprof());
+			chans[i].add("conf_profile",TypeString);
+			PDEBUG(DERR,"Created");
+			chans[i]["conf_profile"] = ch->eng->config()->cprof();
+			PDEBUG(DERR,"\tConf prof filled");
+
+			if(  ch->eng->get_type() == slave ){
+				i++;
+				el = channels.next(el->name,el->nsize);
+				continue;
+			}
 	  
 			// Channel repeaters num
 			chans[i].add("repeaters",TypeInt);
 			chans[i]["repeaters"] = ((EOC_engine_act*)ch->eng)->config()->repeaters();
 			PDEBUG(DERR,"\tReps filled");
-			// Channel configuration profile
-			chans[i].add("conf_profile",TypeString);
-			chans[i]["conf_profile"] = ((EOC_engine_act*)ch->eng)->config()->cprof();
-			PDEBUG(DERR,"\tConf prof filled");
 			// Channels alarm profile 
 			// 			chans[i].add("alarm_profile",TypeString);
 			// 			chans[i]["alarm_profile"] = ((EOC_engine_act*)ch->eng)->config()->aprof();
@@ -574,6 +587,9 @@ write_config()
 			// Channel name
 			cprofs[i].add("name",TypeString);
 			cprofs[i]["name"] = p->name;
+			// Wires
+			cprofs[i].add("wires",TypeInt);
+			cprofs[i]["wires"] = (int)(p->conf.wires);
 			// Rate
 			cprofs[i].add("rate",TypeInt);
 			cprofs[i]["rate"] = (int)(p->conf.rate);
@@ -609,7 +625,7 @@ write_config()
 
 		PDEBUG(DERR,"Write config to disk");
 		syslog(LOG_NOTICE,"Write configuration to disk (/var/eocd/settings.cache)");
-		cfg.writeFile("/var/eocd/setings.cache");
+		cfg.writeFile((const char *)config_file);
 	}catch(...){
 		syslog(LOG_ERR,"Error while writing configuration to cache");
 		PDEBUG(DERR,"Error while writing configuration to cache");
@@ -618,7 +634,7 @@ write_config()
 }
 
 int EOC_main::
-add_slave(char *name)
+add_slave(char *name,char *cprof,int app_cfg)
 {
 	PDEBUG(DERR,"Add slave %s",name);
 	do{
@@ -637,11 +653,14 @@ add_slave(char *name)
 	EOC_dev_terminal *dev = init_dev(name);
 	if( !dev )
 		return -1;
-	channel_elem *el = new channel_elem(dev);
+	EOC_config *cfg = new EOC_config(&conf_profs,cprof,app_cfg);
+	PDEBUG(DERR,"CONFIG=%p,cprof=%s",cfg,cfg->cprof());
+	channel_elem *el = new channel_elem(dev,cfg);
 	el->name = name;
 	el->nsize = strlen(name);
 	el->is_updated = 1;
 	channels.add(el);
+	channels.sort();
 	return 0;
 }
 
@@ -676,11 +695,13 @@ add_master(char *name,char *cprof, char *aprof,int reps,int tick_per_min,int app
 	if( !dev )
 		return -1;
 	EOC_config *cfg = new EOC_config(&conf_profs,&alarm_profs,cprof,aprof,reps,app_cfg);
+	PDEBUG(DERR,"CONFIG=%p",cfg);
 	channel_elem *el = new channel_elem(dev,cfg,tick_per_min);
 	el->name = name;
 	el->nsize = strlen(name);
 	el->is_updated = 1;
 	channels.add(el);
+	channels.sort();
 	return 0;
 }
 
@@ -689,6 +710,7 @@ configure_channels()
 {
 	channel_elem *el = (channel_elem*)channels.first();
 	while( el ){
+		PDEBUG(DERR,"Configure %s channel",el->name);
 		el->eng->configure(el->name);
 		el = (channel_elem*)channels.next(el->name,el->nsize);
 	}
@@ -758,38 +780,40 @@ app_request(app_frame *fr)
 	switch( fr->id() ){
 	case APP_SPAN_NAME:
 		return app_spanname(fr);
+    case APP_SPAN_CONF:
+		PDEBUG(DERR,"Span Conf case");
+		return app_spanconf(fr);
 	case APP_CPROF:
-		PDEBUG(DERR,"APP_SPAN_CPROF");
+		PDEBUG(DINFO,"APP_SPAN_CPROF");
 		return app_cprof(fr);
 	case APP_LIST_CPROF:
-		PDEBUG(DERR,"APP_SPAN_CPROF_LIST");
+		PDEBUG(DINFO,"APP_SPAN_CPROF_LIST");
 		return app_list_cprof(fr);
 	case APP_ADD_CPROF:
-		PDEBUG(DERR,"APP_ADD_CPROF");
+		PDEBUG(DINFO,"APP_ADD_CPROF");
 		return app_add_cprof(fr);
 	case APP_DEL_CPROF:
-		PDEBUG(DERR,"APP_DEL_CPROF");
+		PDEBUG(DINFO,"APP_DEL_CPROF");
 		return app_del_cprof(fr);
 	case APP_ADD_CHAN:
-		PDEBUG(DERR,"APP_ADD_CHAN");
+		PDEBUG(DINFO,"APP_ADD_CHAN");
 		return app_add_chan(fr);
 	case APP_DEL_CHAN:
-		PDEBUG(DERR,"APP_DEL_CHAN");
+		PDEBUG(DINFO,"APP_DEL_CHAN");
 		return app_del_chan(fr);
 	case APP_CHNG_CHAN:
-		PDEBUG(DERR,"APP_CHANG_CHAN");
+		PDEBUG(DINFO,"APP_CHANG_CHAN");
 		return app_chng_chan(fr);
-	case APP_ENDP_APROF:
-		PDEBUG(DERR,"APP_ENDP_APEOF");
-		return 0;
+	case APP_DUMP_CFG:
+		PDEBUG(DERR,"APP_DUMP_CFG");
+		return write_config();
 	}
 
-	PDEBUG(DERR,"Channel request");
+	PDEBUG(DINFO,"Channel request");
 	if( fr->chan_name() )
 		return app_chann_request(fr);
 	return -1;
 }
-
 
 int EOC_main::
 app_spanname(app_frame *fr)
@@ -816,11 +840,10 @@ app_spanname(app_frame *fr)
 		}
 		int filled = 0;
 		while( el && filled<SPAN_NAMES_NUM){
-			if( el->eng->get_type() == master ){
-				int cp_len = (el->nsize>SPAN_NAME_LEN) ? SPAN_NAME_LEN : el->nsize;
-				strncpy(p->name[filled],el->name,cp_len);
-				filled++;
-			}
+			int cp_len = (el->nsize>SPAN_NAME_LEN) ? SPAN_NAME_LEN : el->nsize;
+			strncpy(p->spans[filled].name,el->name,cp_len);
+			p->spans[filled].t = el->eng->get_type();
+			filled++;
 			el = (channel_elem*)channels.next(el->name,el->nsize);
 		}
 		p->filled = filled;
@@ -829,6 +852,53 @@ app_spanname(app_frame *fr)
 	}
 	}
 	fr->negative(ERTYPE);
+	return 0;
+}
+
+
+int EOC_main::
+app_spanconf(app_frame *fr)
+{
+	span_conf_payload *p = (span_conf_payload*)fr->payload_ptr();
+
+	channel_elem *el;
+
+	if( strnlen(fr->chan_name(),SPAN_NAME_LEN) ){ 
+		// if first name isn't zero
+		el = (channel_elem *)
+			channels.find((char*)fr->chan_name(),strnlen(fr->chan_name(),SPAN_NAME_LEN));
+		if( !el ){
+			fr->negative(ERCHNEXIST);
+			return 0;
+		}
+	}else{
+		fr->negative(ERCHNEXIST);
+	}
+
+	EOC_config *cfg = el->eng->config();
+	PDEBUG(DERR,"cfg=%p",el->eng->config());
+
+	switch( fr->type() ){
+	case APP_GET:
+	case APP_GET_NEXT:{
+		PDEBUG(DERR,"SPAN_CONF:");
+		p->type = el->eng->get_type();
+		p->nreps = cfg->repeaters();
+		PDEBUG(DERR,"rep = %d",cfg->repeaters());
+		if( cfg->cprof() )
+			PDEBUG(DERR,"conf prof = (%p)%s",cfg->cprof(),cfg->cprof());
+		if( cfg->aprof() )
+			PDEBUG(DERR,"alarm prof = %s",cfg->aprof());
+		strncpy(p->conf_prof,cfg->cprof(),SNMP_ADMIN_LEN);
+		if( !cfg->aprof() ){
+			strncpy(p->alarm_prof,"no_profile",SNMP_ADMIN_LEN);
+		}else{
+			strncpy(p->alarm_prof,cfg->aprof(),SNMP_ADMIN_LEN);
+		}
+		PDEBUG(DERR,"SPAN_CONF:");
+		break;
+	}
+	}
 	return 0;
 }
 
@@ -843,6 +913,7 @@ app_chann_request(app_frame *fr)
 		return 0;
 	}
 	EOC_engine *eng = el->eng;
+
 	if( eng->get_type() != master ){ // Channel do not maintain EOC DB
 		fr->negative(ERNODB);
 		return 0;
@@ -1092,13 +1163,15 @@ app_del_cprof(app_frame *fr)
 		return 0;
 	}
 
+	PDEBUG(DERR,"Find deleting profile");
 	conf_profile *prof = (conf_profile*)conf_profs.find(p->pname,len);
-	if( !prof ){ // Profile not exist so cannot delete
-		PDEBUG(DERR,"Profile %s not exist",prof->name);
+	PDEBUG(DERR,"Find success, prof=%p",prof);
+	if( prof == NULL ){ // Profile not exist so cannot delete
+		PDEBUG(DERR,"Profile %s not exist",p->pname);
 		fr->negative(ERPNEXIST);
 		return 0;
 	}
-
+	PDEBUG(DERR,"Find channels");
 	// Check that no channel is associated with this profile
 	channel_elem *el = (channel_elem *)channels.first();
 	while( el ){
@@ -1140,25 +1213,26 @@ app_add_chan(app_frame *fr)
 		return 0;
 	}
 
+	hash_elem *pel = conf_profs.first();
+	if( !pel ){
+		// No configuration profiles!
+		fr->negative(ERPNEXIST);
+		return 0;
+	}
+	char *cprof = strndup(pel->name,SNMP_ADMIN_LEN+1);
+	if( !cprof ){
+		syslog(LOG_ERR,"Not enought memory");
+		PDEBUG(DERR,"Not enought memory");
+		fr->negative(ERNOMEM);
+		return 0;
+	}
+
 	if( !p->master ){
-		if( add_slave(name) ){
+		if( add_slave(name,cprof,1) ){
 			fr->negative(ERNODEV);
 			return 0;
 		}
 	}else{
-		hash_elem *el = conf_profs.first();
-		if( !el ){
-			// No configuration profiles!
-			fr->negative(ERPNEXIST);
-			return 0;
-		}
-		char *cprof = strndup(el->name,SNMP_ADMIN_LEN+1);
-		if( !cprof ){
-			syslog(LOG_ERR,"Not enought memory");
-			PDEBUG(DERR,"Not enought memory");
-			fr->negative(ERNOMEM);
-			return 0;
-		}
 		if( add_master(name,cprof,NULL,0/*repeaters*/,tick_per_min,1/*can apply*/) ){
 			syslog(LOG_ERR,"(%s): cannot add channel \"%s\" - no such device",
 				   config_file,name);
@@ -1168,6 +1242,7 @@ app_add_chan(app_frame *fr)
 			return 0;
 		}
 	}
+
 	configure_channels();
 	return 0;
 }
@@ -1206,7 +1281,7 @@ app_chng_chan(app_frame *fr)
 		break;
 	default: // Only set operation
 		fr->negative(ERTYPE);
-		return 0;
+ 		return 0;
 	}
 
 	PDEBUG(DERR,"Start");
@@ -1223,31 +1298,30 @@ app_chng_chan(app_frame *fr)
 	chan_chng_payload *p;
 	p = (chan_chng_payload *)fr->payload_ptr();
 
+	char *name = strndup(el->name,el->nsize);
+	
+	char *cprof = strndup(el->eng->config()->cprof(),SNMP_ADMIN_LEN+1);
+
+	hash_elem *prof = conf_profs.find(cprof,strnlen(cprof,SNMP_ADMIN_LEN+1));
+	if( !prof ){
+		// No configuration profiles!
+		PDEBUG(DERR,"No configuration profiles");
+		fr->negative(ERNOPROF);
+		return 0;
+	}
+
+	// Change channel status
 	if( p->master_ch ){
 		if( el->eng->get_type() == master && !p->master ){
 			char *name = strndup(el->name,el->nsize);
-			if( add_slave(name) ){
+			PDEBUG(DERR,"Add slave: %s, %s",name,cprof);
+			if( add_slave(name,cprof,1) ){
 				fr->negative(ERNODEV);
 				return 0;
 			}
 			configure_channels();
 			return 0;
 		}else if( el->eng->get_type() == slave && p->master ){
-			char *name = strndup(el->name,el->nsize);
-			hash_elem *prof = conf_profs.first();
-			if( !prof ){
-				// No configuration profiles!
-				PDEBUG(DERR,"No configuration profiles");
-				fr->negative(ERNOPROF);
-				return 0;
-			}
-			char *cprof = strndup(prof->name,SNMP_ADMIN_LEN+1);
-			if( !cprof ){
-				syslog(LOG_ERR,"Not enought memory");
-				PDEBUG(DERR,"Not enought memory");
-				fr->negative(ERNOMEM);
-				return 0;
-			}
 			if( add_master(name,cprof,NULL,0/*repeaters*/,tick_per_min,1/*can apply*/) ){
 				syslog(LOG_ERR,"(%s): cannot add channel \"%s\" - no such device",
 					   config_file,name);
@@ -1275,6 +1349,7 @@ app_chng_chan(app_frame *fr)
 		if( cfg->repeaters(p->rep_num) )
 			ret = -1;
 	}
+
 	PDEBUG(DERR,"Set conf profle");
 	if( p->cprof_ch ){
 		new_changes++;
@@ -1288,6 +1363,7 @@ app_chng_chan(app_frame *fr)
 			cfg->cprof(cprof);
 		}
 	}
+
 	PDEBUG(DERR,"Set can apply");
 	if( p->apply_conf_ch ){
 		new_changes++;

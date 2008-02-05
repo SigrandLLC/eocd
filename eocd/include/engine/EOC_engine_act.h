@@ -19,7 +19,6 @@
 class EOC_engine_act : public EOC_engine {
  protected:
     EOC_poller *poll;
-    EOC_config *cfg;
  public:
     EOC_engine_act(EOC_dev_terminal *d1,EOC_config *cfg,u16 ticks_p_min=0,u16 rmax = 10);
     inline ~EOC_engine_act(){
@@ -27,12 +26,11 @@ class EOC_engine_act : public EOC_engine {
 		if( resp ) delete resp;
 		if( poll ) delete poll;
     }
-	EOC_config *config(){ return cfg; }
+
     int setup_state_act();
     int schedule();
     int register_handlers();
     int app_request(app_frame *fr);
-    int configure(char *ch_name); // Master configuration
 };
 
 #endif

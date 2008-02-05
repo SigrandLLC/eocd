@@ -4,17 +4,16 @@ app_frame::
 app_frame(app_ids id,app_types type,roles role,u8 act_seconds,char *dname){
 	u32 psize,csize;
 	int offs;
+
 	if( (offs = size_by_id(id,type,psize,csize) ) <0 ){
-		PDEBUG(DERR,"Wrong size");
 	    buf = NULL;
 	    buf_size = 0;
 	    return;
 	}
-
 	buf_size = offs;
 	if( !(buf = new char[buf_size]) ){
+		buf = NULL;
 	    buf_size = 0;
-	    PDEBUG(DERR,"Not enought memory");
 	    return;
 	}
 	memset(buf,0,buf_size);
@@ -25,8 +24,9 @@ app_frame(app_ids id,app_types type,roles role,u8 act_seconds,char *dname){
 	hdr->id = (u8)id;
 	hdr->type = (u8)type;
 	hdr->role = (u8)role;
-	if( time(&hdr->tstamp) < 0)
-	    PDEBUG(DERR,"Error getting current time");
+	if( time(&hdr->tstamp) < 0){
+		//   PDEBUG(DERR,"Error getting current time");
+	}
 	hdr->act_sec = act_seconds;
 	memcpy(hdr->dname,dname,strnlen(dname,SPAN_NAME_LEN));
 }
@@ -137,6 +137,10 @@ size_by_id(app_ids id,app_types type,u32 &psize,u32 &csize)
     case APP_LOOP_RCNTRST:
 		psize = LOOP_RCNTRST_PAY_SZ;
 		csize = LOOP_RCNTRST_CH_SZ;
+		break;
+    case APP_DUMP_CFG:
+		psize = DUMP_CFG_PAY_SZ;
+		csize = DUMP_CFG_CH_SZ;
 		break;
     default:
         return -1;

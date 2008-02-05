@@ -50,7 +50,8 @@ void print_usage(char *name)
 		   "                        \tlists names of all profiles"
 		   "  -a, --all-profiles\tInformation about all profiles in system\n"
 		   "  -r, --row-shell\t\tRow shell output (for use in scripts)\n"
-		   "  -v, --relative-rst\t\tReset relative counters\n"
+		   "  -v, --relative-rst\tReset relative counters\n"
+		   "  -w, --show-slaves\tLists slave interfaces (use with -r & -s)\n"
 		   "  -h, --help\t\tThis page\n"
 		   ,name);
 }
@@ -174,6 +175,7 @@ void shell_exact(app_comm_cli &cli,char *chan)
     app_frame *req = new app_frame(APP_SPAN_PARAMS,APP_GET,app_frame::REQUEST,1,chan);
     app_frame *resp;
     char *buf;
+	int ret = 0;
 
     cli.send(req->frame_ptr(),req->frame_size());
     cli.wait();
@@ -184,13 +186,19 @@ void shell_exact(app_comm_cli &cli,char *chan)
     }
     resp = new app_frame(buf,size);
     if( !resp->frame_ptr() ){
-		print_error();
+		print_error("Bad message from server");
 		goto exit;
     } 
     
-    if( resp->is_negative() ){ // no such unit or no net_side
-		print_error();
-		goto exit;
+    if( (ret=resp->is_negative()) ){ // no such unit or no net_side
+		if( ret != ERNODB ){
+			print_error();
+			printf("err_srting=\"(%d) %s\"\n",ret,err_strings[ret-1]);
+			goto exit;
+		}else{
+			shell_spanconf(cli,chan,0);
+			goto exit;
+		}
     }
 
 	{
@@ -245,12 +253,17 @@ void shell_exact(app_comm_cli &cli,char *chan)
 }
 
 
+#define MAX_CHANS 256
 void print_short(app_comm_cli &cli)
 {
     app_frame *req = new app_frame(APP_SPAN_NAME,APP_GET,app_frame::REQUEST,1,"");
     char *buf;
     int flag = 0;
-	char *channels[256];
+	struct {
+		char *name;
+		dev_type t;
+	} channels[MAX_CHANS];
+	
 	int channels_num = 0;
 
 	if( mode != SHELL )
@@ -276,28 +289,29 @@ void print_short(app_comm_cli &cli)
 		}
 	
         span_name_payload *p = (span_name_payload*)resp->payload_ptr();
-		for(int i=0;i<p->filled;i++){
+		for(int i=0;i<p->filled && channels_num < MAX_CHANS;i++){
 			switch( mode ){
 			case NORMAL:
-				print_short_chan(cli,p->name[i]);
+				print_short_chan(cli,p->spans[i].name);
 				break;
 			case SHELL:
-				channels[channels_num++] = strdup(p->name[i]);
+				channels[channels_num].name = strdup(p->spans[i].name);
+				channels[channels_num++].t = p->spans[i].t;
 				break;
 			}
 		}	
 		if( !p->filled )
 			break;
 		flag = !p->last_msg;
-		req->chan_name(p->name[p->filled-1]);
+		req->chan_name(p->spans[p->filled-1].name);
 		delete resp;
     }while( flag );
 	
 	if( mode == SHELL ){
 		printf("eoc_channels=\"");
 		for(int i=0;i<channels_num;i++){
-			printf("%s ",channels[i]);
-			free(channels[i]);
+			printf("%s.%c ",channels[i].name,(channels[i].t==slave) ? 's' : 'm');
+			free(channels[i].name);
 		}
 		printf("\"\n");
 	}
@@ -335,12 +349,13 @@ void print_full(app_comm_cli &cli)
 		for(int i=0;i<p->filled;i++){
 			printf("-----------------------------------------------------\n");
 			_unit = unknown;
-			print_exact(cli,p->name[i]);
+			print_exact(cli,p->spans[i].name);
 		}	
 		if( !p->filled )
 			break;
 		flag = !p->last_msg;
-		req->chan_name(p->name[p->filled-1]);
+		req->chan_name(p->spans
+[p->filled-1].name);
 		delete resp;
     }while( flag );
     delete req;

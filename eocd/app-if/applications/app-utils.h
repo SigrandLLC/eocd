@@ -21,6 +21,7 @@ int print_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum);
 
 //---------- Shell mode output functions -------------//
 int shell_channel(app_comm_cli &cli,char *chan,span_params_payload *p);
+int shell_spanconf(app_comm_cli &cli,char *chan,int type=1);
 int shell_endp_cur(app_comm_cli &cli,char *chan,unit u,side s,int loop);
 int shell_endp_15m(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum);
 int shell_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum);

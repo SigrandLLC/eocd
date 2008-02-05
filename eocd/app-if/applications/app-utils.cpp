@@ -13,6 +13,7 @@ extern "C"{
 #include <generic/EOC_generic.h>
 #include <app-if/app_comm_cli.h>
 #include <app-if/app_frame.h>
+#include "app-utils.h"
 
 // unit-string conversions
 char *
@@ -330,7 +331,7 @@ void shell_error(){
 }
 
 int
-shell_spanconf(app_comm_cli &cli,char *chan)
+shell_spanconf(app_comm_cli &cli,char *chan,int type)
 {
     char *b;
     int size;
@@ -353,7 +354,10 @@ shell_spanconf(app_comm_cli &cli,char *chan)
 		ret = -1;
     }else{
 		span_conf_payload *p1 = (span_conf_payload*)resp->payload_ptr();
-		printf("adm_reg_num=%d\ncprof=%s\naprof=%s\n",p1->nreps,p1->conf_prof,p1->alarm_prof);
+		if (type){
+			printf("adm_reg_num=%d\nnaprof=%s\n",p1->nreps,p1->alarm_prof);
+		}
+		printf("type=%s\ncprof=%s\n",(p1->type==master) ? "master" : "slave",p1->conf_prof);
     }
  exit:
 	if( req )

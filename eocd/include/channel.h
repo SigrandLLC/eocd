@@ -17,8 +17,8 @@ class channel_elem : public hash_elem{
  protected:
  public:
     EOC_engine *eng;
-    channel_elem(EOC_dev_terminal *dev){
-		eng = new EOC_engine(dev);
+    channel_elem(EOC_dev_terminal *dev,EOC_config *c){
+		eng = new EOC_engine(dev,c);
     }
     channel_elem(EOC_dev_terminal *dev,EOC_config *c,u32 tick_per_min){
 		eng = new EOC_engine_act(dev,c,tick_per_min);

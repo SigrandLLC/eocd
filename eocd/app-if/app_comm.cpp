@@ -68,7 +68,7 @@ _send(int fd,char *buf,size_t size)
 {
     size_t nsize;
     if( (nsize=::send(fd,buf,size,0)) != size ){
-        PDEBUG(DERR,"error: %d",nsize); 
+		//        PDEBUG(DERR,"error: %d",nsize); 
         return -EAGAIN;
     }
 

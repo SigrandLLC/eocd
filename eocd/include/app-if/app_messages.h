@@ -11,7 +11,8 @@ typedef enum { APP_SPAN_NAME=0,APP_SPAN_PARAMS,APP_SPAN_CONF,APP_SPAN_STATUS,
 			   APP_INVENTORY, APP_ENDP_CONF, APP_ENDP_CUR, APP_ENDP_15MIN,
 			   APP_ENDP_1DAY, APP_ENDP_MAINT, APP_UNIT_MAINT, APP_CPROF,
 			   APP_LIST_CPROF, APP_ADD_CPROF, APP_DEL_CPROF, APP_LOOP_RCNTRST,
-			   APP_ADD_CHAN, APP_DEL_CHAN, APP_CHNG_CHAN, APP_ENDP_APROF
+			   APP_ADD_CHAN, APP_DEL_CHAN, APP_CHNG_CHAN, APP_ENDP_APROF,
+			   APP_DUMP_CFG
 } app_ids;
 
 #define app_ids_num 20
@@ -26,10 +27,16 @@ typedef enum { APP_SET,APP_GET,APP_GET_NEXT } app_types;
 #define SPAN_NAMES_NUM 4
 #define SPAN_NAME_LEN 32
 
+
+struct span_desc{
+    char name[SPAN_NAME_LEN];
+	dev_type t;
+};
+
 typedef struct{
     u8 filled:7;
     u8 last_msg:1; 
-    char name[SPAN_NAMES_NUM][SPAN_NAME_LEN];
+	struct span_desc spans[SPAN_NAMES_NUM];
 } span_name_payload;
 #define SPAN_NAME_PAY_SZ sizeof(span_name_payload)
 #define SPAN_NAME_CH_SZ 0
@@ -43,6 +50,7 @@ typedef struct{
 #define SPAN_PARAMS_CH_SZ 0
 
 typedef struct{
+	dev_type type;
     s16 nreps;
     char conf_prof[SNMP_ADMIN_LEN+1];
     char alarm_prof[SNMP_ADMIN_LEN+1];
@@ -261,6 +269,12 @@ typedef struct{
 #define CHAN_CHNG_PAY_SZ sizeof(chan_chng_payload)
 #define CHAN_CHNG_CH_SZ 0
 
+// --------- Dump configuration -------------- //
+#define DUMP_CFG_PAY_SZ 1
+#define DUMP_CFG_CH_SZ 0
+
+
 #endif
+
 
 

@@ -12,7 +12,7 @@ mr17h_conf_dir(char *name,char *buf,int max_size){
 
 class EOC_mr17h : public EOC_dev_terminal{
  protected:
-
+	unsigned char pcislot,pcidev;
     //DEBUG
     side_perf perf;
     int perf_changed;
@@ -34,8 +34,7 @@ class EOC_mr17h : public EOC_dev_terminal{
     int get_dev_option(char *name,char *&buf);
 
     int cur_config(span_conf_profile_t &cfg,int &mode,int &tcpam);
-    int configure(span_conf_profile_t &cfg);
-    int configure();
+    int configure(span_conf_profile_t &cfg,int type);
 
     // Statistic info
     // DEBUG

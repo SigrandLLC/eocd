@@ -35,6 +35,8 @@ EOC_mr17h(char *name)
     PDEBUG(DINFO,"MR17H device (%s) successflly initialized\n",name);
     valid = 1;
     
+	// save_pci_info();
+	
     PDEBUG(DINFO,"finish");
 }
 
@@ -46,6 +48,15 @@ EOC_mr17h::
 		delete[] chan_path;
 }
 
+/*
+void EOC_mr17h::
+save_pci_info()
+{
+	
+
+}
+
+*/
 
 int EOC_mr17h::
 send(EOC_msg *m)
@@ -239,23 +250,50 @@ cur_config(span_conf_profile_t &cfg,int &mode,int &tcpam)
 	delete[] buf;
 	PDEBUG(DERR,"tcpam=%d",tcpam);
 
+	cfg.power = noPower;
+	// Device ANNEX setup
+	if( (cnt=get_dev_option("pwron",buf)) < 0 )
+		return -1;
+	if( !strncmp(buf,"0",cnt) )
+		cfg.power = noPower;
+	else if( !strncmp(buf,"1",cnt) )
+		cfg.power = powerFeed;
+	else{
+		PDEBUG(DERR,"Unknown power value %s",buf);
+		delete[] buf;
+		return -1;
+	}
+	delete[] buf;
+	PDEBUG(DERR,"power=%d",cfg.power);
+
+
 	return 0;
 }
 
 // Configure device as STU-C
 int EOC_mr17h::
-configure(span_conf_profile_t &cfg)
+configure(span_conf_profile_t &cfg, int type)
 {
     char setting[256];
 	span_conf_profile_t ocfg;
 	int mode;
 	int tcpam;
+	int need_apply = 0;
+
 	PDEBUG(DERR,"Master configuration of %s",ifname);
 	if( !cur_config(ocfg,mode,tcpam) ){
-		if( mode == 1 && cfg.annex == ocfg.annex &&
-			cfg.rate == ocfg.rate ){
-			if( (cfg.rate > 3840 && tcpam ==1) ||
-				(cfg.rate <= 3840 && tcpam == 0 ) ){
+		
+		if( type == 1 ){ // For master
+			if( mode == 1 && cfg.annex == ocfg.annex &&
+				cfg.rate == ocfg.rate && cfg.power == ocfg.power ){
+				if( (cfg.rate > 3840 && tcpam ==1) ||
+					(cfg.rate <= 3840 && tcpam == 0 ) ){
+					PDEBUG(DERR,"Device configuration left unchanged");
+					return 0;
+				}
+			}
+		}else{ // for slave
+			if( mode == 0 && cfg.power == ocfg.power ){
 				PDEBUG(DERR,"Device configuration left unchanged");
 				return 0;
 			}
@@ -267,8 +305,31 @@ configure(span_conf_profile_t &cfg)
 	PDEBUG(DERR,"Configure device");
 
     // Setup
-    if( set_dev_option("mode","1") )
-		return -1;
+	if( mode != type ){
+		if( type ){
+			if( set_dev_option("mode","1") )
+				return -1;
+		}else{
+			if( set_dev_option("mode","0") )
+				return -1;
+		}
+		need_apply++;
+	}
+
+	switch( cfg.power ){
+	case noPower:
+		set_dev_option("pwron","0");
+		break;
+	case powerFeed:
+		set_dev_option("pwron","1");
+		break;
+	}
+
+	if( !type )
+		goto complete;
+
+	need_apply++;
+
     switch( cfg.annex ){
     case annex_a:
 		if( set_dev_option("annex","0") )
@@ -287,7 +348,7 @@ configure(span_conf_profile_t &cfg)
     snprintf(setting,256,"%d",cfg.rate);
     if( set_dev_option("rate",setting) )
 		return -1;
-    // Уточнить значение!!!!
+
     if( cfg.rate > 3840 ){
 		if( set_dev_option("tcpam","1") )
 			return -1;
@@ -296,32 +357,10 @@ configure(span_conf_profile_t &cfg)
 			return -1;
     }
 
+ complete:
     // Apply configuration    
-    if( set_dev_option("apply_cfg","1") )
+    if( need_apply && set_dev_option("apply_cfg","1") )
 		return -1;
-        
-}
-
-// Configure device as STU-R
-int EOC_mr17h::
-configure()
-{
-	span_conf_profile_t ocfg;
-	int mode;
-	int tcpam;
-
-	PDEBUG(DERR,"Slave configuration of %s",ifname);
-	if( !cur_config(ocfg,mode,tcpam) ){
-		if( mode == 0 )
-			return 0;
-	}
-
-    // Setup
-    if( set_dev_option("mode","0") )
-		return -1;
-    // Apply configuration    
-    if( set_dev_option("apply_cfg","1") )
-		return -1; 
 	return 0;
 }
 
@@ -386,4 +425,3 @@ statistics(int loop,side_perf &stat)
     last_perf = stat;
     return ret;
 }
-

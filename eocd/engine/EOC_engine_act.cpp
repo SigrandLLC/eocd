@@ -34,11 +34,10 @@ register_handlers(){
 
 EOC_engine_act::
 EOC_engine_act(EOC_dev_terminal *d1,EOC_config *c,u16 ticks_p_min,u16 rmax) : 
-    EOC_engine(d1,master,rmax)
+    EOC_engine(d1,c,master,rmax)
 {
     ASSERT( d1 );
     recv_max = rmax;
-    cfg=c;
     poll = new EOC_poller(cfg,ticks_p_min,rtr->loops());
     register_handlers();
 }
@@ -141,45 +140,6 @@ schedule()
     return 0;
 }
 
-int EOC_engine_act::
-configure(char *ch_name)
-{
-    EOC_dev_terminal *dev;
-    PDEBUG(DINFO,"start");
-    switch(type){
-    case master:
-        dev = (EOC_dev_terminal*)rtr->csdev();
-        break;
-    case slave:
-        dev = (EOC_dev_terminal*)rtr->nsdev();
-        break;
-    default:
-        return 0;
-    }
-    if( !dev ){
-        PDEBUG(DERR,"(%s): Error router initialisation",ch_name);
-        return -1;
-    }
-    conf_profile *prof = (conf_profile *)cfg->conf();
-    if( !prof ){
-		syslog(LOG_ERR,"Profile %s not exist. Try revert to old.",cfg->cprof());
-		PDEBUG(DERR,"Profile %s not exist. Try revert to old.",cfg->cprof());
-		cfg->cprof_revert();
-		prof = (conf_profile *)cfg->conf();
-		if( !prof ){
-			syslog(LOG_ERR,"Old profile %s not exist. Failed to configure.",cfg->cprof());
-			PDEBUG(DERR,"Old profile %s not exist. Failed to configure.",cfg->cprof());
-			return -1;
-		}
-    }
-
-	// If this interface configured manually or 
-	// its configuration not changed - return
-    if( !cfg->can_apply() )
-		return 0;
-    // Configure device
-    return dev->configure(prof->conf);
-}
 
 int EOC_engine_act::
 app_request(app_frame *fr){ 
