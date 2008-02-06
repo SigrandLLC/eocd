@@ -64,7 +64,9 @@ class EOC_unit{
 			return -1;
 		return 0;
     }
+
     resp_inventory inventory_info(){ return inv_info; }
+
     void sensor_resp(resp_sensor_state *resp){
 		//	PDEBUG(DINFO,"SAVE SENSOR STATE: s1(%d), s2(%d), s3(%d)",resp->sensor1,resp->sensor2,resp->sensor3);
 		sensors_cur = *resp;
@@ -72,15 +74,21 @@ class EOC_unit{
 		sens2 += resp->sensor2;
 		sens3 += resp->sensor3;
     }
+
 	inline void link_up(){
 		for(int i=0;i<EOC_SIDES_NUM;i++)
 			if(side[i])
 				side[i]->link_up();
 	}
 	inline void link_down(){
-		for(int i=0;i<EOC_SIDES_NUM;i++)
-			if(side[i])
+		PDEBUG(DERR,"unit link down");
+		for(int i=0;i<EOC_SIDES_NUM;i++){
+			if(side[i]){
+				PDEBUG(DERR,"down side %d",i);
 				side[i]->link_down();
+				PDEBUG(DERR,"down side %d - successfully",i);
+			}
+		}
 	}
 };
 

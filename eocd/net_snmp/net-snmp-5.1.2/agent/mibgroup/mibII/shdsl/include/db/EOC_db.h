@@ -40,6 +40,7 @@ class EOC_db{
     static int _appreq_endp1day(EOC_db *db,app_frame *fr);
     static int _appreq_endpmaint(EOC_db *db,app_frame *fr);
     static int _appreq_unitmaint(EOC_db *db,app_frame *fr);
+	static int _appreq_cntrst(EOC_db *db,app_frame *fr);
 
     inline int register_handlers();
 
@@ -55,12 +56,14 @@ public:
     int app_request(app_frame *fr);
     int unit_quan();
     int reg_quan();
-    int link_established();
+
+    int link_state();
+    void link_down();
+    void link_up();
 
     int check_exist(unit u);
     EOC_side *check_exist(unit u,side s);
     EOC_loop *check_exist(unit u,side s,int loop);
-    void link_down();
 };
 
 #endif

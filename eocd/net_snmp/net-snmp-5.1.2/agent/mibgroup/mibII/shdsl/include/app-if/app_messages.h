@@ -8,10 +8,14 @@
 
 
 typedef enum { APP_SPAN_NAME=0,APP_SPAN_PARAMS,APP_SPAN_CONF,APP_SPAN_STATUS,
-	    APP_INVENTORY,APP_ENDP_CONF,APP_ENDP_CUR,APP_ENDP_15MIN,
-	    APP_ENDP_1DAY,APP_ENDP_MAINT,APP_UNIT_MAINT,APP_SPAN_CPROF,
-	    APP_ENDP_APROF } app_ids;
-#define app_ids_num 13
+			   APP_INVENTORY, APP_ENDP_CONF, APP_ENDP_CUR, APP_ENDP_15MIN,
+			   APP_ENDP_1DAY, APP_ENDP_MAINT, APP_UNIT_MAINT, APP_CPROF,
+			   APP_LIST_CPROF, APP_ADD_CPROF, APP_DEL_CPROF, APP_LOOP_RCNTRST,
+			   APP_ADD_CHAN, APP_DEL_CHAN, APP_CHNG_CHAN, APP_ENDP_APROF,
+			   APP_DUMP_CFG
+} app_ids;
+
+#define app_ids_num 20
 
 typedef enum { APP_SET,APP_GET,APP_GET_NEXT } app_types;
 
@@ -22,10 +26,17 @@ typedef enum { APP_SET,APP_GET,APP_GET_NEXT } app_types;
 
 #define SPAN_NAMES_NUM 4
 #define SPAN_NAME_LEN 32
+
+
+struct span_desc{
+    char name[SPAN_NAME_LEN];
+	dev_type t;
+};
+
 typedef struct{
     u8 filled:7;
     u8 last_msg:1; 
-    char name[SPAN_NAMES_NUM][SPAN_NAME_LEN];
+	struct span_desc spans[SPAN_NAMES_NUM];
 } span_name_payload;
 #define SPAN_NAME_PAY_SZ sizeof(span_name_payload)
 #define SPAN_NAME_CH_SZ 0
@@ -39,6 +50,7 @@ typedef struct{
 #define SPAN_PARAMS_CH_SZ 0
 
 typedef struct{
+	dev_type type;
     s16 nreps;
     char conf_prof[SNMP_ADMIN_LEN+1];
     char alarm_prof[SNMP_ADMIN_LEN+1];
@@ -87,6 +99,8 @@ typedef struct {
     s32 cur_snr;
     shdsl_status_t cur_status;
     counters_t total;
+    counters_t relative;
+	time_t relative_ts;
     u32 cur_15m_elaps;
     counters_t cur15min;
     u32 cur_1d_elaps;    
@@ -142,11 +156,27 @@ typedef struct{
 } unit_maint_changes;
 #define UNIT_MAINT_CH_SZ sizeof(unit_maint_changes)
 
+//------- Span Configuration -------------//
+
 typedef struct{
-    char ProfileName[SNMP_ADMIN_LEN+1];
+    char pname[SNMP_ADMIN_LEN+1];
+} cprof_add_payload;
+#define CPROF_ADD_PAY_SZ sizeof(cprof_add_payload)
+#define CPROF_ADD_CH_SZ 0
+
+
+typedef struct{
+    char pname[SNMP_ADMIN_LEN+1];
+} cprof_del_payload;
+#define CPROF_DEL_PAY_SZ sizeof(cprof_del_payload)
+#define CPROF_DEL_CH_SZ 0
+
+
+typedef struct{
+    char pname[SNMP_ADMIN_LEN+1];
     span_conf_profile_t conf;
-} span_conf_prof_payload;
-#define SPAN_CONF_PROF_PAY_SZ sizeof(span_conf_prof_payload)
+} cprof_payload;
+#define CPROF_PAY_SZ sizeof(cprof_payload)
 
 typedef struct{
     u8 annex :1;
@@ -156,18 +186,29 @@ typedef struct{
     u8 clk:1;
     u8 line_probe:1;
     u8 remote_cfg:1;
-    u8 currCondDown :1;                                                   
-    u8 worstCaseDown :1;                                                  
-    u8 currCondUp :1;                                                     
-    u8 worstCaseUp :1;
-    u8 min_rate:1;
-    u8 max_rate:1;
+    u8 rate:1;
     s8 cur_marg_down:1;
     s8 worst_marg_down:1;
     s8 cur_marg_up:1;
     s8 worst_marg_up:1;
-} span_conf_prof_changes;
-#define SPAN_CONF_PROF_CH_SZ sizeof(span_conf_prof_changes)
+    u8 use_cur_down :1;                                                   
+    u8 use_worst_down :1;                                                  
+    u8 use_cur_up :1;                                                     
+    u8 use_worst_up :1;
+} cprof_changes;
+#define CPROF_CH_SZ sizeof(cprof_changes)
+
+
+#define PROF_NAMES_NUM 8
+typedef struct{
+    u8 filled:7;
+    u8 last_msg:1; 
+    char pname[PROF_NAMES_NUM][SNMP_ADMIN_LEN+1];
+} cprof_list_payload;
+#define CPROF_LIST_PAY_SZ sizeof(cprof_list_payload)
+#define CPROF_LIST_CH_SZ 0
+
+//--------------- Endpoint Alarm -----------------//
 
 typedef struct{
     char ProfileName[SNMP_ADMIN_LEN];
@@ -192,4 +233,48 @@ typedef struct{
 } endp_alarm_prof_changes;
 #define ENDP_ALARM_PROF_CH_SZ sizeof(endp_alarm_prof_changes)
 
+//----------- Endpoint counters reset ------------//
+
+typedef struct{
+    u8 unit;
+    u8 side;
+	u8 loop;
+} loop_rcntrst_payload;
+#define LOOP_RCNTRST_PAY_SZ sizeof(loop_rcntrst_payload)
+#define LOOP_RCNTRST_CH_SZ 0
+
+//----------- Channel add/del/change -------------//
+
+typedef struct{
+	u8 master:1;
+}chan_add_payload;
+#define CHAN_ADD_PAY_SZ sizeof(chan_add_payload)
+#define CHAN_ADD_CH_SZ 0
+
+typedef struct{
+}chan_del_payload;
+#define CHAN_DEL_PAY_SZ sizeof(chan_del_payload)
+#define CHAN_DEL_CH_SZ 0
+
+typedef struct{
+	char cprof[SNMP_ADMIN_LEN];
+	u8 master:1;
+	u8 master_ch:1;
+	u8 rep_num:4;
+	u8 rep_num_ch:1;
+	u8 cprof_ch:1;
+	u8 apply_conf:1;
+	u8 apply_conf_ch:1;
+} chan_chng_payload;
+#define CHAN_CHNG_PAY_SZ sizeof(chan_chng_payload)
+#define CHAN_CHNG_CH_SZ 0
+
+// --------- Dump configuration -------------- //
+#define DUMP_CFG_PAY_SZ 1
+#define DUMP_CFG_CH_SZ 0
+
+
 #endif
+
+
+

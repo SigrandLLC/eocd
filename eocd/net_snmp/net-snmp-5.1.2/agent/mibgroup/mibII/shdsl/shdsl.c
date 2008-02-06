@@ -24,6 +24,20 @@
 
 #include <app-if/app_messages.h>
 
+//--------- DEBUG OUTPUT -----------------//
+
+
+//#define DEBUG_ON
+
+#define PDEBUG(flag,fmt,args...)
+#ifdef DEBUG_ON
+#       undef PDEBUG
+#       define PDEBUG(flag,fmt,args...) \
+		if( flag ) \
+			printf("%s: " fmt " \n",__FUNCTION__, ## args  )
+#endif
+
+
 //------- Global definitions -------------//
 #define CACHE_INT 0
 #define SHDSL_MAX_CHANNELS 30
@@ -217,15 +231,15 @@ init_shdsl(void)
     /*
      * register ourselves with the agent to handle our mib tree 
      */
-    printf("Register Span Conf\n");
+    PDEBUG(0,"Register Span Conf");
     REGISTER_MIB("mibII/hdsl2ShdslSpanConf", shdsl_spanconf, variable3,
                  hdsl2Shdsl_variables_oid);
 
-    printf("Register Span Status\n");
+    PDEBUG(0,"Register Span Status");
     REGISTER_MIB("mibII/hdsl2shdslSpanStatus", shdsl_spanstat, variable3,
                  hdsl2Shdsl_variables_oid);
 
-    printf("Register Inventory\n");
+	PDEBUG(0,"Register Inventory");
     REGISTER_MIB("mibII/hdsl2shdslInventory", shdsl_inventory, variable3,
                  hdsl2Shdsl_variables_oid);
 
@@ -256,8 +270,7 @@ init_shdsl(void)
 				 hdsl2Shdsl_variables_oid);
 	  
     DEBUGMSGTL(("mibII/hdsl2Shdsl","register variables"));
-    printf("Register finished\n");
-
+	PDEBUG(0,"Register finished");
 }
 
 /*
@@ -303,6 +316,12 @@ chann_names()
 
     if( gettimeofday(&tvcur,NULL) )
 		tverr = 1;
+
+	PDEBUG(0,"----------------------- >");
+	// ---- DEBUG ----//
+   	struct timeval tv1,tv2;
+    gettimeofday(&tv1,NULL);
+	// ---- DEBUG ----//
 	
     if( ((tvcur.tv_sec - tbl_tv.tv_sec) > CACHE_INT) || tverr ){
 
@@ -319,17 +338,21 @@ chann_names()
         do{
 			set_chan_name(fr1,ifname);
 			fr2 = comm_request(comm,fr1);
+
 			if( !fr2 ){
-				printf("mibII/hdsl2Shdsl Reqest failed\n");
+				PDEBUG(0,"mibII/hdsl2Shdsl Reqest failed");
 				comm_frame_free(fr1);
 				return min_i;
 			}
 			p = (span_name_payload*)comm_frame_payload(fr2);
 			for(i=0;i<p->filled;i++){
-				len = strnlen(p->name[i],SPAN_NAME_LEN);
-				if( (index = ifname_to_index(p->name[i],len)) < 0 )
+				len = strnlen(p->spans[i].name,SPAN_NAME_LEN);
+				if( (p->spans[i].t == slave) || 
+					(index = ifname_to_index(p->spans[i].name,len)) < 0 )
 					continue;
-				strncpy(tbl[tbl_size].name,p->name[i],len);
+
+				PDEBUG(0,"save name = %s",p->spans[i].name);
+				strncpy(tbl[tbl_size].name,p->spans[i].name,len);
 				tbl[tbl_size].index = index;
 				if( (tbl_size==0) || tbl[min_i].index > tbl[tbl_size].index  ){
 					min_i = tbl_size;
@@ -340,13 +363,20 @@ chann_names()
 				tbl_size++;
 			}
 			if( !p->last_msg && p->filled){
-				strncpy(ifname,p->name[p->filled-1],SPAN_NAME_LEN);
+				strncpy(ifname,p->spans[p->filled-1].name,SPAN_NAME_LEN);
 			}
 			comm_frame_free(fr2);
 		}while( tbl_size<SHDSL_MAX_CHANNELS && !p->last_msg );
+		
 		comm_frame_free(fr1);
 		tbl_tv = tvcur;
     }
+			
+	//--- DEBUG ---//
+    gettimeofday(&tv2,NULL);
+	PDEBUG(0,"<------- %d ------------",tv2.tv_usec-tv1.tv_usec);
+	//--- DEBUG ---//
+
     return min_i;
 }
 
@@ -361,14 +391,20 @@ header_ifIndex(struct variable *vp,
     int oid_min = (vp->namelen > *length) ? *length : vp->namelen;
     int min_ind = -1, min_i = 0;
     int i;
+	// ---- DEBUG ----//
+   	struct timeval tv1,tv2;
+    gettimeofday(&tv1,NULL);
+	// ---- DEBUG ----//
 
+	PDEBUG(0,"---------------------->");
     if( (min_i = chann_names()) < 0 ){
-		printf("ifIndex: Cannot get table of controlling interfaces\n");
+		PDEBUG(0,"Cannot get table of controlling interfaces");
 		return MATCH_FAILED;
     }
+	PDEBUG(0,"chan names-success. min_i=%d\n",min_i);
 
     if( !tbl_size ){
-		printf("ifIndex: MATCH FAILED: tbl_size is zero\n");
+		PDEBUG(0,"MATCH FAILED: tbl_size is zero");
 		return MATCH_FAILED;
     }
 
@@ -420,9 +456,15 @@ header_ifIndex(struct variable *vp,
 		} else
 			return MATCH_FAILED;
     }
+	
     *write_method = 0;
     *var_len = sizeof(long); 
     dbg_oid("Result_oid ",name,*length);
+
+	//--- DEBUG ---//
+    gettimeofday(&tv2,NULL);
+	PDEBUG(0,"<------- %d ------------",tv2.tv_usec-tv1.tv_usec);
+	//--- DEBUG ---//
     return name[vp->namelen];
 }
 
@@ -446,10 +488,7 @@ var_SpanConfEntry(struct variable * vp,
     struct timeval tvcur;
     int tverr = 0;
 
-    DEBUGMSGTL(("mibII/shdsl", "var_SpanConfEntry: *lenght=%d namelen=%d \n",*length,vp->namelen));
-    DEBUGMSGOID(("mibII/shdsl", name, *length));
-    DEBUGMSG(("mibII/shdsl", "\nexact= %d\n", exact));
-
+	PDEBUG(0,"--------------------->");
     comm = init_comm();
     if(!comm){
         DEBUGMSGTL(("mibII/hdsl2Shdsl","Error connecting to \"eocd\""));
@@ -464,10 +503,9 @@ var_SpanConfEntry(struct variable * vp,
     }
 
     if( gettimeofday(&tvcur,NULL) ){
-		printf("%s: tverr occured\n",__FUNCTION__);
+		PDEBUG(0,"tverr occured");
 		tverr = 1;
     }
-
 
     if( !spanconf_tbl[interface_ind] || tverr ||
 		(tvcur.tv_sec - spanconf_tbl[interface_ind]->tv.tv_sec > CACHE_INT) ){
@@ -475,19 +513,20 @@ var_SpanConfEntry(struct variable * vp,
         p = (span_conf_payload*)comm_alloc_request(APP_SPAN_CONF,APP_GET,tbl[interface_ind].name,&fr1);
 		if( !p ){
 			//DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
-			printf("mibII/shdsl Cannot allocate application frame");
+			PDEBUG(0,"mibII/shdsl Cannot allocate application frame");
     	    goto exit;
 		}
+
 		fr2 = comm_request(comm,fr1);
         if( !fr2 ){
-			printf("Error requesting\n");
+			PDEBUG(0,"Error requesting");
     	    goto exit;
 		}
 		p = (span_conf_payload*)comm_frame_payload(fr2);
 
         // Cache data
 		if( !spanconf_tbl[interface_ind] )
-			spanconf_tbl[interface_ind] = malloc(sizeof(shdsl_spanconf));
+			spanconf_tbl[interface_ind] = malloc(sizeof(shdsl_spanconf_elem));
 		spanconf_tbl[interface_ind]->p = *p;
 		spanconf_tbl[interface_ind]->tv = tvcur;
     }else{
@@ -512,8 +551,6 @@ var_SpanConfEntry(struct variable * vp,
 		//!!	*var_len=strlen(ConfAlarmProfile);
 		//!!	return (u_char *)ConfAlarmProfile;	
     default:
-        DEBUGMSGTL(("snmpd", "unknown sub-id %d in var_interfaces\n",
-                    vp->magic));
 		break;
     }
 
@@ -524,6 +561,8 @@ var_SpanConfEntry(struct variable * vp,
 		comm_frame_free(fr2);
     comm_free(comm);
     comm = NULL;
+
+	PDEBUG(0,"< -------------------");
     return return_ptr;
 }
 
@@ -547,6 +586,7 @@ var_SpanStatusEntry(struct variable * vp,
     int tverr = 0;
     struct timeval tvcur;
 
+	PDEBUG(0,"--------------------- >");
     comm = init_comm();
     if(!comm){
 		DEBUGMSGTL(("mibII/hdsl2Shdsl","Error connecting to \"eocd\""));
@@ -555,12 +595,12 @@ var_SpanStatusEntry(struct variable * vp,
 
     if ( ( iface=header_ifIndex(vp, name, length, exact, var_len,write_method) )
 	     == MATCH_FAILED || (*length != vp->namelen+1)){
-		//	printf("mibII/shdsl SpanConf: MATCH_FAILED\n");	
+		PDEBUG(0,"mibII/shdsl SpanConf: MATCH_FAILED");	
         goto exit;
     }
 
     if( gettimeofday(&tvcur,NULL) ){
-		printf("%s: tverr occured\n",__FUNCTION__);
+		PDEBUG(0,"tverr occured");
 		tverr = 1;
     }
 
@@ -569,12 +609,12 @@ var_SpanStatusEntry(struct variable * vp,
         p = (span_status_payload*)comm_alloc_request(APP_SPAN_STATUS,APP_GET,tbl[interface_ind].name,&fr1);
 		if( !p ){
 			//DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
-			printf("mibII/shdsl Cannot allocate application frame");
+			PDEBUG(0,"Cannot allocate application frame");
 			goto exit;
 		}
 		fr2 = comm_request(comm,fr1);
 		if( !fr2 ){
-			printf("Error requesting\n");
+			PDEBUG(0,"Error requesting");
 			goto exit;
 		}
 		p = (span_status_payload*)comm_frame_payload(fr2);
@@ -608,7 +648,8 @@ var_SpanStatusEntry(struct variable * vp,
 		//	long_return = *((unsigned char*)&cfg.annex);
 		*var_len = sizeof(char);
 		return (u_char *)&long_return;
-		*/    case STATUS_MAXATTPRATE:
+		*/
+	case STATUS_MAXATTPRATE:
 		long_return = p->max_prate;
 		return_ptr = (u_char *) & long_return;
 		break;
@@ -619,7 +660,7 @@ var_SpanStatusEntry(struct variable * vp,
     default:
 		break;
     }
-    
+   
  exit:
     if( fr1 )
 		comm_frame_free(fr1);
@@ -627,9 +668,10 @@ var_SpanStatusEntry(struct variable * vp,
 		comm_frame_free(fr2);
     comm_free(comm);
     comm = NULL;
+	PDEBUG(0,"< -------------------");
     return return_ptr;
-
 }
+
 
 /*
  * Unit Inventory Group
@@ -651,14 +693,20 @@ header_unitIndex(struct variable *vp,
     // Cacheing
     struct timeval tvcur;
     int tverr = 0;
-    
+	// ---- DEBUG ----//
+   	struct timeval tv1,tv2;
+    gettimeofday(&tv1,NULL);
+	PDEBUG(0,"--------------------- >");
+	// ---- DEBUG ----//
+
 	// If OID is belong to Inventory Table
     if( (iface = header_ifIndex(vp, name, length,1/*exact = 1*/, var_len,write_method)) 
 	    != MATCH_FAILED ){ 	// OID belongs to Invetory table and ifIdex is valid
-		//	printf("unitIndex: OID belong to Inv Table, if = %s\n",tbl[iface].name);
+		PDEBUG(1,"OID belong to Inv Table, interface_ind=%d,if = %s\n",interface_ind,
+				tbl[interface_ind].name);
         
 		if( gettimeofday(&tvcur,NULL) ){
-			printf("%s: tverr occured\n",__FUNCTION__);
+			PDEBUG(0,"tverr occured");
 			tverr = 1;
 		}
 
@@ -666,13 +714,15 @@ header_unitIndex(struct variable *vp,
 			tbl[interface_ind].units < 0 ){
 			p = (span_params_payload*)comm_alloc_request(APP_SPAN_PARAMS,
 														 APP_GET,tbl[interface_ind].name,&fr1);
+			PDEBUG(0,"Refresh span params");
+
 			if( !p ){
-				//		printf("unitIndex: Cannot allocate application frame\n");
+				PDEBUG(0,"ERROR: Cannot allocate application frame");
 				goto exit;
 			}
 			fr2 = comm_request(comm,fr1);
 			if( !fr2 ){
-				printf("unitIndex: Error requesting\n");
+				PDEBUG(0,"ERROR: Error requesting\n");
 				goto exit;
 			}
 			p = (span_params_payload*)comm_frame_payload(fr2);
@@ -680,10 +730,11 @@ header_unitIndex(struct variable *vp,
 			tbl[interface_ind].tv = tvcur;
 			tbl[interface_ind].units = p->units;
 			tbl[interface_ind].wires = p->loops;
+
+			PDEBUG(0,"NEW %s params: units=%d, loop=%d",tbl[interface_ind].name,p->units,p->loops);
 		}
-
-
-		//	printf("unitIndex: Get params info for %s: units(%d) loops(%d)\n",tbl[iface].name,p->units,p->loops);
+		PDEBUG(0,"Get params info for %s: units(%d) loops(%d)",tbl[interface_ind].name,tbl[interface_ind].units,
+				tbl[interface_ind].wires);
 
 		if( exact ){ // Need exact MATCH
 			//	    printf("unitIndex: Exact match\n");
@@ -716,13 +767,13 @@ header_unitIndex(struct variable *vp,
     }
     
     if( exact ){
-		//	printf("unitIndex: Exact match - seems failed\n");
+		PDEBUG(0,"Exact match - seems failed");
 		goto exit;
     }
     
     if( (iface=header_ifIndex(vp, name, length, exact, var_len,write_method)) 
 		== MATCH_FAILED ){ // No next interface or In OID is lager than Inventory Table OIDs
-		//	printf("unitIndex: Search for next iface failed\n");
+		PDEBUG(0,"Search for next iface failed");
 		goto exit;
     }
     
@@ -742,16 +793,18 @@ header_unitIndex(struct variable *vp,
 		}
 		    
 		if( !p ){
-			//    	    printf("unitIndex: Cannot allocate application frame\n");
+			PDEBUG(0,"Cannot allocate application frame");
     	    goto exit;
 		}
 		fr2 = comm_request(comm,fr1);
 		if( !fr2 ){
-			//    	    printf("unitIndex: Error requesting\n");
+			PDEBUG(0,"Error requesting");
     	    goto exit;
 		}
 		p = (span_params_payload*)comm_frame_payload(fr2);
-		//    printf("unitIndex: Get params info for %s: units(%d) loops(%d)\n",tbl[iface].name,p->units,p->loops);    
+
+		PDEBUG(0,"Get params info for %s: units(%d) loops(%d)\n",tbl[interface_ind].name,p->units,p->loops);    
+
 		tbl[interface_ind].units = p->units;
 		tbl[interface_ind].wires = p->loops;
 		tbl[interface_ind].tv = tvcur;
@@ -759,13 +812,18 @@ header_unitIndex(struct variable *vp,
 	
     name[vp->namelen+1] = stu_c;
     *length = vp->namelen + 2;
-	//    printf("unitIndex: Result: unit #%d\n",name[vp->namelen+1]);
+	PDEBUG(1,"Result: unit #%d\n",name[vp->namelen+1]);
     ret_val = name[vp->namelen+1];
  exit:
     if( fr1 )
 		comm_frame_free(fr1);
     if( fr2 )
 		comm_frame_free(fr2);
+
+	//--- DEBUG ---//
+    gettimeofday(&tv2,NULL);
+	PDEBUG(0,"<------- %d ------------",tv2.tv_usec-tv1.tv_usec);
+	//--- DEBUG ---//
     return ret_val;
 }
 
@@ -783,6 +841,8 @@ var_InventoryEntry(struct variable * vp,
     resp_inventory *resp;
     char *return_ptr = NULL;
 
+
+	PDEBUG(0,"------------------------>");
     comm = init_comm();
     if(!comm){
 		DEBUGMSGTL(("mibII/hdsl2Shdsl","Error connecting to \"eocd\""));
@@ -791,7 +851,7 @@ var_InventoryEntry(struct variable * vp,
 
     if ( ( unit = header_unitIndex(vp,name,length,exact,var_len,write_method) )
 		 == MATCH_FAILED ){
-		printf("var_InventoryEntry: Cannot find unit\n");
+		PDEBUG(0,"Cannot find unit");
 		goto exit;
     }
 
@@ -800,14 +860,14 @@ var_InventoryEntry(struct variable * vp,
 											   tbl[interface_ind].name,&fr1);
 	if( !p ){
 		DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
-		printf("var_InventoryEntry: Cannot allocate application frame\n");
+		PDEBUG(0,"Cannot allocate application frame");
 		goto exit;
 	}
 
 	p->unit = unit;
 	fr2 = comm_request(comm,fr1);
 	if( !fr2 && exact ){
-		printf("var_InventoryEntry: Error requesting\n");
+		PDEBUG(0,"Error requesting");
 		goto exit;
 	}
     
@@ -815,7 +875,7 @@ var_InventoryEntry(struct variable * vp,
 		
 		if ( ( unit = header_unitIndex(vp,name,length,exact,var_len,write_method) )
 			 == MATCH_FAILED ){
-			printf("var_InventoryEntry: Cannot find unit\n");
+			PDEBUG(0,"Cannot find unit");
 			goto exit;
 		}
 
@@ -823,7 +883,7 @@ var_InventoryEntry(struct variable * vp,
 												   tbl[interface_ind].name,&fr1);
 		if( !p ){
 			DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
-			printf("var_InventoryEntry: Cannot allocate application frame\n");
+			PDEBUG(0,"Cannot allocate application frame");
 			goto exit;
 		}
 		p->unit = unit;
@@ -833,7 +893,7 @@ var_InventoryEntry(struct variable * vp,
 	}
     
 	if( !fr2 ){
-		printf("var_InventoryEntry: Error requesting\n");
+		PDEBUG(0,"Error requesting");
 		goto exit;
 	}
 	p = (inventory_payload*)comm_frame_payload(fr2);
@@ -912,6 +972,7 @@ var_InventoryEntry(struct variable * vp,
 		comm_frame_free(fr2);
     comm_free(comm);
     comm = NULL;
+	PDEBUG(0,"<------------------------");
     return return_ptr;
 }
 
@@ -936,10 +997,16 @@ header_endpIndex(struct variable *vp,
     *write_method = 0;
     *var_len = sizeof(long);    // default to 'long' results //
 
+	// ---- DEBUG ----//
+   	struct timeval tv1,tv2;
+    gettimeofday(&tv1,NULL);
+	PDEBUG(0,"--------------------- >");
+	// ---- DEBUG ----//
+
     if ( ( unit = header_unitIndex(vp,name,length, 1 /*exact = 1*/,var_len,write_method) )
 		 != MATCH_FAILED ){
-		//	printf("endpIndex: uinit matched: %d\n",unit);
 		unit_index = unit;
+	    PDEBUG(1,"Result : if(%s) unit(%d)",tbl[interface_ind].name,unit_index);
 
 		if( exact ){ // Need exact MATCH
 			if( (*length >= vp->namelen+3) ){
@@ -975,7 +1042,8 @@ header_endpIndex(struct variable *vp,
 			} else
 				return MATCH_FAILED;
 		} else { // Nonexact match
-			//	    printf("endpIndex: nonexact match: unit(%d) side(%d)\n",unit,name[vp->namelen+2]);
+
+			PDEBUG(0,"nonexact match: unit(%d) side(%d)\n",unit,name[vp->namelen+2]);
 			if( unit >= sru1 && unit <=sru8 ){
 				if( *length >= vp->namelen+3 ){
 					if( name[vp->namelen+2] == (net_side+1) ){
@@ -1001,7 +1069,8 @@ header_endpIndex(struct variable *vp,
 		return MATCH_FAILED;
     }
     unit_index = unit;
-	//    printf("endpIndex: next unit = %d\n",unit);
+	PDEBUG(1,"NEXT Result : if(%s) unit(%d)",tbl[interface_ind].name,unit_index);
+
     switch( unit ){
     case stu_c:
 		name[vp->namelen+2] = (cust_side+1);
@@ -1023,6 +1092,11 @@ header_endpIndex(struct variable *vp,
 		return MATCH_FAILED;
     }
     *length = vp->namelen + 3;
+
+	//--- DEBUG ---//
+    gettimeofday(&tv2,NULL);
+	PDEBUG(0,"<------- %d ------------",tv2.tv_usec-tv1.tv_usec);
+	//--- DEBUG ---//
     return name[vp->namelen+2];
 }
 
@@ -1049,48 +1123,20 @@ header_wirePairIndex(struct variable *vp,
     struct timeval tvcur;
     int tverr = 0;
 
+	// ---- DEBUG ----//
+   	struct timeval tv1,tv2;
+    gettimeofday(&tv1,NULL);
+	PDEBUG(1,"--------------------- >");
+	// ---- DEBUG ----//
+
     if ( ( endp = header_endpIndex(vp,name,length, 1 /*exact = 1*/,var_len,write_method) )
 		 != MATCH_FAILED ){
-    
-		printf("wirePair: interface_ind = %d,exact endpoint = %d\n",interface_ind,endp);
-		printf("wirePair: Get params info for %s\n",tbl[interface_ind].name);
-
 		endp_index = endp;
-		tverr = gettimeofday(&tvcur,NULL);
-		printf("%s: before if 1\n",__FUNCTION__);
 		int k = tbl[interface_ind].wires;
-		printf("%s: before if 2\n",__FUNCTION__);
-		int k1 = tvcur.tv_sec - tbl[interface_ind].tv.tv_sec;
-		printf("%s: before if 3\n",__FUNCTION__);
-		if( tverr || tbl[interface_ind].wires < 0 ||
-			(tvcur.tv_sec - tbl[interface_ind].tv.tv_sec > CACHE_INT ) ){ 
-			printf("%s: 1\n",__FUNCTION__);
-			p = (span_params_payload*)comm_alloc_request(APP_SPAN_PARAMS,
-														 APP_GET,tbl[interface_ind].name,&fr1);
-			printf("%s: 2\n",__FUNCTION__);
-			if( !p ){
-				DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
-				printf("wirePair: Cannot allocate application frame\n");
-				goto exit;
-			}
-			printf("%s: 3\n",__FUNCTION__);	    
-			fr2 = comm_request(comm,fr1);
-			printf("%s: 4\n",__FUNCTION__);
-			if( !fr2 ){
-				printf("wirePair: Error requesting\n");
-				goto exit;
-			}
-			printf("%s: 5\n",__FUNCTION__);	    
-			p = (span_params_payload*)comm_frame_payload(fr2);
-			tbl[interface_ind].units = p->units;
-			tbl[interface_ind].wires = p->loops;
-			tbl[interface_ind].tv = tvcur;
-		}
-		printf("%s: after if\n",__FUNCTION__);
-		printf("wirePair: Get params info for %s: units(%d) loops(%d)\n",tbl[interface_ind].name,p->units,p->loops);
+		PDEBUG(1,"Result : if(%s) unit(%d) endp(%d)",tbl[interface_ind].name,unit_index,endp_index);
 
 		if( exact ){ // Need exact MATCH
-			printf("wirePair: Exact Match\n");
+			PDEBUG(1,"Exact Match");
 			if( (*length >= vp->namelen+4) && 
 				(name[vp->namelen+3] > 0) && (name[vp->namelen+3] <= tbl[interface_ind].wires) ){
 				ret_val =  name[vp->namelen+3];
@@ -1118,7 +1164,7 @@ header_wirePairIndex(struct variable *vp,
 		}
     }
 	
-    printf("%s: Exact match failed\n",__FUNCTION__);
+	PDEBUG(1,"Exact match failed");
     if( exact ){
 		goto exit;
     }
@@ -1127,40 +1173,22 @@ header_wirePairIndex(struct variable *vp,
 	    == MATCH_FAILED ){ // No next interface or In OID is lager than Inventory Table OIDs
 		goto exit;
     }
-
-    printf("wirePair: nonexact endpoint = %d\n",endp);
     endp_index = endp;
-
-    if( tverr || tbl[interface_ind].wires < 0 ||
-        (tvcur.tv_sec - tbl[interface_ind].tv.tv_sec > CACHE_INT ) ){ 
-        p = (span_params_payload*)comm_alloc_request(APP_SPAN_PARAMS,
-													 APP_GET,tbl[interface_ind].name,&fr1);
-        if( !p ){
-    	    DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
-			printf("wirePair: Cannot allocate application frame\n");
-			goto exit;
-		}
-		fr2 = comm_request(comm,fr1);
-		if( !fr2 ){
-			printf("wirePair: Error requesting\n");
-			goto exit;
-		}
-		p = (span_params_payload*)comm_frame_payload(fr2);
-		tbl[interface_ind].units = p->units;
-		tbl[interface_ind].wires = p->loops;
-		tbl[interface_ind].tv = tvcur;
-    }
-
+	PDEBUG(1,"NEXT Result : if(%s) unit(%d) endp(%d)",tbl[interface_ind].name,unit_index,endp_index);
     name[ vp->namelen+3] = 1; // First pair
     *length = vp->namelen + 4;
     ret_val = name[vp->namelen+3];
+
  exit:
-    printf("%s: exit\n",__FUNCTION__);
     if( fr1 )
 		comm_frame_free(fr1);
     if( fr2 )
 		comm_frame_free(fr2);
-    printf("%s: returning\n",__FUNCTION__);
+
+	//--- DEBUG ---//
+    gettimeofday(&tv2,NULL);
+	PDEBUG(1,"<------- %d ------------",tv2.tv_usec-tv1.tv_usec);
+	//--- DEBUG ---//
     return ret_val;
 }
 
@@ -1186,7 +1214,7 @@ var_EndpointCurrEntry(struct variable * vp,
 		return NULL;
     }
 
-    printf("EndpointCurStatEntry: start\n");
+    PDEBUG(1,"-----!!!!!!!!!!!!!!-------->");
 
 	// ------------------------------ Obtain requested information ------------------------------- //
 
@@ -1194,25 +1222,24 @@ var_EndpointCurrEntry(struct variable * vp,
 		 == MATCH_FAILED )
         goto exit;
        
-    printf("Result : if(%s) unit(%d) side(%d) pair(%d)\n",tbl[interface_ind].name,unit_index,endp_index,pair);
+    PDEBUG(1,"Result : if(%s) unit(%d) side(%d) pair(%d)",tbl[interface_ind].name,unit_index,endp_index,pair);
 
     p = (endp_cur_payload*)comm_alloc_request(APP_ENDP_CUR,APP_GET,
 											  tbl[interface_ind].name,&fr1);
     if( !p ){
 		DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
-		printf("var_InventoryEntry: Cannot allocate application frame\n");
+		PDEBUG(1,"var_InventoryEntry: Cannot allocate application frame");
 		goto exit;
     }
     p->unit = unit_index;
     p->side = endp_index-1;
     p->loop = pair-1;
     fr2 = comm_request(comm,fr1);
-    printf("Request if(%s) unit(%d) side(%d) loop(%d)\n",
+    PDEBUG(1,"Request if(%s) unit(%d) side(%d) loop(%d)",
 		   tbl[interface_ind].name,p->unit,p->side,p->loop);
-
     
     if( !fr2 && exact ){
-		printf("var_InventoryEntry: error requesting\n");
+		PDEBUG(1,"var_InventoryEntry: error requesting");
 		goto exit;
     }
     
@@ -1221,19 +1248,20 @@ var_EndpointCurrEntry(struct variable * vp,
 			 == MATCH_FAILED )
     	    goto exit;
     
-		printf("Result (rep): if(%s) unit(%d) side(%d) pair(%d)\n",tbl[interface_ind].name,unit_index,endp_index,pair);
+		PDEBUG(1,"Result (rep): if(%s) unit(%d) side(%d) pair(%d)",tbl[interface_ind].name,unit_index,endp_index,pair);
+		set_chan_name(fr1,tbl[interface_ind].name);
 		p->unit = unit_index;
 		p->side = endp_index-1;
 		p->loop = pair-1;
 		fr2 = comm_request(comm,fr1);
 
-		printf("Request (rep): if(%s) unit(%d) side(%d) loop(%d)\n",
+		PDEBUG(1,"Request (rep): if(%s) unit(%d) side(%d) loop(%d)",
 			   tbl[interface_ind].name,p->unit,p->side,p->loop);
 
     }
 
     if( !fr2 ){
-		printf("var_InventoryEntry: error requesting\n");
+		PDEBUG(1,"error requesting");
 		goto exit;
     }
     
@@ -1327,14 +1355,13 @@ var_EndpointCurrEntry(struct variable * vp,
 
 
  exit:
-    printf("%s: exit\n",__FUNCTION__);
     if( fr1 )
 		comm_frame_free(fr1);
     if( fr2 )
 		comm_frame_free(fr2);
     comm_free(comm);
     comm = NULL;
-    printf("%s: returning %p\n",__FUNCTION__,return_ptr);
+    PDEBUG(1,"<------------!!!!!!!!!!!!!1----------\n\n");
     return return_ptr;
 }
 
@@ -1354,12 +1381,10 @@ header_intervalIndex(struct variable *vp,
     int int_num,ret_val = MATCH_FAILED;
     
     
-    printf("%s(Input): if(%d) unit(%d) side(%d) pair(%d) int(%d) id(%d)\n",
+    PDEBUG(0,"(Input) if(%d) unit(%d) side(%d) pair(%d) int(%d) id(%d)",
 		   __FUNCTION__,name[vp->namelen],name[vp->namelen+1],name[vp->namelen+2],
 		   name[vp->namelen+3],name[vp->namelen+4],msg_id);
 
-
-	// printf("----------- WirePair: start ------------\n");
     //-------------- Try requested wire_pair ----------------//
     if ( ( wire = header_wirePairIndex(vp,name,length, 1 /*exact = 1*/,var_len,write_method) )
 		 != MATCH_FAILED ){
@@ -1388,7 +1413,7 @@ header_intervalIndex(struct variable *vp,
 		}	
 		if( !p ){
 			DEBUGMSGTL(("mibII/hdsl2Shdsl","interval15Index: Cannot allocate application frame"));
-			printf("interval15Index: Cannot allocate application frame\n");
+			PDEBUG(0,"Cannot allocate application frame");
 			return MATCH_FAILED;
 		}
 	    
@@ -1397,7 +1422,7 @@ header_intervalIndex(struct variable *vp,
 		p->loop = wire_index-1;
 		p->int_num = int_num;
 
-		printf("Output: unit(%d) side(%d) pair(%d) int(%d)\n",
+		PDEBUG(0,"(Output) unit(%d) side(%d) pair(%d) int(%d)",
 			   p->unit,p->side,p->loop,p->int_num);
 	
 		fr2 = comm_request(comm,fr1);
@@ -1431,7 +1456,7 @@ header_intervalIndex(struct variable *vp,
     
     if( !p ){
 		DEBUGMSGTL(("mibII/hdsl2Shdsl","interval15Index: Cannot allocate application frame"));
-		printf("interval15Index: Cannot allocate application frame\n");
+		PDEBUG(0,"interval15Index: Cannot allocate application frame");
 		goto exit;
     }
 
@@ -1440,7 +1465,7 @@ header_intervalIndex(struct variable *vp,
     p->loop = wire_index-1;
     p->int_num = 1;
 
-    printf("Output: unit(%d) side(%d) pair(%d) int(%d)\n",
+    PDEBUG(0,"Output: unit(%d) side(%d) pair(%d) int(%d)",
 		   p->unit,p->side,p->loop,p->int_num);
 
 	if( fr2 )
@@ -1448,11 +1473,11 @@ header_intervalIndex(struct variable *vp,
     fr2 = comm_request(comm,fr1);
     if( !fr2 ){
     	DEBUGMSGTL(("mibII/hdsl2Shdsl","interval15Index: Error requesting\n"));
-    	printf("interval15Index: Error requesting\n");
+    	PDEBUG(0,"interval15Index: Error requesting");
 		goto exit;
     }
 
-    printf("Request successfull, p =%p\n",p);
+    PDEBUG(0,"Request successfull, p =%p",p);
     p = (endp_int_payload*)comm_frame_payload(fr2);
     if( !p ){
 		goto exit;
@@ -1462,13 +1487,12 @@ header_intervalIndex(struct variable *vp,
     name[vp->namelen+4] = p->int_num;
     ret_val = name[vp->namelen+4];
     *length = vp->namelen+5;
-    printf("%s: exit\n",__FUNCTION__);
  exit:
     if( fr1 )
 		comm_frame_free(fr1);
     if( fr2 )
 		comm_frame_free(fr2);
-    printf("%s: returning\n",__FUNCTION__);
+    PDEBUG(0,"<----------------------------");
     return ret_val;
 }
 
@@ -1527,10 +1551,9 @@ var_15MinIntervalEntry(struct variable * vp,
 
 
  exit:
-    printf("%s: exit\n",__FUNCTION__);
     comm_free(comm);
     comm = NULL;
-    printf("%s: returning, %p\n",__FUNCTION__,return_ptr);
+    PDEBUG(0,"<--------------------------");
     return return_ptr;
 }
 
@@ -1548,7 +1571,8 @@ var_1DayIntervalEntry(struct variable * vp,
     char *return_ptr = NULL;
     int int_num;
 
-	printf("%s: start\n",__FUNCTION__);
+	PDEBUG(0,"--------------------->");
+
 
     comm = init_comm();
     if(!comm){
@@ -1560,7 +1584,7 @@ var_1DayIntervalEntry(struct variable * vp,
 		 == MATCH_FAILED )
         goto exit;
     
-    printf("(Result) : if(%s) unit(%d) side(%d) pair(%d) int(%d)\n",tbl[interface_ind].name,unit_index,endp_index,wire_index,int_num);
+    PDEBUG(0,"(Result) : if(%s) unit(%d) side(%d) pair(%d) int(%d)",tbl[interface_ind].name,unit_index,endp_index,wire_index,int_num);
 
     //---- ack ----//
     switch (vp->magic) {
@@ -1597,232 +1621,13 @@ var_1DayIntervalEntry(struct variable * vp,
     return return_ptr;
 }
 
-
-
-/*
- * Segment Endpoint Configuration Group
- *//*
-	 u_char *
-	 var_EndpointConfEntry(struct variable * vp,
-	 oid * name,
-	 size_t * length,
-	 int exact, size_t * var_len, WriteMethod ** write_method)
-	 {
-	 shdsl_unit_t Info, *info = &Info;
-	 int pair;
-
-	 //    DEBUGMSGTL(("mibII/shdsl", "\n-----------------------START----------------------------\n"
-	 //			"var_EndpointConfEntry. exact= %d\n",exact));
-	 //    DEBUGMSGOID(("mibII/shdsl", name, *length));
-	 //    DEBUGMSG(("mibII/shdsl", "\n"));    
-    
-	 if ( ( pair = header_wirePairIndex(vp,name,length,exact,var_len,write_method) )
-	 == MATCH_FAILED )
-	 return NULL;
-
-
-
-
-
-
-	 struct app_frame *fr1,*fr2;
-	 char *b;
-	 endp_int_payload *p;
-    
-
-	 p = (endp_int_payload*)comm_alloc_request(APP_ENDP_15MIN,APP_GET,"dsl0",&fr1);
-	 if( !p ){
-	 DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
-	 return;
-	 }
-	 p->unit = stu_c;
-	 p->side = net_side;
-	 p->loop = 0;
-	 p->int_num = 73;
-
-	 fr2 = comm_request(c,fr1);
-	 if( !fr2 ){
-	 printf("Error requesting\n");
-	 return -1;
-	 }
-	 p = (endp_int_payload*)comm_frame_payload(fr2);
-	 print_int_payload(p,"1day");    
-
-
-
-
-
-
-
-
-    
-	 //    DEBUGMSGTL(("mibII/shdsl", "Result pair = %d\n-------------------END------------------------\n",pair));
-	 //---- ack ----//
-	 switch (vp->magic) {
-	 case ENDP_CONF_PROF:
-	 strcpy(return_buf,"DEFAULT");    
-	 *var_len = strlen(return_buf);
-	 return (u_char *)return_buf;
-	 }    
-	 return NULL;
-	 }
-
-
-	 /*
-	 *
-	 * ---------------------- Maintenance Group  ------------------------
-	 *
-	 *//*
-
-u_char *
-var_EndpointMaintEntry(struct variable * vp,
-oid * name,
-size_t * length,
-int exact, size_t * var_len, WriteMethod ** write_method)
-{
-shdsl_endp_maint_t Info, *info = &Info;
-int pair;
-/*
-DEBUGMSGTL(("mibII/shdsl", "\n-----------------------START----------------------------\n"
-"var_EndpointConfEntry. exact= %d\n",exact));
-DEBUGMSGOID(("mibII/shdsl", name, *length));
-DEBUGMSG(("mibII/shdsl", "\n"));    
-	   *//*    
-			   if ( ( pair = header_endpIndex(vp,name,length,exact,var_len,write_method) )
-			   == MATCH_FAILED )
-			   return NULL;
-
-
-
-			   struct app_frame *fr1,*fr2;
-			   char *b;
-			   endp_int_payload *p;
-    
-
-			   p = (endp_int_payload*)comm_alloc_request(APP_ENDP_15MIN,APP_GET,"dsl0",&fr1);
-			   if( !p ){
-			   DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
-			   return;
-			   }
-			   p->unit = stu_c;
-			   p->side = net_side;
-			   p->loop = 0;
-			   p->int_num = 73;
-
-			   fr2 = comm_request(c,fr1);
-			   if( !fr2 ){
-			   printf("Error requesting\n");
-			   return -1;
-			   }
-			   p = (endp_int_payload*)comm_frame_payload(fr2);
-			   print_int_payload(p,"1day");    
-
-
-
-
-
-
-
-    
-			   eocd_endp_maint(interface_ind,unit_index,&eocd,info);    
-    
-			   //    DEBUGMSGTL(("mibII/shdsl", "Result pair = %d\n-------------------END------------------------\n",pair));
-			   //---- ack ----//
-			   switch (vp->magic) {
-			   case ENDP_MAINT_LOOPBACK:
-			   long_return= info->lpb_cfg;
-			   return (u_char *) & long_return;
-			   case ENDP_MAINT_TIPRINGREV:
-			   long_return= info->ring_rev;
-			   return (u_char *) & long_return;
-			   case ENDP_MAINT_PWRBACKOFF:
-			   long_return= info->pwr_backoff;
-			   return (u_char *) & long_return;
-			   case ENDP_MAINT_SOFTRESTART:
-			   long_return= info->soft_rst;
-			   return (u_char *) & long_return;
-			   }
-			   return NULL;
-			   }
-
-			   u_char *
-			   var_UnitMaintEntry(struct variable * vp,
-               oid * name,
-               size_t * length,
-               int exact, size_t * var_len, WriteMethod ** write_method)
-			   {
-			   shdsl_unit_maint_t Info, *info = &Info;
-			   int unit;
-
-			   //    DEBUGMSGTL(("mibII/shdsl", "\n-----------------------START----------------------------\n"
-			   //			"var_UnitMaintEntry. exact= %d\n",exact));
-			   //    DEBUGMSGOID(("mibII/shdsl", name, *length));
-			   //    DEBUGMSG(("mibII/shdsl", "\n"));    
-    
-			   if ( ( unit = header_unitIndex(vp,name,length,exact,var_len,write_method) )
-			   == MATCH_FAILED )
-			   return NULL;
-
-
-
-			   struct app_frame *fr1,*fr2;
-			   char *b;
-			   endp_int_payload *p;
-    
-
-			   p = (endp_int_payload*)comm_alloc_request(APP_ENDP_15MIN,APP_GET,"dsl0",&fr1);
-			   if( !p ){
-			   DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
-			   return;
-			   }
-			   p->unit = stu_c;
-			   p->side = net_side;
-			   p->loop = 0;
-			   p->int_num = 73;
-
-			   fr2 = comm_request(c,fr1);
-			   if( !fr2 ){
-			   printf("Error requesting\n");
-			   return -1;
-			   }
-			   p = (endp_int_payload*)comm_frame_payload(fr2);
-			   print_int_payload(p,"1day");    
-
-
-
-
-
-    
-			   eocd_unit_maint(interface_ind,unit_index,&eocd,info);    
-    
-			   //    DEBUGMSGTL(("mibII/shdsl", "Result unit = %d\n-------------------END------------------------\n",unit));
-			   //---- ack ----//
-			   switch (vp->magic) {
-			   case ENDP_MAINT_LOOPBACK:
-			   long_return= info->lpb_to;
-			   return (u_char *) & long_return;
-			   case ENDP_MAINT_TIPRINGREV:
-			   long_return= info->pwr_src;
-			   return (u_char *) & long_return;
-			   }
-			   return NULL;
-			   }
-
-
-			   /*
-			   *
-			   * ---------------------- PROFILES ------------------- 
-			   *
-			   */
-
-
 /*
  * header_wirePairIndex:
  * 	Defines propriate Wire pair index for incoming OID
  *	(by now only 1 pair supported)
  */
 
-span_conf_prof_payload _cprof;
+cprof_payload _cprof;
 
 static int 
 header_confProfIndex(struct variable *vp,
@@ -1837,7 +1642,7 @@ header_confProfIndex(struct variable *vp,
     *var_len = sizeof(long);    // default to 'long' results //
     struct app_frame *fr1 = NULL,*fr2 = NULL;
     char *b;
-    span_conf_prof_payload *p;
+    cprof_payload *p;
     int i,l;
 
 	/*
@@ -1869,8 +1674,8 @@ header_confProfIndex(struct variable *vp,
         len = (len>SNMP_ADMIN_LEN) ? SNMP_ADMIN_LEN : len;
         memcpy(profname,name+vp->namelen,len);
 		profname[len+1] = 0;	
-		p = (span_conf_prof_payload*)
-			comm_alloc_request(APP_SPAN_CPROF,APP_GET,"",&fr1);
+		p = (cprof_payload*)
+			comm_alloc_request(APP_CPROF,APP_GET,"",&fr1);
     }else{
 		if( (base_compare < 0) || (!base_compare && *length<=vp->namelen) ){
 			memcpy((char*)name,vp->name,((int)vp->namelen)*sizeof(oid));
@@ -1887,8 +1692,8 @@ header_confProfIndex(struct variable *vp,
 			*length = vp->namelen;	    
 			//printf("%s: nonexact, profname=%s\n",__FUNCTION__,profname);
 		}
-		p = (span_conf_prof_payload*)
-			comm_alloc_request(APP_SPAN_CPROF,APP_GET_NEXT,"",&fr1);
+		p = (cprof_payload*)
+			comm_alloc_request(APP_CPROF,APP_GET_NEXT,"",&fr1);
     }	
     if( !p ){
 		DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
@@ -1897,18 +1702,18 @@ header_confProfIndex(struct variable *vp,
 		return MATCH_FAILED;
     }
 
-    strncpy(p->ProfileName,profname,SNMP_ADMIN_LEN+1);
+    strncpy(p->pname,profname,SNMP_ADMIN_LEN+1);
 	//    printf("%s: Request profile:\n",__FUNCTION__);//,p->ProfileName);
     fr2 = comm_request(comm,fr1);
 	//    printf("%s, request successfull\n",__FUNCTION__);
     if( !fr2 ){
-		printf("%s: Error requesting\n",__FUNCTION__);
+		PDEBUG(0,"Error requesting");
 		if( fr1 )
 			comm_frame_free(fr1);
 		return MATCH_FAILED;
     }
     
-    p = (span_conf_prof_payload*)comm_frame_payload(fr2);
+    p = (cprof_payload*)comm_frame_payload(fr2);
     
     _cprof = *p;
 
@@ -1924,11 +1729,11 @@ header_confProfIndex(struct variable *vp,
 
 	*/    
 	//    printf("%s: get profile - %s,len=%d,vp->namelen=%d\n",__FUNCTION__,p->ProfileName,strnlen(p->ProfileName,SNMP_ADMIN_LEN+1),vp->namelen);
-    l = strnlen(p->ProfileName,SNMP_ADMIN_LEN+1);
+    l = strnlen(p->pname,SNMP_ADMIN_LEN+1);
     for(i=0;i<l;i++){
-		name[vp->namelen+i] = p->ProfileName[i];
+		name[vp->namelen+i] = p->pname[i];
     }
-    *length += strnlen(p->ProfileName,SNMP_ADMIN_LEN+1);
+    *length += strnlen(p->pname,SNMP_ADMIN_LEN+1);
 	/*
 	  printf("%s: name:\n",__FUNCTION__);
 	  for(i=0;i<*length;i++){
@@ -1964,7 +1769,7 @@ var_SpanConfProfEntry(struct variable * vp,
     
     if ( header_confProfIndex(vp,name,length,exact,var_len,write_method)
 		 == MATCH_FAILED ){
-		printf("%s: returning NULL\n",__FUNCTION__);
+		PDEBUG(0,"returning NULL");
         goto exit;
     }
 	/*
@@ -1988,11 +1793,11 @@ var_SpanConfProfEntry(struct variable * vp,
 		printf("WIRE_IFACE: ret=%d", _cprof.conf.wires);
 		break;
     case CONF_MIN_LRATE:
-		long_return = _cprof.conf.min_rate;
+		long_return = _cprof.conf.rate;
 		return_ptr = (u_char *)&long_return;
 		break;
     case CONF_MAX_LRATE:
-		long_return = _cprof.conf.max_rate;
+		long_return = _cprof.conf.rate;
 		return_ptr = (u_char *)&long_return;
 		break;
     case CONF_PSD:

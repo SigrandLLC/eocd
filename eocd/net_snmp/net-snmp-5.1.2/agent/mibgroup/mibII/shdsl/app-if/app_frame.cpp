@@ -4,16 +4,16 @@ app_frame::
 app_frame(app_ids id,app_types type,roles role,u8 act_seconds,char *dname){
 	u32 psize,csize;
 	int offs;
+
 	if( (offs = size_by_id(id,type,psize,csize) ) <0 ){
 	    buf = NULL;
 	    buf_size = 0;
 	    return;
 	}
-
 	buf_size = offs;
 	if( !(buf = new char[buf_size]) ){
+		buf = NULL;
 	    buf_size = 0;
-	    PDEBUG(DERR,"Not enought memory");
 	    return;
 	}
 	memset(buf,0,buf_size);
@@ -24,8 +24,9 @@ app_frame(app_ids id,app_types type,roles role,u8 act_seconds,char *dname){
 	hdr->id = (u8)id;
 	hdr->type = (u8)type;
 	hdr->role = (u8)role;
-	if( time(&hdr->tstamp) < 0)
-	    PDEBUG(DERR,"Error getting current time");
+	if( time(&hdr->tstamp) < 0){
+		//   PDEBUG(DERR,"Error getting current time");
+	}
 	hdr->act_sec = act_seconds;
 	memcpy(hdr->dname,dname,strnlen(dname,SPAN_NAME_LEN));
 }
@@ -44,9 +45,9 @@ app_frame(char *b,int size){
         PDEBUG(DERR,"Cannot get info about frame id = %d",hdr->id);
         return;
     }
-    if( (hdr->psize != psize) || (hdr->csize != csize) ||
-	    (!csize && hdr->type == APP_SET) ){
-        PDEBUG(DERR,"Error in app_frame header");
+    if( (hdr->psize != psize) || (hdr->csize != csize) ){
+        PDEBUG(DERR,"Error in app_frame header: psize=(%d not %d), csize=(%d not %d)",
+			   hdr->psize,psize,hdr->csize,csize);
         buf = NULL;
         buf_size = 0;
     }
@@ -105,10 +106,42 @@ size_by_id(app_ids id,app_types type,u32 &psize,u32 &csize)
         psize = ENDP_MAINT_PAY_SZ;
         csize = ENDP_MAINT_CH_SZ;
         break;
-    case APP_SPAN_CPROF:
-	psize = SPAN_CONF_PROF_PAY_SZ;
-	csize = SPAN_CONF_PROF_CH_SZ;
-	break;
+    case APP_CPROF:
+		psize = CPROF_PAY_SZ;
+		csize = CPROF_CH_SZ;
+		break;
+    case APP_LIST_CPROF:
+		psize = CPROF_LIST_PAY_SZ;
+		csize = CPROF_LIST_CH_SZ;
+		break;
+    case APP_ADD_CPROF:
+		psize = CPROF_ADD_PAY_SZ;
+		csize = CPROF_ADD_CH_SZ;
+		break;
+    case APP_DEL_CPROF:
+		psize = CPROF_DEL_PAY_SZ;
+		csize = CPROF_DEL_CH_SZ;
+		break;
+    case APP_ADD_CHAN:
+		psize = CHAN_ADD_PAY_SZ;
+		csize = CHAN_ADD_CH_SZ;
+		break;
+    case APP_DEL_CHAN:
+		psize = CHAN_DEL_PAY_SZ;
+		csize = CHAN_DEL_CH_SZ;
+		break;
+    case APP_CHNG_CHAN:
+		psize = CHAN_CHNG_PAY_SZ;
+		csize = CHAN_CHNG_CH_SZ;
+		break;
+    case APP_LOOP_RCNTRST:
+		psize = LOOP_RCNTRST_PAY_SZ;
+		csize = LOOP_RCNTRST_CH_SZ;
+		break;
+    case APP_DUMP_CFG:
+		psize = DUMP_CFG_PAY_SZ;
+		csize = DUMP_CFG_CH_SZ;
+		break;
     default:
         return -1;
     }
@@ -137,7 +170,7 @@ char *app_frame::
 payload_ptr(){
     ASSERT( buf );
     if( buf )
-	return &buf[FRAME_HEADER_SZ];
+		return &buf[FRAME_HEADER_SZ];
     return NULL;
 }
 
