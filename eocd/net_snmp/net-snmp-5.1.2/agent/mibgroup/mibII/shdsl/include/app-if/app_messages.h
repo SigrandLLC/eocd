@@ -12,7 +12,7 @@ typedef enum { APP_SPAN_NAME=0,APP_SPAN_PARAMS,APP_SPAN_CONF,APP_SPAN_STATUS,
 			   APP_ENDP_1DAY, APP_ENDP_MAINT, APP_UNIT_MAINT, APP_CPROF,
 			   APP_LIST_CPROF, APP_ADD_CPROF, APP_DEL_CPROF, APP_LOOP_RCNTRST,
 			   APP_ADD_CHAN, APP_DEL_CHAN, APP_CHNG_CHAN, APP_ENDP_APROF,
-			   APP_DUMP_CFG
+			   APP_DUMP_CFG,APP_SENSORS
 } app_ids;
 
 #define app_ids_num 20
@@ -67,6 +67,7 @@ typedef struct{
     u8 : 6;
     u32 max_prate;
     u32 act_prate;
+	u8 tcpam;
 } span_status_payload;
 #define SPAN_STATUS_PAY_SZ sizeof(span_status_payload)
 #define SPAN_STATUS_CH_SZ 0
@@ -175,6 +176,8 @@ typedef struct{
 typedef struct{
     char pname[SNMP_ADMIN_LEN+1];
     span_conf_profile_t conf;
+    u8 filled:7;
+	char names[SPAN_NAMES_NUM][SPAN_NAME_LEN];
 } cprof_payload;
 #define CPROF_PAY_SZ sizeof(cprof_payload)
 
@@ -187,6 +190,7 @@ typedef struct{
     u8 line_probe:1;
     u8 remote_cfg:1;
     u8 rate:1;
+    u8 tcpam:1;
     s8 cur_marg_down:1;
     s8 worst_marg_down:1;
     s8 cur_marg_up:1;
@@ -232,6 +236,17 @@ typedef struct{
     u8 hdsl2ShdslEndpointThreshUAS:1;
 } endp_alarm_prof_changes;
 #define ENDP_ALARM_PROF_CH_SZ sizeof(endp_alarm_prof_changes)
+
+//----------- Regenerator Sensors ----------------//
+
+typedef struct{
+    u8 unit;
+    resp_sensor_state state;
+	u8 sens1,sens2,sens3;
+} sensors_payload;
+#define SENSORS_PAY_SZ sizeof(sensors_payload)
+#define SENSORS_CH_SZ 0
+
 
 //----------- Endpoint counters reset ------------//
 

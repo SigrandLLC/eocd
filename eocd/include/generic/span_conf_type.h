@@ -10,6 +10,7 @@ typedef enum { symmetric = 1, asymmetric } psd_t;
 typedef enum { localClk = 1, networkClk, dataOrNetworkClk, dataClk } clk_t;
 typedef enum { disable = 1, enable } line_probe_t;
 typedef enum { disabled = 1, enabled } remote_cfg_t; 
+typedef enum { err_tcpam=0,tcpam4=1,tcpam8,tcpam16,tcpam32,tcpam64,tcpam128 } tcpam_t; 
 
 
 typedef struct{
@@ -19,7 +20,8 @@ typedef struct{
     psd_t psd;    
     clk_t clk;    
     line_probe_t line_probe;
-    remote_cfg_t remote_cfg; 
+    remote_cfg_t remote_cfg;
+	tcpam_t tcpam;
     
     u8 use_cur_down :1;                                                   
     u8 use_worst_down :1;                                                  

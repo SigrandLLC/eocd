@@ -142,6 +142,10 @@ size_by_id(app_ids id,app_types type,u32 &psize,u32 &csize)
 		psize = DUMP_CFG_PAY_SZ;
 		csize = DUMP_CFG_CH_SZ;
 		break;
+	case APP_SENSORS:
+		psize = SENSORS_PAY_SZ;
+		csize = SENSORS_CH_SZ;
+		break;
     default:
         return -1;
     }

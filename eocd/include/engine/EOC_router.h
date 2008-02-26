@@ -13,15 +13,15 @@
 
 
 class EOC_router{
-public:
+ public:
     struct interface{
-	EOC_dev *sdev;
-	unit sunit;
-	EOC_msg::Direction in_dir,out_dir;
-	shdsl_state state;
+		EOC_dev *sdev;
+		unit sunit;
+		EOC_msg::Direction in_dir,out_dir;
+		shdsl_state state;
     };
     enum {SHDSL_MAX_IF=2};
-protected:
+ protected:
     dev_type type;
     struct interface ifs[SHDSL_MAX_IF];
     unsigned char if_cnt,if_poll;
@@ -34,29 +34,29 @@ protected:
 
 
     // ------------ loopback ------------------//
-    #define LOOPB_BUF_SZ 16
+#define LOOPB_BUF_SZ 16
     int loop_head,loop_tail;
     EOC_msg *loopb[LOOPB_BUF_SZ];
     inline int inc(int ind,int max_ind){ return (ind+1<max_ind) ? ind+1 : 0; }
     inline int add_loop(EOC_msg *m){
-	if( loop_head == inc(loop_tail,LOOPB_BUF_SZ) ) 
-	    return -1;
-	loopb[loop_tail] = m;
-	loop_tail = inc(loop_tail,LOOPB_BUF_SZ);
-	return 0;
+		if( loop_head == inc(loop_tail,LOOPB_BUF_SZ) ) 
+			return -1;
+		loopb[loop_tail] = m;
+		loop_tail = inc(loop_tail,LOOPB_BUF_SZ);
+		return 0;
     }
 
     inline EOC_msg *get_loop(){
-	EOC_msg *m;
-	if( loop_head == loop_tail ) 
-	    return NULL;
-	m = loopb[loop_head];
-	loop_head = inc(loop_head,LOOPB_BUF_SZ);
-	return m;
+		EOC_msg *m;
+		if( loop_head == loop_tail ) 
+			return NULL;
+		m = loopb[loop_head];
+		loop_head = inc(loop_head,LOOPB_BUF_SZ);
+		return m;
     }
     // ------------ loopback ------------------//
 
-public:
+ public:
     EOC_router(dev_type r,EOC_dev *side);
     EOC_router(dev_type r,EOC_dev *nside,EOC_dev *cside);
     ~EOC_router();

@@ -4,10 +4,11 @@ extern "C"{
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <stdio.h>
-#include<errno.h>
+#include <errno.h>
 #include <string.h>
 #include <getopt.h>
 #include <strings.h>
+#include <stdlib.h>
 }
 
 #include <generic/EOC_generic.h>
@@ -141,6 +142,91 @@ string2annex(char *a)
 		return annex_b;
 	return err_annex;
 }
+
+
+char *
+tcpam2string(tcpam_t code)
+{
+	static char buf[64];
+	switch( code ){
+	case tcpam4:
+		strcpy(buf,"tcpam4");
+		break;
+	case tcpam8:
+		strcpy(buf,"tcpam8");
+		break;
+	case tcpam16:
+		strcpy(buf,"tcpam16");
+		break;
+	case tcpam32:
+		strcpy(buf,"tcpam32");
+		break;
+	case tcpam64:
+		strcpy(buf,"tcpam64");
+		break;
+	case tcpam128:
+		strcpy(buf,"tcpam128");
+		break;
+	default:
+		strcpy(buf,"unknown");
+		break;
+	}		
+	return buf;
+}
+
+char *
+tcpam2STRING(tcpam_t code)
+{
+	static char buf[64];
+	switch( code ){
+	case tcpam4:
+		strcpy(buf,"TCPAM4");
+		break;
+	case tcpam8:
+		strcpy(buf,"TCPAM8");
+		break;
+	case tcpam16:
+		strcpy(buf,"TCPAM16");
+		break;
+	case tcpam32:
+		strcpy(buf,"TCPAM32");
+		break;
+	case tcpam64:
+		strcpy(buf,"TCPAM64");
+		break;
+	case tcpam128:
+		strcpy(buf,"TCPAM128");
+		break;
+	default:
+		strcpy(buf,"unknown");
+		break;
+	}		
+	return buf;
+}
+
+tcpam_t
+string2tcpam(char *str)
+{
+	char *eptr;
+	unsigned long tcpam = strtoul(str,&eptr,10);
+	
+	if( eptr == str ){
+		return err_tcpam;
+	}
+	
+	switch(tcpam){
+	case 4: return tcpam4;
+	case 8: return tcpam8;
+	case 16: return tcpam16;
+	case 32: return tcpam32;
+	case 64: return tcpam64;
+	case 128: return tcpam128;
+	default:
+		break;
+	}
+	return err_tcpam;
+}
+
 
 char *
 power2string(power_t a)
@@ -395,7 +481,8 @@ shell_spanstat(app_comm_cli &cli,char *chan)
 		annex_t annex = annex_a;
 		if( p1->region1 )
 			annex = annex_b;
-		printf("reg_num=%d\nrate=%d\nannex=%s\n",p1->nreps,p1->max_lrate,annex2string(annex));
+		printf("reg_num=%d\nrate=%d\nannex=%s\ntcpam=%s\n",p1->nreps,p1->max_lrate,
+				annex2string(annex),tcpam2STRING((tcpam_t)p1->tcpam));
 
     }
  exit:
@@ -414,7 +501,6 @@ shell_channel(app_comm_cli &cli,char *chan,span_params_payload *p)
 	printf("chan=%s\nunit_num=%d\nlink=%d\nloop_num=%d\n",chan,p->units,p->link_establ,p->loops);
 	shell_spanconf(cli,chan);
 	shell_spanstat(cli,chan);
-
 }
 
 int
@@ -714,14 +800,14 @@ int shell_cprof_info(app_comm_cli &cli,char *prof,int ind)
 		p = (cprof_payload*)fr1->payload_ptr();
 		if( ind ){
 			printf("cprof%d=%s\n",ind,p->pname);
-			printf("annex%d=%s\npower%d=%s\nrate%d=%d\n",
+			printf("annex%d=%s\npower%d=%s\nrate%d=%d\ntcpam%d=%s\n",
 				   ind,annex2string(p->conf.annex),ind,power2string(p->conf.power),
-				   ind,p->conf.rate);
+				   ind,p->conf.rate,ind,tcpam2string(p->conf.tcpam));
 		}else{
 			printf("cprof=%s\n",p->pname);
-			printf("annex=%s\npower=%s\nrate=%d\n",
+			printf("annex=%s\npower=%s\nrate=%d\ntcpam=%s\n",
 				   annex2string(p->conf.annex),power2string(p->conf.power),
-				   p->conf.rate);
+				   p->conf.rate,tcpam2string(p->conf.tcpam));
 		}
     }
 exit:

@@ -47,6 +47,7 @@ void print_usage(char *name)
 		   "  -p, --cprof=<name>\tSet configuration profile <name> for channel\n"
 		   "  -v, --active=[0|1]\t1-eocd can change device settings,0-can not\n"
 		   "  Configuration profiles objects options\n"
+		   "  -t  --tcpam=XXX\tSetup tcpam, XXX=4,8,16,32,64,128\n"
 		   "  -n  --annex={AnnexA | AnnexB}\tSetup annex\n"
 		   "  -l, --lrate=<rate>\tSet line rate value\n"
 		   "  -f, --pwr-feed={on|off}\tSet SHDSL channel power feed\n"
@@ -136,6 +137,8 @@ process_channel(char *name,int action,int master,int reg_num,char *cprof,int act
 		} 
 		if( (ret = resp->is_negative() ) ){ 
 			print_error("Cannot change channel \"%s\": (%d) %s\n",name,ret,err_strings[ret-1]);
+			if( mode == SHELL )
+				printf("err_string=\"Cannot change configuration profile for \"%s\": %s\"\n",name,err_strings[ret-1]);				
 			goto exit;
 		}
 		if( mode == NORMAL )
@@ -177,7 +180,8 @@ process_channel(char *name,int action,int master,int reg_num,char *cprof,int act
 }
 
 int
-process_profile(char *name,action_t action,annex_t annex,power_t power,int lrate,int shell_out)
+process_profile(char *name,action_t action,annex_t annex,power_t power,int lrate,
+				tcpam_t tcpam,int shell_out)
 {
 	app_frame *req=NULL, *resp=NULL;
  	int ret = 0;
@@ -239,6 +243,10 @@ process_profile(char *name,action_t action,annex_t annex,power_t power,int lrate
 			c->annex = 1;
 			mconf->annex = annex;
 		}
+		if( tcpam != err_tcpam ){
+			c->tcpam = 1;
+			mconf->tcpam = tcpam;
+		}
 
 		if( power != err_power ){
 			c->power = 1;
@@ -261,8 +269,20 @@ process_profile(char *name,action_t action,annex_t annex,power_t power,int lrate
 
 		if( (ret=resp->is_negative()) ){
 			print_error("Cannot change configuration profile \"%s\": %s\n",name,err_strings[ret-1]);
-			if( mode == SHELL )
-				printf("err_string=\"Cannot change configuration profile \"%s\": %s\"\n",name,err_strings[ret-1]);
+			if( mode == SHELL ){
+				if( ret == ERPNCOMP ){
+					printf("err_string=\"Cannot change configuration profile \"%s\": %s at least for channels: ",
+						   name,err_strings[ret-1]);
+					p = (cprof_payload*)resp->payload_ptr();
+					for(int i=0; i< p->filled;i++){
+						printf("%s ",p->names[i]);
+					}
+					printf("\"\n");
+				}else{
+					printf("err_string=\"Cannot change configuration profile \"%s\": %s\"\n",
+						   name,err_strings[ret-1]);
+				}
+			}
 			goto exit;
 		}
 		if( mode == NORMAL ){
@@ -277,7 +297,7 @@ process_profile(char *name,action_t action,annex_t annex,power_t power,int lrate
 		req = new app_frame(APP_DEL_CPROF,APP_SET,app_frame::REQUEST,1,"");
 		cprof_del_payload *p = (cprof_del_payload*)req->payload_ptr();
 		strcpy(p->pname,name);
-
+		
 		cli->send(req->frame_ptr(),req->frame_size());
 		cli->wait();
 		int size = cli->recv(buf);
@@ -353,6 +373,7 @@ main(int argc, char *argv[] )
 	char active = -1;
 	annex_t annex = err_annex;
 	power_t power = err_power;
+	tcpam_t tcpam = err_tcpam;
 	int lrate = -1;
 	char shell_out = -1;
 	char *endp;
@@ -372,6 +393,7 @@ main(int argc, char *argv[] )
 			{"cprof",1,0,'p'},
 			{"active",1,0,'v'},
 			{"annex",1,0,'n'},
+			{"tcpam",1,0,'t'},
 			{"pwr-feed",1,0,'f'},
 			{"lrate",1,0,'l'},
 			{"row-shell",0,0, 's'},
@@ -380,7 +402,7 @@ main(int argc, char *argv[] )
 			{0, 0, 0, 0}
 		};
 
-		int c = getopt_long (argc, argv, "o:a:d:c:m:r:p:v:f:n:l:shu",
+		int c = getopt_long (argc, argv, "o:a:d:c:m:r:p:v:t:f:n:l:shu",
 							 long_options, &option_index);
         if (c == -1)
     	    break;
@@ -438,6 +460,12 @@ main(int argc, char *argv[] )
 				return 0;
 			}
 			break;
+		case 't':
+			tcpam = string2tcpam(optarg);
+			if( tcpam == err_tcpam ){
+				print_error("error --tcpam argument %d, may be only 4,8,16,32,64,128\n");
+			}
+			break;
 		case 'f':
 			power = string2power(optarg);
 			if( power < 0 ){
@@ -466,9 +494,9 @@ main(int argc, char *argv[] )
 		printf("Result:\n"
 			   "type=%d,action=%d,name=%s,master=%d\n"
 			   "cprof=%s,reg-num=%d,active=%d,annex=%d\n"
-			   "lrate=%d,sout=%d,power=%d\n",
+			   "lrate=%d,sout=%d,power=%d,tcpam=%d\n",
 			   type,action,name,master,cprof,reg_num,
-			   active,annex,lrate,shell_out,power);
+			   active,annex,lrate,shell_out,power,tcpam);
 		printf("----------------- Summary cmdline options -------------------\n");
 	}
 
@@ -488,7 +516,6 @@ main(int argc, char *argv[] )
 		return 0;
 	}
 
-
 	if( !name ){
 		print_error("Error: action option or option argument is missing\n");
 		return 0;
@@ -505,7 +532,7 @@ main(int argc, char *argv[] )
 		if( (master!=-1 || cprof || reg_num!=-1 || active!=-1) && mode == NORMAL ){
 			printf("Warning: --master, --reg_num, --active is ignored in channel mode\n");
 		}
-		process_profile(name,action,annex,power,lrate,shell_out);
+		process_profile(name,action,annex,power,lrate,tcpam,shell_out);
 		break;
 	}
 

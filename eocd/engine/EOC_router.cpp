@@ -5,8 +5,6 @@
 #include <generic/EOC_responses.h>
 #include <generic/EOC_requests.h>
 
-#define EOC_DEBUG
-#define DEFAULT_LEV 0
 #include <eoc_debug.h>
 
 EOC_router::EOC_router(dev_type r,EOC_dev *side)

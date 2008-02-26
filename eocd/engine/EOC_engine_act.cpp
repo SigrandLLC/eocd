@@ -1,5 +1,8 @@
 #include <syslog.h>
 
+#define EOC_DEBUG
+#include <eoc_debug.h>
+
 #include <generic/EOC_generic.h>
 #include <generic/EOC_msg.h>
 #include <generic/EOC_requests.h>
@@ -16,7 +19,7 @@
 
 #include <conf_profile.h>
 #include <shdsl/config.h>
-#include <eoc_debug.h>
+
 
 int EOC_engine_act::
 register_handlers(){
@@ -92,19 +95,23 @@ schedule()
     
     int i=0;
     int cnt;
+
+	PDEBUG(DERR,"");
     
 	PDEBUG(DERR,"Receiving");
     while( (m = rtr->receive()) && i<recv_max){
 		if( m->is_request() ){
 			if( resp->request(m,ret,cnt) ){
 				delete m;
-				return -1;
+				PDEBUG(DERR,"error#1");
+				break;
 			}
 			if( !ret ){
 				// only one message to respond
 				if( rtr->send(m) ){
 					delete m;
-					return -1;
+					PDEBUG(DERR,"error#2");
+					break;
 				}
 			}else if( ret ){
 				// several messages to respond	
@@ -112,7 +119,8 @@ schedule()
 					if( rtr->send(ret[i]) ){
 						delete[] ret;
 						delete m;
-						return -1;
+						PDEBUG(DERR,"error#3");
+						break;
 					}
 				}
 				delete[] ret;
@@ -120,7 +128,8 @@ schedule()
 		}else if( m->is_response() ){
     	    if( poll->process_msg(m) ){
 				delete m;
-				return -2;
+				PDEBUG(DERR,"error#4");
+				break;
 			}
 		}
 		delete m;
@@ -129,13 +138,19 @@ schedule()
 
 	PDEBUG(DERR,"Sending");
     // Send one EOC request
+
+	PDEBUG(DERR,"EOC_engine_act::Schedule#2\n");
+
+
     while( m = poll->gen_request() ){
 		if( rtr->send(m) ){
 			delete m;
-			return -3;
+			PDEBUG(DERR,"Error in send!!");
+			continue;
 		}
 		delete m;
     }
+	poll->finish_poll();
 	PDEBUG(DERR,"exit");
     return 0;
 }
@@ -161,7 +176,7 @@ app_request(app_frame *fr){
 		}
 		span_conf_profile_t cfg;
 		int mode,tcpam;
-		if( ((EOC_dev_terminal*)rtr->csdev())->cur_config(cfg,mode,tcpam) ){
+		if( ((EOC_dev_terminal*)rtr->csdev())->cur_config(cfg,mode) ){
 			PDEBUG(DERR,"Error requesting configuration");
 			fr->negative(ERUNEXP);
 			break;
@@ -179,6 +194,7 @@ app_request(app_frame *fr){
 		}
 		p->max_prate = cfg.rate;
 		p->act_prate = cfg.rate; 
+		p->tcpam = cfg.tcpam;
 		break;
 	}
 	default:{

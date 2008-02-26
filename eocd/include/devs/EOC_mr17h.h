@@ -33,7 +33,7 @@ class EOC_mr17h : public EOC_dev_terminal{
     int set_dev_option(char *name,char *val);
     int get_dev_option(char *name,char *&buf);
 
-    int cur_config(span_conf_profile_t &cfg,int &mode,int &tcpam);
+    int cur_config(span_conf_profile_t &cfg,int &mode);
     int configure(span_conf_profile_t &cfg,int type);
 
     // Statistic info

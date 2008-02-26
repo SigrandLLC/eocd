@@ -165,10 +165,10 @@ link_down()
 {
     PDEBUG(DERR,"Link down");
     for(int i=0;i<MAX_UNITS;i++){
-		PDEBUG(DERR,"Down unit%d",i);
+		PDEBUG(DFULL,"Down unit%d",i);
 		units_discov[i] = 0;
 		if(	units[i] ){
-			PDEBUG(DERR,"Down unit%d - not empty",i);
+			PDEBUG(DFULL,"Down unit%d - not empty",i);
 			units[i]->link_down();
 		}
 	}
@@ -195,7 +195,7 @@ _resp_discovery(EOC_db *db,EOC_msg *m,int check)
 	PDEBUG(DINFO,"DISCOVERY_RESP FROM(%d): hop=%d,resl=%d,vendor_id=%d,fwd_loss=%d",
 		   m->src(),resp->hop,resp->res1,resp->vendor_id,resp->fwd_loss);
 	if( m->src() == stu_r ){
-		PDEBUG(DERR,"Clean units list");
+		PDEBUG(DFULL,"Clean units list");
 		for(int i=0;i<MAX_UNITS;i++){
 			if( db->units[i] && !db->units_discov[i] ){
 				PDEBUG(DERR,"Unit(%d) is not present anymore\n",i);
@@ -556,17 +556,17 @@ _appreq_endp1day(EOC_db *db,app_frame *fr)
 		{
 			int int_num = p->int_num - 1;
 			int flag = 0;
-			PDEBUG(DERR,"Get-NEXT");
+			PDEBUG(DFULL,"Get-NEXT");
 			do{
 				int_num++;
-				PDEBUG(DERR,"Process int#%d",int_num);
+				PDEBUG(DFULL,"Process int#%d",int_num);
 				if( loop->d1_nx_counters(int_num,elem) ){
 					fr->negative(ERNOELEM);
 					PDEBUG(DERR,"Fail at int#%d",int_num);
 					return 0;
 				}
 				flag = elem.cntrs.es + elem.cntrs.ses + elem.cntrs.crc + elem.cntrs.losws + elem.cntrs.uas;
-				PDEBUG(DERR,"Int#%d -ok, flag=%d",int_num,flag);
+				PDEBUG(DFULL,"Int#%d -ok, flag=%d",int_num,flag);
 			}while( !flag );
 			p->cntrs = elem.cntrs;
 			p->int_num = int_num;
@@ -598,19 +598,51 @@ _appreq_cntrst(EOC_db *db,app_frame *fr)
 	loop_rcntrst_payload *p = (loop_rcntrst_payload*)fr->payload_ptr();
 	EOC_loop *l;
 
-	PDEBUG(DERR,"DB: Endpoint counters reset");
+	PDEBUG(DFULL,"DB: Endpoint counters reset");
 	if( !p ){
 		fr->negative(ERPARAM);
 		PDEBUG(DERR,"Error !p");    
 		return -1;
 	}
 	if( !(l=db->check_exist((unit)p->unit,(side)p->side,p->loop)) ){
-		PDEBUG(DERR,"DB Endpoint reset counters: error check exist: unit(%d) side(%d)",
+		PDEBUG(DFULL,"DB Endpoint reset counters: error check exist: unit(%d) side(%d)",
 			   p->unit,p->side);	
 		fr->negative(ERNOELEM);
 		return 0;
 	}
-	PDEBUG(DERR,"DB Endpoint reset counters: form response");
+	PDEBUG(DFULL,"DB Endpoint reset counters: form response");
 	l->reset_tcounters();
+	return 0;
+}
+
+int EOC_db::
+_appreq_sensors(EOC_db *db,app_frame *fr)
+{
+	sensors_payload *p = (sensors_payload*)fr->payload_ptr();
+	unit u = (unit)p->unit;
+	EOC_unit *un;
+
+	PDEBUG(DERR,"DB: Sensor state request");
+	if( !p ){
+		fr->negative(ERPARAM);
+		PDEBUG(DERR,"Error !p");  
+		return -1;
+	}
+	
+	if( !db->check_exist((unit)p->unit) ){
+		PDEBUG(DERR,"DB sensor state: error check exist: unit(%d)",p->unit);	
+		fr->negative(ERNOELEM);
+		return 0;
+	}
+	
+	// Sensors are installed only on regenerators
+	if( u == stu_c || u == stu_r ){
+		PDEBUG(DERR,"DB sensor state: no sensors on terminals");	
+		fr->negative(ERNOELEM);
+		return 0;
+	}
+	
+	un = db->units[(int)u - 1];
+	un->sensor_get(p->state,p->sens1,p->sens2,p->sens3);
 	return 0;
 }

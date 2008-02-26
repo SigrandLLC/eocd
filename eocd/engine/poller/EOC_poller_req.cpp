@@ -20,7 +20,7 @@ _req_discovery(sched_state stat,sched_elem el,EOC_config *cfg)
     m->msize();
     // TODO: make as exception!!!
     if( !m->mptr() )
-	return NULL;
+		return NULL;
     req_discovery *req = (req_discovery *)m->payload();
     req->hop = 0;
     m->src(el.src);
@@ -37,7 +37,7 @@ _req_inventory(sched_state stat,sched_elem el,EOC_config *cfg)
     EOC_msg *m = new EOC_msg(REQ_INVENTORY_SZ);
     // TODO: make as exception!!!
     if( !m->mptr() )
-	return NULL;
+		return NULL;
     req_inventory *req = (req_inventory *)m->payload();
     m->src(el.src);
     m->dst(el.dst);
@@ -52,16 +52,16 @@ _req_configure(sched_state stat,sched_elem el,EOC_config *cfg)
     EOC_msg *m = new EOC_msg(REQ_CONFIGURE_SZ);
     // TODO: make as exception!!!
     if( !m->mptr() )
-	return NULL;
+		return NULL;
     req_configure *req = (req_configure *)m->payload();
     m->src(el.src);
     m->dst(el.dst);
     m->type(REQ_CONFIGURE);
     switch( stat ){
     case EOC_scheduler::Setup:
-	req->conf_type = 0;
+		req->conf_type = 0;
     case EOC_scheduler::Normal:
-	req->conf_type = 1;
+		req->conf_type = 1;
     }
     req->loop_attn = cfg->loop_tresh();
     req->snr_marg = cfg->snr_tresh();
@@ -75,7 +75,7 @@ _req_status(sched_state stat,sched_elem el,EOC_config *cfg)
     EOC_msg *m = new EOC_msg(REQ_STATUS_SZ);
     // TODO: make as exception!!!
     if( !m->mptr() )
-	return NULL;
+		return NULL;
     char *req = (char *)m->payload();
     m->src(el.src);
     m->dst(el.dst);
@@ -87,11 +87,11 @@ EOC_msg *
 _req_test(sched_state stat,sched_elem el,EOC_config *cfg)
 {
     if( el.type != 15 )
-	return NULL;
+		return NULL;
     EOC_msg *m = new EOC_msg(10);
     // TODO: make as exception!!!
     if( !m->mptr() )
-	return NULL;
+		return NULL;
     char *req = (char *)m->payload();
     m->src(el.src);
     m->dst(el.dst);

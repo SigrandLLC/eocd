@@ -5,6 +5,10 @@
  *	and storing of SHDSL channel state & configuration DataBase
  */
 
+#define EOC_DEBUG
+#include<eoc_debug.h>
+
+
 #include <generic/EOC_types.h>
 #include <generic/EOC_msg.h>
 #include <engine/EOC_scheduler.h>
@@ -12,6 +16,7 @@
 #include <engine/EOC_handlers.h>
 #include <app-if/err_codes.h>
 #include <db/EOC_db.h>
+
 
 int EOC_poller::
 register_request(u8 type,request_handler_t h)
@@ -34,13 +39,13 @@ EOC_msg * EOC_poller::
 gen_request(){
     sched_elem el;
     int ind;
-    // get request
+    // Refresh schedule plan
     sch->resched();
-	//    sch->print();
+    // get request
     if( sch->request(el) ){
-		sch->tick();
 		return NULL;
     }
+	
     if( el.type>=REQUEST_QUAN || !req_hndl[el.type] ){
 		//PDEBUG(0,"Scheduled invalid type of message: %d",el.type);
 		return NULL;
@@ -53,11 +58,27 @@ process_msg(EOC_msg *m)
 {
     // Check that we have assosiated handler 
     // & we request this response
-    if( !m )
+	PDEBUG(DERR,"HI");
+	printf("HI - doubling\n");
+
+    if( !m ){
+		PDEBUG(DERR,"!m");
 		return -1;
+	}
     unsigned char type = m->type()-REQUEST_QUAN;
-    if(	!m->is_response() || db->response(m,1) || sch->response(m) )
+    if(	!m->is_response() ){
+		PDEBUG(DERR,"!m->is_response");
 		return -1;
+	}
+	if( db->response(m,1) ){
+		PDEBUG(DERR,"db->response(m,1)");
+		return -1;
+	}
+	if( sch->response(m) ){
+		PDEBUG(DERR,"sch->response(m)");
+		return -1;
+	}
+
     // commit changes to EOC DataBase
     return db->response(m,0);
 }
@@ -66,19 +87,19 @@ int EOC_poller::
 app_request(app_frame *fr)
 {
     switch(fr->id()){
-// 	case APP_SPAN_STATUS:{
-// 		span_status_payload *p = (span_status_payload*)fr->payload_ptr();
-// 		p->nreps = db->reg_quan();
-// 		// TODO get thisinfo from device
-// 		p->max_lrate = 0;
-// 		p->act_lrate = 0;
-// 		p->region0 = 1;
-// 		p->region1 = 1;
-// 		p->max_prate = 0;
-// 		p->act_prate = 0; 
-// 		fr->response();
-// 		break;
-// 	}
+		// 	case APP_SPAN_STATUS:{
+		// 		span_status_payload *p = (span_status_payload*)fr->payload_ptr();
+		// 		p->nreps = db->reg_quan();
+		// 		// TODO get thisinfo from device
+		// 		p->max_lrate = 0;
+		// 		p->act_lrate = 0;
+		// 		p->region0 = 1;
+		// 		p->region1 = 1;
+		// 		p->max_prate = 0;
+		// 		p->act_prate = 0; 
+		// 		fr->response();
+		// 		break;
+		// 	}
 	case APP_ENDP_CONF:{
 		endp_conf_payload *p = (endp_conf_payload*)fr->payload_ptr();
 		if( db->check_exist((unit)p->unit,(side)p->side,p->loop) ){

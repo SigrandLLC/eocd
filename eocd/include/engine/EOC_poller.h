@@ -44,6 +44,7 @@ class EOC_poller{
     int register_request(u8 type,request_handler_t h);
     int unregister_request(u8 type);
     EOC_msg *gen_request();
+	void finish_poll(){ sch->tick(); }
     int process_msg(EOC_msg *m);
     int app_request(app_frame *fr);
     inline int unit_quan(){ db->unit_quan(); }

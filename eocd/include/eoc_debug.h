@@ -13,14 +13,14 @@ extern int debug_lev;
 #ifdef EOC_DEBUG
 #	include <cassert>
 #	define ASSERT(x) assert(x)
-#       define PDEBUG(lev,fmt,args...) \
-		if( lev<=debug_lev ) \
-			printf("eocd(%s): " fmt " \n",__FUNCTION__, ## args  )
+#       define PDEBUG(lev,fmt,args...)							\
+	if( lev<=debug_lev )										\
+		printf("eocd(%s): " fmt " \n",__FUNCTION__, ## args  )
 
 
-#	define EDEBUG(lev,function) \
-		if( lev<=debug_lev ) \
-			function
+#	define EDEBUG(lev,function)					\
+	if( lev<=debug_lev )						\
+		function
 
 #	define PERROR(fmt,args...) printf("eocd(%s) " fmt " : %s\n", __FUNCTION__, ##args,strerror(errno))
 

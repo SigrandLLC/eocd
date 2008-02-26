@@ -252,10 +252,14 @@ int main( int argc, char *argv[] ) {
     int k = 0;
     side_perf S;
     while(1){
+		time_t tm1,tm2;
 		PDEBUG(DERR,"-------------------- POLL--------------------");
 		m->poll_channels();
 		PDEBUG(DERR,"-------------------- LISTEN --------------------");
-		m->app_listen(1);
+		time(&tm1);
+		m->app_listen();
+		time(&tm2);
+		printf("!!--  app_listen works %d sec --!!\n",tm2-tm1);
     }
 
     /* Finish up */

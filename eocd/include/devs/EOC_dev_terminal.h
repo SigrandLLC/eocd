@@ -12,7 +12,7 @@ protected:
     char *chan_path;
     int check_ctrl_files(char *d,char **opts,int opts_num);
 public:
-    virtual int cur_config(span_conf_profile_t &cfg,int &mode,int &tcpam) = 0;
+    virtual int cur_config(span_conf_profile_t &cfg,int &mode) = 0;
     virtual int configure(span_conf_profile_t &cfg,int t) = 0; 
 };
  

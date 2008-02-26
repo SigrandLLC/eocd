@@ -67,6 +67,7 @@ class EOC_unit{
 
     resp_inventory inventory_info(){ return inv_info; }
 
+	// Regenerators sensors
     void sensor_resp(resp_sensor_state *resp){
 		//	PDEBUG(DINFO,"SAVE SENSOR STATE: s1(%d), s2(%d), s3(%d)",resp->sensor1,resp->sensor2,resp->sensor3);
 		sensors_cur = *resp;
@@ -75,6 +76,14 @@ class EOC_unit{
 		sens3 += resp->sensor3;
     }
 
+    void sensor_get(resp_sensor_state &st,u8 &s1,u8 &s2,u8 &s3){
+		st = sensors_cur;
+    	s1= sens1;
+		s2 = sens2;
+		s3 = sens3;
+	}
+
+	// Link handling
 	inline void link_up(){
 		for(int i=0;i<EOC_SIDES_NUM;i++)
 			if(side[i])

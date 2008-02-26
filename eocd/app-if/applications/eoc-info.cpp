@@ -20,7 +20,7 @@ extern "C"{
 
 typedef enum {NORMAL,SHELL} output_mode;
 output_mode mode = NORMAL;
-typedef enum {NONE,PSHORT,PEXACT,PFULL,SHORT,FULL,EXACT,RESET} type_t;
+typedef enum {NONE,PSHORT,PEXACT,PFULL,SHORT,FULL,EXACT,RESET,SENSORS} type_t;
 type_t type = NONE;
 unit _unit = unknown;
 side _side = no_side;
@@ -52,10 +52,47 @@ void print_usage(char *name)
 		   "  -r, --row-shell\t\tRow shell output (for use in scripts)\n"
 		   "  -v, --relative-rst\tReset relative counters\n"
 		   "  -w, --show-slaves\tLists slave interfaces (use with -r & -s)\n"
+		   "  -j, --sensors\tLists slave interfaces (use with -r & -s)\n"
 		   "  -h, --help\t\tThis page\n"
 		   ,name);
 }
 
+void print_sensors(app_comm_cli &cli,char *chan)
+{
+    app_frame *req = new app_frame(APP_SENSORS,APP_GET,app_frame::REQUEST,1,chan);
+    app_frame *resp;
+    char *buf;
+    
+    cli.send(req->frame_ptr(),req->frame_size());
+	cli.wait();
+    int size = cli.recv(buf);
+    if( size <=0 ){
+		delete req;
+		return;
+    }
+    
+    resp = new app_frame(buf,size);
+    if( !resp->frame_ptr() ){
+		print_error("error: bad message from eocd");
+		goto err_exit;
+    } 
+    
+    if( resp->is_negative() ){ // no such unit or no net_side
+		print_error("error: negative response from server");
+		goto err_exit;
+    }
+    {
+		sensors_payload *p = (sensors_payload *)resp->payload_ptr();
+		printf(" %s %s: ",chan, unit2string(_unit));
+		printf("\tSensor1: current=%d, count=%d",p->state.sensor1,p->sens1);
+		printf("\tSensor2: current=%d, count=%d",p->state.sensor2,p->sens2);
+		printf("\tSensor3: current=%d, count=%d",p->state.sensor3,p->sens3);
+    }
+ err_exit:
+    delete resp;
+    delete req;
+    return;
+}
 
 
 void print_short_chan(app_comm_cli &cli,char *chan)
@@ -292,7 +329,8 @@ void print_short(app_comm_cli &cli)
 		for(int i=0;i<p->filled && channels_num < MAX_CHANS;i++){
 			switch( mode ){
 			case NORMAL:
-				print_short_chan(cli,p->spans[i].name);
+				if( p->spans[i].t == master )
+					print_short_chan(cli,p->spans[i].name);
 				break;
 			case SHELL:
 				channels[channels_num].name = strdup(p->spans[i].name);
@@ -349,13 +387,15 @@ void print_full(app_comm_cli &cli)
 		for(int i=0;i<p->filled;i++){
 			printf("-----------------------------------------------------\n");
 			_unit = unknown;
-			print_exact(cli,p->spans[i].name);
+			if( p->spans[i].t == master ){
+				printf("Channel: %s\n",p->spans[i].name);
+				print_exact(cli,p->spans[i].name);
+			}
 		}	
 		if( !p->filled )
 			break;
 		flag = !p->last_msg;
-		req->chan_name(p->spans
-[p->filled-1].name);
+		req->chan_name(p->spans[p->filled-1].name);
 		delete resp;
     }while( flag );
     delete req;
@@ -400,7 +440,7 @@ int rst_relative(app_comm_cli &cli,char *chan)
 int
 main(int argc, char *argv[] )
 {
-    char iface[256];
+    char iface[256] = "";
     char *sock_name = "/var/eocd/eocd-socket";
 	
     // process command line arguments here
@@ -420,6 +460,7 @@ main(int argc, char *argv[] )
 		{"all-profiles",0, 0, 'a'},
 		{"profile", 1, 0, 'p'},
 		{"row-shell", 0, 0, 'r'},
+		{"sensors", 0, 0, 'j'},
 		{"help", 0, 0, 'h'},
 		{0, 0, 0, 0}
 	};
@@ -434,7 +475,6 @@ main(int argc, char *argv[] )
             break;
         case 'f':
 			type = FULL;
-			print_error("Requested full info\n");
     	    break;
 		case 'i':
 			if( type != FULL ){
@@ -525,13 +565,12 @@ main(int argc, char *argv[] )
 		case 'v':
 			type = RESET;
 			break;
+		case 'j':
+			type = SENSORS;
 		case 'h':
-			break;
+			print_usage(argv[0]);
+			return 0;
 		}
-    }
-    if( type == NONE ){    
-		print_usage(argv[0]);
-		return 0;
     }
     
     // Connect to eocd server
@@ -552,6 +591,13 @@ main(int argc, char *argv[] )
     
     // Do requested work
     switch(type){
+	case SENSORS:
+		if( _unit == unknown || !strlen(iface) ){
+			print_error("No unit setted\n");
+			return 0;
+		}
+		print_sensors(cli,iface);
+		return 0;
 	case RESET:
 		rst_relative(cli,iface);
 		break;

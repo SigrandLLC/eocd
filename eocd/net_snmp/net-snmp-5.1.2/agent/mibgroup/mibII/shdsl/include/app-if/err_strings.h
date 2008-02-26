@@ -16,8 +16,12 @@ char *err_strings[] = {
 "Configuration profile is in use",
 "Channel not maintain SHDSL data base",
 "Unexpected error",
-"Requested element not exist"
+"Requested element not exist",
+"Some settings of profile not compatible with devices",
+"Profile is read-only"
 };
+
+
 
 #define ERR_STR_SIZE sizeof(err_codes)
 

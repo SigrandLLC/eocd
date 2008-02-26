@@ -181,5 +181,6 @@ recv(int &c_idx,char *&buf)
     if( (c_idx = next_fd()) <0 ) 
 		return 0;
     c_idx++;
+	PDEBUG(DERR,"Receive from %d fd",c_idx);
     return _recv(conn_fd[c_idx-1],buf);
 }

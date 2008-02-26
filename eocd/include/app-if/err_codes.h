@@ -15,7 +15,9 @@ ERPEXIST,   // Conf profile already exist
 ERPBUSY,    // Conf profile is in use
 ERNODB,     // Channel dont maintain SHDSL DB
 ERUNEXP,    // Unexpected error
-ERNOELEM    // Requested unit not exist
+ERNOELEM,   // Requested unit not exist
+ERPNCOMP,	// Some settings of profile not compatible with devices 
+ERPRONLY,	// Profile is read-only
 };
 
 #endif

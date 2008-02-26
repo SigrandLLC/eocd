@@ -19,8 +19,6 @@
 #include <devs/EOC_mr16h.h>
 
 #include <EOC_main.h>
-#include <conf_profile.h>
-#include <channel.h>
 
 #include <app-if/err_codes.h>
 
@@ -164,6 +162,30 @@ read_config()
     }
 
     // 2. read all elements of conf_profiles
+	// 2.1 Add default configuration profile compatible with all devices
+	{
+		conf_profile *nprof = new conf_profile;
+		memset(nprof,0,sizeof(conf_profile));
+		nprof->name = strdup("default");
+		nprof->nsize = strlen(nprof->name);
+		nprof->access = conf_profile::profRO;
+		nprof->conf.annex = annex_a;
+		nprof->conf.wires = twoWire;
+		nprof->conf.power = noPower;
+		nprof->conf.clk = localClk;
+		nprof->conf.line_probe = disable;
+		nprof->conf.rate = 2304;
+		nprof->conf.tcpam = tcpam16;
+		PDEBUG(DERR,"Save profile %s",nprof->name);
+		conf_profile *cprof = (conf_profile *)conf_profs.find(nprof->name,nprof->nsize);
+		if( !cprof ){
+			PDEBUG(DERR,"Create new profile");
+			// New profile 
+			nprof->is_updated = 1;
+			conf_profs.add(nprof);
+		}
+	}
+	
     for(i=0;;i++){
 		name = NULL;
 		try{
@@ -184,11 +206,15 @@ read_config()
 			int worst_marg_down = s[i]["worstCaseMargDown"];
 			int cur_marg_up = s[i]["currCondMargUp"];
 			int worst_marg_up = s[i]["worstCaseMargUp"];
+			int tcpam;
 
 			int use_cur_down;
 			int use_worst_down;
 			int use_cur_up;
 			int use_worst_up;
+
+			try{ tcpam = s[i]["tcpam"];
+			}catch(...){ tcpam=3; }
 
 			try{ use_cur_down = s[i]["useCurrCondMargDown"];
 			}catch(...){ use_cur_down = 0; }
@@ -242,12 +268,19 @@ read_config()
 					   config_file,name,line_probe);
 				return -1;
 			}
+			if( tcpam < 1 || tcpam >6 ){
+				syslog(LOG_ERR,"(%s): wrong \"tcpam\" value in %s profile: %d , may be [1,6]",
+					   config_file,name,tcpam);
+				PDEBUG(DERR,"(%s): wrong \"tcpam\" value in %s profile: %d , may be [1,6]",
+					   config_file,name,tcpam);
+				return -1;
+			}
 
 			conf_profile *nprof = new conf_profile;
 			memset(nprof,0,sizeof(conf_profile));
 			nprof->name = name;
 			nprof->nsize = strlen(name);
-
+			nprof->access = conf_profile::profRW;
 			nprof->conf.annex = (annex_t)annex;
 			nprof->conf.wires = (wires_t)wires;
 			nprof->conf.power = (power_t)power;
@@ -256,7 +289,7 @@ read_config()
 			nprof->conf.line_probe = (line_probe_t)line_probe;
 			// ????	    nprof->conf.remote_cfg = (remote_cfg_t)rem_cfg; 
 			nprof->conf.rate = rate;
-
+			nprof->conf.tcpam = (tcpam_t)tcpam;
 			nprof->conf.use_cur_down = use_cur_down;
 			nprof->conf.use_worst_down = use_worst_down;
 			nprof->conf.use_cur_up = use_cur_up;
@@ -302,91 +335,6 @@ read_config()
 	PDEBUG(DERR,"Clear conf table from old profiles");
     conf_profs.clear();
 	conf_profs.sort();
-
-	/*
-    //----------- read span alarm profiles ------------------//
-    // 1. Check that span_profile group exist
-    try{
-	Setting &s = cfg.lookup("span_profiles");
-    }catch(...){
-	// eoc_log("Cannot found \"span_profiles\" section in %s file",file);
-	printf("Cannot found \"span_profiles\" section in %s file",file);
-	return -1;
-    }
-
-    // 2. read all elements of span_profiles
-    while(1){
-	name = NULL;
-	try{
-	Setting &s = cfg.lookup("span_profiles");
-	const char *str = s[i]["name"];
-	if( !(name = strndup(str,SNMP_ADMIN_LEN)) ){
-	//eoc_log("Not enougth memory");
-	printf("Not enougth memory");
-	return -1;
-	}
-	int wires = s[i]["wires"];
-	int min_rate = s[i]["min_rate"];
-	int max_rate = s[i]["max_rate"];
-	int annex = s[i]["annex"];
-	int power = s[i]["power"];
-	int ref_clock = s[i]["ref_clock"];
-	int line_probe = s[i]["line_probe"];
-	    
-	// Check input values
-	if( wires > 4 || wires <= 0 ){
-	//eoc_log("Wrong \"wires\" value in %s profile: %d , may be 1-4",name,wires);
-	printf("Wrong \"wires\" value in %s profile: %d , may be 1-4",name,wires);
-	return -1;
-	}
-	if( annex > 3 || annex < 0){
-	//eoc_log("Wrong \"annex\" value in %s profile: %d , may be 0-3",name,annex);
-	printf("Wrong \"wires\" value in %s profile: %d , may be 1-4",name,annex);
-	return -1;
-	}
-	    	
-	if( power != 1 && power != 0){
-	//eoc_log("Wrong \"power\" value in %s profile: %d , may be 0,1",name,power);
-	printf("Wrong \"power\" value in %s profile: %d , may be 0,1",name,power);
-	return -1;
-	}
-
-	if( ref_clock > 3 || ref_clock < 0){
-	//eoc_log("Wrong \"ref_clock\" value in %s profile: %d , may be 0-3",name,ref_clock);
-	printf("Wrong \"ref_clock\" value in %s profile: %d , may be 1-4",name,ref_clock);
-	return -1;
-	}
-	    	
-	if( line_probe != 1 && line_probe != 0){
-	//eoc_log("Wrong \"line_probe\" value in %s profile: %d , may be 0,1",name,line_probe);
-	printf("Wrong \"line_probe\" value in %s profile: %d , may be 0,1",name,line_probe);
-	return -1;
-	}
-
-	span_profile *nprof = new span_profile;
-	nprof->name = name;
-	nprof->nsize = strlen(name);
-	nprof->wires = wires;
-	nprof->annex = annex;
-	nprof->power = power;
-	nprof->ref_clk = ref_clock;
-	nprof->line_probe = line_probe;
-	nprof->min_rate = min_rate;
-	nprof->max_rate = max_rate;
-	conf_profs.add(nprof);
-	cout << "ADD: " << name << " " << wires << " " << min_rate << " " << max_rate << " " << annex << " " << power << " " << ref_clock << " " << line_probe << endl;
-	}catch(ConfigException& cex){
-	if( name ){
-	// eoc_log("Error while parsing profile: %s",name);
-	printf("Error while parsing profile: %s",name);
-	return -1;
-	}
-	break;
-	}catch(...){
-	cout << "fail get element" << endl;
-	}
-    }
-	*/
 
     //----------- read channels configuration ------------------//
     // 1. Check that channels group exist
@@ -451,21 +399,6 @@ read_config()
 				continue;
 			}
 	    
-			/*
-			  char *aprof = strndup(s[i]["alarm_profile"],SNMP_ADMIN_LEN);
-			  if( !aprof ){
-			  //eoc_log("(%s): Not enought memory",config_file);
-			  printf("(%s): Not enought memory",config_file);
-			  return -1;
-			  }
-			  if( !alarm_profs.find((char*)str,strlen(str)) ){
-			  //eoc_log("(%s): wrong \"alarm_profile\" value in %s channel: %s, no such profile",config_file,name,aprof);
-			  printf("(%s) wrong \"alarm_profile\" value in %s channel: %s, no such profile",config_file,name,aprof);
-			  return -1;
-			  }
-
-			*/	    
-	    
 			int repeaters = s[i]["repeaters"];
 			if( repeaters <0 || repeaters > MAX_REPEATERS ){
 				syslog(LOG_ERR,"(%s): wrong \"conf_profile\" value in %s channel: %d, may be 1-%d",
@@ -477,7 +410,6 @@ read_config()
 	    
 	    
 			PDEBUG(DINFO,"%s: apply config from cfg-file = %d",name,eocd_apply);
-	    
 			// TODO: Add alarm handling
 			if( add_master(name,cprof,NULL,repeaters,tick_per_min,eocd_apply) ){
 				syslog(LOG_ERR,"(%s): cannot add channel \"%s\" - no such device",
@@ -529,6 +461,7 @@ write_config()
 		int i = 0;
 		while( el ){
 			channel_elem *ch = (channel_elem*)el;
+
 			PDEBUG(DERR,"Add channel %s",el->name);
 			chans.add(TypeGroup);
 			// Channel name
@@ -583,6 +516,12 @@ write_config()
 		i = 0;
 		while( el ){
 			conf_profile *p = (conf_profile*)el;
+			if( !strncmp(p->name,"default",SNMP_ADMIN_LEN) ){ 
+				// Do not dump "default" profile
+				el = conf_profs.next(el->name,el->nsize);
+				continue;
+			}
+
 			cprofs.add(TypeGroup);
 			// Channel name
 			cprofs[i].add("name",TypeString);
@@ -596,6 +535,9 @@ write_config()
 			// Annex
 			cprofs[i].add("annex",TypeInt);
 			cprofs[i]["annex"] = p->conf.annex;
+			// TCPAM
+			cprofs[i].add("tcpam",TypeInt);
+			cprofs[i]["tcpam"] = (int)(p->conf.tcpam);
 			// powerSource
 			cprofs[i].add("powerSource",TypeInt);
 			cprofs[i]["powerSource"] = p->conf.power;
@@ -617,18 +559,15 @@ write_config()
 			// worstCaseMargUp
 			cprofs[i].add("worstCaseMargUp",TypeInt);
 			cprofs[i]["worstCaseMargUp"] = p->conf.worst_marg_up;
-
 			// Move to next channel
 			el = conf_profs.next(el->name,el->nsize);
 			i++;
 		}
-
 		PDEBUG(DERR,"Write config to disk");
-		syslog(LOG_NOTICE,"Write configuration to disk (/var/eocd/settings.cache)");
 		cfg.writeFile((const char *)config_file);
 	}catch(...){
-		syslog(LOG_ERR,"Error while writing configuration to cache");
-		PDEBUG(DERR,"Error while writing configuration to cache");
+		syslog(LOG_ERR,"Error while writing configuration to disk");
+		PDEBUG(DERR,"Error while writing configuration to disk");
 	}
 	return 0;
 }
@@ -709,11 +648,18 @@ int EOC_main::
 configure_channels()
 {
 	channel_elem *el = (channel_elem*)channels.first();
+	int ret = 0;
+	err_cfgchans_cnt = 0;
 	while( el ){
+		int tmp = 0;
 		PDEBUG(DERR,"Configure %s channel",el->name);
-		el->eng->configure(el->name);
+		if( (tmp = el->eng->configure(el->name)) && err_cfgchans_cnt < SPAN_NAMES_NUM ){
+			err_cfgchans[err_cfgchans_cnt++] = el;
+		}
+		ret += tmp;
 		el = (channel_elem*)channels.next(el->name,el->nsize);
 	}
+	return ret;
 }
 
 
@@ -730,7 +676,7 @@ poll_channels()
 // ------------ Application requests ------------------------------//
 
 void EOC_main::
-app_listen(int seconds)
+app_listen()
 {
 	char *buff;
 	int size,conn;
@@ -738,22 +684,26 @@ app_listen(int seconds)
 	time_t start,cur;
 	time(&start);
 	cur = start;
+	int seconds = 60 / tick_per_min; // Count number of seconds need to wait
 
 	while( time(&cur) >0 && time(&cur)-start < seconds ){
 		int to_wait = seconds - (time(&cur)-start);
 		if( !app_srv.wait(to_wait) ){
 			continue;
 		}
-		PDEBUG(DERR,"Get new message");
+		PDEBUG(DERR,"Get new message:");
 		while( (size = app_srv.recv(conn,buff)) ){ 
+			PDEBUG(DERR,"Recv new message:");
 			// Form & check incoming request
 			app_frame fr(buff,size);
+			PDEBUG(DERR,"Process new message:");
 			if( !fr.frame_ptr() ){
 				delete buff;
 				PDEBUG(DERR,"Error request");
 				continue; 
 			}
 
+			PDEBUG(DERR,"Gen Response to new message:");
 			// Fill response payload
 			if( ret = app_request(&fr) ){
 				PDEBUG(DERR,"Failed to serv app request");
@@ -970,12 +920,17 @@ app_cprof(app_frame *fr)
 	case APP_SET:{
 		// Requested profile exist?
 		prof = (conf_profile*)conf_profs.find(p->pname,len);
-		if( !prof ){ // Profile already exist - cannot create
+		if( !prof ){ // Profile not exist - cannot change
 			fr->negative(ERPNEXIST);
 			PDEBUG(DERR,"Requested profile \"%s\" not exist",p->pname);
 			return 0;
+		}else if( prof->access == conf_profile::profRO ){
+			PDEBUG(DERR,"Profile %s is read only!",p->pname);
+			fr->negative(ERPRONLY);
+			return 0;
 		}
 		span_conf_profile_t *pconf = &prof->conf;
+		span_conf_profile_t pconf_bkp = *pconf;
 		// Changes
 		cprof_changes *c = (cprof_changes *)fr->changelist_ptr();
 		
@@ -1014,7 +969,11 @@ app_cprof(app_frame *fr)
 		}
 
 		if( c->rate ){
-			pconf->rate = mconf->rate;
+			// Round rate value to be 64Kbps ratio
+			pconf->rate = (int)(mconf->rate/64)*64;
+		}
+		if( c->tcpam ){
+			pconf->tcpam = mconf->tcpam;
 		}
 		if( c->cur_marg_down ){
 			pconf->cur_marg_down = mconf->cur_marg_down;
@@ -1029,7 +988,16 @@ app_cprof(app_frame *fr)
 			pconf->worst_marg_up = mconf->worst_marg_up;
 		}
 		PDEBUG(DERR,"Commit Changes");
-		configure_channels();
+		if( configure_channels() ){
+			PDEBUG(DERR,"Cannot commit changes, chans_cnt=%d",err_cfgchans_cnt);
+			for(int i=0;i<err_cfgchans_cnt;i++){
+				strncpy(p->names[i],err_cfgchans[i]->name,SPAN_NAME_LEN);
+			}
+			p->filled = err_cfgchans_cnt;
+			fr->negative(ERPNCOMP);
+			*pconf = pconf_bkp;
+			configure_channels();
+		}
 		return 0;
 	}
 	}
@@ -1076,12 +1044,8 @@ app_list_cprof(app_frame *fr)
 		}
 		p->filled = filled;
 		p->last_msg = ( prof && (filled = PROF_NAMES_NUM) ) ? 0 : 1;
-
-
 		for(int i=0;i<filled;i++)
 			PDEBUG(DERR,"pname[%d]=%s",i,p->pname[i]);
-
-
 		return 0;
 	}
 	}
@@ -1114,7 +1078,9 @@ app_add_cprof(app_frame *fr)
 		fr->negative(ERPEXIST);
 		return 0;
 	}
-
+	
+	// Get default profile
+	prof = (conf_profile*)conf_profs.find("default",7);
 	conf_profile *nprof = new conf_profile;
 	memset(nprof,0,sizeof(conf_profile));
 	if( !(nprof->name = strndup(p->pname,len) ) ){
@@ -1124,20 +1090,7 @@ app_add_cprof(app_frame *fr)
 	}
 	nprof->nsize = len;
 	// Default configuration
-	nprof->conf.annex = annex_a;
-	nprof->conf.wires = twoWire;
-	nprof->conf.power = noPower;
-	nprof->conf.clk = localClk;
-	nprof->conf.line_probe = disable;
-	nprof->conf.rate = 192;
-	nprof->conf.use_cur_down = 0;
-	nprof->conf.use_worst_down = 0;
-	nprof->conf.use_cur_up = 0;
-	nprof->conf.use_worst_up = 0;
-	nprof->conf.cur_marg_down = 0;
-	nprof->conf.worst_marg_down = 0;
-	nprof->conf.cur_marg_up = 0;
-	nprof->conf.worst_marg_up = 0;
+	nprof->conf = prof->conf;	
 	conf_profs.add(nprof);
 	conf_profs.sort();
 	return 0;
@@ -1162,7 +1115,7 @@ app_del_cprof(app_frame *fr)
 		fr->negative(ERPNEXIST);
 		return 0;
 	}
-
+	
 	PDEBUG(DERR,"Find deleting profile");
 	conf_profile *prof = (conf_profile*)conf_profs.find(p->pname,len);
 	PDEBUG(DERR,"Find success, prof=%p",prof);
@@ -1170,7 +1123,11 @@ app_del_cprof(app_frame *fr)
 		PDEBUG(DERR,"Profile %s not exist",p->pname);
 		fr->negative(ERPNEXIST);
 		return 0;
-	}
+	}else if( prof->access == conf_profile::profRO ){
+		PDEBUG(DERR,"Profile %s is read only!",p->pname);
+		fr->negative(ERPRONLY);
+		return 0;
+	}	
 	PDEBUG(DERR,"Find channels");
 	// Check that no channel is associated with this profile
 	channel_elem *el = (channel_elem *)channels.first();
@@ -1213,7 +1170,8 @@ app_add_chan(app_frame *fr)
 		return 0;
 	}
 
-	hash_elem *pel = conf_profs.first();
+	// Assign default profile to new channel
+	hash_elem *pel = conf_profs.find("default",7);
 	if( !pel ){
 		// No configuration profiles!
 		fr->negative(ERPNEXIST);
@@ -1322,7 +1280,7 @@ app_chng_chan(app_frame *fr)
 			configure_channels();
 			return 0;
 		}else if( el->eng->get_type() == slave && p->master ){
-			if( add_master(name,cprof,NULL,0/*repeaters*/,tick_per_min,1/*can apply*/) ){
+			if( add_master(name,cprof,NULL,0,tick_per_min,1) ){
 				syslog(LOG_ERR,"(%s): cannot add channel \"%s\" - no such device",
 					   config_file,name);
 				PDEBUG(DERR,"(%s): cannot add channel \"%s\" - no such device",
@@ -1330,6 +1288,7 @@ app_chng_chan(app_frame *fr)
 				fr->negative(ERNODEV);
 				return 0;
 			}
+			new_changes++;
 		}
 		el = (channel_elem *)
 			channels.find((char*)fr->chan_name(),strnlen(fr->chan_name(),SPAN_NAME_LEN));
@@ -1341,8 +1300,7 @@ app_chng_chan(app_frame *fr)
 	}
 
 	PDEBUG(DERR,"Change configuration");
-	EOC_config *cfg;
-	cfg = ((EOC_engine_act*)el->eng)->config();
+	EOC_config *cfg = ((EOC_engine_act*)el->eng)->config();
 	PDEBUG(DERR,"Set repeaters num");
 	if( p->rep_num_ch ){
 		new_changes++;
@@ -1370,12 +1328,14 @@ app_chng_chan(app_frame *fr)
 		cfg->can_apply(p->apply_conf);
 	}
 
-	PDEBUG(DERR,"Configure channels");
 	if( new_changes ){
-		configure_channels();
-	}
-
-	if( ret ){
+		PDEBUG(DERR,"Configure channels");
+		if( configure_channels() ){
+			cfg->cprof_revert();
+			configure_channels();
+			fr->negative(ERPNCOMP);
+		}
+	}else if( ret ){
 		fr->negative(ERPARAM);
 	}
 	return 0;

@@ -56,14 +56,13 @@ EOC_engine::schedule()
     EOC_msg *m,**ret;
     ASSERT( rtr && resp ); // Constructor failed
 
-	/*
-	  if( setup_state() )
-	  return -1;
-	*/    
     int i=0;
     int cnt;
     number++;
     PDEBUG(DFULL,"%d schedule started\n",number);
+
+	printf("EOC_engine::Schedule\n");
+
     while( (m = rtr->receive()) && i<recv_max){
         PDEBUG(DFULL,"%d schedule: message: src(%d) dst(%d) id(%d)\n",number,m->src(),m->dst(),m->type());
 		if( m->is_request() ){
@@ -144,3 +143,4 @@ configure(char *ch_name)
 	PDEBUG(DERR,"Configure dev");
     return dev->configure(prof->conf,(type==slave) ? 0 : 1);
 }
+

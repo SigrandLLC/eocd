@@ -13,26 +13,32 @@ public:
     typedef enum{ OFFLINE, ONLINE } Linkstate  ;
     enum device { SG16PCI,SG17PCI,SG17R };
     enum annex_t { annexA,annexB,annexF };
-    enum tcpam_t { tcpam4, tcpam8, tcpam16,tcpam32 };
     enum terminator_t { master,slave };
+
+/*
     typedef struct {
-	unsigned int lrate;
-	annex_t annex;
-	tcpam_t tcpam;
-	terminator_t term;
+		unsigned int lrate;
+		annex_t annex;
+		tcpam_t tcpam;
+		terminator_t term;
     } EOC_dev_cfg;
+*/
+
     typedef struct {
-	s8 snr_marg, loop_attn;
-	u8 es,ses,losws,uas;
-	u16 crc, sega;
-	u8 seg_def,cntr_ovfl,cntr_rst;
+		s8 snr_marg, loop_attn;
+		u8 es,ses,losws,uas;
+		u16 crc, sega;
+		u8 seg_def,cntr_ovfl,cntr_rst;
     } shdsl_statistics;
-    typedef struct {
+
+/*    typedef struct {
 	u8 master:1;
 	u8 tcpam :3;
 	u8 annex :3;
 	u32 rate;
     } shdsl_settings;
+*/
+
 protected:
     int error_init;
     device dev_type;

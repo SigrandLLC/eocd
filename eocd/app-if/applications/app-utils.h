@@ -6,11 +6,13 @@
 char *unit2string(unit u);
 char *side2string(side s);
 char *annex2string(unit u);
+char *tcpam2string(tcpam_t code);
 char *power2string(side s);
 unit string2unit(char *s);
 side string2side(char *s);
 annex_t string2annex(char *s);
 power_t string2power(char *s);
+tcpam_t string2tcpam(char *str);
 
 // Normal mode output functions
 int print_cur_payload(endp_cur_payload *p );

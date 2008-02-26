@@ -48,16 +48,6 @@ EOC_mr17h::
 		delete[] chan_path;
 }
 
-/*
-void EOC_mr17h::
-save_pci_info()
-{
-	
-
-}
-
-*/
-
 int EOC_mr17h::
 send(EOC_msg *m)
 {
@@ -183,7 +173,7 @@ get_dev_option(char *name,char *&buf)
 
 
 int EOC_mr17h::
-cur_config(span_conf_profile_t &cfg,int &mode,int &tcpam)
+cur_config(span_conf_profile_t &cfg,int &mode)
 {
 	char *buf;
 	int cnt;
@@ -191,6 +181,7 @@ cur_config(span_conf_profile_t &cfg,int &mode,int &tcpam)
 	// Device mode
     if( (cnt = get_dev_option("mode",buf)) < 0 )
 		return -1;
+
 	if( !strncmp(buf,"master",cnt) )
 		mode = 1;
 	else if( !strncmp(buf,"slave",cnt) )
@@ -219,7 +210,6 @@ cur_config(span_conf_profile_t &cfg,int &mode,int &tcpam)
 	delete[] buf;
 	PDEBUG(DERR,"annex=%d",cfg.annex);
 
-
 	// Device rate value
 	char *endp;
 	if( (cnt=get_dev_option("rate",buf)) < 0 )
@@ -238,17 +228,26 @@ cur_config(span_conf_profile_t &cfg,int &mode,int &tcpam)
 	// Device ANNEX setup
 	if( (cnt=get_dev_option("tcpam",buf)) < 0 )
 		return -1;
-	if( !strncmp(buf,"TCPAM32",cnt) )
-		tcpam = 1;
+	
+	if( !strncmp(buf,"TCPAM4",cnt) )
+		cfg.tcpam = tcpam4;
+	else if( !strncmp(buf,"TCPAM8",cnt) )
+		cfg.tcpam = tcpam8;
 	else if( !strncmp(buf,"TCPAM16",cnt) )
-		tcpam = 0;
+		cfg.tcpam = tcpam16;
+	else if( !strncmp(buf,"TCPAM32",cnt) )
+		cfg.tcpam = tcpam32;
+	else if( !strncmp(buf,"TCPAM64",cnt) )
+		cfg.tcpam = tcpam64;
+	else if( !strncmp(buf,"TCPAM128",cnt) )
+		cfg.tcpam = tcpam128;
 	else{
 		PDEBUG(DERR,"Unknown TCPAM value %s",buf);
 		delete[] buf;
 		return -1;
 	}
 	delete[] buf;
-	PDEBUG(DERR,"tcpam=%d",tcpam);
+	PDEBUG(DERR,"tcpam=%d",cfg.tcpam);
 
 	cfg.power = noPower;
 	// Device ANNEX setup
@@ -265,8 +264,6 @@ cur_config(span_conf_profile_t &cfg,int &mode,int &tcpam)
 	}
 	delete[] buf;
 	PDEBUG(DERR,"power=%d",cfg.power);
-
-
 	return 0;
 }
 
@@ -277,20 +274,16 @@ configure(span_conf_profile_t &cfg, int type)
     char setting[256];
 	span_conf_profile_t ocfg;
 	int mode;
-	int tcpam;
 	int need_apply = 0;
+	int ret = 0;
 
 	PDEBUG(DERR,"Master configuration of %s",ifname);
-	if( !cur_config(ocfg,mode,tcpam) ){
-		
+	if( !cur_config(ocfg,mode) ){
 		if( type == 1 ){ // For master
-			if( mode == 1 && cfg.annex == ocfg.annex &&
-				cfg.rate == ocfg.rate && cfg.power == ocfg.power ){
-				if( (cfg.rate > 3840 && tcpam ==1) ||
-					(cfg.rate <= 3840 && tcpam == 0 ) ){
-					PDEBUG(DERR,"Device configuration left unchanged");
-					return 0;
-				}
+			if( mode == 1 && cfg.annex == ocfg.annex && cfg.rate == ocfg.rate 
+					&& cfg.power == ocfg.power && cfg.tcpam == ocfg.tcpam ){
+				PDEBUG(DERR,"Device configuration left unchanged");
+				return 0;
 			}
 		}else{ // for slave
 			if( mode == 0 && cfg.power == ocfg.power ){
@@ -346,22 +339,29 @@ configure(span_conf_profile_t &cfg, int type)
     }	
     // TODO: pay attension to MIN rate!!!!
     snprintf(setting,256,"%d",cfg.rate);
-    if( set_dev_option("rate",setting) )
+    if( set_dev_option("rate",setting) ){
+		syslog(LOG_ERR,"Error while setting rate to %d",(int)cfg.tcpam);
 		return -1;
+	}
 
-    if( cfg.rate > 3840 ){
-		if( set_dev_option("tcpam","1") )
-			return -1;
-    }else {
-		if( set_dev_option("tcpam","0") )
-			return -1;
-    }
-
+	// TODO: Change debug level to DINFO */
+	PDEBUG(DERR,"Set TCPAM to %d",(int)cfg.tcpam);
+	snprintf(setting,256,"%d",(int)cfg.tcpam);
+	if( set_dev_option("tcpam",setting) ){
+		PDEBUG(DERR,"Error while setting TCPAM to %d",(int)cfg.tcpam);
+		syslog(LOG_ERR,"Error while setting TCPAM to %d",(int)cfg.tcpam);
+	}
+	if( !cur_config(ocfg,mode) ){
+		if( cfg.tcpam != ocfg.tcpam || cfg.rate != ocfg.rate ){
+			ret = 1;
+		}
+	}
+	
  complete:
     // Apply configuration    
     if( need_apply && set_dev_option("apply_cfg","1") )
 		return -1;
-	return 0;
+	return ret;
 }
 
 // DEBUG_VERSION

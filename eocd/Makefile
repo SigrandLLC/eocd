@@ -22,10 +22,11 @@ TARGS :=generic engine devs utils local db app-if
 OBJECTS := build/*.o 
 
 #ifneq ($(VIRT),1)
-CC=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-gcc
-CXX=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-g++
-AR=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-ar
-RANLIB=/home/artpol/work/openwrt/trunk/openwrt-midge/staging_dir_mipsel/bin/mipsel-linux-uclibc-ranlib
+CROSSDIR=/home/artpol/work/openwrt/midge.vlad.org.ua/trunk/openwrt-midge/
+CC=$(CROSSDIR)/staging_dir_mipsel/bin/mipsel-linux-uclibc-gcc
+CXX=$(CROSSDIR)/staging_dir_mipsel/bin/mipsel-linux-uclibc-g++
+AR=$(CROSSDIR)/staging_dir_mipsel/bin/mipsel-linux-uclibc-ar
+RANLIB=$(CROSSDIR)/staging_dir_mipsel/bin/mipsel-linux-uclibc-ranlib
 #else
 #RANLIB=ranlib
 #endif
