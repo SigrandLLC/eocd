@@ -697,19 +697,13 @@ app_listen()
 			// Form & check incoming request
 			app_frame fr(buff,size);
 			PDEBUG(DERR,"Process new message:");
-			if( !fr.frame_ptr() ){
-				delete buff;
-				PDEBUG(DERR,"Error request");
-				continue; 
-			}
-
-			PDEBUG(DERR,"Gen Response to new message:");
 			// Fill response payload
-			if( ret = app_request(&fr) ){
-				PDEBUG(DERR,"Failed to serv app request");
-				continue;
+			if( !fr.is_negative() ){
+				if( ret = app_request(&fr)){
+					fr.negative();
+					PDEBUG(DERR,"Failed to serv app request");
+				}
 			}
-
 			// Form response
 			fr.response();
 			// Send response

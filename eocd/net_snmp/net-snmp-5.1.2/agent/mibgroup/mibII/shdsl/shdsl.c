@@ -28,7 +28,9 @@
 
 
 //#define DEBUG_ON
-
+#define DERR 1
+#define DINFO 5
+#define DALL 10
 #define PDEBUG(flag,fmt,args...)
 #ifdef DEBUG_ON
 #       undef PDEBUG
@@ -234,7 +236,7 @@ init_shdsl(void)
     PDEBUG(0,"Register Span Conf");
     REGISTER_MIB("mibII/hdsl2ShdslSpanConf", shdsl_spanconf, variable3,
                  hdsl2Shdsl_variables_oid);
-
+				 
     PDEBUG(0,"Register Span Status");
     REGISTER_MIB("mibII/hdsl2shdslSpanStatus", shdsl_spanstat, variable3,
                  hdsl2Shdsl_variables_oid);
@@ -702,7 +704,7 @@ header_unitIndex(struct variable *vp,
 	// If OID is belong to Inventory Table
     if( (iface = header_ifIndex(vp, name, length,1/*exact = 1*/, var_len,write_method)) 
 	    != MATCH_FAILED ){ 	// OID belongs to Invetory table and ifIdex is valid
-		PDEBUG(1,"OID belong to Inv Table, interface_ind=%d,if = %s\n",interface_ind,
+		PDEBUG(0,"OID belong to Inv Table, interface_ind=%d,if = %s\n",interface_ind,
 				tbl[interface_ind].name);
         
 		if( gettimeofday(&tvcur,NULL) ){
@@ -812,7 +814,7 @@ header_unitIndex(struct variable *vp,
 	
     name[vp->namelen+1] = stu_c;
     *length = vp->namelen + 2;
-	PDEBUG(1,"Result: unit #%d\n",name[vp->namelen+1]);
+	PDEBUG(0,"Result: unit #%d\n",name[vp->namelen+1]);
     ret_val = name[vp->namelen+1];
  exit:
     if( fr1 )
@@ -1006,7 +1008,7 @@ header_endpIndex(struct variable *vp,
     if ( ( unit = header_unitIndex(vp,name,length, 1 /*exact = 1*/,var_len,write_method) )
 		 != MATCH_FAILED ){
 		unit_index = unit;
-	    PDEBUG(1,"Result : if(%s) unit(%d)",tbl[interface_ind].name,unit_index);
+	    PDEBUG(0,"Result : if(%s) unit(%d)",tbl[interface_ind].name,unit_index);
 
 		if( exact ){ // Need exact MATCH
 			if( (*length >= vp->namelen+3) ){
@@ -1069,7 +1071,7 @@ header_endpIndex(struct variable *vp,
 		return MATCH_FAILED;
     }
     unit_index = unit;
-	PDEBUG(1,"NEXT Result : if(%s) unit(%d)",tbl[interface_ind].name,unit_index);
+	PDEBUG(0,"NEXT Result : if(%s) unit(%d)",tbl[interface_ind].name,unit_index);
 
     switch( unit ){
     case stu_c:
@@ -1126,17 +1128,17 @@ header_wirePairIndex(struct variable *vp,
 	// ---- DEBUG ----//
    	struct timeval tv1,tv2;
     gettimeofday(&tv1,NULL);
-	PDEBUG(1,"--------------------- >");
+	PDEBUG(0,"--------------------- >");
 	// ---- DEBUG ----//
 
     if ( ( endp = header_endpIndex(vp,name,length, 1 /*exact = 1*/,var_len,write_method) )
 		 != MATCH_FAILED ){
 		endp_index = endp;
 		int k = tbl[interface_ind].wires;
-		PDEBUG(1,"Result : if(%s) unit(%d) endp(%d)",tbl[interface_ind].name,unit_index,endp_index);
+		PDEBUG(0,"Result : if(%s) unit(%d) endp(%d)",tbl[interface_ind].name,unit_index,endp_index);
 
 		if( exact ){ // Need exact MATCH
-			PDEBUG(1,"Exact Match");
+			PDEBUG(0,"Exact Match");
 			if( (*length >= vp->namelen+4) && 
 				(name[vp->namelen+3] > 0) && (name[vp->namelen+3] <= tbl[interface_ind].wires) ){
 				ret_val =  name[vp->namelen+3];
@@ -1164,7 +1166,7 @@ header_wirePairIndex(struct variable *vp,
 		}
     }
 	
-	PDEBUG(1,"Exact match failed");
+	PDEBUG(0,"Exact match failed");
     if( exact ){
 		goto exit;
     }
@@ -1174,7 +1176,7 @@ header_wirePairIndex(struct variable *vp,
 		goto exit;
     }
     endp_index = endp;
-	PDEBUG(1,"NEXT Result : if(%s) unit(%d) endp(%d)",tbl[interface_ind].name,unit_index,endp_index);
+	PDEBUG(0,"NEXT Result : if(%s) unit(%d) endp(%d)",tbl[interface_ind].name,unit_index,endp_index);
     name[ vp->namelen+3] = 1; // First pair
     *length = vp->namelen + 4;
     ret_val = name[vp->namelen+3];
@@ -1187,7 +1189,7 @@ header_wirePairIndex(struct variable *vp,
 
 	//--- DEBUG ---//
     gettimeofday(&tv2,NULL);
-	PDEBUG(1,"<------- %d ------------",tv2.tv_usec-tv1.tv_usec);
+	PDEBUG(0,"<------- %d ------------",tv2.tv_usec-tv1.tv_usec);
 	//--- DEBUG ---//
     return ret_val;
 }
@@ -1214,7 +1216,7 @@ var_EndpointCurrEntry(struct variable * vp,
 		return NULL;
     }
 
-    PDEBUG(1,"-----!!!!!!!!!!!!!!-------->");
+    PDEBUG(0,"-----!!!!!!!!!!!!!!-------->");
 
 	// ------------------------------ Obtain requested information ------------------------------- //
 
@@ -1222,24 +1224,24 @@ var_EndpointCurrEntry(struct variable * vp,
 		 == MATCH_FAILED )
         goto exit;
        
-    PDEBUG(1,"Result : if(%s) unit(%d) side(%d) pair(%d)",tbl[interface_ind].name,unit_index,endp_index,pair);
+    PDEBUG(0,"Result : if(%s) unit(%d) side(%d) pair(%d)",tbl[interface_ind].name,unit_index,endp_index,pair);
 
     p = (endp_cur_payload*)comm_alloc_request(APP_ENDP_CUR,APP_GET,
 											  tbl[interface_ind].name,&fr1);
     if( !p ){
 		DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
-		PDEBUG(1,"var_InventoryEntry: Cannot allocate application frame");
+		PDEBUG(0,"var_InventoryEntry: Cannot allocate application frame");
 		goto exit;
     }
     p->unit = unit_index;
     p->side = endp_index-1;
     p->loop = pair-1;
     fr2 = comm_request(comm,fr1);
-    PDEBUG(1,"Request if(%s) unit(%d) side(%d) loop(%d)",
+    PDEBUG(0,"Request if(%s) unit(%d) side(%d) loop(%d)",
 		   tbl[interface_ind].name,p->unit,p->side,p->loop);
     
     if( !fr2 && exact ){
-		PDEBUG(1,"var_InventoryEntry: error requesting");
+		PDEBUG(0,"var_InventoryEntry: error requesting");
 		goto exit;
     }
     
@@ -1248,20 +1250,20 @@ var_EndpointCurrEntry(struct variable * vp,
 			 == MATCH_FAILED )
     	    goto exit;
     
-		PDEBUG(1,"Result (rep): if(%s) unit(%d) side(%d) pair(%d)",tbl[interface_ind].name,unit_index,endp_index,pair);
+		PDEBUG(0,"Result (rep): if(%s) unit(%d) side(%d) pair(%d)",tbl[interface_ind].name,unit_index,endp_index,pair);
 		set_chan_name(fr1,tbl[interface_ind].name);
 		p->unit = unit_index;
 		p->side = endp_index-1;
 		p->loop = pair-1;
 		fr2 = comm_request(comm,fr1);
 
-		PDEBUG(1,"Request (rep): if(%s) unit(%d) side(%d) loop(%d)",
+		PDEBUG(0,"Request (rep): if(%s) unit(%d) side(%d) loop(%d)",
 			   tbl[interface_ind].name,p->unit,p->side,p->loop);
 
     }
 
     if( !fr2 ){
-		PDEBUG(1,"error requesting");
+		PDEBUG(0,"error requesting");
 		goto exit;
     }
     
@@ -1361,7 +1363,7 @@ var_EndpointCurrEntry(struct variable * vp,
 		comm_frame_free(fr2);
     comm_free(comm);
     comm = NULL;
-    PDEBUG(1,"<------------!!!!!!!!!!!!!1----------\n\n");
+    PDEBUG(0,"<------------!!!!!!!!!!!!!1----------\n\n");
     return return_ptr;
 }
 
@@ -1645,24 +1647,14 @@ header_confProfIndex(struct variable *vp,
     cprof_payload *p;
     int i,l;
 
-	/*
-	  printf("%s: Start\n",__FUNCTION__);
 
-	  printf("%s: name:\n",__FUNCTION__);
-	  for(i=0;i<*length;i++){
-	  if( (name[i]>='a' && name[i]<='z') || (name[i]>='0' && name[i]<='9') || name[i]=='#' )
-	  printf("%c.",name[i]);
-	  else
-	  printf("%d.",name[i]);
-	  }
-	  printf("\n");
-
-	*/
-
+	PDEBUG(DERR,"start");
     if( (base_compare = snmp_oid_compare(name,oid_min,vp->name,oid_min)) > 0){
 		// OID is grater than supported
 		return MATCH_FAILED;
     }
+
+	PDEBUG(DERR,"process...");
     
     if( exact ){
 		int len;
@@ -1703,48 +1695,34 @@ header_confProfIndex(struct variable *vp,
     }
 
     strncpy(p->pname,profname,SNMP_ADMIN_LEN+1);
-	//    printf("%s: Request profile:\n",__FUNCTION__);//,p->ProfileName);
+	PDEBUG(DERR,"Request profile: %s",p->pname);
     fr2 = comm_request(comm,fr1);
-	//    printf("%s, request successfull\n",__FUNCTION__);
     if( !fr2 ){
-		PDEBUG(0,"Error requesting");
+		PDEBUG(DERR,"Error requesting");
 		if( fr1 )
 			comm_frame_free(fr1);
 		return MATCH_FAILED;
     }
+	PDEBUG(DERR,"request successfull");
     
     p = (cprof_payload*)comm_frame_payload(fr2);
-    
     _cprof = *p;
-
-	/*
-	  printf("%s: name:\n",__FUNCTION__);
-	  for(i=0;i<*length;i++){
-	  if( (name[i]>='a' && name[i]<='z') || (name[i]>='0' && name[i]<='9') || name[i]=='#' )
-	  printf("%c.",name[i]);
-	  else 
-	  printf("%d.",name[i]);
-	  }
-	  printf("\n");
-
-	*/    
-	//    printf("%s: get profile - %s,len=%d,vp->namelen=%d\n",__FUNCTION__,p->ProfileName,strnlen(p->ProfileName,SNMP_ADMIN_LEN+1),vp->namelen);
+	PDEBUG(DERR,"get profile - %s,len=%d,vp->namelen=%d",p->pname,strnlen(p->pname,SNMP_ADMIN_LEN+1),vp->namelen);
     l = strnlen(p->pname,SNMP_ADMIN_LEN+1);
     for(i=0;i<l;i++){
 		name[vp->namelen+i] = p->pname[i];
     }
     *length += strnlen(p->pname,SNMP_ADMIN_LEN+1);
-	/*
-	  printf("%s: name:\n",__FUNCTION__);
-	  for(i=0;i<*length;i++){
-	  if( (name[i]>='a' && name[i]<='z') || (name[i]>='0' && name[i]<='9') || name[i]=='#' )
-	  printf("%c.",name[i]);
-	  else 
-	  printf("%d.",name[i]);
-	  }
-	  printf("\n");
 
-	*/
+printf("%s: name:\n",__FUNCTION__);
+for(i=0;i<*length;i++){
+	if( (name[i]>='a' && name[i]<='z') || (name[i]>='0' && name[i]<='9') || name[i]=='#' )
+		printf("%c.",name[i]);
+	else 
+		printf("%d.",name[i]);
+}
+printf("\n");
+
     if( fr1 )
         comm_frame_free(fr1);
     if( fr2 )
@@ -1761,44 +1739,47 @@ var_SpanConfProfEntry(struct variable * vp,
     char *return_ptr = NULL;
     int i;
 
+	PDEBUG(DERR,"start");
     comm = init_comm();
     if(!comm){
         DEBUGMSGTL(("mibII/hdsl2Shdsl","Error connecting to \"eocd\""));
         return NULL;
     }
-    
+	PDEBUG(DERR,"Connect=OK");    
+
+printf("%s: name:\n",__FUNCTION__);
+for(i=0;i<*length;i++){
+	if( (name[i]>='a' && name[i]<='z') || (name[i]>='0' && name[i]<='9') || name[i]=='#' ){
+		printf("%c.",name[i]);
+	}else {
+		printf("%d.",name[i]);
+	}
+}
+printf("\n");
+
     if ( header_confProfIndex(vp,name,length,exact,var_len,write_method)
 		 == MATCH_FAILED ){
-		PDEBUG(0,"returning NULL");
+		PDEBUG(DERR,"Header_search=FAIL");
         goto exit;
     }
-	/*
-	  printf("%s: name:\n",__FUNCTION__);
-	  for(i=0;i<*length;i++){
-	  if( (name[i]>='a' && name[i]<='z') || (name[i]>='0' && name[i]<='9') || name[i]=='#' ){
-	  printf("%c.",name[i]);
-	  }else {
-	  printf("%d.",name[i]);
-	  }
-	  }
-	  printf("\n");
-	*/
-
+	PDEBUG(DERR,"Header_search=OK");
 
     //---- ack ----//
     switch (vp->magic) {
     case CONF_WIRE_IFACE:
 		long_return= _cprof.conf.wires;
 		return_ptr = (u_char *)&long_return;
-		printf("WIRE_IFACE: ret=%d", _cprof.conf.wires);
+		PDEBUG(DINFO,"WIRE_IFACE: ret=%d", _cprof.conf.wires);
 		break;
     case CONF_MIN_LRATE:
 		long_return = _cprof.conf.rate;
 		return_ptr = (u_char *)&long_return;
+		PDEBUG(DINFO,"MIN_LRATE: ret=%d", _cprof.conf.wires);
 		break;
     case CONF_MAX_LRATE:
 		long_return = _cprof.conf.rate;
 		return_ptr = (u_char *)&long_return;
+		PDEBUG(DINFO,"MAX_LRATE: ret=%d", _cprof.conf.wires);
 		break;
     case CONF_PSD:
 		long_return= _cprof.conf.psd;
@@ -1852,9 +1833,11 @@ var_SpanConfProfEntry(struct variable * vp,
 		*/
     }
     
+	PDEBUG(DERR,"exit:");
  exit:
     comm_free(comm);
     comm = NULL;    
+	PDEBUG(DERR,"return");
     return return_ptr;
 }
 

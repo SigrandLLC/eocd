@@ -22,7 +22,7 @@ TARGS :=generic engine devs utils local db app-if
 OBJECTS := build/*.o 
 
 #ifneq ($(VIRT),1)
-CROSSDIR=/home/artpol/work/openwrt/midge.vlad.org.ua/trunk/openwrt-midge/
+CROSSDIR=/home/artpol/work/sigrand/projects/openwrt/midge.vlad.org.ua/trunk/openwrt-midge/
 CC=$(CROSSDIR)/staging_dir_mipsel/bin/mipsel-linux-uclibc-gcc
 CXX=$(CROSSDIR)/staging_dir_mipsel/bin/mipsel-linux-uclibc-g++
 AR=$(CROSSDIR)/staging_dir_mipsel/bin/mipsel-linux-uclibc-ar

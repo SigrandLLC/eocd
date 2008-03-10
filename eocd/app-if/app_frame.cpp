@@ -46,10 +46,9 @@ app_frame(char *b,int size){
         return;
     }
     if( (hdr->psize != psize) || (hdr->csize != csize) ){
-        PDEBUG(DERR,"Error in app_frame header: psize=(%d not %d), csize=(%d not %d)",
-			   hdr->psize,psize,hdr->csize,csize);
-        buf = NULL;
-        buf_size = 0;
+        PDEBUG(DERR,"Error in app_frame header: id=%d, psize=(%d not %d), csize=(%d not %d)",
+			   hdr->id,hdr->psize,psize,hdr->csize,csize);
+		negative();
     }
 }
 
@@ -107,6 +106,7 @@ size_by_id(app_ids id,app_types type,u32 &psize,u32 &csize)
         csize = ENDP_MAINT_CH_SZ;
         break;
     case APP_CPROF:
+		printf("CPROF: psize=%d\n",CPROF_PAY_SZ);
 		psize = CPROF_PAY_SZ;
 		csize = CPROF_CH_SZ;
 		break;
