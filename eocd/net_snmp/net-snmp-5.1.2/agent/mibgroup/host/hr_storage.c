@@ -743,20 +743,21 @@ try_next:
                 break;
             }
         return (u_char *) & long_return;
+
     case HRSTORE_FAILS:
-        if (store_idx > HRS_TYPE_FIXED_MAX)
-#if NO_DUMMY_VALUES
-	    goto try_next;
-#else
+        if (store_idx > HRS_TYPE_FIXED_MAX){
+/*#if NO_DUMMY_VALUES
+			printf("HRSTORE_FAILS - store_idx > HRS_TYPE_FIXED_MAX: goto\n");
+		    goto try_next;
+#endif*/
             long_return = 0;
-#endif
-        else
+        }else
             switch (store_idx) {
             case HRS_TYPE_MEM:
             case HRS_TYPE_SWAP:
-#if NO_DUMMY_VALUES
+/*#if NO_DUMMY_VALUES
                 goto try_next;
-#endif
+#endif */
                 long_return = 0;
                 break;
 #if !defined(linux) && !defined(solaris2) && !defined(hpux10) && !defined(hpux11)  && defined(MBSTAT_SYMBOL)
@@ -765,9 +766,9 @@ try_next:
                 break;
 #endif                          /* !linux && !solaris2 && !hpux10 && !hpux11 && MBSTAT_SYMBOL */
             default:
-#if NO_DUMMY_VALUES
+/*#if NO_DUMMY_VALUES
                 goto try_next;
-#endif
+#endif */
                 long_return = 0;
                 break;
             }
