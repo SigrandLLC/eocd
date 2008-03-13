@@ -25,6 +25,7 @@ typedef enum { no_side=-1,net_side=0,cust_side } side;
 #define FNAME_SIZE 32
 #define PATH_SIZE 256
 #define FILE_PATH_SIZE PATH_SIZE+FNAME_SIZE
+#define IF_NAME_LEN 30
 
 #endif
 

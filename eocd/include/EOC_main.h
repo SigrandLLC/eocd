@@ -22,7 +22,12 @@
 
 class EOC_main{
  protected:
+ 	class if_correction{
+	public:
+		char oif[IF_NAME_LEN],nif[IF_NAME_LEN];
+	};
     char config_file[MAX_FNAME];
+    char correct_file[MAX_FNAME];	
     hash_table conf_profs;
     hash_table alarm_profs;
     hash_table channels;
@@ -32,25 +37,31 @@ class EOC_main{
 	channel_elem *err_cfgchans[SPAN_NAMES_NUM];
 	int err_cfgchans_cnt;
  public:
- EOC_main(char *cfg,char *sockpath) : conf_profs(SNMP_ADMIN_LEN), alarm_profs(SNMP_ADMIN_LEN),
+ EOC_main(char *cfg,char *sockpath,char *correct) : conf_profs(SNMP_ADMIN_LEN), alarm_profs(SNMP_ADMIN_LEN),
 		channels(MAX_IF_NAME_LEN), app_srv(sockpath,"eocd-socket")
 		{
 			valid = 0;
 			strncpy(config_file,cfg,MAX_FNAME);
+			strncpy(correct_file,cfg,MAX_FNAME);
 			config_file[MAX_FNAME-1] = '\0';
 			if( read_config() )
 				return;
+			if( correct_config() ){
+				write_config();
+			}
 			configure_channels();
 			valid = 1;
 		}
     ~EOC_main(){
     }
     int get_valid(){ return valid; }
-    // Read configuration file and initialise or change channels
+    // Serving configuration file
+	int count_lines(char *fname);
+	int copy_word(char *src,int ssize,char *dst,int dsize);
     int read_config();
 	int write_config();
-    // Write configuration to config file (when it changes from network)
-	//    int write_config();
+	int correct_config();
+	
     // Add (initialise) or change slave channel with name "ch_name"
     int add_slave(char *ch_name,char *conf,int app_cfg=1);
     // Add (initialise) or change master channel with name "ch_name"
