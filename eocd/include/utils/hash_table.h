@@ -39,6 +39,7 @@ class hash_table{
     hash_elem *find(char *name, int nsize);
     int add(hash_elem *el);
     hash_elem *del(char *name,int nsize);
+	hash_elem *del_nofree(char *name,int nsize);
 	void sort();
     // sequential trace
     inline hash_elem *first(){ return head; }

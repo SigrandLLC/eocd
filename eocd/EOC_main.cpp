@@ -352,7 +352,7 @@ read_config()
 		try{
     	    Setting &s = cfg.lookup("channels");
 			const char *str = s[i]["name"];
-			if( !(name = strndup(str,IF_NAME_LEN)) ){
+			if( !(name = strndup(str,SNMP_ADMIN_LEN)) ){
 				syslog(LOG_ERR,"Not enougth memory");
 				PDEBUG(DERR,"Not enougth memory");
 				return -1;
@@ -376,7 +376,7 @@ read_config()
 				return -1;
 			}
 
-			if( !conf_profs.find((char*)cprof,strnlen(cprof,SNMP_ADMIN_LEN)) ){
+			if( !conf_profs.find((char*)cprof,strlen(str)) ){
 				syslog(LOG_ERR,"(%s) wrong \"conf_profile\" value in %s channel: %s, no such profile",
 					   config_file,name,cprof);
 				PDEBUG(DERR,"(%s) wrong \"conf_profile\" value in %s channel: %s, no such profile",
@@ -573,131 +573,6 @@ write_config()
 }
 
 int EOC_main::
-count_lines(char *fname)
-{
-	int lines = 0;
-	int ind = 0;
-	char str[256], *ptr;
-	FILE *stream = fopen(fname,"r");
-	if( !stream ){
-		return -1; // No file - no lines
-	}
-	
-	while( !feof(stream) ){
-		ptr = fgets(str,256,stream);
-		if( ptr ){
-			ind = strnlen(ptr,256);
-			if( ptr[ind-1] == '\n' )
-				lines++;
-		}
-	}
-	
-	fclose(stream);
-	return lines;
-}
-
-int  EOC_main::
-copy_word(char *src,int ssize,char *dst,int dsize)
-{
-	int offs = 0,i;
-
-	// skip space characters
-	for(int i=0;i<ssize && src[i] == ' '; i++, offs++);
-	ssize -= offs;
-	src += offs;
-
-	// copy word
-	for(i=0;i<dsize && i<ssize && (src[i] != ' ' && src[i] != '\n'); i++){
-		dst[i] = src[i];
-	}
-	if( i == dsize && src[i-1] != ' ' )
-		return -1;
-	return i;
-}
-
-#define MAX_LINES 300
-int  EOC_main::
-correct_config()
-{
-	int flag = 1;
-	int lines = 0;
-	char str[256], *ptr;
-	
-	
-	// Count number of correction lines
-	lines = count_lines(correct_file);
-	
-	FILE *stream = fopen(correct_file,"r");
-	if( !stream ) // No correction file - it's OK
-		return 0;
-	
-	if( lines > MAX_LINES ){
-		// Too many corrections
-		// It's unlikely that router have so many interfaces
-		return 0;
-	}
-	
-	// Read correction information
-	if_correction *crct = new if_correction[lines];
-	int i = 0;
-	int line = 0;
-	while( !feof(stream) && i < lines ){
-		if( fgets(str,255,stream) ){
-			str[255] = '\0'; // To avoid buffer overflow
-			int len = strnlen(str,256);
-			do{
-				int llen = strspn(str,"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_- \n\t");
-				if( llen != len ){
-					PDEBUG(DERR,"%s(line#%d): illegal character",correct_file,line);
-					syslog(LOG_ERR,"%s(line#%d): illegal character",correct_file,line);
-					break;
-				}
-				int offs = 0,ret;
-				do{
-					if( (ret = copy_word(str,256,crct[i].oif,IF_NAME_LEN)) < 0 )
-						break;
-					offs += ret;
-					if( (ret = copy_word(str+offs,256-offs,crct[i].nif,IF_NAME_LEN)) < 0 )
-						break;
-				}while(0);
-				if(ret > 0 ){
-					i++;
-				}
-			}while(0);
-			while( str[len-1] != '\n' ){
-				if( !fgets(str,256,stream) )
-					break;
-				len = strnlen(str,256);
-			}
-		}
-		line++;
-	}
-	fclose(stream);
-	
-	int len = i, corrections=0;
-	for(i=0;i<len;i++){
-		PDEBUG(DINFO,"Move %s to %s\n",crct[i].oif,crct[i].nif);
-		channel_elem *el = 
-			channels.del_nofree(crct[i].oif,strnlen(crct[i].oif,IF_NAME_LEN);
-		if( el ){
-			free(el->name);
-			el->name = strndup(crct[i].nif,IF_NAME_LEN);
-			el->nsize = strnlen(crct[i].nif,IF_NAME_LEN);
-			channels.add(el);
-			corrections++; // Count number of corrections
-		}
-	}
-	delete[] crct;
-	
-	if( corrections ){
-		// If some corrections oqqured - fix channels DB
-		channels.sort();
-		return 1;
-	}
-	return 0;
-}
-					
-int EOC_main::
 add_slave(char *name,char *cprof,int app_cfg)
 {
 	PDEBUG(DERR,"Add slave %s",name);
@@ -721,7 +596,7 @@ add_slave(char *name,char *cprof,int app_cfg)
 	PDEBUG(DERR,"CONFIG=%p,cprof=%s",cfg,cfg->cprof());
 	channel_elem *el = new channel_elem(dev,cfg);
 	el->name = name;
-	el->nsize = strnlen(name,IF_NAME_LEN);
+	el->nsize = strlen(name);
 	el->is_updated = 1;
 	channels.add(el);
 	channels.sort();
@@ -762,7 +637,7 @@ add_master(char *name,char *cprof, char *aprof,int reps,int tick_per_min,int app
 	PDEBUG(DERR,"CONFIG=%p",cfg);
 	channel_elem *el = new channel_elem(dev,cfg,tick_per_min);
 	el->name = name;
-	el->nsize = strnlen(name,IF_NAME_LEN);
+	el->nsize = strlen(name);
 	el->is_updated = 1;
 	channels.add(el);
 	channels.sort();

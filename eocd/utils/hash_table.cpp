@@ -125,46 +125,6 @@ hash_table::del(char *name,int nsize)
     return NULL;
 }
 
-
-hash_elem *
-hash_table::del_nofree(char *name,int nsize)
-{
-
-    int i = _hash(name);
-    if( !table[i].size() ) // hash list is empty
-		return NULL;
-    list<hash_elem *>::iterator p;
-    for(p = table[i].begin();p!=table[i].end();p++){
-		hash_elem *ptr = *p;
-		int len = ( ptr->nsize > nsize) ? nsize : ptr->nsize;
-		if( !strncmp( ptr->name,name,len) ){
-			// delete from hash-table
-			table[i].erase(p);
-			// delete from sequential list
-			if( ptr->prev && ptr->next ){
-				ptr->prev->next = ptr->next;
-				ptr->next->prev = ptr->prev;
-			}else{
-				if( !ptr->prev){
-					ASSERT( head == ptr );
-					head = ptr->next;
-					if( head )
-						head->prev = NULL;
-				}
-				if( !ptr->next ){
-					ASSERT( tail == ptr );
-					tail = ptr->prev;
-					if( tail )
-						tail->next = NULL;
-				}
-			}
-			return ptr;
-		}
-    }
-    return NULL;
-}
-
-
 void
 hash_table::clear()
 {

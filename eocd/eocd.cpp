@@ -52,8 +52,7 @@ static void child_handler(int signum)
     }
 }
 
-static void 
-server_handler(int signum)
+static void server_handler(int signum)
 {
 	switch(signum){
 	case SIGHUP:
@@ -166,7 +165,6 @@ int main( int argc, char *argv[] ) {
     int need_daemonize = 0;
     int parent = -1;
     char config_path[256] = "/etc/eocd/eocd.conf";
-    char correct_path[256] = "/etc/eocd/ifs-correct";
 
     openlog( DAEMON_NAME, LOG_PID, LOG_LOCAL5 );
     syslog( LOG_INFO, "starting" );
@@ -179,7 +177,6 @@ int main( int argc, char *argv[] ) {
     	static struct option long_options[] = {
 		{"daemon", 0, 0, 'd'},
 		{"config_path", 1, 0, 'c'},
-		{"correct_path", 1, 0, 'r'},
 		{"debuglev", 2, 0, 'l'},
 		{"help", 2, 0, 'h'},
 		{0, 0, 0, 0}
@@ -195,9 +192,6 @@ int main( int argc, char *argv[] ) {
             break;
         case 'c':
 			strncpy(config_path,optarg,256);
-    	    break;
-        case 'r':
-			strncpy(correct_path,optarg,256);
     	    break;
 		case 'h':
 			print_usage(argv[0]);
@@ -244,8 +238,7 @@ int main( int argc, char *argv[] ) {
 	signal(SIGUSR1,server_handler); 
 
     /* Now we are a daemon -- do the work for which we were paid */
-	
-    m = new EOC_main(config_path,"/var/eocd/",correct_path);
+    m = new EOC_main(config_path,"/var/eocd/");
     
     if( !m->get_valid() ){
 		delete m;
