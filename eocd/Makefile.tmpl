@@ -32,7 +32,7 @@ all-mips: $(TARGS)
 #	$(CXX) -g $(INCLUDES) -o result main.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
 	$(CXX) -g $(INCLUDES) -o eocd eocd.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
 
-local: EOC_main.o
+local: EOC_main.o EOC_pci.o
 	cp $^ build/    
 
 engine:

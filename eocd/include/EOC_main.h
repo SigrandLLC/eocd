@@ -7,25 +7,29 @@
 #include <snmp/snmp-generic.h>
 #include <app-if/app_frame.h>
 #include <app-if/app_comm_srv.h>
-
-
-// TODO: consult for OS about this values
-#define MAX_IF_NAME_LEN 256
-#define MAX_FNAME 256
+#include <list>
+using namespace std;
 
 #define TICK_PER_MINUTE_MAX 60
 #define TICK_PER_MINUTE_DEF 6
 
-#define OS_IF_PATH "/sys/class/net"
-
-
 
 class EOC_main{
+ public:
+ 	typedef struct{
+		int pcislot,pcidev;
+		char *cprof,*aprof;
+		int reps,can_apply,master;
+	} dev_settings_t;
+ 
  protected:
-    char config_file[MAX_FNAME];
+    char config_file[FNAME_SIZE];
     hash_table conf_profs;
     hash_table alarm_profs;
     hash_table channels;
+	// backup settings for not existed devices for future use
+	list<dev_settings_t> nexist_devs;
+	
     app_comm_srv app_srv;
     int valid;
 	int tick_per_min;
@@ -33,11 +37,11 @@ class EOC_main{
 	int err_cfgchans_cnt;
  public:
  EOC_main(char *cfg,char *sockpath) : conf_profs(SNMP_ADMIN_LEN), alarm_profs(SNMP_ADMIN_LEN),
-		channels(MAX_IF_NAME_LEN), app_srv(sockpath,"eocd-socket")
+		channels(IF_NAME_LEN), app_srv(sockpath,"eocd-socket")
 		{
 			valid = 0;
-			strncpy(config_file,cfg,MAX_FNAME);
-			config_file[MAX_FNAME-1] = '\0';
+			strncpy(config_file,cfg,FNAME_SIZE);
+			config_file[FNAME_SIZE-1] = '\0';
 			if( read_config() )
 				return;
 			configure_channels();
@@ -55,6 +59,9 @@ class EOC_main{
     int add_slave(char *ch_name,char *conf,int app_cfg=1);
     // Add (initialise) or change master channel with name "ch_name"
     int add_master(char *ch_name, char *conf,char *alarm,int reps,int tick,int app_cfg=1);
+	// Add device to unexistence group
+    int add_nexist_slave(int pcislot,int pcidev,char *conf,int app_cfg=1);
+    int add_nexist_master(int pcislot,int pcidev,char *conf,char *alarm,int reps,int app_cfg=1);
     //
     int configure_channels();    
     // process channels

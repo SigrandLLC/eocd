@@ -25,6 +25,12 @@ typedef enum { no_side=-1,net_side=0,cust_side } side;
 #define FNAME_SIZE 32
 #define PATH_SIZE 256
 #define FILE_PATH_SIZE PATH_SIZE+FNAME_SIZE
+#define IF_NAME_LEN 32
+#define PCI_NAME_LEN 32
+#define PCI_MAX_SLOTS 8
+#define MOD_MAX_DEVS 8
+#define DEVICE_PATH "/sys/bus/pci/devices"
+#define OS_IF_PATH "/sys/class/net"
 
 #endif
 

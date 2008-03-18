@@ -47,7 +47,7 @@ fake-mips: $(TARGS)
 	$(CXX) -g $(INCLUDES) -o eocd-fake eocd-fake.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
 
 
-local: EOC_main.o
+local: EOC_main.o EOC_pci.o
 	cp $^ build/    
 
 engine:

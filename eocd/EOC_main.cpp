@@ -19,6 +19,7 @@
 #include <devs/EOC_mr16h.h>
 
 #include <EOC_main.h>
+#include <EOC_pci.h>
 
 #include <app-if/err_codes.h>
 
@@ -351,14 +352,11 @@ read_config()
 		name = NULL;
 		try{
     	    Setting &s = cfg.lookup("channels");
-			const char *str = s[i]["name"];
-			if( !(name = strndup(str,SNMP_ADMIN_LEN)) ){
-				syslog(LOG_ERR,"Not enougth memory");
-				PDEBUG(DERR,"Not enougth memory");
-				return -1;
-			}
+			int valid = 1;
+			int pcislot = s[i]["pcislot"];
+			int pcidev = s[i]["pcidev"];
+			name = pci2dname(pcislot,pcidev);
 			int master = s[i]["master"];
-	    
 			if( master != 1 && master != 0){
 				syslog(LOG_ERR,"(%s): wrong \"master\" value in %s channel: %d , may be 0,1",
 					   config_file,name,master);
@@ -376,7 +374,7 @@ read_config()
 				return -1;
 			}
 
-			if( !conf_profs.find((char*)cprof,strlen(str)) ){
+			if( !conf_profs.find((char*)cprof,strlen(cprof)) ){
 				syslog(LOG_ERR,"(%s) wrong \"conf_profile\" value in %s channel: %s, no such profile",
 					   config_file,name,cprof);
 				PDEBUG(DERR,"(%s) wrong \"conf_profile\" value in %s channel: %s, no such profile",
@@ -390,12 +388,18 @@ read_config()
 
 			// If channel is slave - only responder part
 			if( !master ){
-				if( add_slave(name,cprof) ){
-					syslog(LOG_ERR,"(%s): cannot add channel \"%s\" - no such device",
-						   config_file,name);
-					PDEBUG(DERR,"(%s): cannot add channel \"%s\" - no such device",
-						   config_file,name);
-				}    
+				if( name ){
+					if( add_slave(name,cprof) ){
+						syslog(LOG_ERR,"(%s): cannot add channel \"%s\" - no such device",
+							   config_file,name);
+						PDEBUG(DERR,"(%s): cannot add channel \"%s\" - no such device",
+							   config_file,name);
+					}
+				}else{
+					PDEBUG(DERR,"Add not existing slave");
+					add_nexist_slave(pcislot,pcidev,cprof);
+				}
+					
 				continue;
 			}
 	    
@@ -411,14 +415,18 @@ read_config()
 	    
 			PDEBUG(DINFO,"%s: apply config from cfg-file = %d",name,eocd_apply);
 			// TODO: Add alarm handling
-			if( add_master(name,cprof,NULL,repeaters,tick_per_min,eocd_apply) ){
-				syslog(LOG_ERR,"(%s): cannot add channel \"%s\" - no such device",
-					   config_file,name);
-				PDEBUG(DERR,"(%s): cannot add channel \"%s\" - no such device",
-					   config_file,name);
-				continue;
+			if( name ){
+				if( add_master(name,cprof,NULL,repeaters,tick_per_min,eocd_apply) ){
+					syslog(LOG_ERR,"(%s): cannot add channel \"%s\" - no such device",
+						   config_file,name);
+					PDEBUG(DERR,"(%s): cannot add channel \"%s\" - no such device",
+						   config_file,name);
+					continue;
+				}
+			}else{
+				PDEBUG(DERR,"Add not existing master: %d.%d",pcislot,pcidev);
+				add_nexist_master(pcislot,pcidev,cprof,NULL,repeaters,eocd_apply);
 			}
-			cout << name << " " << master << " " << str << endl;
 		}catch(ConfigException& cex){
     	    if( name ){
 				syslog(LOG_ERR,"(%s): error while parsing profile: %s",
@@ -456,7 +464,7 @@ write_config()
 		// Time tick setting
 		tick = tick_per_min;
 		PDEBUG(DERR,"Tick filled");
-		// Channels settings
+		// Save active (existed) channels settings
 		hash_elem *el = channels.first();
 		int i = 0;
 		while( el ){
@@ -465,9 +473,20 @@ write_config()
 			PDEBUG(DERR,"Add channel %s",el->name);
 			chans.add(TypeGroup);
 			// Channel name
-			chans[i].add("name",TypeString);
-			chans[i]["name"] = ch->name;
-			PDEBUG(DERR,"\tName filled");
+			int pcislot,pcidev;
+			if( dname2pci(ch->name,pcislot,pcidev) ){
+				// Cannot find associated PCI slot!!!
+				PDEBUG(DERR,"Cannot resolv \"%s\" to PCI slot/device",el->name);
+				el = channels.next(el->name,el->nsize);
+				i++;
+				continue;
+			}
+			chans[i].add("pcislot",TypeInt);
+			chans[i].add("pcidev",TypeInt);
+			chans[i]["pcislot"] = pcislot;
+			chans[i]["pcidev"] = pcidev;
+			
+			PDEBUG(DERR,"PCI info filled");
 			// Channel type
 			chans[i].add("master",TypeInt);
 			if( ch->eng->get_type() == master ){
@@ -508,6 +527,49 @@ write_config()
 			chans[i]["apply_conf"] = ((EOC_engine_act*)ch->eng)->config()->can_apply();
 			PDEBUG(DERR,"\tapply filled");
 			el = channels.next(el->name,el->nsize);
+			i++;
+		}
+
+		// Save inactive (nonexisted) channels settings
+		PDEBUG(DERR,"Fill nexisting devs");
+		list<dev_settings_t>::iterator it = nexist_devs.begin();
+		for(;it != nexist_devs.end();it++){
+			PDEBUG(DERR,"Add inexist channel: %d.%d",it->pcislot,it->pcidev);
+			chans.add(TypeGroup);
+			// Channel name
+			chans[i].add("pcislot",TypeInt);
+			chans[i].add("pcidev",TypeInt);
+			chans[i]["pcislot"] = it->pcislot;
+			chans[i]["pcidev"] = it->pcidev;
+			
+			PDEBUG(DERR,"PCI info (inex) filled");
+			// Channel type
+			chans[i].add("master",TypeInt);
+			chans[i]["master"] = it->master;
+			PDEBUG(DERR,"Master (inex) filled");
+			PDEBUG(DERR,"profile = %s",it->cprof);
+
+			// Channel configuration profile
+			chans[i].add("conf_profile",TypeString);
+			chans[i]["conf_profile"] = it->cprof;
+			PDEBUG(DERR,"profile (inex) filled");
+			// Apply configuration setting
+			chans[i].add("apply_conf",TypeInt);
+			chans[i]["apply_conf"] = it->can_apply;
+			PDEBUG(DERR,"apply (inex) filled");
+
+			if(  !it->master ){
+				i++;
+				continue;
+			}
+	  
+			// Channel repeaters num
+			chans[i].add("repeaters",TypeInt);
+			chans[i]["repeaters"] = it->reps;
+			// Channels alarm profile 
+			// 			chans[i].add("alarm_profile",TypeString);
+			// 			chans[i]["alarm_profile"] = it->aprof;
+			// Apply configuration setting
 			i++;
 		}
 		
@@ -642,6 +704,50 @@ add_master(char *name,char *cprof, char *aprof,int reps,int tick_per_min,int app
 	channels.add(el);
 	channels.sort();
 	return 0;
+}
+
+int EOC_main::
+add_nexist_slave(int pcislot,int pcidev,char *cprof,int app_cfg)
+{
+	list<dev_settings_t>::iterator it = nexist_devs.begin();
+	for(;it != nexist_devs.end();it++){
+		if( it->pcislot == pcislot && it->pcidev == pcidev ){
+			// Devise already exist in list - IGNORE
+			return -1;
+		}
+	}
+	dev_settings_t tmp;
+	tmp.pcislot = pcislot;
+	tmp.pcidev = pcidev;
+	tmp.cprof = cprof;
+	tmp.master = 0;
+	tmp.can_apply = app_cfg;
+	nexist_devs.push_back(tmp);
+	return 0;
+}
+
+
+int EOC_main::
+add_nexist_master(int pcislot,int pcidev,char *cprof,char *aprof,int repeaters,int eocd_apply)
+{
+	list<dev_settings_t>::iterator it = nexist_devs.begin();
+	for(;it != nexist_devs.end();it++){
+		if( it->pcislot == pcislot && it->pcidev == pcidev ){
+			// Devise already exist in list - IGNORE
+			return -1;
+		}
+	}
+	dev_settings_t tmp;
+	tmp.pcislot = pcislot;
+	tmp.pcidev = pcidev;
+	tmp.master = 1;
+	tmp.cprof = cprof;
+	tmp.aprof = aprof;
+	tmp.reps = repeaters;
+	tmp.can_apply = eocd_apply;
+	nexist_devs.push_back(tmp);
+	return 0;
+
 }
 
 int EOC_main::
