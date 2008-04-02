@@ -58,9 +58,6 @@ process_msg(EOC_msg *m)
 {
     // Check that we have assosiated handler 
     // & we request this response
-	PDEBUG(DERR,"HI");
-	printf("HI - doubling\n");
-
     if( !m ){
 		PDEBUG(DERR,"!m");
 		return -1;
@@ -122,7 +119,9 @@ link_state(EOC_dev::Linkstate link)
 	switch(link){
 	case EOC_dev::OFFLINE:
 		db->link_down();
+		break;
     case EOC_dev::ONLINE:
 		db->link_up();
+		break;
 	}
 }

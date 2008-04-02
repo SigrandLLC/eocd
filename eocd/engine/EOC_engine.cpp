@@ -19,6 +19,8 @@ EOC_engine::EOC_engine(EOC_dev_terminal *d1,EOC_config *c,dev_type t,u16 rmax)
     recv_max = rmax;
     rtr = new EOC_router(type,d1);
     resp = new EOC_responder(rtr);
+	dev1 = d1;
+	dev2 = NULL;
 }
 
 //----------------------------------------------------------------------
@@ -30,6 +32,8 @@ EOC_engine::EOC_engine(EOC_dev *d1,EOC_dev *d2,u16 rmax)
     recv_max = rmax;
     rtr = new EOC_router(type,d1,d2);
     resp = new EOC_responder(rtr);
+	dev1 = d1;
+	dev2 = d2;
 }
 
 //----------------------------------------------------------------------
@@ -60,8 +64,6 @@ EOC_engine::schedule()
     int cnt;
     number++;
     PDEBUG(DFULL,"%d schedule started\n",number);
-
-	printf("EOC_engine::Schedule\n");
 
     while( (m = rtr->receive()) && i<recv_max){
         PDEBUG(DFULL,"%d schedule: message: src(%d) dst(%d) id(%d)\n",number,m->src(),m->dst(),m->type());
@@ -104,6 +106,8 @@ int EOC_engine::
 configure(char *ch_name)
 {
     EOC_dev_terminal *dev;
+	int ret = 0;
+	
     PDEBUG(DINFO,"start");
     switch(type){
     case master:
@@ -141,6 +145,20 @@ configure(char *ch_name)
 		return 0;
     // Configure device
 	PDEBUG(DERR,"Configure dev");
-    return dev->configure(prof->conf,(type==slave) ? 0 : 1);
+	// apply Local settings (if there is some)
+	int lchng=0,pchng=0;
+	local_configure(lchng);
+    if( ret = dev->configure(prof->conf,(type==slave) ? 0 : 1,pchng) ){
+		PDEBUG(DERR,"Error while configure device %s",ch_name);
+		syslog(LOG_ERR,"Error while configure device %s",ch_name);
+	}
+	PDEBUG(DERR,"Local_ch=%d, Prof_ch=%d",lchng,pchng);
+	// If ret = 0 => interface setted without errors
+	// lchng || pchng - means that apply is needed
+	if( !ret && ( lchng || pchng ) ){ // some onfiguration is hanged
+		PDEBUG(DERR,"commit");
+		dev->commit();
+	}
+	return ret;
 }
 

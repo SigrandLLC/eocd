@@ -10,6 +10,7 @@
 #include <generic/EOC_msg.h>
 #include <generic/EOC_generic.h>
 #include <devs/EOC_dev.h>
+#include <eoc_debug.h>
 
 
 class EOC_router{
@@ -39,8 +40,11 @@ class EOC_router{
     EOC_msg *loopb[LOOPB_BUF_SZ];
     inline int inc(int ind,int max_ind){ return (ind+1<max_ind) ? ind+1 : 0; }
     inline int add_loop(EOC_msg *m){
-		if( loop_head == inc(loop_tail,LOOPB_BUF_SZ) ) 
+		PDEBUG(DERR,"START: loop_head=%d,loop_tail=%d",loop_head,loop_tail);
+		if( loop_head == inc(loop_tail,LOOPB_BUF_SZ) ){
+			PDEBUG(DERR,"Loop is full - drom msg: src=%d, dst=%d, type=%d",m->src(),m->dst(),m->type());
 			return -1;
+		}
 		loopb[loop_tail] = m;
 		loop_tail = inc(loop_tail,LOOPB_BUF_SZ);
 		return 0;
@@ -48,15 +52,37 @@ class EOC_router{
 
     inline EOC_msg *get_loop(){
 		EOC_msg *m;
-		if( loop_head == loop_tail ) 
+		PDEBUG(DERR,"START: loop_head=%d,loop_tail=%d",loop_head,loop_tail);
+		if( loop_head == loop_tail ) {
+			PDEBUG(DERR,"Loop is empty - nothing to get");
 			return NULL;
+		}
+
+		int tmp = loop_head;
+		while( tmp != loop_tail ){
+			EOC_msg *tm = loopb[tmp];
+			PDEBUG(DERR,"LOOPBACK IN: src(%d) dst(%d) id(%d)",tm->src(),tm->dst(),tm->type());
+			tmp = inc(tmp,LOOPB_BUF_SZ);
+		}
+
 		m = loopb[loop_head];
 		loop_head = inc(loop_head,LOOPB_BUF_SZ);
+
+		PDEBUG(DERR,"END: loop_head=%d,loop_tail=%d",loop_head,loop_tail);
 		return m;
     }
+	inline void free_loop(){
+		while( loop_head != loop_tail ) {
+			delete loopb[loop_head];
+			loop_head = inc(loop_head,LOOPB_BUF_SZ);
+		}
+		loop_head = loop_tail = 0;
+	}
+
     // ------------ loopback ------------------//
 
  public:
+
     EOC_router(dev_type r,EOC_dev *side);
     EOC_router(dev_type r,EOC_dev *nside,EOC_dev *cside);
     ~EOC_router();
@@ -74,7 +100,6 @@ class EOC_router{
     int term_unit(unit u);
     void update_state();    
     int loops();
-	
 };
 
 #endif

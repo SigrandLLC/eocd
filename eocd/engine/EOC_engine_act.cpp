@@ -43,6 +43,7 @@ EOC_engine_act(EOC_dev_terminal *d1,EOC_config *c,u16 ticks_p_min,u16 rmax) :
     recv_max = rmax;
     poll = new EOC_poller(cfg,ticks_p_min,rtr->loops());
     register_handlers();
+	pbo_changed = 0;
 }
 
 //----------------------------------------------------------------------
@@ -80,6 +81,39 @@ setup_state_act()
 }
 
 
+//----------------------------------------------------------------------
+// PBO
+
+int EOC_engine_act::
+get_pbo(int &mode,char *buf){
+	mode = pbo_mode;
+	strncpy(buf,pbo_vals,PBO_SETTING_LEN);
+	return 0;
+}
+
+int EOC_engine_act::
+set_pbo(int &mode,char *buf)
+{
+	PDEBUG(DERR,"START");
+	pbo_changed = 1;
+	pbo_mode = mode;
+	if( buf )
+		strncpy(pbo_vals,buf,PBO_SETTING_LEN);
+	else
+		pbo_vals[0] = '\0';
+	return 0;
+}
+
+int EOC_engine_act::
+apply_pbo()
+{
+	PDEBUG(DERR,"START");
+	int ret = dev1->set_pbo(pbo_mode,pbo_vals);
+	PDEBUG(DERR,"setted");
+	ret += dev1->get_pbo(pbo_mode,pbo_vals);
+	pbo_changed = 0;
+	return ret;
+}
 
 //----------------------------------------------------------------------
 // schedule - call it to take control to engine to process incoming and 
@@ -96,9 +130,7 @@ schedule()
     int i=0;
     int cnt;
 
-	PDEBUG(DERR,"");
-    
-	PDEBUG(DERR,"Receiving");
+	PDEBUG(DFULL,"Receiving");
     while( (m = rtr->receive()) && i<recv_max){
 		if( m->is_request() ){
 			if( resp->request(m,ret,cnt) ){
@@ -128,7 +160,7 @@ schedule()
 		}else if( m->is_response() ){
     	    if( poll->process_msg(m) ){
 				delete m;
-				PDEBUG(DERR,"error#4");
+				PDEBUG(DERR,"error#4, src=%d,dst=%d,id=%d",m->src(),m->dst(),m->type());
 				break;
 			}
 		}
@@ -136,12 +168,8 @@ schedule()
 		i++;
     }
 
-	PDEBUG(DERR,"Sending");
+	PDEBUG(DFULL,"Sending");
     // Send one EOC request
-
-	PDEBUG(DERR,"EOC_engine_act::Schedule#2\n");
-
-
     while( m = poll->gen_request() ){
 		if( rtr->send(m) ){
 			delete m;
@@ -151,7 +179,7 @@ schedule()
 		delete m;
     }
 	poll->finish_poll();
-	PDEBUG(DERR,"exit");
+	PDEBUG(DFULL,"exit");
     return 0;
 }
 
@@ -205,3 +233,4 @@ app_request(app_frame *fr){
 	}
 	return 0;
 }
+

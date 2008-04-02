@@ -50,15 +50,16 @@ class EOC_scheduler{
 		switch(st){
 		case EOC_dev::OFFLINE:
 			jump_Offline();
+			break;
 		case EOC_dev::ONLINE:
 			if( jump_Setup() )
 				jump_Offline();
+			break;
 		}
     }
     
     sched_state state(){ return statem->state; }
     inline void tick(){ 
-		printf("\t\tEOC_scheduler::tick()\n");
 		ts++;
 	}
     

@@ -90,12 +90,12 @@ class EOC_unit{
 				side[i]->link_up();
 	}
 	inline void link_down(){
-		PDEBUG(DERR,"unit link down");
+		PDEBUG(DFULL,"unit link down");
 		for(int i=0;i<EOC_SIDES_NUM;i++){
 			if(side[i]){
-				PDEBUG(DERR,"down side %d",i);
+				PDEBUG(DFULL,"down side %d",i);
 				side[i]->link_down();
-				PDEBUG(DERR,"down side %d - successfully",i);
+				PDEBUG(DFULL,"down side %d - successfully",i);
 			}
 		}
 	}

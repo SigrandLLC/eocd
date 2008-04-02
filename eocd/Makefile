@@ -5,16 +5,17 @@
 #	
 #***********************************************************************************
 
-
+VERSION=2.8
 
 TOPDIR=$(PWD)
 INCLUDES=-I$(TOPDIR)/include/
 INCLUDES += -I$(TOPDIR)/libconfig/
-CPPFLAGS=$(INCLUDES) 
+CPPFLAGS=$(INCLUDES) -DEOC_VER="$(VERSION)"
 #-g 
 ifeq ($(VIRT),1)
 CPPFLAGS += -DVIRTUAL_DEVS
 endif
+
 
 .PHONY: generic engine devs utils db app-if tar
 
@@ -76,8 +77,8 @@ clean:
 	rm -f build/*.o
 
 
-ARCH_FILES=app-if build CHECK db devs engine eocd.conf eocd.cpp EOC_main.cpp \
+ARCH_FILES=app-if build CHECK db devs engine eocd.conf eocd.cpp EOC_main.cpp EOC_pci.cpp \
 generic include main.cpp Makefile.tmpl system TODO.txt utils
 
 tar: clean
-	tar --exclude="\.svn" -cjvf tar/eocd.tar.bz2 $(ARCH_FILES)
+	tar --exclude="\.svn" -cjvf tar/eocd-$(VERSION).tar.bz2 $(ARCH_FILES)

@@ -33,6 +33,10 @@ extern "C" {
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
 
+#ifndef EOC_VER
+#define EOC_VER 0.0
+#endif
+
 
 EOC_main *m;    
 
@@ -41,13 +45,13 @@ static void child_handler(int signum)
 {
     switch(signum) {
     case SIGALRM:
-		printf("Starting eocd: FAIL\n");
+		printf("Starting eocd v%f: FAIL\n",EOC_VER);
 		exit(EXIT_FAILURE);
     case SIGUSR1: 
-		printf("Starting eocd: OK\n");    
+		printf("Starting eocd v%f: OK\n",EOC_VER);    
         exit(EXIT_SUCCESS);
     case SIGCHLD:
-		printf("Starting eocd: FAIL\n");    
+		printf("Starting eocd v%f: FAIL\n",EOC_VER);    
 		exit(EXIT_FAILURE);
     }
 }
@@ -253,13 +257,13 @@ int main( int argc, char *argv[] ) {
     side_perf S;
     while(1){
 		time_t tm1,tm2;
-		PDEBUG(DERR,"-------------------- POLL--------------------");
+		PDEBUG(DFULL,"-------------------- POLL--------------------");
 		m->poll_channels();
-		PDEBUG(DERR,"-------------------- LISTEN --------------------");
+		PDEBUG(DFULL,"-------------------- LISTEN --------------------");
 		time(&tm1);
 		m->app_listen();
 		time(&tm2);
-		printf("!!--  app_listen works %d sec --!!\n",tm2-tm1);
+		PDEBUG(DFULL,"!!--  app_listen works %d sec --!!",tm2-tm1);
     }
 
     /* Finish up */

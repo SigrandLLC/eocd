@@ -18,6 +18,11 @@ extern "C"{
 
 #include "app-utils.h"
 
+#ifndef EOC_VER
+#define EOC_VER 0.0
+#endif
+
+
 typedef enum {NORMAL,SHELL} output_mode;
 output_mode mode = NORMAL;
 
@@ -32,7 +37,8 @@ app_comm_cli *cli;
 
 void print_usage(char *name)
 {
-    printf("Usage: %s -o <type> [-a|-d|-c] <name> [Options] \n"
+    printf("eoc-config version: %f\n",EOC_VER);
+	printf("Usage: %s -o <type> [-a|-d|-c] <name> [Options] \n"
 		   "Modes:\n"
 		   "  -o, --object=<type>\tSelect type of object:\n"
 		   "                     \tValid types: channel,conf-prof\n"
@@ -45,6 +51,8 @@ void print_usage(char *name)
 		   "  -m, --master=[0|1]\tSet mode of channel\n"
 		   "  -r, --reg-num=<#>\tSet number of installed regenerators \n"
 		   "  -p, --cprof=<name>\tSet configuration profile <name> for channel\n"
+		   "  -x, --pbo_mode=<mode>\tPowerBackOff enable (1), disable(1)\n"
+		   "  -w, --pbo_val=<string>\tPowerBackOff, example: \"12:10\" for STU-C - SRU1 - STU-R\n"
 		   "  -v, --active=[0|1]\t1-eocd can change device settings,0-can not\n"
 		   "  Configuration profiles objects options\n"
 		   "  -t  --tcpam=XXX\tSetup tcpam, XXX=4,8,16,32,64,128\n"
@@ -331,7 +339,53 @@ process_profile(char *name,action_t action,annex_t annex,power_t power,int lrate
 	return 0;
 }	
 
-int dump_configuration()
+int 
+channel_pbo(char *name,int pbo_mode,char *pbo_val)
+{
+	app_frame *req=NULL, *resp=NULL;
+ 	int ret = 0;
+ 	char *buf;
+
+	req = new app_frame(APP_PBO,APP_SET,app_frame::REQUEST,1,name);
+	chan_pbo_payload *p = (chan_pbo_payload *)req->payload_ptr();
+	chan_pbo_changes *c = (chan_pbo_changes *)req->changelist_ptr();
+
+	if( pbo_mode >= 0 ){
+		p->mode = pbo_mode;
+		c->mode = 1;
+	}else
+		c->mode = 0;
+	
+	if( pbo_val ){
+		c->val = 1;
+		strncpy(p->val,pbo_val,PBO_SETTING_LEN);
+	}else
+		c->val = 0;
+		
+	cli->send(req->frame_ptr(),req->frame_size());
+	cli->wait();
+	int size = cli->recv(buf);
+	if( size<=0 ){
+		print_error("Bad message from eocd\n");
+		return 0;
+	}
+	resp = new app_frame(buf,size);
+	if( !resp->frame_ptr() ){
+		print_error("Bad message from eocd\n");
+		return 0;
+	} 
+	if( (ret=resp->is_negative()) ){ // no such unit or no net_side
+		print_error("Cannot set power backoff: %s\n",err_strings[ret-1]);
+		if( mode == SHELL )
+			printf("err_string=\"Cannot set power backoff: %s\"\n",err_strings[ret-1]);				
+		return 0;
+	}
+	return 0;
+}
+
+
+int 
+dump_configuration()
 {
 	app_frame *req=NULL, *resp=NULL;
  	int ret = 0;
@@ -374,6 +428,8 @@ main(int argc, char *argv[] )
 	annex_t annex = err_annex;
 	power_t power = err_power;
 	tcpam_t tcpam = err_tcpam;
+	int pbo_mode = -1;
+	char *pbo_val = NULL;
 	int lrate = -1;
 	char shell_out = -1;
 	char *endp;
@@ -398,11 +454,13 @@ main(int argc, char *argv[] )
 			{"lrate",1,0,'l'},
 			{"row-shell",0,0, 's'},
 			{"dump",0,0, 'u'},
+			{"pbo_mode",1,0, 'x'},
+			{"pbo_val",2,0, 'w'},
 			{"help", 0, 0, 'h'},
 			{0, 0, 0, 0}
 		};
 
-		int c = getopt_long (argc, argv, "o:a:d:c:m:r:p:v:t:f:n:l:shu",
+		int c = getopt_long (argc, argv, "o:a:d:c:m:r:p:v:t:f:n:l:shuw::x:",
 							 long_options, &option_index);
         if (c == -1)
     	    break;
@@ -486,6 +544,19 @@ main(int argc, char *argv[] )
 		case 'u':
 			action = DUMP;
 			break;
+		case 'w':
+			if( optarg )
+				pbo_val = strdup(optarg);
+			else 
+				pbo_val = "";
+			break;
+		case 'x':
+			pbo_mode = strtol(optarg,&endp,10);
+			if( pbo_mode < 0 || pbo_mode >1 ){
+				print_error("error --pbo_mode argument\n");
+				return 0;
+			}
+			break;
 		}
 	}
 
@@ -526,7 +597,10 @@ main(int argc, char *argv[] )
 		if( (annex!=-1 || lrate!=-1) && mode == NORMAL ){
 			printf("Warning: --annex & --lrate is ignored in channel mode\n");
 		}
-		process_channel(name,action,master,reg_num,cprof,active,shell_out);
+		if( pbo_mode>=0 || pbo_val ){
+			channel_pbo(name,pbo_mode,pbo_val);
+		}else
+			process_channel(name,action,master,reg_num,cprof,active,shell_out);
 		break;
 	case CONF_PROF:
 		if( (master!=-1 || cprof || reg_num!=-1 || active!=-1) && mode == NORMAL ){

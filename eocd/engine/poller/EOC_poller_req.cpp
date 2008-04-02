@@ -15,7 +15,7 @@ EOC_msg *
 _req_discovery(sched_state stat,sched_elem el,EOC_config *cfg)
 {
     ASSERT( el.type == REQ_DISCOVERY );
-    
+
     EOC_msg *m = new EOC_msg(REQ_DISCOVERY_SZ);
     m->msize();
     // TODO: make as exception!!!
@@ -34,6 +34,7 @@ EOC_msg *
 _req_inventory(sched_state stat,sched_elem el,EOC_config *cfg)
 {
     ASSERT( el.type == REQ_INVENTORY );
+
     EOC_msg *m = new EOC_msg(REQ_INVENTORY_SZ);
     // TODO: make as exception!!!
     if( !m->mptr() )
@@ -49,6 +50,7 @@ EOC_msg *
 _req_configure(sched_state stat,sched_elem el,EOC_config *cfg)
 {
     ASSERT( el.type == REQ_CONFIGURE );
+
     EOC_msg *m = new EOC_msg(REQ_CONFIGURE_SZ);
     // TODO: make as exception!!!
     if( !m->mptr() )

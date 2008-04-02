@@ -106,7 +106,6 @@ size_by_id(app_ids id,app_types type,u32 &psize,u32 &csize)
         csize = ENDP_MAINT_CH_SZ;
         break;
     case APP_CPROF:
-		printf("CPROF: psize=%d\n",CPROF_PAY_SZ);
 		psize = CPROF_PAY_SZ;
 		csize = CPROF_CH_SZ;
 		break;
@@ -146,6 +145,10 @@ size_by_id(app_ids id,app_types type,u32 &psize,u32 &csize)
 		psize = SENSORS_PAY_SZ;
 		csize = SENSORS_CH_SZ;
 		break;
+	case APP_PBO:
+		psize = PBO_PAY_SZ;
+		csize = PBO_CH_SZ;
+		break;	
     default:
         return -1;
     }

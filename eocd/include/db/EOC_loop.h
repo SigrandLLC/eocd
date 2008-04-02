@@ -146,7 +146,7 @@ class EOC_loop{
 
 	// Link status change handling
 	inline void link_up(){
-		PDEBUG(DERR,"LINK IS UP!!!!!!!!!!!!!!!!");
+		PDEBUG(DFULL,"LINK IS UP!!!!!!!!!!!!!!!!");
 		if( lstate )
 			return;
 		lstate = 1;
@@ -154,7 +154,7 @@ class EOC_loop{
 		moni_ts = time(NULL);
 	}
 	inline void link_down(){
-		PDEBUG(DERR,"LINK IS DOWN!!!!!!!!!!!!!!!!");
+		PDEBUG(DFULL,"LINK IS DOWN!!!!!!!!!!!!!!!!");
 		if( !lstate )
 			return;
 		lstate  = 0;
@@ -177,9 +177,9 @@ class EOC_loop{
 				_15min_ints[0]->cntrs.mon_sec += cur-moni_ts;
 				_1day_ints[0]->cntrs.mon_sec += cur-moni_ts;
 				moni_ts = cur;
-				PDEBUG(DERR,"Int exceeds: cur=%d,tmp_cur=%d\nmoni_ts=%d",bkp,cur,moni_ts);
+				PDEBUG(DFULL,"Int exceeds: cur=%d,tmp_cur=%d\nmoni_ts=%d",bkp,cur,moni_ts);
 			}else{
-				PDEBUG(DERR,"Normal: cur=%d, moni_ts=%d",cur,moni_ts);
+				PDEBUG(DFULL,"Normal: cur=%d, moni_ts=%d",cur,moni_ts);
 				_15min_ints[0]->cntrs.mon_sec += cur-moni_ts;
 				_1day_ints[0]->cntrs.mon_sec += cur-moni_ts;
 				moni_ts = cur;

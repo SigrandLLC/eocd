@@ -39,12 +39,12 @@ public:
 				loops[i]->link_up();
 	}
 	inline void link_down(){
-		PDEBUG(DERR,"side func");
+		PDEBUG(DFULL,"side func");
 		for(int i=0;i<loop_num;i++){
 			if(loops[i]){
-				PDEBUG(DERR,"try down loop#%d",i);
+				PDEBUG(DFULL,"try down loop#%d",i);
 				loops[i]->link_down();
-				PDEBUG(DERR,"try down loop#%d - success",i);
+				PDEBUG(DFULL,"try down loop#%d - success",i);
 			}
 		}
 	}

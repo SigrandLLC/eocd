@@ -34,7 +34,8 @@ class EOC_mr17h : public EOC_dev_terminal{
     int get_dev_option(char *name,char *&buf);
 
     int cur_config(span_conf_profile_t &cfg,int &mode);
-    int configure(span_conf_profile_t &cfg,int type);
+    int configure(span_conf_profile_t &cfg,int type,int &ch);
+	int commit();
 
     // Statistic info
     // DEBUG
@@ -45,12 +46,13 @@ class EOC_mr17h : public EOC_dev_terminal{
 		attn_tresh = attn;
     }
     
-    
-    
     int statistics(int loop,side_perf &stat);
     void 	dbg_last_msg(){
 		printf("LAST MSG:\nes(%u) ses(%u) losws(%u) crc(%u)\n",last_perf.es,last_perf.ses,last_perf.losws,last_perf.crc);
     }
+	
+	int get_pbo(int &,char*);
+	int set_pbo(int &,char*);
 
 };
 

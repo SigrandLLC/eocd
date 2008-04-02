@@ -11,7 +11,7 @@
 using namespace std;
 
 #define TICK_PER_MINUTE_MAX 60
-#define TICK_PER_MINUTE_DEF 6
+#define TICK_PER_MINUTE_DEF 12
 
 
 class EOC_main{
@@ -20,6 +20,8 @@ class EOC_main{
 		int pcislot,pcidev;
 		char *cprof,*aprof;
 		int reps,can_apply,master;
+		int pbomode;
+		char pboval[PBO_SETTING_LEN];
 	} dev_settings_t;
  
  protected:
@@ -58,10 +60,10 @@ class EOC_main{
     // Add (initialise) or change slave channel with name "ch_name"
     int add_slave(char *ch_name,char *conf,int app_cfg=1);
     // Add (initialise) or change master channel with name "ch_name"
-    int add_master(char *ch_name, char *conf,char *alarm,int reps,int tick,int app_cfg=1);
+    int add_master(char *ch_name, char *conf,char *alarm,int reps,int tick,int pbomode,char *pboval,int app_cfg=1);
 	// Add device to unexistence group
     int add_nexist_slave(int pcislot,int pcidev,char *conf,int app_cfg=1);
-    int add_nexist_master(int pcislot,int pcidev,char *conf,char *alarm,int reps,int app_cfg=1);
+    int add_nexist_master(int pcislot,int pcidev,char *conf,char *alarm,int reps,int pbomode,char *pboval,int app_cfg=1);
     //
     int configure_channels();    
     // process channels
@@ -79,6 +81,7 @@ class EOC_main{
 	int app_add_chan(app_frame *fr);
 	int app_del_chan(app_frame *fr);
 	int app_chng_chan(app_frame *fr);
+	int app_chan_pbo(app_frame *fr);
     int app_endpalarm_prof(app_frame *fr);
 
 };

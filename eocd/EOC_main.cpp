@@ -399,9 +399,11 @@ read_config()
 					PDEBUG(DERR,"Add not existing slave");
 					add_nexist_slave(pcislot,pcidev,cprof);
 				}
-					
 				continue;
 			}
+
+			int pbomode = s[i]["pbo_mode"];
+			char *pboval = strndup(s[i]["pbo_val"],PBO_SETTING_LEN);
 	    
 			int repeaters = s[i]["repeaters"];
 			if( repeaters <0 || repeaters > MAX_REPEATERS ){
@@ -416,22 +418,25 @@ read_config()
 			PDEBUG(DINFO,"%s: apply config from cfg-file = %d",name,eocd_apply);
 			// TODO: Add alarm handling
 			if( name ){
-				if( add_master(name,cprof,NULL,repeaters,tick_per_min,eocd_apply) ){
+				if( add_master(name,cprof,NULL,repeaters,tick_per_min,pbomode,pboval,eocd_apply) ){
 					syslog(LOG_ERR,"(%s): cannot add channel \"%s\" - no such device",
 						   config_file,name);
 					PDEBUG(DERR,"(%s): cannot add channel \"%s\" - no such device",
 						   config_file,name);
+					
+					free(pboval);
 					continue;
 				}
 			}else{
 				PDEBUG(DERR,"Add not existing master: %d.%d",pcislot,pcidev);
-				add_nexist_master(pcislot,pcidev,cprof,NULL,repeaters,eocd_apply);
+				add_nexist_master(pcislot,pcidev,cprof,NULL,repeaters,pbomode,pboval,eocd_apply);
 			}
+			free(pboval);
 		}catch(ConfigException& cex){
     	    if( name ){
-				syslog(LOG_ERR,"(%s): error while parsing profile: %s",
+				syslog(LOG_ERR,"(%s): error while parsing channel: %s",
 					   config_file,name);
-				PDEBUG(DERR,"(%s): error while parsing profile: %s",
+				PDEBUG(DERR,"(%s): error while parsing channel: %s",
 					   config_file,name);
 				return -1;
 			}
@@ -514,6 +519,18 @@ write_config()
 				el = channels.next(el->name,el->nsize);
 				continue;
 			}
+			
+			EOC_engine_act *eng_a = (EOC_engine_act *)ch->eng;
+						
+			int pbomode;
+			char pboval[PBO_SETTING_LEN];
+			eng_a->get_pbo(pbomode,pboval);
+			PDEBUG(DERR,"Write pbo_mode=%d, pboval=%s",pbomode,pboval);
+			chans[i].add("pbo_mode",TypeInt);
+			chans[i]["pbo_mode"] = pbomode;
+			chans[i].add("pbo_val",TypeString);
+			chans[i]["pbo_val"] = pboval;
+
 	  
 			// Channel repeaters num
 			chans[i].add("repeaters",TypeInt);
@@ -566,6 +583,12 @@ write_config()
 			// Channel repeaters num
 			chans[i].add("repeaters",TypeInt);
 			chans[i]["repeaters"] = it->reps;
+
+			chans[i].add("pbo_mode",TypeInt);
+			chans[i]["pbo_mode"] = it->pbomode;
+			chans[i].add("pbo_val",TypeString);
+			chans[i]["pbo_val"] = it->pboval;
+
 			// Channels alarm profile 
 			// 			chans[i].add("alarm_profile",TypeString);
 			// 			chans[i]["alarm_profile"] = it->aprof;
@@ -666,7 +689,7 @@ add_slave(char *name,char *cprof,int app_cfg)
 }
 
 int EOC_main::
-add_master(char *name,char *cprof, char *aprof,int reps,int tick_per_min,int app_cfg)
+add_master(char *name,char *cprof, char *aprof,int reps,int tick_per_min,int pbomode,char *pboval,int app_cfg)
 {
 	do{
 		channel_elem *el = (channel_elem*)channels.find(name,strlen(name));
@@ -701,6 +724,7 @@ add_master(char *name,char *cprof, char *aprof,int reps,int tick_per_min,int app
 	el->name = name;
 	el->nsize = strlen(name);
 	el->is_updated = 1;
+	((EOC_engine_act*)el->eng)->set_pbo(pbomode,pboval);
 	channels.add(el);
 	channels.sort();
 	return 0;
@@ -728,7 +752,7 @@ add_nexist_slave(int pcislot,int pcidev,char *cprof,int app_cfg)
 
 
 int EOC_main::
-add_nexist_master(int pcislot,int pcidev,char *cprof,char *aprof,int repeaters,int eocd_apply)
+add_nexist_master(int pcislot,int pcidev,char *cprof,char *aprof,int repeaters,int pbomode,char *pboval,int eocd_apply)
 {
 	list<dev_settings_t>::iterator it = nexist_devs.begin();
 	for(;it != nexist_devs.end();it++){
@@ -745,6 +769,8 @@ add_nexist_master(int pcislot,int pcidev,char *cprof,char *aprof,int repeaters,i
 	tmp.aprof = aprof;
 	tmp.reps = repeaters;
 	tmp.can_apply = eocd_apply;
+	tmp.pbomode = pbomode;
+	strncpy(tmp.pboval,pboval,PBO_SETTING_LEN);
 	nexist_devs.push_back(tmp);
 	return 0;
 
@@ -759,6 +785,8 @@ configure_channels()
 	while( el ){
 		int tmp = 0;
 		PDEBUG(DERR,"Configure %s channel",el->name);
+		
+		// Configure interface
 		if( (tmp = el->eng->configure(el->name)) && err_cfgchans_cnt < SPAN_NAMES_NUM ){
 			err_cfgchans[err_cfgchans_cnt++] = el;
 		}
@@ -854,6 +882,9 @@ app_request(app_frame *fr)
 	case APP_CHNG_CHAN:
 		PDEBUG(DINFO,"APP_CHANG_CHAN");
 		return app_chng_chan(fr);
+	case APP_PBO:
+		PDEBUG(DINFO,"APP_PBO");
+		return app_chan_pbo(fr);
 	case APP_DUMP_CFG:
 		PDEBUG(DERR,"APP_DUMP_CFG");
 		return write_config();
@@ -1291,7 +1322,7 @@ app_add_chan(app_frame *fr)
 			return 0;
 		}
 	}else{
-		if( add_master(name,cprof,NULL,0/*repeaters*/,tick_per_min,1/*can apply*/) ){
+		if( add_master(name,cprof,NULL,0/*repeaters*/,tick_per_min,0,"",1/*can apply*/) ){
 			syslog(LOG_ERR,"(%s): cannot add channel \"%s\" - no such device",
 				   config_file,name);
 			PDEBUG(DERR,"(%s): cannot add channel \"%s\" - no such device",
@@ -1380,7 +1411,7 @@ app_chng_chan(app_frame *fr)
 			configure_channels();
 			return 0;
 		}else if( el->eng->get_type() == slave && p->master ){
-			if( add_master(name,cprof,NULL,0,tick_per_min,1) ){
+			if( add_master(name,cprof,NULL,0,tick_per_min,0,"",1) ){
 				syslog(LOG_ERR,"(%s): cannot add channel \"%s\" - no such device",
 					   config_file,name);
 				PDEBUG(DERR,"(%s): cannot add channel \"%s\" - no such device",
@@ -1440,6 +1471,52 @@ app_chng_chan(app_frame *fr)
 	}
 	return 0;
 }
+
+int EOC_main::
+app_chan_pbo(app_frame *fr)
+{
+	// check that requested channel exist
+	channel_elem *el = (channel_elem *)
+		channels.find((char*)fr->chan_name(),strnlen(fr->chan_name(),SPAN_NAME_LEN));
+	char buf[3*16];
+	int mode = -1;
+	char *val = "";
+
+	PDEBUG(DERR,"start");
+	if( !el	|| el->eng->get_type() == slave ){
+		PDEBUG(DERR,"Channel %s,el=%p",fr->chan_name(),el);
+		fr->negative(ERCHNEXIST);
+		return 0;
+	}
+
+	PDEBUG(DERR,"go through");
+
+	EOC_engine_act *eng = (EOC_engine_act *)el->eng;
+	chan_pbo_payload *p = (chan_pbo_payload *)fr->payload_ptr();
+
+	PDEBUG(DERR,"switch");
+
+	switch( fr->type() ){
+	case APP_SET:{
+		PDEBUG(DERR,"APP_SET");
+		chan_pbo_changes *c = (chan_pbo_changes *)fr->changelist_ptr();
+		if( c->mode )
+			mode = p->mode;
+		if( c->val )
+			val = p->val;
+		eng->set_pbo(mode,val);
+		configure_channels();
+	}
+	}
+
+	PDEBUG(DERR,"APP_GET");
+	eng->get_pbo(mode,p->val);
+	PDEBUG(DERR,"#2");
+	p->mode = mode;
+
+	return 0;
+}
+
 
 int EOC_main::
 app_endpalarm_prof(app_frame *fr)

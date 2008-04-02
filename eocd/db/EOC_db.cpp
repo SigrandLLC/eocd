@@ -163,7 +163,7 @@ link_up(){
 void EOC_db::
 link_down()
 {
-    PDEBUG(DERR,"Link down");
+    PDEBUG(DFULL,"Link down");
     for(int i=0;i<MAX_UNITS;i++){
 		PDEBUG(DFULL,"Down unit%d",i);
 		units_discov[i] = 0;
@@ -192,7 +192,7 @@ _resp_discovery(EOC_db *db,EOC_msg *m,int check)
 		db->units[ind]->link_up();
 	}
 	db->units_discov[ind] = 1;
-	PDEBUG(DINFO,"DISCOVERY_RESP FROM(%d): hop=%d,resl=%d,vendor_id=%d,fwd_loss=%d",
+	PDEBUG(DFULL,"DISCOVERY_RESP FROM(%d): hop=%d,resl=%d,vendor_id=%d,fwd_loss=%d",
 		   m->src(),resp->hop,resp->res1,resp->vendor_id,resp->fwd_loss);
 	if( m->src() == stu_r ){
 		PDEBUG(DFULL,"Clean units list");
@@ -223,7 +223,7 @@ _resp_inventory(EOC_db *db,EOC_msg *m,int check)
 	if( check )
 		return 0;
 
-	PDEBUG(DINFO,"INVENTORY_RESP FROM(%d)",m->src());
+	PDEBUG(DFULL,"INVENTORY_RESP FROM(%d)",m->src());
 
 	// Check that units was not changed
 	if( db->units[ind]->integrity(resp) ){
@@ -247,7 +247,7 @@ _resp_configure(EOC_db *db,EOC_msg *m,int check)
 	resp_configure *resp= (resp_configure *)m->payload();
 	if( check )
 		return 0;
-	PDEBUG(DINFO,"CONFIGURE_RESP FROM(%d), loop(%d),snr(%d)",m->src(),resp->loop_attn,resp->snr_marg);
+	PDEBUG(DFULL,"CONFIGURE_RESP FROM(%d), loop(%d),snr(%d)",m->src(),resp->loop_attn,resp->snr_marg);
 	return 0;
 }
 
@@ -283,7 +283,7 @@ _resp_status(EOC_db *db,EOC_msg *m,int check)
 	if( check )
 		return 0;
 
-	PDEBUG(DINFO,"STATUS RESPONSE: src(%d) dst(%d) ns_snr=%d, cs_snr=%d",
+	PDEBUG(DFULL,"STATUS RESPONSE: src(%d) dst(%d) ns_snr=%d, cs_snr=%d",
 		   m->src(),m->dst(),resp->ns_snr_marg,resp->cs_snr_marg);
 
 
@@ -313,7 +313,7 @@ _resp_nside_perf(EOC_db *db,EOC_msg *m,int check)
 	if( check )
 		return 0;
 
-	PDEBUG(DINFO,"NET SIDE PERF RESPONSE: src(%d) dst(%d)",m->src(),m->dst());
+	PDEBUG(DFULL,"NET SIDE PERF RESPONSE: src(%d) dst(%d)",m->src(),m->dst());
     
 	if( nsloop ){
 		nsloop->full_status(resp);

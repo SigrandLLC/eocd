@@ -269,12 +269,12 @@ cur_config(span_conf_profile_t &cfg,int &mode)
 
 // Configure device as STU-C
 int EOC_mr17h::
-configure(span_conf_profile_t &cfg, int type)
+configure(span_conf_profile_t &cfg, int type,int &need_commit)
 {
     char setting[256];
 	span_conf_profile_t ocfg;
 	int mode;
-	int need_apply = 0;
+	need_commit = 0;
 	int ret = 0;
 
 	PDEBUG(DERR,"Master configuration of %s",ifname);
@@ -306,7 +306,7 @@ configure(span_conf_profile_t &cfg, int type)
 			if( set_dev_option("mode","0") )
 				return -1;
 		}
-		need_apply++;
+		need_commit++;
 	}
 
 	switch( cfg.power ){
@@ -321,7 +321,7 @@ configure(span_conf_profile_t &cfg, int type)
 	if( !type )
 		goto complete;
 
-	need_apply++;
+	need_commit++;
 
     switch( cfg.annex ){
     case annex_a:
@@ -359,11 +359,16 @@ configure(span_conf_profile_t &cfg, int type)
 	
  complete:
     // Apply configuration    
-    if( need_apply && set_dev_option("apply_cfg","1") )
-		return -1;
 	return ret;
 }
 
+int EOC_mr17h::
+commit()
+{
+	PDEBUG(DERR,"COMMIT");
+    if( set_dev_option("apply_cfg","1") )
+		return -1;
+}
 // DEBUG_VERSION
 EOC_dev::Linkstate
 EOC_mr17h::link_state()
@@ -424,4 +429,68 @@ statistics(int loop,side_perf &stat)
 
     last_perf = stat;
     return ret;
+}
+
+
+// Power Backoff 
+int EOC_mr17h::
+get_pbo(int &mode,char *buf)
+{
+    char *tmp;
+	char str[256];
+
+	// Mode
+	PDEBUG(DERR,"MODE");
+    int cnt = get_dev_option("pbo_mode",tmp);
+    if( cnt <= 0 )
+		return -1;
+	if( !strcmp(tmp,"Forced") ){
+		mode = 1;
+	}else if( !strcmp(tmp,"Normal") ){
+		mode = 0;
+	}else{
+		PDEBUG(DERR,"Unexpected value of pbo_val: %s",tmp);
+		syslog(LOG_ERR,"Unexpected value of pbo_val: %s",tmp);
+	    delete[] tmp;
+		return -1;
+	}
+    delete[] tmp;
+
+	// Value
+	PDEBUG(DERR,"VALUE");
+    cnt = get_dev_option("pbo_val",tmp);
+    if( cnt <= 0 )
+		return -1;
+	strncpy(buf,tmp,PBO_SETTING_LEN);
+    delete[] tmp;
+
+	PDEBUG(DERR,"end");
+
+    return 0;
+}
+
+int EOC_mr17h::
+set_pbo(int &mode,char *buf)
+{
+    char tmp[256];
+
+	// Mode
+	PDEBUG(DERR,"MODE");
+	if( mode >= 0 ){
+		sprintf(tmp,"%d",mode);
+    	if( set_dev_option("pbo_mode",tmp) ){
+			PDEBUG(DERR,"Error while setting pbo_mode to %d",mode);
+			syslog(LOG_ERR,"Error while setting pbo_mode to %d",mode);
+		}
+	}
+	
+	// Value
+	PDEBUG(DERR,"Value: %p",buf);
+	if( buf ){
+	    if( set_dev_option("pbo_val",buf) ){
+			PDEBUG(DERR,"Error while setting pbo_val to %d",mode);
+			syslog(LOG_ERR,"Error while setting pbo_val to %d",mode);
+		}
+	}
+    return 0;
 }

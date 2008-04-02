@@ -55,9 +55,9 @@ shift_rings(){
     int _15m_int = (_15m_tm.tm_min + _15m_tm.tm_hour*60 + _15m_tm.tm_yday*60*24 )/EOC_15MIN_INT_LEN;
     int _15m_int_cur = (cur_tm.tm_min + cur_tm.tm_hour*60 + cur_tm.tm_yday*60*24)/EOC_15MIN_INT_LEN;
     int shift_num = int_diff(_15m_int,_15m_int_cur,EOC_15MIN_INTS,"15m");
-	PDEBUG(DERR,"SHIFT=%d,cur=%d,last=%d",shift_num,_15m_int_cur,_15m_int);
+	PDEBUG(DFULL,"SHIFT=%d,cur=%d,last=%d",shift_num,_15m_int_cur,_15m_int);
     if( shift_num ){
-		PDEBUG(DERR,"----------- Shift 15MINUTES ---------------");
+		PDEBUG(DFULL,"----------- Shift 15MINUTES ---------------");
 		update_mon_sec();
 		_15min_ints.shift(shift_num);
 		time(&_15m);
@@ -68,9 +68,8 @@ shift_rings(){
     }
 	
     if( _1d_tm.tm_year == cur_tm.tm_year ){
-		PDEBUG(DERR,"----------- Shift 1DAYS ---------------");
-		printf("shift days: sshift_val=%d\n",
-			   _1d_tm.tm_yday - cur_tm.tm_yday);
+		PDEBUG(DFULL,"----------- Shift 1DAYS ---------------");
+		PDEBUG(DFULL,"shift days: sshift_val=%d",_1d_tm.tm_yday - cur_tm.tm_yday);
         shift_num = cur_tm.tm_yday - _1d_tm.tm_yday;
 
 		_1d_tm = cur_tm;
@@ -131,11 +130,11 @@ short_status(s8 snr_margin)
     // change online data
     state.snr_marg = snr_margin;
 
-	PDEBUG(DERR,"Lstate=%d",lstate);
+	PDEBUG(DFULL,"Lstate=%d",lstate);
 	// Monitoring seconds
 	update_mon_sec();
 
-	PDEBUG(DERR,"SHORT INFO: snr=%d\n",snr_margin);
+	PDEBUG(DFULL,"SHORT INFO: snr=%d\n",snr_margin);
 }
 
 int EOC_loop::
