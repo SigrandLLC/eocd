@@ -45,13 +45,13 @@ static void child_handler(int signum)
 {
     switch(signum) {
     case SIGALRM:
-		printf("Starting eocd v%f: FAIL\n",EOC_VER);
+		printf("Starting eocd v%.1f: FAIL\n",EOC_VER);
 		exit(EXIT_FAILURE);
     case SIGUSR1: 
-		printf("Starting eocd v%f: OK\n",EOC_VER);    
+		printf("Starting eocd v%.1f: OK\n",EOC_VER);    
         exit(EXIT_SUCCESS);
     case SIGCHLD:
-		printf("Starting eocd v%f: FAIL\n",EOC_VER);    
+		printf("Starting eocd v%.1f: FAIL\n",EOC_VER);    
 		exit(EXIT_FAILURE);
     }
 }

@@ -37,7 +37,7 @@ app_comm_cli *cli;
 
 void print_usage(char *name)
 {
-    printf("eoc-config version: %f\n",EOC_VER);
+    printf("eoc-config version: %.1f\n",EOC_VER);
 	printf("Usage: %s -o <type> [-a|-d|-c] <name> [Options] \n"
 		   "Modes:\n"
 		   "  -o, --object=<type>\tSelect type of object:\n"
@@ -560,7 +560,9 @@ main(int argc, char *argv[] )
 		}
 	}
 
+/*
 	if( mode == NORMAL ){
+
 		printf("----------------- Summary cmdline options -------------------\n");
 		printf("Result:\n"
 			   "type=%d,action=%d,name=%s,master=%d\n"
@@ -570,7 +572,7 @@ main(int argc, char *argv[] )
 			   active,annex,lrate,shell_out,power,tcpam);
 		printf("----------------- Summary cmdline options -------------------\n");
 	}
-
+*/
 	if( type == NONE && action != DUMP ){
 		print_usage(argv[0]);
 		return 0;

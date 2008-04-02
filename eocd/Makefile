@@ -1,16 +1,16 @@
 #***********************************************************************************
 #
 #	Sigrand EOC management server general Makefile
-#	Written 2007 by Artem U. Polyakov <artpol84@gmail.com>
+#	Written 2007 by Artem Y. Polyakov <artpol84@gmail.com>
 #	
 #***********************************************************************************
 
-VERSION=2.8
+include $(PWD)/version.mk
 
 TOPDIR=$(PWD)
 INCLUDES=-I$(TOPDIR)/include/
 INCLUDES += -I$(TOPDIR)/libconfig/
-CPPFLAGS=$(INCLUDES) -DEOC_VER="$(VERSION)"
+CPPFLAGS=$(INCLUDES) -DEOC_VER="$(EOC_VER)"
 #-g 
 ifeq ($(VIRT),1)
 CPPFLAGS += -DVIRTUAL_DEVS
@@ -37,11 +37,9 @@ export CXX AR RANLIB CC TOPDIR INCLUDES CPPFLAGS
 
 all: $(TARGS) 
 	$(CXX) -g $(INCLUDES) -o result main.cpp $(OBJECTS) libconfig++.a
-#	$(CXX) -g $(INCLUDES) -o eocd eocd.cpp $(OBJECTS) libconfig++.a
 
 all-mips: $(TARGS) 
-#	$(CXX) -g $(INCLUDES) -o result main.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
-	$(CXX) -g $(INCLUDES) -o eocd eocd.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
+	$(CXX) $(CPPFLAGS) -o eocd eocd.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
 
 fake-mips: $(TARGS) 
 #	$(CXX) -g $(INCLUDES) -o result main.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
@@ -78,7 +76,8 @@ clean:
 
 
 ARCH_FILES=app-if build CHECK db devs engine eocd.conf eocd.cpp EOC_main.cpp EOC_pci.cpp \
-generic include main.cpp Makefile.tmpl system TODO.txt utils
+generic include main.cpp Makefile.tmpl system TODO.txt utils version.mk
 
 tar: clean
-	tar --exclude="\.svn" -cjvf tar/eocd-$(VERSION).tar.bz2 $(ARCH_FILES)
+	tar --exclude="\.svn" -cjvf tar/eocd-$(EOC_VER).tar.bz2 $(ARCH_FILES)
+

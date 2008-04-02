@@ -22,7 +22,6 @@ extern "C"{
 #endif
 
 
-
 typedef enum {NORMAL,SHELL} output_mode;
 output_mode mode = NORMAL;
 typedef enum {NONE,PSHORT,PEXACT,PFULL,SHORT,FULL,EXACT,RESET,SENSORS,PBO} type_t;
@@ -40,7 +39,7 @@ char *prof=NULL;
 
 void print_usage(char *name)
 {
-    printf("eoc-info versoin: %f\n",EOC_VER);
+    printf("eoc-info versoin: %.1f\n",EOC_VER);
 	printf("Usage: %s [-s|-f] [-i ] [-u [--row]] \n"
 		   "Options:\n"
 		   "  -s, --short\t\tShort info about served channels\n"

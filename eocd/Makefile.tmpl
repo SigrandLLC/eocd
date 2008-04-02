@@ -5,11 +5,12 @@
 #	
 #***********************************************************************************
 
+include ./version.mk
 
 TOPDIR=$(PWD)
 INCLUDES=-I$(TOPDIR)/include/
 INCLUDES += -I$(TOPDIR)/libconfig/
-CPPFLAGS=-g $(INCLUDES) 
+CPPFLAGS=$(INCLUDES) -DEOC_VER="$(EOC_VER)"
 
 
 .PHONY: generic engine devs utils db app-if
@@ -25,12 +26,10 @@ RANLIB=@CROSS_PREFIX@ranlib
 export CXX AR RANLIB CC TOPDIR INCLUDES CPPFLAGS
 
 all: $(TARGS) 
-	$(CXX) -g $(INCLUDES) -o result main.cpp $(OBJECTS) libconfig++.a
-#	$(CXX) -g $(INCLUDES) -o eocd eocd.cpp $(OBJECTS) libconfig++.a
+	$(CXX) $(CPPFLAGS) -o result main.cpp $(OBJECTS) libconfig++.a
 
 all-mips: $(TARGS) 
-#	$(CXX) -g $(INCLUDES) -o result main.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
-	$(CXX) -g $(INCLUDES) -o eocd eocd.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
+	$(CXX) $(CPPFLAGS) -o eocd eocd.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
 
 local: EOC_main.o EOC_pci.o
 	cp $^ build/    
