@@ -30,7 +30,7 @@ class EOC_engine_act : public EOC_engine {
     }
 
     int setup_state_act();
-    int schedule();
+    int schedule(char *ch_name);
 	int get_pbo(int &mode,char *buf);
 	int set_pbo(int &mode,char *buf);
 	int apply_pbo();

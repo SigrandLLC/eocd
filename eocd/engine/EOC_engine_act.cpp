@@ -119,7 +119,7 @@ apply_pbo()
 // schedule - call it to take control to engine to process incoming and 
 // outgoing messages
 int EOC_engine_act::
-schedule()
+schedule(char *ch_name)
 {
     EOC_msg *m,**ret;
     ASSERT( rtr && resp ); // Constructor failed
@@ -132,6 +132,7 @@ schedule()
 
 	PDEBUG(DFULL,"Receiving");
     while( (m = rtr->receive()) && i<recv_max){
+		m->set_chname(ch_name);
 		if( m->is_request() ){
 			if( resp->request(m,ret,cnt) ){
 				delete m;

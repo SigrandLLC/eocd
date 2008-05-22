@@ -13,6 +13,7 @@ public:
 protected:
     char *buf;
     int size,bsize;
+	char *chname;
     enum Direction dir;
 public:
     EOC_msg();
@@ -37,6 +38,8 @@ public:
     inline int payload_sz(){ return size-2; }    
     int response(int);
     int resize(int sz);
+	inline void set_chname(char *n){ chname = n; }
+	inline char *get_chname(){ return chname; }
     
     // class of message
     inline int is_request(){

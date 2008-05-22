@@ -6,6 +6,8 @@
 #define EOC_DEBUG
 #include<eoc_debug.h>
 
+#include <syslog.h>
+
 #include <generic/EOC_responses.h>
 #include <generic/EOC_msg.h>
 #include <db/EOC_db.h>
@@ -369,6 +371,10 @@ _resp_sensor_state(EOC_db *db,EOC_msg *m,int check)
 	if( unit ){
 		PDEBUG(DERR,"SENSOR STATE: src(%d): s1(%d), s2(%d), s3(%d)",m->src(),resp->sensor1,resp->sensor2,resp->sensor3);
 		unit->sensor_resp(resp);
+		if( resp->sensor1 || resp->sensor2 || resp->sensor3 ){
+			syslog( LOG_NOTICE, "%s sensor alarm: SENS1=%d,SENS2=%d,SENS3=%d",
+					m->get_chname(),resp->sensor1,resp->sensor2,resp->sensor3);
+		}
 	}
 	return 0;
 }

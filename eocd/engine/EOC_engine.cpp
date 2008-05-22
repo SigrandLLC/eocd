@@ -54,7 +54,7 @@ EOC_engine::setup_state()
 // schedule - call it to take control to engine to process incoming and 
 // outgoing messages
 int
-EOC_engine::schedule()
+EOC_engine::schedule(char *ch_name)
 {
     static int number = -1;
     EOC_msg *m,**ret;

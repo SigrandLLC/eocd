@@ -23,6 +23,7 @@
 
 #include <app-if/err_codes.h>
 
+
 #define CONF_FILE_NAME "/etc/eocd/eocd.conf"
 
 using namespace libconfig;
@@ -802,7 +803,7 @@ poll_channels()
 {
 	channel_elem *el = (channel_elem*)channels.first();
 	while( el ){
-		el->eng->schedule();
+		el->eng->schedule(el->name);
 		el = (channel_elem*)channels.next(el->name,el->nsize);
 	}
 }
