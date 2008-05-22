@@ -3,10 +3,12 @@
  *	EOC Data base unit, provide SHDSL channel information storage and 
  *	acces to it
  */
+#define EOC_DEBUG
+#include<eoc_debug.h>
+
 #include <generic/EOC_responses.h>
 #include <generic/EOC_msg.h>
 #include <db/EOC_db.h>
-#include <eoc_debug.h>
 #include <app-if/err_codes.h>
 
 int EOC_db::
@@ -28,6 +30,7 @@ register_handlers(){
     app_handlers[APP_ENDP_MAINT] = _appreq_endpmaint;
     app_handlers[APP_UNIT_MAINT] = _appreq_unitmaint;
     app_handlers[APP_LOOP_RCNTRST] = _appreq_cntrst;
+    app_handlers[APP_SENSORS] = _appreq_sensors;
 }
 
 EOC_db::
@@ -364,7 +367,7 @@ _resp_sensor_state(EOC_db *db,EOC_msg *m,int check)
 
 	unit = db->units[(int)m->src()-1];
 	if( unit ){
-		PDEBUG(DINFO,"SENSOR STATE: src(%d): s1(%d), s2(%d), s3(%d)",m->src(),resp->sensor1,resp->sensor2,resp->sensor3);
+		PDEBUG(DERR,"SENSOR STATE: src(%d): s1(%d), s2(%d), s3(%d)",m->src(),resp->sensor1,resp->sensor2,resp->sensor3);
 		unit->sensor_resp(resp);
 	}
 	return 0;
@@ -390,9 +393,13 @@ _resp_test(EOC_db *db,EOC_msg *m,int check)
 int EOC_db::
 app_request(app_frame *fr)
 {
-	PDEBUG(DERR,"Start");
-	if( !app_handlers[fr->id()] )
+	PDEBUG(DERR,"Start. frame id=%d",fr->id());
+	if( !app_handlers[fr->id()] ){
+		fr->negative(ERPARAM);
+		PDEBUG(DERR,"No id=%d handler found",fr->id());
 		return -1;
+	}
+	PDEBUG(DERR,"Call %d handler",fr->id());
 	return app_handlers[fr->id()](this,fr);
 }
 
@@ -618,6 +625,7 @@ _appreq_cntrst(EOC_db *db,app_frame *fr)
 int EOC_db::
 _appreq_sensors(EOC_db *db,app_frame *fr)
 {
+	PDEBUG(DERR,"start");
 	sensors_payload *p = (sensors_payload*)fr->payload_ptr();
 	unit u = (unit)p->unit;
 	EOC_unit *un;
@@ -628,13 +636,13 @@ _appreq_sensors(EOC_db *db,app_frame *fr)
 		PDEBUG(DERR,"Error !p");  
 		return -1;
 	}
-	
-	if( !db->check_exist((unit)p->unit) ){
+	PDEBUG(DERR,"#1");
+	if( db->check_exist((unit)p->unit) ){
 		PDEBUG(DERR,"DB sensor state: error check exist: unit(%d)",p->unit);	
 		fr->negative(ERNOELEM);
 		return 0;
 	}
-	
+	PDEBUG(DERR,"#2");
 	// Sensors are installed only on regenerators
 	if( u == stu_c || u == stu_r ){
 		PDEBUG(DERR,"DB sensor state: no sensors on terminals");	
@@ -642,7 +650,10 @@ _appreq_sensors(EOC_db *db,app_frame *fr)
 		return 0;
 	}
 	
+	PDEBUG(DERR,"Point to requested unit");
 	un = db->units[(int)u - 1];
+	PDEBUG(DERR,"Get info from %p",un);
 	un->sensor_get(p->state,p->sens1,p->sens2,p->sens3);
+	PDEBUG(DERR,"Return successfull");
 	return 0;
 }

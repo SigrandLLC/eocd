@@ -8,7 +8,6 @@
 #define EOC_DEBUG
 #include<eoc_debug.h>
 
-
 #include <generic/EOC_types.h>
 #include <generic/EOC_msg.h>
 #include <engine/EOC_scheduler.h>
@@ -107,20 +106,21 @@ app_request(app_frame *fr)
 		break;
 	}
 	default:
+		PDEBUG(DERR,"DB request: %p",db);
 		return db->app_request(fr);
-    }
+	}
 	return 0;
 }
 
 void EOC_poller::
 link_state(EOC_dev::Linkstate link)
 {
-    sch->link_state(link);
+	sch->link_state(link);
 	switch(link){
 	case EOC_dev::OFFLINE:
 		db->link_down();
 		break;
-    case EOC_dev::ONLINE:
+	case EOC_dev::ONLINE:
 		db->link_up();
 		break;
 	}

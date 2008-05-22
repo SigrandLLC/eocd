@@ -5,9 +5,11 @@
 #	
 #***********************************************************************************
 
-include $(PWD)/version.mk
 
 TOPDIR=$(PWD)
+
+include $(TOPDIR)/version.mk
+
 INCLUDES=-I$(TOPDIR)/include/
 INCLUDES += -I$(TOPDIR)/libconfig/
 CPPFLAGS=$(INCLUDES) -DEOC_VER="$(EOC_VER)"

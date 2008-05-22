@@ -4,7 +4,7 @@
  * 	provides schedule for request generating and sending
  */
 
-#define EOC_DEBUG
+//#define EOC_DEBUG
 #include <eoc_debug.h>
 #include <engine/EOC_scheduler.h>
 

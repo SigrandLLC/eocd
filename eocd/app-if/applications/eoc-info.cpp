@@ -68,7 +68,8 @@ void print_sensors(app_comm_cli &cli,char *chan)
     app_frame *req = new app_frame(APP_SENSORS,APP_GET,app_frame::REQUEST,1,chan);
     app_frame *resp;
     char *buf;
-    
+	
+	((sensors_payload *)req->payload_ptr())->unit = _unit;
     cli.send(req->frame_ptr(),req->frame_size());
 	cli.wait();
     int size = cli.recv(buf);
@@ -89,10 +90,16 @@ void print_sensors(app_comm_cli &cli,char *chan)
     }
     {
 		sensors_payload *p = (sensors_payload *)resp->payload_ptr();
-		printf(" %s %s: ",chan, unit2string(_unit));
-		printf("\tSensor1: current=%d, count=%d",p->state.sensor1,p->sens1);
-		printf("\tSensor2: current=%d, count=%d",p->state.sensor2,p->sens2);
-		printf("\tSensor3: current=%d, count=%d",p->state.sensor3,p->sens3);
+		if( mode == NORMAL ){
+			printf(" %s %s: ",chan, unit2string(_unit));
+			printf("\tSensor1: current=%d, count=%d\n",p->state.sensor1,p->sens1);
+			printf("\tSensor2: current=%d, count=%d\n",p->state.sensor2,p->sens2);
+			printf("\tSensor3: current=%d, count=%d\n",p->state.sensor3,p->sens3);
+		}else{
+			printf("sens1_cur=%d\nsens1_cnt=%d\n",p->state.sensor1,p->sens1);
+			printf("sens2_cur=%d\nsens2_cnt=%d\n",p->state.sensor2,p->sens2);
+			printf("sens3_cur=%d\nsens3_cnt=%d\n",p->state.sensor3,p->sens3);
+		}
     }
  err_exit:
     delete resp;

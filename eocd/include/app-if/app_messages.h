@@ -15,7 +15,7 @@ typedef enum { APP_SPAN_NAME=0,APP_SPAN_PARAMS,APP_SPAN_CONF,APP_SPAN_STATUS,
 			   APP_DUMP_CFG,APP_SENSORS, APP_PBO
 } app_ids;
 
-#define app_ids_num 20
+#define app_ids_num 23
 
 typedef enum { APP_SET,APP_GET,APP_GET_NEXT } app_types;
 
