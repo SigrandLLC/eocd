@@ -369,12 +369,18 @@ _resp_sensor_state(EOC_db *db,EOC_msg *m,int check)
 
 	unit = db->units[(int)m->src()-1];
 	if( unit ){
-		PDEBUG(DERR,"SENSOR STATE: src(%d): s1(%d), s2(%d), s3(%d)",m->src(),resp->sensor1,resp->sensor2,resp->sensor3);
-		unit->sensor_resp(resp);
-		if( resp->sensor1 || resp->sensor2 || resp->sensor3 ){
+		resp_sensor_state sresp;
+		PDEBUG(DERR,"SENSOR STATE: src(%d): s1(%d), s2(%d), s3(%d)",
+			   m->src(),resp->sensor1,resp->sensor2,resp->sensor3);
+		unit->sensor_get(sresp);
+		// if state of one or more sensor is changed - log into syslog
+		if( (resp->sensor1 != sresp.sensor1) || 
+			(resp->sensor2 != sresp.sensor2) ||
+			(resp->sensor3 != sresp.sensor3) ){
 			syslog( LOG_NOTICE, "%s sensor alarm: SENS1=%d,SENS2=%d,SENS3=%d",
 					m->get_chname(),resp->sensor1,resp->sensor2,resp->sensor3);
 		}
+		unit->sensor_resp(resp);
 	}
 	return 0;
 }

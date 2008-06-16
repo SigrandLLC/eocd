@@ -1,0 +1,4 @@
+Version 2.12
+    1. Fix syslog notification on regenerator sensor alarm. Send only ONE message 
+	to syslog on sensor state change.
+    2. Fix SIGHUP handling in eocd

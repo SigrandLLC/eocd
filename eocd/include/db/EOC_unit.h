@@ -76,7 +76,11 @@ class EOC_unit{
 		sens3 += resp->sensor3;
     }
 
-    void sensor_get(resp_sensor_state &st,u8 &s1,u8 &s2,u8 &s3){
+    inline void sensor_get(resp_sensor_state &st){
+		st = sensors_cur;
+	}
+	
+	inline void sensor_get(resp_sensor_state &st,u8 &s1,u8 &s2,u8 &s3){
 		st = sensors_cur;
     	s1= sens1;
 		s2 = sens2;

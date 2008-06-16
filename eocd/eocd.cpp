@@ -28,7 +28,7 @@ extern "C" {
 #define DAEMON_NAME "eocd"
 
 /* Change this to the user under which to run */
-#define RUN_AS_USER "artpol"
+#define RUN_AS_USER "root"
 
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1

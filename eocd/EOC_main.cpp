@@ -185,6 +185,8 @@ read_config()
 			// New profile 
 			nprof->is_updated = 1;
 			conf_profs.add(nprof);
+		}else{
+			cprof->is_updated = 1;
 		}
 	}
 	
@@ -336,7 +338,7 @@ read_config()
 
 	PDEBUG(DERR,"Clear conf table from old profiles");
     conf_profs.clear();
-	conf_profs.sort();
+    conf_profs.sort();
 
     //----------- read channels configuration ------------------//
     // 1. Check that channels group exist

@@ -77,8 +77,8 @@ clean:
 	rm -f build/*.o
 
 
-ARCH_FILES=app-if build CHECK db devs engine eocd.conf eocd.cpp EOC_main.cpp EOC_pci.cpp \
-generic include main.cpp Makefile.tmpl system TODO.txt utils version.mk
+ARCH_FILES=app-if build CHECK db devs engine eocd.conf.default eocd.cpp EOC_main.cpp EOC_pci.cpp \
+generic include main.cpp Makefile.tmpl system TODO.txt utils version.mk Changelog
 
 tar: clean
 	tar --exclude="\.svn" -cjvf tar/eocd-$(EOC_VER).tar.bz2 $(ARCH_FILES)
