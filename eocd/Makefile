@@ -12,7 +12,7 @@ include $(TOPDIR)/version.mk
 
 INCLUDES=-I$(TOPDIR)/include/
 INCLUDES += -I$(TOPDIR)/libconfig/
-CPPFLAGS=$(INCLUDES) -DEOC_VER="$(EOC_VER)"
+CPPFLAGS=$(INCLUDES) -DEOC_VER="\"$(EOC_VER)\""
 #-g 
 ifeq ($(VIRT),1)
 CPPFLAGS += -DVIRTUAL_DEVS

@@ -19,7 +19,7 @@ extern "C"{
 #include "app-utils.h"
 
 #ifndef EOC_VER
-#define EOC_VER 0.0
+#define EOC_VER "0.0"
 #endif
 
 
@@ -37,7 +37,7 @@ app_comm_cli *cli;
 
 void print_usage(char *name)
 {
-    printf("eoc-config version: %.1f\n",EOC_VER);
+    printf("eoc-config version: %s\n",EOC_VER);
 	printf("Usage: %s -o <type> [-a|-d|-c] <name> [Options] \n"
 		   "Modes:\n"
 		   "  -o, --object=<type>\tSelect type of object:\n"

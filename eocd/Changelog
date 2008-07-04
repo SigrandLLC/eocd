@@ -2,3 +2,7 @@ Version 2.12
     1. Fix syslog notification on regenerator sensor alarm. Send only ONE message 
 	to syslog on sensor state change.
     2. Fix SIGHUP handling in eocd
+Version 2.14 (03.07.08)
+    1. Remove __FILE__ constant from eoc_debug.h. Reason: compromising OEM.
+    2. Fix memory leack in EOC_engine_act.cpp
+    3. BUG Fix EOCd version displaying in eocd.cpp

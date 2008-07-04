@@ -169,7 +169,7 @@ EOC_router::process_discovery(int if_ind,EOC_msg *m)
 		resp->src(ifs[if_ind].sunit);
         r=(resp_discovery*)resp->payload();
 		// Setup some fields	
-		strcpy((char*)r->vendor_id,"Sigrand");
+		strcpy((char*)r->vendor_id,"Vendor"); // "Sigrand"); TODO: maybe OEM?
         r->eoc_softw_ver=1;
 		r->shdsl_ver = 0x80;
 		if( dev )

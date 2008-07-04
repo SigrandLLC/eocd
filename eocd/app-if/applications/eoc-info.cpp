@@ -18,7 +18,7 @@ extern "C"{
 #include "app-utils.h"
 
 #ifndef EOC_VER
-#define EOC_VER 0.0
+#define EOC_VER "0.0"
 #endif
 
 
@@ -39,7 +39,7 @@ char *prof=NULL;
 
 void print_usage(char *name)
 {
-    printf("eoc-info versoin: %.1f\n",EOC_VER);
+    printf("eoc-info versoin: %s\n",EOC_VER);
 	printf("Usage: %s [-s|-f] [-i ] [-u [--row]] \n"
 		   "Options:\n"
 		   "  -s, --short\t\tShort info about served channels\n"
