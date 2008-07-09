@@ -1,6 +1,6 @@
 /*
  * EOC_db.h:
- *	EOC channel configuration & status storage
+ *  EOC channel configuration & status storage
  */
  
 #ifndef EOC_UNIT_H
@@ -12,9 +12,9 @@
 #define EOC_SIDES_NUM 2
 
 class EOC_unit{
- public:
+  public:
     typedef enum { span = 0, local } power_t;
- protected:
+  protected:
     unit u;
     u8 eoc_softw_v;
     resp_inventory inv_info;
@@ -24,33 +24,33 @@ class EOC_unit{
     
     power_t power;
     EOC_side *side[EOC_SIDES_NUM];
- public:
+  public:
     EOC_unit(unit u_in,resp_discovery *resp,int loops){
-		inv_info_setted = 0;
-		eoc_softw_v = resp->eoc_softw_ver;
-		for( int i=0; i<EOC_SIDES_NUM;i++)
-			side[i] = NULL;
-		u = u_in;
-		memset(&sensors_cur,0,sizeof(sensors_cur));
-		sens1 = 0;
-		sens2 = 0;	
-		sens3 = 0;
-		switch( u ){
-		case stu_c:
-			side[cust_side] = new EOC_side(loops); 
-			break;
-		case stu_r:
-			side[net_side] = new EOC_side(loops);
-			break;
-		default:
-			side[cust_side] = new EOC_side(loops); 
-			side[net_side] = new EOC_side(loops);
-			break;
-		}
+      inv_info_setted = 0;
+      eoc_softw_v = resp->eoc_softw_ver;
+      for( int i=0; i<EOC_SIDES_NUM;i++)
+        side[i] = NULL;
+      u = u_in;
+      memset(&sensors_cur,0,sizeof(sensors_cur));
+      sens1 = 0;
+      sens2 = 0;  
+      sens3 = 0;
+      switch( u ){
+      case stu_c:
+        side[cust_side] = new EOC_side(loops); 
+        break;
+      case stu_r:
+        side[net_side] = new EOC_side(loops);
+        break;
+      default:
+        side[cust_side] = new EOC_side(loops); 
+        side[net_side] = new EOC_side(loops);
+        break;
+      }
     }
     int set_inv_info(resp_inventory *resp){
-		inv_info = *resp;
-		inv_info_setted = 1;
+      inv_info = *resp;
+      inv_info_setted = 1;
     }
     u8 eoc_softw_ver(){ return eoc_softw_v; }
     
@@ -58,51 +58,51 @@ class EOC_unit{
     EOC_side *cside(){ return side[cust_side]; }
 
     int integrity(resp_inventory *resp){
-		if( !inv_info_setted )
-			return 0;
-		if( memcmp(resp,&inv_info,sizeof(inv_info) ) )
-			return -1;
-		return 0;
+      if( !inv_info_setted )
+        return 0;
+      if( memcmp(resp,&inv_info,sizeof(inv_info) ) )
+        return -1;
+      return 0;
     }
 
     resp_inventory inventory_info(){ return inv_info; }
 
-	// Regenerators sensors
+    // Regenerators sensors
     void sensor_resp(resp_sensor_state *resp){
-		//	PDEBUG(DINFO,"SAVE SENSOR STATE: s1(%d), s2(%d), s3(%d)",resp->sensor1,resp->sensor2,resp->sensor3);
-		sensors_cur = *resp;
-		sens1 += resp->sensor1;
-		sens2 += resp->sensor2;
-		sens3 += resp->sensor3;
+      PDEBUG(DERR,"SAVE SENSOR STATE: s1(%d), s2(%d), s3(%d)",resp->sensor1,resp->sensor2,resp->sensor3);
+      sensors_cur = *resp;
+      sens1 += resp->sensor1;
+      sens2 += resp->sensor2;
+      sens3 += resp->sensor3;
     }
 
     inline void sensor_get(resp_sensor_state &st){
-		st = sensors_cur;
-	}
-	
-	inline void sensor_get(resp_sensor_state &st,u8 &s1,u8 &s2,u8 &s3){
-		st = sensors_cur;
-    	s1= sens1;
-		s2 = sens2;
-		s3 = sens3;
-	}
+      st = sensors_cur;
+    }
+  
+    inline void sensor_get(resp_sensor_state &st,u8 &s1,u8 &s2,u8 &s3){
+      st = sensors_cur;
+      s1 = sens1;
+      s2 = sens2;
+      s3 = sens3;
+    }
 
-	// Link handling
-	inline void link_up(){
-		for(int i=0;i<EOC_SIDES_NUM;i++)
-			if(side[i])
-				side[i]->link_up();
-	}
-	inline void link_down(){
-		PDEBUG(DFULL,"unit link down");
-		for(int i=0;i<EOC_SIDES_NUM;i++){
-			if(side[i]){
-				PDEBUG(DFULL,"down side %d",i);
-				side[i]->link_down();
-				PDEBUG(DFULL,"down side %d - successfully",i);
-			}
-		}
-	}
+    // Link handling
+    inline void link_up(){
+      for(int i=0;i<EOC_SIDES_NUM;i++)
+        if(side[i])
+          side[i]->link_up();
+    }
+    inline void link_down(){
+      PDEBUG(DFULL,"unit link down");
+      for(int i=0;i<EOC_SIDES_NUM;i++){
+        if(side[i]){
+          PDEBUG(DFULL,"down side %d",i);
+          side[i]->link_down();
+          PDEBUG(DFULL,"down side %d - successfully",i);
+        }
+      }
+    }
 };
 
 #endif

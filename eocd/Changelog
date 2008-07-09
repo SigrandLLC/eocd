@@ -6,3 +6,6 @@ Version 2.14 (03.07.08)
     1. Remove __FILE__ constant from eoc_debug.h. Reason: compromising OEM.
     2. Fix memory leack in EOC_engine_act.cpp
     3. BUG Fix EOCd version displaying in eocd.cpp
+
+Version 2.15 (09.07.08)
+    1. Fix sensor representation, logging in syslog.
