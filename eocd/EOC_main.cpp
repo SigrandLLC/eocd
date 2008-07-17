@@ -359,6 +359,7 @@ read_config()
       int pcislot = s[i]["pcislot"];
       int pcidev = s[i]["pcidev"];
       name = pci2dname(pcislot,pcidev);
+			PDEBUG(DERR,"pci2dname=%s",name);
       int master = s[i]["master"];
       if( master != 1 && master != 0){
         syslog(LOG_ERR,"(%s): wrong \"master\" value in %s channel: %d , may be 0,1",
@@ -391,6 +392,7 @@ read_config()
 
       // If channel is slave - only responder part
       if( !master ){
+				PDEBUG(DERR,"Add slave");
         if( name ){
           if( add_slave(name,cprof) ){
             syslog(LOG_ERR,"(%s): cannot add channel \"%s\" - no such device",
@@ -420,7 +422,9 @@ read_config()
       
       PDEBUG(DINFO,"%s: apply config from cfg-file = %d",name,eocd_apply);
       // TODO: Add alarm handling
+			PDEBUG(DERR,"Add master");
       if( name ){
+				PDEBUG(DERR,"Call add_master");
         if( add_master(name,cprof,NULL,repeaters,tick_per_min,pbomode,pboval,eocd_apply) ){
           syslog(LOG_ERR,"(%s): cannot add channel \"%s\" - no such device",
 								 config_file,name);
@@ -694,8 +698,11 @@ add_slave(char *name,char *cprof,int app_cfg)
 int EOC_main::
 add_master(char *name,char *cprof, char *aprof,int reps,int tick_per_min,int pbomode,char *pboval,int app_cfg)
 {
+	PDEBUG(DERR,"start");
   do{
+		PDEBUG(DERR,"call channels.find");
     channel_elem *el = (channel_elem*)channels.find(name,strlen(name));
+		PDEBUG(DERR,"el=%p",el);
     if( el ){ // If this device exist in current configuration
       // If type of interface is changed
       if( el->eng->get_type() != master ){
@@ -718,7 +725,9 @@ add_master(char *name,char *cprof, char *aprof,int reps,int tick_per_min,int pbo
     }
   }while(0);
 
+	PDEBUG(DERR,"call init_dev");
   EOC_dev_terminal *dev = (EOC_dev_terminal *)init_dev(name);
+	PDEBUG(DERR,"dev=%p",dev);
   if( !dev )
     return -1;
   EOC_config *cfg = new EOC_config(&conf_profs,&alarm_profs,cprof,aprof,reps,app_cfg);
@@ -730,6 +739,7 @@ add_master(char *name,char *cprof, char *aprof,int reps,int tick_per_min,int pbo
   ((EOC_engine_act*)el->eng)->set_pbo(pbomode,pboval);
   channels.add(el);
   channels.sort();
+	PDEBUG(DERR,"FINISH");
   return 0;
 }
 

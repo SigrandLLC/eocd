@@ -257,9 +257,9 @@ int main( int argc, char *argv[] ) {
 	side_perf S;
 	while(1){
     time_t tm1,tm2;
-    PDEBUG(DFULL,"-------------------- POLL--------------------");
+    PDEBUG(DERR,"-------------------- POLL--------------------");
     m->poll_channels();
-    PDEBUG(DFULL,"-------------------- LISTEN --------------------");
+    PDEBUG(DERR,"-------------------- LISTEN --------------------");
 		time(&tm1);
 		m->app_listen();
 		time(&tm2);
