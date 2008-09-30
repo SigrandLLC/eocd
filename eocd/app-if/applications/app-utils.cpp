@@ -443,7 +443,7 @@ shell_spanconf(app_comm_cli &cli,char *chan,int type)
 		if (type){
 			printf("adm_reg_num=%d\nnaprof=%s\n",p1->nreps,p1->alarm_prof);
 		}
-		printf("type=%s\ncprof=%s\n",(p1->type==master) ? "master" : "slave",p1->conf_prof);
+		printf("type=%s\ncprof=\"%s\"\n",(p1->type==master) ? "master" : "slave",p1->conf_prof);
     }
  exit:
 	if( req )
@@ -481,7 +481,7 @@ shell_spanstat(app_comm_cli &cli,char *chan)
 		annex_t annex = annex_a;
 		if( p1->region1 )
 			annex = annex_b;
-		printf("reg_num=%d\nrate=%d\nannex=%s\ntcpam=%s\n",p1->nreps,p1->max_lrate,
+		printf("reg_num=\"%d\"\nrate=\"%d\"\nannex=\"%s\"\ntcpam=\"%s\"\n",p1->nreps,p1->max_lrate,
 				annex2string(annex),tcpam2STRING((tcpam_t)p1->tcpam));
 
     }
@@ -498,7 +498,7 @@ shell_spanstat(app_comm_cli &cli,char *chan)
 int
 shell_channel(app_comm_cli &cli,char *chan,span_params_payload *p)
 {
-	printf("chan=%s\nunit_num=%d\nlink=%d\nloop_num=%d\n",chan,p->units,p->link_establ,p->loops);
+	printf("chan=\"%s\"\nunit_num=\"%d\"\nlink=\"%d\"\nloop_num=\"%d\"\n",chan,p->units,p->link_establ,p->loops);
 	shell_spanconf(cli,chan);
 	shell_spanstat(cli,chan);
 }
@@ -539,22 +539,22 @@ shell_endp_cur(app_comm_cli &cli,char *chan,unit u,side s,int loop)
 			ret = -1;
 			goto exit;
 		}
-		printf("unit=%s\nside=%s\nloop=%d\n",unit2string((unit)p->unit),side2string((side)p->side),p->loop);
-		printf("snr=%d\n",p1->cur_snr);
-		printf("lattn=%d\n",p1->cur_attn);
-		printf("es=%u\nses=%u\ncrc=%d\nlosws=%u\nuas=%u\n",
+		printf("unit=\"%s\"\nside=\"%s\"\nloop=\"%d\"\n",unit2string((unit)p->unit),side2string((side)p->side),p->loop);
+		printf("snr=\"%d\"\n",p1->cur_snr);
+		printf("lattn=\"%d\"\n",p1->cur_attn);
+		printf("es=\"%u\"\nses=\"%u\"\ncrc=\"%d\"\nlosws=\"%u\"\nuas=\"%u\"\n",
 		   p1->total.es,p1->total.ses,p1->total.crc,p1->total.losws,p1->total.uas);
 
 		strftime(date,256,"%d %b %G",localtime(&p1->relative_ts));
 		printf("tdate=\"%s\"\n",date);
 		strftime(date,256,"%R",localtime(&p1->relative_ts));
 		printf("ttime=\"%s\"\n",date);
-		printf("tes=%u\ntses=%u\ntcrc=%d\ntlosws=%u\ntuas=%u\n",
+		printf("tes=\"%u\"\ntses=\"%u\"\ntcrc=\"%d\"\ntlosws=\"%u\"\ntuas=\"%u\"\n",
 			   p1->relative.es,p1->relative.ses,p1->relative.crc,p1->relative.losws,p1->relative.uas);
-		printf("m15es=%u\nm15ses=%u\nm15crc=%d\nm15losws=%u\nm15uas=%u\nm15monsec=%d\nm15elaps=\"%02dm:%02ds\"\n",
+		printf("m15es=\"%u\"\nm15ses=\"%u\"\nm15crc=\"%d\"\nm15losws=\"%u\"\nm15uas=\"%u\"\nm15monsec=\"%d\"\nm15elaps=\"%02dm:%02ds\"\n",
 			   p1->cur15min.es,p1->cur15min.ses,p1->cur15min.crc,p1->cur15min.losws,p1->cur15min.uas,p1->cur15min.mon_sec,
 			   (p1->cur_15m_elaps%(60*60))/60,p1->cur_15m_elaps%60);
-		printf("d1es=%u\nd1ses=%u\nd1crc=%d\nd1losws=%u\nd1uas=%u\nd1monsec=%d\nd1elaps=\"%02dh:%02dm:%02ds\"\n",
+		printf("d1es=\"%u\"\nd1ses=\"%u\"\nd1crc=\"%d\"\nd1losws=\"%u\"\nd1uas=\"%u\"\nd1monsec=\"%d\"\nd1elaps=\"%02dh:%02dm:%02ds\"\n",
 			   p1->cur1day.es,p1->cur1day.ses,p1->cur1day.crc,p1->cur1day.losws,p1->cur1day.uas,p1->cur1day.mon_sec,
 			   p1->cur_1d_elaps/(60*60),(p1->cur_1d_elaps%(60*60))/60,p1->cur_1d_elaps%60);
     }
@@ -601,8 +601,8 @@ shell_endp_15m(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
 			|| p1->loop != p->loop ){
 			ret = -1;
 		}
-		printf("unit=%s\nside=%s\nloop=%d\n",unit2string((unit)p1->unit),side2string((side)p1->side),p1->loop);
-		printf("int=%d\n",p1->int_num);	
+		printf("unit=\"%s\"\nside=\"%s\"\nloop=\"%d\"\n",unit2string((unit)p1->unit),side2string((side)p1->side),p1->loop);
+		printf("int=\"%d\"\n",p1->int_num);	
 		// Human readable time
 		char s[256];
 		time_t tm = time(NULL);
@@ -620,7 +620,7 @@ shell_endp_15m(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
 		printf("time_start=\"%s\"\n",s);             
 		// Statistics
 		float percent = ((float)p1->cntrs.mon_sec/(15*60))*100; // Percentage of day
-		printf("es=%u\nses=%u\ncrc=%d\nlosws=%u\nuas=%u\nmon_sec=%d\nmon_pers=%.2f\n",
+		printf("es=\"%u\"\nses=\"%u\"\ncrc=\"%d\"\nlosws=\"%u\"\nuas=\"%u\"\nmon_sec=\"%d\"\nmon_pers=\"%.2f\"\n",
 			   p1->cntrs.es,p1->cntrs.ses,p1->cntrs.crc,p1->cntrs.losws,p1->cntrs.uas,
 			   p1->cntrs.mon_sec,percent);
     }
@@ -671,8 +671,8 @@ shell_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
 			ret = -1;
 			goto exit;
 		}
-		printf("unit=%s\nside=%s\nloop=%d\n",unit2string((unit)p1->unit),side2string((side)p1->side),p1->loop);
-		printf("int=%d\n",p1->int_num);
+		printf("unit=\"%s\"\nside=\"%s\"\nloop=\"%d\"\n",unit2string((unit)p1->unit),side2string((side)p1->side),p1->loop);
+		printf("int=\"%d\"\n",p1->int_num);
 		// Human readable time
 		char s[256];
 		time_t tm = time(NULL);
@@ -684,7 +684,7 @@ shell_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
 		printf("int_day=\"%s\"\n",s);
 		// Statistics
 		float percent = ((float)p1->cntrs.mon_sec/(24*60*60))*100; // Percentage of day
-		printf("es=%u\nses=%u\ncrc=%d\nlosws=%u\nuas=%u\nmon_sec=%d\nmon_pers=%.2f\n",
+		printf("es=\"%u\"\nses=\"%u\"\ncrc=\"%d\"\nlosws=\"%u\"\nuas=\"%u\"\nmon_sec=\"%d\"\nmon_pers=\"%.2f\"\n",
 			   p1->cntrs.es,p1->cntrs.ses,p1->cntrs.crc,p1->cntrs.losws,p1->cntrs.uas,
 			   p1->cntrs.mon_sec,percent);
     }
@@ -799,13 +799,13 @@ int shell_cprof_info(app_comm_cli &cli,char *prof,int ind)
 
 		p = (cprof_payload*)fr1->payload_ptr();
 		if( ind ){
-			printf("cprof%d=%s\n",ind,p->pname);
-			printf("annex%d=%s\npower%d=%s\nrate%d=%d\ntcpam%d=%s\n",
+			printf("cprof%d=\"%s\"\n",ind,p->pname);
+			printf("annex%d=\"%s\"\npower%d=\"%s\"\nrate%d=\"%d\"\ntcpam%d=\"%s\"\n",
 				   ind,annex2string(p->conf.annex),ind,power2string(p->conf.power),
 				   ind,p->conf.rate,ind,tcpam2string(p->conf.tcpam));
 		}else{
-			printf("cprof=%s\n",p->pname);
-			printf("annex=%s\npower=%s\nrate=%d\ntcpam=%s\n",
+			printf("cprof=\"%s\"\n",p->pname);
+			printf("annex=\"%s\"\npower=\"%s\"\nrate=\"%d\"\ntcpam=\"%s\"\n",
 				   annex2string(p->conf.annex),power2string(p->conf.power),
 				   p->conf.rate,tcpam2string(p->conf.tcpam));
 		}
