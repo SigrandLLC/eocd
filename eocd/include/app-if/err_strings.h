@@ -2,7 +2,7 @@
 #define ERROR_STRINGS_H
 #include <app-if/err_codes.h>
 
-char *err_strings[] = {
+static char *err_strings[] = {
 "",
 "Wrong type of request",
 "Channel already exist",

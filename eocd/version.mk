@@ -1,1 +1,1 @@
-EOC_VER = 2.16
+EOC_VER = 2.18

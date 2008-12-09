@@ -17,7 +17,7 @@ OBJS_EXT= $(OBJ_DIR)/eoc_debug.o ../libcomm.a
 all: client server eoc-info eoc-config
 
 eoc-info: eoc-info.cpp $(OBJS) $(OBJS_CLI)
-	$(CXX) $(CPPFLAGS) -o eoc-info app-utils.cpp eoc-info.cpp $(OBJS) $(OBJS_CLI)
+	$(CXX) $(CPPFLAGS) -o eoc-info app-utils.cpp app-utils-jason.cpp eoc-info.cpp $(OBJS) $(OBJS_CLI)
 #	$(CXX) $(CPPFLAGS) -o test app-utils.cpp test.cpp $(OBJS) $(OBJS_CLI)
 #	$(CXX) $(CPPFLAGS) -o test1 app-utils.cpp test1.cpp $(OBJS) $(OBJS_CLI)
 

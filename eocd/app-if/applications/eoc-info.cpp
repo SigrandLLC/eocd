@@ -22,7 +22,7 @@ extern "C"{
 #endif
 
 
-typedef enum {NORMAL,SHELL} output_mode;
+typedef enum {NORMAL,SHELL,JASON} output_mode;
 output_mode mode = NORMAL;
 typedef enum {NONE,PSHORT,PEXACT,PFULL,SHORT,FULL,EXACT,RESET,SENSORS,PBO} type_t;
 type_t type = NONE;
@@ -34,7 +34,7 @@ char *prof=NULL;
 
 #define print_error(fmt,args...)							\
 	if( mode == NORMAL ){ printf(fmt "\n", ## args);	}	\
-	else { if( mode == SHELL ) printf("eoc_error=1\n"); }
+	else { if( mode == SHELL ) printf("eoc_error=1\n"); }   \
 
 
 void print_usage(char *name)
@@ -50,11 +50,12 @@ void print_usage(char *name)
 		   "  -l, --loop=<loop#>\tLoop number:0,1,2,3; use only with  \'-e\'\n"
 		   "  -m, --m15int=<#int>\t15 minutes interval number (conflicts with -d)\n"
 		   "  -d, --d1int=<#int>\t1 day interval number (conflicts with -m)\n"
-		   "  -t, --profile-list\tprofiles names list (only for row-shell mode)\n"
+		   "  -t, --profile-list\tprofiles names list (only for row-shell & jason modes)\n"
 		   "  -p, --profile[=<name>]\tInformation about profile <name>. If <name> is ommited\n"
-		   "                        \tlists names of all profiles"
+		   "                        \tlists names of all profiles\n"
 		   "  -a, --all-profiles\tInformation about all profiles in system\n"
 		   "  -r, --row-shell\t\tRow shell output (for use in scripts)\n"
+		   "  -n,--jason\t\tprint in JASON (Java Script Object Notation format)\n"
 		   "  -v, --relative-rst\tReset relative counters\n"
 		   "  -w, --show-slaves\tLists slave interfaces (use with -r & -s)\n"
 		   "  -j, --sensors\tShows sensors state\n"
@@ -63,7 +64,7 @@ void print_usage(char *name)
 		   ,name);
 }
 
-void print_sensors(app_comm_cli &cli,char *chan)
+void print_sensors(app_comm_cli &cli,char *chan,int indent=0)
 {
     app_frame *req = new app_frame(APP_SENSORS,APP_GET,app_frame::REQUEST,1,chan);
     app_frame *resp;
@@ -90,15 +91,23 @@ void print_sensors(app_comm_cli &cli,char *chan)
     }
     {
 		sensors_payload *p = (sensors_payload *)resp->payload_ptr();
-		if( mode == NORMAL ){
+		switch (mode){
+		case NORMAL:
 			printf(" %s %s: ",chan, unit2string(_unit));
 			printf("\tSensor1: current=%d, count=%d\n",p->state.sensor1,p->sens1);
 			printf("\tSensor2: current=%d, count=%d\n",p->state.sensor2,p->sens2);
 			printf("\tSensor3: current=%d, count=%d\n",p->state.sensor3,p->sens3);
-		}else{
+			break;
+		case SHELL:
 			printf("sens1_cur=%d\nsens1_cnt=%d\n",p->state.sensor1,p->sens1);
 			printf("sens2_cur=%d\nsens2_cnt=%d\n",p->state.sensor2,p->sens2);
 			printf("sens3_cur=%d\nsens3_cnt=%d\n",p->state.sensor3,p->sens3);
+			break;
+		case JASON:
+			jason_sensor(indent,1,p->state.sensor1,p->sens1);
+			jason_sensor(indent,2,p->state.sensor2,p->sens2);
+			jason_sensor(indent,3,p->state.sensor3,p->sens3);
+			break;
 		}
     }
  err_exit:
@@ -108,7 +117,7 @@ void print_sensors(app_comm_cli &cli,char *chan)
 }
 
 
-void print_pbo(app_comm_cli &cli,char *chan)
+void print_pbo(app_comm_cli &cli,char *chan,int indent=0)
 {
     app_frame *req = new app_frame(APP_PBO,APP_GET,app_frame::REQUEST,1,chan);
     app_frame *resp;
@@ -135,10 +144,16 @@ void print_pbo(app_comm_cli &cli,char *chan)
     }
     {
 		chan_pbo_payload *p = (chan_pbo_payload *)resp->payload_ptr();
-		if( mode == NORMAL ){
+		switch( mode ){
+		case NORMAL:
 			printf("pbo_mode = %d, Value=%s\n",p->mode,p->val);
-		}else{
+			break;
+		case SHELL:
 			printf("pbo_mode=%d\npbo_val=%s\n",p->mode,p->val);
+			break;
+		case JASON:
+			jason_pbo(indent,p->mode,p->val);
+			break;
 		}
     }
  err_exit:
@@ -344,15 +359,13 @@ void shell_exact(app_comm_cli &cli,char *chan)
 
 
 #define MAX_CHANS 256
-void print_short(app_comm_cli &cli)
+int print_short(app_comm_cli &cli,int indent = 0)
 {
     app_frame *req = new app_frame(APP_SPAN_NAME,APP_GET,app_frame::REQUEST,1,"");
     char *buf;
     int flag = 0;
-	struct {
-		char *name;
-		dev_type t;
-	} channels[MAX_CHANS];
+	struct eoc_channel channels[MAX_CHANS];
+	int ret = 0;
 	
 	int channels_num = 0;
 
@@ -367,15 +380,23 @@ void print_short(app_comm_cli &cli)
 
         app_frame *resp = new app_frame(buf,size);
 		if( !resp->frame_ptr() ){
-			print_error("error: bad message from eocd");
+			if( mode == JASON ){
+				jason_error((char*)"error: bad message from eocd");
+			}else{
+				print_error("error: bad message from eocd");
+			}
 			delete resp;
 			delete req;
-			return;
+			return -1;
 		} 
 		if( resp->is_negative() ){ // no such unit or no net_side
-			print_error("error: negative response from server");
+			if( mode == JASON ){
+				jason_error((char*)"error: negative response from server");
+			}else{
+				print_error("error: negative response from server");
+			}
 			delete resp;
-			break;
+			return -1;
 		}
 	
         span_name_payload *p = (span_name_payload*)resp->payload_ptr();
@@ -386,6 +407,7 @@ void print_short(app_comm_cli &cli)
 					print_short_chan(cli,p->spans[i].name);
 				break;
 			case SHELL:
+			case JASON:
 				channels[channels_num].name = strdup(p->spans[i].name);
 				channels[channels_num++].t = p->spans[i].t;
 				break;
@@ -398,16 +420,22 @@ void print_short(app_comm_cli &cli)
 		delete resp;
     }while( flag );
 	
-	if( mode == SHELL ){
+	switch ( mode ){
+	case SHELL:
 		printf("eoc_channels=\"");
 		for(int i=0;i<channels_num;i++){
 			printf("%s.%c ",channels[i].name,(channels[i].t==slave) ? 's' : 'm');
 			free(channels[i].name);
 		}
 		printf("\"\n");
+		break;
+	case JASON:
+		ret = jason_channels_list(channels,channels_num);
+		break;
 	}
 
     delete req;
+	return ret;
 }
 
 void print_full(app_comm_cli &cli)
@@ -513,13 +541,14 @@ main(int argc, char *argv[] )
 		{"all-profiles",0, 0, 'a'},
 		{"profile", 1, 0, 'p'},
 		{"row-shell", 0, 0, 'r'},
+		{"jason", 0, 0, 'n'},
 		{"sensors", 0, 0, 'j'},
 		{"pbo", 0, 0, 'o'},
 		{"help", 0, 0, 'h'},
 		{0, 0, 0, 0}
 	};
 
-		int c = getopt_long (argc, argv, "sfhi:u:e:l:m:d:rp:tavo",long_options, &option_index);
+		int c = getopt_long (argc, argv, "sfhi:u:e:l:m:d:rnp:tavo",long_options, &option_index);
         if (c == -1)
     	    break;
 		switch (c) {
@@ -614,7 +643,12 @@ main(int argc, char *argv[] )
 			}
 			break;
 		case 'r':
-			mode = SHELL;
+			if( mode == NORMAL ){ // Jason has higher priopity
+				mode = SHELL;
+			}
+			break;
+		case 'n':
+			mode = JASON;
 			break;
 		case 'v':
 			type = RESET;
@@ -637,7 +671,12 @@ main(int argc, char *argv[] )
 	case NORMAL:
 		cli1 = new app_comm_cli(sock_name);
 		break;
+	case JASON:
+		// Initialize JASON pipe
+		if( jason_init() )
+			return 0;
 	case SHELL:
+		// Both for SHELL & JASON
 		cli1 = new app_comm_cli(sock_name,1);
 		break;
 	}
@@ -667,28 +706,53 @@ main(int argc, char *argv[] )
 		rst_relative(cli,iface);
 		break;
 	case PSHORT:
-		shell_cprof_list(cli);
+		switch( mode ){
+		case SHELL:
+			shell_cprof_list(cli);
+			break;
+		case JASON:
+			if( jason_cprof_full(cli) )
+				return 0;
+		default:
+			break;
+		}
 		break;
 	case PEXACT:
-		if( mode != SHELL )
+		switch( mode ){
+		case SHELL:
+			if( shell_cprof_info(cli,prof,0) )
+				print_error();
 			break;
-		if( shell_cprof_info(cli,prof,0) )
-			print_error();
+		case JASON:
+			if( jason_cprof_full(cli) )
+				return 0;
+		default:
+			break;
+		}
 		break;
 	case PFULL:
-		if( mode != SHELL )
+		switch( mode ){
+		case SHELL:
+			if( shell_cprof_full(cli) )
+				print_error();
 			break;
-		if( shell_cprof_full(cli) )
-			print_error();
+		case JASON:
+			if( jason_cprof_full(cli) )
+				return 0;
+		default:
+			break;
+		}
 		break;
     case FULL:
-		if( mode == SHELL )
-			print_short(cli);
-		else
+		if( mode != NORMAL ){
+			if( print_short(cli) ) 
+				return 0;
+		}else
 			print_full(cli);
 		break;
     case SHORT:
-		print_short(cli);
+		if( print_short(cli) )
+			return 0;
 		break;
     case EXACT:
 		//		printf("D: Exact\n");
@@ -701,8 +765,17 @@ main(int argc, char *argv[] )
 			//			printf("D: SHELL\n");
 			shell_exact(cli,iface);
 			break;
+		case JASON:
+			//			printf("D: SHELL\n");
+			if( jason_exact(0,cli,iface,_unit) )
+				return 0;
+			break;
 		}
     }
+	
+	if( mode == JASON ){
+		jason_flush();
+	}
     return 0;
 }
 
