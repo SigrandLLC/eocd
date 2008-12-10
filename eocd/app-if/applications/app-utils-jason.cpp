@@ -228,8 +228,12 @@ jason_channels_list(struct eoc_channel *channels,int cnum)
 		}
 		free(channels[i].name);
 	}
-	do_indent(indent);
+	bprintf("\n");
+	do_indent(indent+1);
 	bprintf("]\n");
+	do_indent(indent);
+	bprintf("}\n");
+	
 	return ret;
 }
 
@@ -357,6 +361,7 @@ jason_channel(int indent,app_comm_cli &cli,char *chan,span_params_payload *p)
 	bprintf("\n");
 	do_indent(indent);
 	bprintf("}");
+	return 0;
 }
 
 int jason_m15ints(int indent,app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
@@ -496,7 +501,7 @@ int jason_d1ints(int indent,app_comm_cli &cli,char *chan,unit u,side s,int loop,
     int size;
 	int offset = 0;
     // Endpoint current
-    endp_15min_payload *p,*p1;
+    endp_1day_payload *p,*p1;
     app_frame *fr, *fr1;
 	int ret = 0;
 	int start_int, end_int;
@@ -511,7 +516,7 @@ int jason_d1ints(int indent,app_comm_cli &cli,char *chan,unit u,side s,int loop,
 	
 	for(inum = start_int;inum <= end_int;inum++){
 	    fr = new app_frame(APP_ENDP_1DAY,APP_GET_NEXT,app_frame::REQUEST,1,chan);
-    	p = (endp_15min_payload*)fr->payload_ptr();
+    	p = (endp_1day_payload*)fr->payload_ptr();
 	    p->unit = u;
     	p->side = s;
 	    p->loop = loop;
@@ -529,7 +534,7 @@ int jason_d1ints(int indent,app_comm_cli &cli,char *chan,unit u,side s,int loop,
     	if( ret=fr1->is_negative() ){ // no such unit or no net_side
 			break;
 	    } else {
-			p1 = (endp_15min_payload*)fr1->payload_ptr();
+			p1 = (endp_1day_payload*)fr1->payload_ptr();
 			if( p1->unit != p->unit || p1->side != p->side || p1->loop != p->loop ){
 				char str[256];
 				sprintf(str,"1-day int: No information about unit=%d, int=%d aviliable",u,inum);
@@ -559,22 +564,12 @@ int jason_d1ints(int indent,app_comm_cli &cli,char *chan,unit u,side s,int loop,
 			char s[256];
 			time_t tm = time(NULL);
 			int int_offs = p1->int_num;
-			if( tm%(15*60) )
+			if( tm%(24*60*60) )
 				int_offs--;
-			tm -= tm%(15*60);
-			tm -= 15*60*int_offs;
+			tm -= tm%(24*60*60) + int_offs*24*60*60;
 			strftime(s,256,"%d %b %G",localtime(&tm));                                  
 			do_indent(indent+offset);
 			bprintf("\"int_day\" : \"%s\",\n",s);
-
-			strftime(s,256,"%R",localtime(&tm));
-			do_indent(indent+offset);
-			bprintf("\"time_end\" : \"%s\",\n",s);
-
-			tm -= 15*60;
-			strftime(s,256,"%R",localtime(&tm));
-			do_indent(indent+offset);
-			bprintf("\"time_start\" : \"%s\",\n",s);             
 
 			// Statistics
 			float percent = ((float)p1->cntrs.mon_sec/(24*60*60))*100; // Percentage of day
@@ -707,11 +702,11 @@ jason_loop(int indent,app_comm_cli &cli,char *chan,unit u,side s,int loop)
 		do_indent(indent + offset);
 		bprintf("\"mon_sec\" : \"%u\",\n",p1->cur15min.mon_sec);
 		do_indent(indent + offset);
-		bprintf("\"elapsed\" : \"%02dm:%02ds\",\n",(p1->cur_15m_elaps%(60*60))/60,p1->cur_15m_elaps%60);
+		bprintf("\"elapsed\" : \"%02dm:%02ds\"\n",(p1->cur_15m_elaps%(60*60))/60,p1->cur_15m_elaps%60);
 
 		offset--;
 		do_indent(indent + offset);
-		bprintf("}\n");
+		bprintf("},\n");
 
 		// current 1 day interval counters
 		do_indent(indent + offset);

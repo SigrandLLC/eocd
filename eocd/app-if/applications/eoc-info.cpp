@@ -369,8 +369,10 @@ int print_short(app_comm_cli &cli,int indent = 0)
 	
 	int channels_num = 0;
 
-	if( mode != SHELL )
+	if( mode == NORMAL ){
 		printf("Short information about served channels:\n");
+	}
+	
     do{
         cli.send(req->frame_ptr(),req->frame_size());
 		cli.wait();
