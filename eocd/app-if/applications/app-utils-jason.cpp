@@ -330,7 +330,7 @@ jason_spanstat(int indent,app_comm_cli &cli,char *chan)
 		do_indent(indent+1);
 		bprintf("\"annex\" : \"%s\",\n",annex2string(annex));
 		do_indent(indent+1);
-		bprintf("\"annex\" : \"%s\",\n",tcpam2STRING((tcpam_t)p1->tcpam));
+		bprintf("\"tcpam\" : \"%s\",\n",tcpam2STRING((tcpam_t)p1->tcpam));
 		do_indent(indent);
 		bprintf("}");
     }
@@ -348,7 +348,9 @@ int
 jason_channel(int indent,app_comm_cli &cli,char *chan,span_params_payload *p)
 {
 	do_indent(indent);
-	bprintf("\"%s\" : {\n",chan);
+	bprintf("{\n");
+	do_indent(indent+1);
+	bprintf("\"interface\" : \"%s\",\n",chan);
 	do_indent(indent+1);
 	bprintf("\"unit_num\" : \"%d\",\n",p->units);
 	do_indent(indent+1);
@@ -829,9 +831,10 @@ jason_unit(int indent,app_comm_cli &cli,char *chan,span_params_payload *p,unit u
 	int offset = 0;
 	
 	do_indent(indent + offset);
-	bprintf("\"%s\" : {\n",unit2string(u));
+	bprintf("{\n");
 	offset++;
-
+	do_indent(indent + offset);
+	bprintf("\"unit\" : \"%s\",\n",unit2string(u));
 	// Unit sensors info. Only SRUx has sensors
 	switch(u){
 	case sru1:
@@ -936,10 +939,6 @@ int jason_exact(int indent,app_comm_cli &cli,char *chan,unit _unit)
 		goto exit;
     }
 
-	do_indent(indent+offset);
-	bprintf("{\n");
-	offset++;
-
 	{
 		span_params_payload *p = (span_params_payload *)resp->payload_ptr();
 		if( _unit == unknown ){
@@ -960,10 +959,6 @@ int jason_exact(int indent,app_comm_cli &cli,char *chan,unit _unit)
 	}
 
  exit:
-	offset--;
-	do_indent(indent+offset);
-	bprintf("}\n");
-	
     delete resp;
     delete req;
     return ret;
