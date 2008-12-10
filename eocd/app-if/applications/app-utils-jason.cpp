@@ -908,6 +908,7 @@ int jason_exact(int indent,app_comm_cli &cli,char *chan,unit _unit)
     app_frame *resp;
     char *buf;
 	int ret = 0;
+	int offset = 0;
 
 	if( req == NULL ){
 		jason_error("Error(jason_exact): Cannot allocate req");
@@ -935,11 +936,16 @@ int jason_exact(int indent,app_comm_cli &cli,char *chan,unit _unit)
 		goto exit;
     }
 
+	do_indent(indent+offset);
+	printf("{\n");
+	offset++;
+
 	{
 		span_params_payload *p = (span_params_payload *)resp->payload_ptr();
 		if( _unit == unknown ){
 			// Unit was not setted. Print out channel configuration 
-			ret = jason_channel(indent,cli,chan,p);
+			
+			ret = jason_channel(indent+offset,cli,chan,p);
 			goto exit;
 		}else if( _unit > p->units ){
 			// Unit bigger than aviliable
@@ -950,10 +956,14 @@ int jason_exact(int indent,app_comm_cli &cli,char *chan,unit _unit)
 			goto exit;
 		}
 		// Print full info about unit
-		ret = jason_unit(indent,cli,chan,p,_unit);
+		ret = jason_unit(indent+offset,cli,chan,p,_unit);
 	}
 
  exit:
+	offset--;
+	do_indent(indent+offset);
+	printf("}\n");
+	
     delete resp;
     delete req;
     return ret;
