@@ -937,7 +937,7 @@ int jason_exact(int indent,app_comm_cli &cli,char *chan,unit _unit)
     }
 
 	do_indent(indent+offset);
-	printf("{\n");
+	bprintf("{\n");
 	offset++;
 
 	{
@@ -962,7 +962,7 @@ int jason_exact(int indent,app_comm_cli &cli,char *chan,unit _unit)
  exit:
 	offset--;
 	do_indent(indent+offset);
-	printf("}\n");
+	bprintf("}\n");
 	
     delete resp;
     delete req;
