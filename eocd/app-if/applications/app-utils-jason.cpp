@@ -50,7 +50,7 @@ void jason_error(char *s,int indent){
 	do_indent_dir(indent);
 	printf("{\n");
 	do_indent_dir(indent+1);
-	printf("\"eoc_error\": \"1\"\n");
+	printf("\"eoc_error\": \"1\",\n");
 	do_indent_dir(indent+1);
 	printf("\"err_srting\" : \"%s\"\n",s);
 	do_indent_dir(indent);
