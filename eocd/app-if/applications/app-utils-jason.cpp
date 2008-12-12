@@ -665,7 +665,7 @@ jason_loop(int indent,app_comm_cli &cli,char *chan,unit u,side s,int loop)
 		offset++;
 
 		do_indent(indent + offset);
-		bprintf("\"name\" : \"loop%d\",\n",loop);
+		bprintf("\"name\" : \"Pair%d\",\n",loop);
 		// Current counters
 		do_indent(indent + offset);
 		bprintf("\"cur\" : {\n");
