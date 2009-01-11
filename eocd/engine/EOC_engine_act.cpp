@@ -94,13 +94,18 @@ get_pbo(int &mode,char *buf){
 int EOC_engine_act::
 set_pbo(int &mode,char *buf)
 {
+	// TODO: do this correctly !!!! When we think that pbo changed?
   PDEBUG(DERR,"START");
-  pbo_changed = 1;
-  pbo_mode = mode;
+  if( !strncmp(pbo_vals,buf,PBO_SETTING_LEN) ){
+  	return 0;
+  }
+  
   if( buf )
     strncpy(pbo_vals,buf,PBO_SETTING_LEN);
   else
     pbo_vals[0] = '\0';
+  pbo_changed = 1;
+  
   return 0;
 }
 

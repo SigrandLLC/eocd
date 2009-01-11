@@ -9,18 +9,20 @@
 
 #include <generic/EOC_generic.h>
 #include <devs/EOC_mr17h.h>
+#define EOC_DEBUG
 #include <eoc_debug.h>
 
 
 EOC_mr17h::
 EOC_mr17h(char *name)
 {
-    char *opts[]={"annex","mode","rate","statistics","eoc"};
-    int opts_num = sizeof(opts)/sizeof(char*);		    
+    char *opts[]={"annex","mode","rate","statistics","eoc","chipver"};
+    int opts_num = sizeof(opts)/sizeof(char*);
     DIR *dir;
+	char *ver;
 
     ifname = strndup(name,256);
-    conf_path = new char[PATH_SIZE];    
+    conf_path = new char[PATH_SIZE];
     chan_path = NULL;
     valid = 0;
     mr17h_conf_dir(name,conf_path,PATH_SIZE);
@@ -32,11 +34,21 @@ EOC_mr17h(char *name)
     }
     chan_path = new char[FILE_PATH_SIZE];
     snprintf(chan_path,FILE_PATH_SIZE,"%s/eoc",conf_path);
-    PDEBUG(DINFO,"MR17H device (%s) successflly initialized\n",name);
-    valid = 1;
-    
-	// save_pci_info();
-	
+
+	valid = 1;
+
+	if( get_dev_option("chipver",ver) <= 0 ){
+		valid = 0;
+		return;
+	}
+	if( !strncmp("v1",ver,sizeof("v1")) ){
+		_comp = comp_base;
+	}else if( !strncmp("v2",ver,sizeof("v2")) ){
+		_comp = comp_ext1;
+	}
+	delete[] ver;
+
+    PDEBUG(DINFO,"MR17H device (%s) ver %d successflly initialized\n",name,_comp);
     PDEBUG(DINFO,"finish");
 }
 
@@ -54,18 +66,18 @@ send(EOC_msg *m)
     int fd;
     int wrcnt = 0;
     int err = 0;
-    
+
     if( !valid ){
 		PDEBUG(DERR,"Error - initialisation unsuccessfull\n");
 		return -1;
     }
 
-    if( (fd = open(chan_path,O_WRONLY) ) < 0 ){	
+    if( (fd = open(chan_path,O_WRONLY) ) < 0 ){
 		PDEBUG(DERR,"Cannot open file: %d\n",chan_path);
 		valid = 0;
 		return -1;
     }
-    
+
     wrcnt = write(fd,m->mptr(),m->msize());
     if( wrcnt < m->msize() ){
 		PDEBUG(DERR,"Sended %d must be %d\n",wrcnt,m->msize());
@@ -75,8 +87,8 @@ send(EOC_msg *m)
     close(fd);
     return err;
 }
-    
-    
+
+
 EOC_msg *EOC_mr17h::
 recv()
 {
@@ -93,7 +105,7 @@ recv()
     }
 
     if( (fd = open(chan_path,O_RDONLY) ) < 0 ){
-		PDEBUG(DERR,"Cannot open file %s",chan_path);    
+		PDEBUG(DERR,"Cannot open file %s",chan_path);
 		valid = 0;
 		return NULL;
     }
@@ -102,7 +114,7 @@ recv()
     PDEBUG(DFULL,"Raded %d bytes",cnt);
     if( !cnt )
 		return NULL;
-    
+
     ptr = (char*)malloc(cnt);
     memcpy(ptr,buff,cnt);
     msg = new EOC_msg;
@@ -121,8 +133,8 @@ set_dev_option(char *name,char *val)
     char fname[FILE_PATH_SIZE];
     if( !valid )
 		return -1;
-	
-    PDEBUG(DFULL,"set_dev_option(%s,%s)",name,val); 
+
+    PDEBUG(DFULL,"set_dev_option(%s,%s)",name,val);
     snprintf(fname,FILE_PATH_SIZE,"%s/%s",conf_path,name);
     if( (fd = open(fname,O_WRONLY)) < 0 ){
 		PDEBUG(DERR,"set_dev_option: Cannot open %s",fname);
@@ -147,7 +159,7 @@ get_dev_option(char *name,char *&buf)
 		return -1;
 
     buf = new char[OPT_BUFSZ];
-    PDEBUG(DFULL,"get_dev_option(%s)",name); 
+    PDEBUG(DFULL,"get_dev_option(%s)",name);
     snprintf(fname,FILE_PATH_SIZE,"%s/%s",conf_path,name);
     if( (fd = open(fname,O_RDONLY)) < 0 ){
 		PDEBUG(DERR,"get_dev_option: Cannot open %s",fname);
@@ -228,7 +240,7 @@ cur_config(span_conf_profile_t &cfg,int &mode)
 	// Device ANNEX setup
 	if( (cnt=get_dev_option("tcpam",buf)) < 0 )
 		return -1;
-	
+
 	if( !strncmp(buf,"TCPAM4",cnt) )
 		cfg.tcpam = tcpam4;
 	else if( !strncmp(buf,"TCPAM8",cnt) )
@@ -280,7 +292,7 @@ configure(span_conf_profile_t &cfg, int type,int &need_commit)
 	PDEBUG(DERR,"Master configuration of %s",ifname);
 	if( !cur_config(ocfg,mode) ){
 		if( type == 1 ){ // For master
-			if( mode == 1 && cfg.annex == ocfg.annex && cfg.rate == ocfg.rate 
+			if( mode == 1 && cfg.annex == ocfg.annex && cfg.rate == ocfg.rate
 					&& cfg.power == ocfg.power && cfg.tcpam == ocfg.tcpam ){
 				PDEBUG(DERR,"Device configuration left unchanged");
 				return 0;
@@ -336,7 +348,7 @@ configure(span_conf_profile_t &cfg, int type,int &need_commit)
 		PDEBUG(DERR,"Unexpected annex value: %d, set to annex_a",cfg.annex);
 		if( set_dev_option("annex","0") )
 			return -1;
-    }	
+    }
     // TODO: pay attension to MIN rate!!!!
     snprintf(setting,256,"%d",cfg.rate);
     if( set_dev_option("rate",setting) ){
@@ -356,9 +368,9 @@ configure(span_conf_profile_t &cfg, int type,int &need_commit)
 			ret = 1;
 		}
 	}
-	
+
  complete:
-    // Apply configuration    
+    // Apply configuration
 	return ret;
 }
 
@@ -412,7 +424,7 @@ statistics(int loop,side_perf &stat)
     PDEBUG(DFULL,"snr(%d) attn(%d) es(%d) ses(%d) crc(%d) losws(%d) uas(%d) cntr_rst(%d) ovfl(%d)",
 		   stat.snr_marg,stat.loop_attn,stat.es,stat.ses,stat.crc,
 		   stat.losws,stat.uas,stat.cntr_rst_stuc,stat.cntr_ovfl_stuc);
-    
+
   	side_perf tmp = stat;
   	tmp.snr_marg = last_perf.snr_marg;
     if( memcmp(&tmp,&last_perf,sizeof(last_perf)) ){
@@ -432,7 +444,7 @@ statistics(int loop,side_perf &stat)
 }
 
 
-// Power Backoff 
+// Power Backoff
 int EOC_mr17h::
 get_pbo(int &mode,char *buf)
 {
@@ -483,7 +495,7 @@ set_pbo(int &mode,char *buf)
 			syslog(LOG_ERR,"Error while setting pbo_mode to %d",mode);
 		}
 	}
-	
+
 	// Value
 	PDEBUG(DERR,"Value: %p",buf);
 	if( buf ){

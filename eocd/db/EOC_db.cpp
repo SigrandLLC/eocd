@@ -3,6 +3,7 @@
  *  EOC Data base unit, provide SHDSL channel information storage and 
  *  acces to it
  */
+
 #define EOC_DEBUG
 #include<eoc_debug.h>
 
@@ -12,6 +13,38 @@
 #include <generic/EOC_msg.h>
 #include <db/EOC_db.h>
 #include <app-if/err_codes.h>
+
+
+static void resp_perf_convert(side_perf *resp,char *pay,int size)
+{
+	int s = (long int)&resp->crc - (long int)resp - 1 ;
+	int s2;
+	int i;
+	PDEBUG(DFULL,"start, copy first part size = %d",s);
+
+	//memcpy(resp,pay,s);
+	for(i=0;i<s;i++){
+		*((char*)resp + i) = *(pay+i);
+		PDEBUG(DFULL,"Write %02x to %d",*(pay+i),i);
+	}
+
+	//memcpy(resp+5,pay+4,6);
+	s2 = sizeof(*resp) - ((long int)&resp->crc - (long int)resp);
+	PDEBUG(DFULL,"copy second part size = %d",s2);
+	for(i=0;i<s2;i++){
+		*((char*)resp + i + s+1) = *(pay+i+s);
+		PDEBUG(DFULL,"Write %02x to %d",*(pay+i+s),i+s+1);
+	}	
+	
+	// Change order of bytes in CRC counter
+	char tmp,*val = (char*)&resp->crc;
+	tmp = val[0];
+	val[0] = val[1];
+	val[1] = tmp;
+		
+	PDEBUG(DFULL,"end, resp start=%p, rest_end=%p",resp,resp+5+6);
+}
+
 
 int EOC_db::
 register_handlers(){
@@ -216,9 +249,9 @@ int EOC_db::
 _resp_inventory(EOC_db *db,EOC_msg *m,int check)
 {
   ASSERT( m->type() == RESP_INVENTORY);
-  ASSERT( m->payload_sz() == RESP_INVENTORY_SZ);
+  ASSERT( m->payload_sz() == RESP_INVENTORY_SZ ||
+  	m->payload_sz() == RESP_INVENTORY_SZ_1 ); 
 
-  resp_inventory *resp= (resp_inventory *)m->payload();
 
   int ind = (int)m->src() - 1;
   if( !db->units[ind] ){
@@ -230,15 +263,29 @@ _resp_inventory(EOC_db *db,EOC_msg *m,int check)
 
   PDEBUG(DFULL,"INVENTORY_RESP FROM(%d)",m->src());
 
-  // Check that units was not changed
-  if( db->units[ind]->integrity(resp) ){
-    for(int i=ind+1;i<MAX_UNITS;i++){
-      if( db->units[i] ){
-        delete db->units[i];
-      }
-    }
+  if( m->payload_sz() == RESP_INVENTORY_SZ ){
+	resp_inventory *resp= (resp_inventory *)m->payload();
+	// Check that units was not changed
+	if( db->units[ind]->integrity(resp) ){
+    	for(int i=ind+1;i<MAX_UNITS;i++){
+      		if( db->units[i] ){
+        		delete db->units[i];
+      		}
+    	}
+  	}
+  	db->units[ind]->set_inv_info(resp);
+  }else{
+	resp_inventory_1 *resp= (resp_inventory_1 *)m->payload();
+	// Check that units was not changed
+	if( db->units[ind]->integrity(resp) ){
+    	for(int i=ind+1;i<MAX_UNITS;i++){
+      		if( db->units[i] ){
+        		delete db->units[i];
+      		}
+    	}
+  	}
+  	db->units[ind]->set_inv_info(resp);
   }
-  db->units[ind]->set_inv_info(resp);
     
   return 0;
 }
@@ -247,9 +294,13 @@ int EOC_db::
 _resp_configure(EOC_db *db,EOC_msg *m,int check)
 {
   ASSERT( m->type() == RESP_CONFIGURE );
-  ASSERT( m->payload_sz() == RESP_CONFIGURE_SZ);
+  if( m->payload_sz() != RESP_CONFIGURE_SZ ){
+  	PDEBUG(DFULL,"pay_sz=%d wait=%d",m->payload_sz(),RESP_CONFIGURE_SZ);
+	}
+  ASSERT( m->payload_sz() == RESP_CONFIGURE_SZ || 
+  	m->payload_sz() == (RESP_CONFIGURE_SZ + 1));
 
-  resp_configure *resp= (resp_configure *)m->payload();
+  resp_configure *resp = (resp_configure *)m->payload();
   if( check )
     return 0;
   PDEBUG(DFULL,"CONFIGURE_RESP FROM(%d), loop(%d),snr(%d)",m->src(),resp->loop_attn,resp->snr_marg);
@@ -305,24 +356,57 @@ _resp_status(EOC_db *db,EOC_msg *m,int check)
 int EOC_db::
 _resp_nside_perf(EOC_db *db,EOC_msg *m,int check)
 {
-  ASSERT( m->type() == RESP_NSIDE_PERF );
-  ASSERT( m->payload_sz() == RESP_NSIDE_PERF_SZ);
+  resp_cside_perf *resp,tmp_resp;
   ASSERT(m && db);
-  resp_nside_perf *resp= (resp_nside_perf*)m->payload();
+  ASSERT( m->type() == RESP_NSIDE_PERF );
+  int rel;
+
+  if( m->payload_sz() == RESP_NSIDE_PERF_SZ - 1){
+  	PDEBUG(DFULL,"Call resp_perf_convert");
+  	resp_perf_convert((side_perf*)&tmp_resp,m->payload(),m->payload_sz());
+	resp = &tmp_resp;
+	rel = 1;
+  } else if ( m->payload_sz() == RESP_NSIDE_PERF_SZ ){
+	resp= (resp_nside_perf*)m->payload();
+  }else{
+  	PDEBUG(DFULL,"pay=%d, wait=%d",m->payload_sz(),RESP_NSIDE_PERF_SZ);
+    ASSERT( m->payload_sz() == RESP_NSIDE_PERF_SZ);
+  }
+
+
   int loop_id = resp->loop_id-1; 
   EOC_loop *nsloop=NULL;
+/*
+PDEBUGL(DFULL,"Message dump (loop=%d):\n",resp->loop_id);
+for(int i=0;i<m->payload_sz();i++){
+	PDEBUGL(DFULL,"%02x ",*((char*)m->payload()+i));
+}
+PDEBUGL(DFULL,"\n");
 
-  if( !(nsloop = db->check_exist(m->src(),net_side,loop_id) ) )
+PDEBUGL(DFULL,"Resp dump (loop=%d):\n",resp->loop_id);
+for(int i=0;i<m->payload_sz();i++){
+	PDEBUGL(DFULL,"%02x ",*((char*)resp+i));
+}
+PDEBUGL(DFULL,"\n");
+*/
+
+  if( !(nsloop = db->check_exist(m->src(),net_side,loop_id) ) ){
+  	PDEBUG(DERR,"No nsloop on %d unit %d side",m->src(),net_side);
     return -1;
+  }
     
-  if( check )
+  if( check ){
+  	PDEBUG(DFULL,"Check == 0!");
     return 0;
+  }
 
   PDEBUG(DFULL,"NET SIDE PERF RESPONSE: src(%d) dst(%d)",m->src(),m->dst());
     
   if( nsloop ){
-    nsloop->full_status(resp);
+  	PDEBUG(DFULL,"Call nsloop->full_status");
+    nsloop->full_status(resp,rel);
   }
+  PDEBUG(DFULL,"Finish");
   return 0;
 }
 
@@ -330,10 +414,23 @@ _resp_nside_perf(EOC_db *db,EOC_msg *m,int check)
 int EOC_db::
 _resp_cside_perf(EOC_db *db,EOC_msg *m,int check)
 {
+  resp_cside_perf *resp,tmp_resp;
+  ASSERT(m && db);
   ASSERT( m->type() == RESP_CSIDE_PERF );
-  ASSERT( m->payload_sz() == RESP_CSIDE_PERF_SZ);
-  ASSERT(m);
-  resp_cside_perf *resp= (resp_cside_perf*)m->payload();
+  int rel = 0;
+
+  if( m->payload_sz() == RESP_NSIDE_PERF_SZ - 1){
+  	PDEBUG(DFULL,"Call resp_perf_convert");
+  	resp_perf_convert((side_perf*)&tmp_resp,m->payload(),m->payload_sz());
+	resp = &tmp_resp;
+	rel = 1;
+  } else if ( m->payload_sz() == RESP_NSIDE_PERF_SZ ){
+	resp= (resp_cside_perf*)m->payload();
+  }else{
+  	PDEBUG(DFULL,"pay=%d, wait=%d",m->payload_sz(),RESP_CSIDE_PERF_SZ);
+    ASSERT( m->payload_sz() == RESP_NSIDE_PERF_SZ);
+  }
+
   int loop_id = resp->loop_id-1;
   EOC_loop *csloop=NULL;
 
@@ -347,7 +444,7 @@ _resp_cside_perf(EOC_db *db,EOC_msg *m,int check)
   PDEBUG(DINFO,"CUST SIDE PERF RESPONSE: src(%d) dst(%d)",m->src(),m->dst());
     
   if( csloop ){
-    csloop->full_status(resp);
+    csloop->full_status(resp,rel);
   }
   return 0;
 }

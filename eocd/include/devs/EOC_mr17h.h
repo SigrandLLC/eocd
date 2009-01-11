@@ -32,28 +32,22 @@ class EOC_mr17h : public EOC_dev_terminal{
     // Device configuration
     int set_dev_option(char *name,char *val);
     int get_dev_option(char *name,char *&buf);
-
     int cur_config(span_conf_profile_t &cfg,int &mode);
     int configure(span_conf_profile_t &cfg,int type,int &ch);
 	int commit();
-
     // Statistic info
     // DEBUG
     int loops() { return 1;};
-
     int tresholds(s8 attn,s8 snr){
 		snr_tresh = snr;
 		attn_tresh = attn;
     }
-    
     int statistics(int loop,side_perf &stat);
-    void 	dbg_last_msg(){
+    void dbg_last_msg(){
 		printf("LAST MSG:\nes(%u) ses(%u) losws(%u) crc(%u)\n",last_perf.es,last_perf.ses,last_perf.losws,last_perf.crc);
     }
-	
 	int get_pbo(int &,char*);
 	int set_pbo(int &,char*);
-
 };
 
 #endif

@@ -5,6 +5,7 @@
 #	
 #***********************************************************************************
 
+USE_KDB=@USE_KDB@
 
 TOPDIR=$(PWD)
 
@@ -20,6 +21,10 @@ CPPFLAGS=$(INCLUDES) -DEOC_VER="\"$(EOC_VER)\""
 TARGS :=generic engine devs utils local db app-if
 OBJECTS := build/*.o 
 
+ifeq(USE_KDB,0)
+	OBJECTS += libconfig/.libs/libconfig++.a
+endif
+
 CC=@CROSS_PREFIX@gcc
 CXX=@CROSS_PREFIX@g++
 AR=@CROSS_PREFIX@ar
@@ -27,11 +32,8 @@ RANLIB=@CROSS_PREFIX@ranlib
 
 export CXX AR RANLIB CC TOPDIR INCLUDES CPPFLAGS
 
-all: $(TARGS) 
-	$(CXX) $(CPPFLAGS) -o result main.cpp $(OBJECTS) libconfig++.a
-
 all-mips: $(TARGS) 
-	$(CXX) $(CPPFLAGS) -o eocd eocd.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
+	$(CXX) $(CPPFLAGS) -o eocd eocd.cpp $(OBJECTS) 
 
 local: EOC_main.o EOC_pci.o
 	cp $^ build/    

@@ -1,5 +1,9 @@
-#include <db/EOC_loop.h>
+#define EOC_DEBUG
 #include <eoc_debug.h>
+
+
+#include <db/EOC_loop.h>
+
 
 void EOC_loop::
 status_diff(side_perf *info,counters_t &cntrs)
@@ -138,26 +142,37 @@ short_status(s8 snr_margin)
 }
 
 int EOC_loop::
-full_status(side_perf *info)
+full_status(side_perf *info,int rel)
 {
     counters_t cntrs;
 	side_perf last = last_msg;
 	memset(&cntrs,0,sizeof(cntrs)); /// DEBUG - TODO: delete
     PDEBUG(DINFO,"FULL STATUS: attn=%d SNR=%d\n",info->loop_attn,info->snr_marg);
-	if( is_first_msg ){
-		is_first_msg = 0;
-		memcpy(&last_msg,info,sizeof(side_perf));
-	    state.loop_attn = info->loop_attn;
-    	state.snr_marg = info->snr_marg;
-		goto exit;
+	if( rel ){
+	    cntrs.es = info->es;
+    	cntrs.ses = info->ses;
+	    cntrs.crc = info->crc;
+    	cntrs.losws = info->losws; 
+	    cntrs.uas = info->uas;
+	} else {
+		if( is_first_msg ){
+			is_first_msg = 0;
+			memcpy(&last_msg,info,sizeof(side_perf));
+		    state.loop_attn = info->loop_attn;
+    		state.snr_marg = info->snr_marg;
+			goto exit;
+		}
+	    status_diff(info,cntrs);
 	}
-    status_diff(info,cntrs);
+	
     shift_rings();	
     // change online data
     state.loop_attn = info->loop_attn;
     state.snr_marg = info->snr_marg;
     setup_cur_status(info);	
     // Change counters
+	PDEBUG(DFULL,"es=%u, ses=%u, cv=%u, losws=%u,uas=%u",
+		info->es,info->ses,info->crc,info->losws,info->uas);
     state.elem.addit(cntrs);
 	tstate.addit(cntrs);
     _15min_ints[0]->addit(cntrs);

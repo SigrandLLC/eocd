@@ -91,7 +91,7 @@ class EOC_loop{
     EOC_loop();
 	// TODO: write    ~EOC_loop();
     int short_status(s8 snr_margin);
-    int full_status(side_perf *info);
+    int full_status(side_perf *info,int rel = 0);
 
     // output interface
     s32 cur_snr(){ return state.snr_marg; }

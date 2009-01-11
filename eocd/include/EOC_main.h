@@ -10,6 +10,10 @@
 #include <list>
 using namespace std;
 
+// New KDB config 
+#define KDB_CONFIG
+
+
 #define TICK_PER_MINUTE_MAX 60
 #define TICK_PER_MINUTE_DEF 12
 
@@ -44,6 +48,7 @@ class EOC_main{
 			valid = 0;
 			strncpy(config_file,cfg,FNAME_SIZE);
 			config_file[FNAME_SIZE-1] = '\0';
+			PDEBUG(DFULL,"Read config");
 			if( read_config() )
 				return;
 			configure_channels();
@@ -76,13 +81,18 @@ class EOC_main{
     int app_chann_request(app_frame *fr);
     int app_cprof(app_frame *fr);
     int app_list_cprof(app_frame *fr);
+	int app_chan_pbo(app_frame *fr);
+
+#ifndef KDB_CONFIG
+// This code is old now and need revision to work properly
+    int app_endpalarm_prof(app_frame *fr);
 	int app_add_cprof(app_frame *fr);
 	int app_del_cprof(app_frame *fr);
 	int app_add_chan(app_frame *fr);
 	int app_del_chan(app_frame *fr);
 	int app_chng_chan(app_frame *fr);
-	int app_chan_pbo(app_frame *fr);
-    int app_endpalarm_prof(app_frame *fr);
+#endif // !KDB_CONFIG
+
 
 };
 

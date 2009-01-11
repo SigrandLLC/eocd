@@ -232,26 +232,27 @@ int main( int argc, char *argv[] ) {
 	// Daemonize
 	if( need_daemonize ){
 		debug_lev = DOFF;
-    parent = daemonize();
+	    parent = daemonize();
 	}
 
 	signal(SIGPIPE,SIG_IGN);
 	// Register SIGHUP signal for configuration refresh
-  signal(SIGHUP,server_handler); 
-  // Register SIGUSR1 signal to write configuration to disk
-  signal(SIGUSR1,server_handler); 
+	signal(SIGHUP,server_handler); 
+  	// Register SIGUSR1 signal to write configuration to disk
+	signal(SIGUSR1,server_handler); 
+
 
 	/* Now we are a daemon -- do the work for which we were paid */
 	m = new EOC_main(config_path,"/var/eocd/");
     
 	if( !m->get_valid() ){
-    delete m;
-    return -1;
+	    delete m;
+    	return -1;
 	}
 
 	if( need_daemonize && parent>0 ){
-    kill( parent, SIGUSR1 );
-  }
+	    kill( parent, SIGUSR1 );
+  	}
 
 	int k = 0;
 	side_perf S;

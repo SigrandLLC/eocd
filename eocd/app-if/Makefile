@@ -16,7 +16,7 @@ objects: app_comm.o app_comm_cli.o app_comm_srv.o app_frame.o comm.o
 install: app_comm.o app_comm_cli.o app_comm_srv.o app_frame.o
 	cp $^ $(TOPDIR)/build
 
-all: install apps
+all: install  apps
 #	g++ $(CPPFLAGS) -o result main.cpp
 
 apps: install

@@ -39,8 +39,23 @@ typedef struct{
     u8 ven_serial[14];
     u8 other[14];
 } resp_inventory;
+
+typedef struct{
+    u8 shdsl_ver;
+    u8 ven_lst[3];
+    u8 ven_issue[2];
+    u8 softw_ver[6];
+    u8 unit_id_code[10];
+    u8 res1;
+    u8 ven_id[8];
+    u8 ven_model[12];
+    u8 ven_serial[12];
+    u8 other[12];
+} resp_inventory_1;
+
 #define RESP_INVENTORY REQ2RESP(REQ_INVENTORY)
 #define RESP_INVENTORY_SZ sizeof(resp_inventory)
+#define RESP_INVENTORY_SZ_1 sizeof(resp_inventory_1)
 
 
 // CONFIGURE response
@@ -49,7 +64,7 @@ typedef struct{
     u8 :7;
     u8 loop_attn;
     u8 :4;
-    u8 snr_marg :7;
+    u8 snr_marg :4;
 } resp_configure;
 #define RESP_CONFIGURE REQ2RESP(REQ_CONFIGURE)
 #define RESP_CONFIGURE_SZ sizeof(resp_configure)

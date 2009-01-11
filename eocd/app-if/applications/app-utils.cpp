@@ -129,7 +129,7 @@ annex2string(annex_t a)
 	default:
 		strcpy(buf,"unknown");
 		break;
-	}		
+	}
 	return buf;
 }
 
@@ -170,7 +170,7 @@ tcpam2string(tcpam_t code)
 	default:
 		strcpy(buf,"unknown");
 		break;
-	}		
+	}
 	return buf;
 }
 
@@ -200,7 +200,7 @@ tcpam2STRING(tcpam_t code)
 	default:
 		strcpy(buf,"unknown");
 		break;
-	}		
+	}
 	return buf;
 }
 
@@ -209,11 +209,11 @@ string2tcpam(char *str)
 {
 	char *eptr;
 	unsigned long tcpam = strtoul(str,&eptr,10);
-	
+
 	if( eptr == str ){
 		return err_tcpam;
 	}
-	
+
 	switch(tcpam){
 	case 4: return tcpam4;
 	case 8: return tcpam8;
@@ -242,7 +242,7 @@ power2string(power_t a)
 	default:
 		strcpy(buf,"pwr_err");
 		break;
-	}		
+	}
 	return buf;
 }
 
@@ -265,16 +265,16 @@ print_cur_payload(endp_cur_payload *p )
     printf("  %s:\n",side2string((side)p->side));
     printf("    SNR Margin:\t\t%d\n",p->cur_snr);
     printf("    LoopAttenuation:\t%d\n",p->cur_attn);
-	//-------------------------------------------------------------//	
-    printf("    Counters till startup: ");	
+	//-------------------------------------------------------------//
+    printf("    Counters till startup: ");
     printf("es(%u) ses(%u) crc(%d) losws(%u) uas(%u)\n",
 		   p->total.es,p->total.ses,p->total.crc,p->total.losws,p->total.uas);
 }
 
-int 
+int
 print_int_payload(endp_int_payload *p,char *display)
 {
-    printf("%s interval #%d: ",display,p->int_num);	
+    printf("%s interval #%d: ",display,p->int_num);
     printf("es(%u) ses(%u) crc(%d) losws(%u) uas(%u) moni(%d)\n",
 		   p->cntrs.es,p->cntrs.ses,p->cntrs.crc,p->cntrs.losws,
 		   p->cntrs.uas,p->cntrs.mon_sec);
@@ -290,7 +290,7 @@ print_endp_cur(app_comm_cli &cli,char *chan,unit u,side s,int loop)
     // Endpoint current
     endp_cur_payload *p,*p1;
     app_frame *req, *resp;
-    
+
     req = new app_frame(APP_ENDP_CUR,APP_GET,app_frame::REQUEST,1,chan);
     p = (endp_cur_payload*)req->payload_ptr();
     p->unit = u;
@@ -303,7 +303,7 @@ print_endp_cur(app_comm_cli &cli,char *chan,unit u,side s,int loop)
     if( !resp->frame_ptr() ){
 		printf("error requesting\n");
 		return -1;
-    } 
+    }
     if( resp->is_negative() ){ // no such unit or no net_side
 		delete resp;
     } else {
@@ -329,7 +329,7 @@ print_endp_15m(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
     // Endpoint current
     endp_15min_payload *p,*p1;
     app_frame *fr, *fr1;
-    
+
     fr = new app_frame(APP_ENDP_15MIN,APP_GET,app_frame::REQUEST,1,chan);
     p = (endp_15min_payload*)fr->payload_ptr();
     p->unit = u;
@@ -343,7 +343,7 @@ print_endp_15m(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
     if( !fr1->frame_ptr() ){
 		printf("error requesting\n");
 		return -1;
-    } 
+    }
     if( fr1->is_negative() ){ // no such unit or no net_side
 		delete fr1;
 		printf("Requested component: unit(%s),side(%s),loop(%d),int(%d) NOT FOUND\n",
@@ -352,7 +352,7 @@ print_endp_15m(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
 		return -1;
     } else {
 		p1 = (endp_15min_payload*)fr1->payload_ptr();
-		if( p1->unit != p->unit || p1->side != p->side 
+		if( p1->unit != p->unit || p1->side != p->side
 			|| p1->loop != p->loop || p1->int_num != p->int_num ){
 			printf("Error: get information about different unit\n");
 			delete fr1;
@@ -374,7 +374,7 @@ print_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
     // Endpoint current
     endp_1day_payload *p,*p1;
     app_frame *fr, *fr1;
-    
+
     fr = new app_frame(APP_ENDP_1DAY,APP_GET,app_frame::REQUEST,1,chan);
     p = (endp_1day_payload*)fr->payload_ptr();
     p->unit = u;
@@ -388,7 +388,7 @@ print_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
     if( !fr1->frame_ptr() ){
 		printf("error requesting\n");
 		return -1;
-    } 
+    }
     if( fr1->is_negative() ){ // no such unit or no net_side
 		delete fr1;
 		printf("Requested component: unit(%s),side(%s),loop(%d),int(%d) NOT FOUND\n",
@@ -397,7 +397,7 @@ print_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
 		return -1;
     } else {
 		p1 = (endp_1day_payload*)fr1->payload_ptr();
-		if( p1->unit != p->unit || p1->side != p->side 
+		if( p1->unit != p->unit || p1->side != p->side
 			|| p1->loop != p->loop || p1->int_num != p->int_num ){
 			printf("Error: get information about different unit\n");
 			delete fr1;
@@ -435,7 +435,7 @@ shell_spanconf(app_comm_cli &cli,char *chan,int type)
     if( !resp->frame_ptr() ){
 		ret = -1;
 		goto exit;
-    } 
+    }
     if( resp->is_negative() ){ // no such unit or no net_side
 		ret = -1;
     }else{
@@ -473,7 +473,7 @@ shell_spanstat(app_comm_cli &cli,char *chan)
     if( !resp->frame_ptr() ){
 		ret = -1;
 		goto exit;
-    } 
+    }
     if( resp->is_negative() ){ // no such unit or no net_side
 		ret = -1;
     }else{
@@ -530,7 +530,7 @@ shell_endp_cur(app_comm_cli &cli,char *chan,unit u,side s,int loop)
     if( !resp->frame_ptr() ){
 		ret = -1;
 		goto exit;
-    } 
+    }
     if( resp->is_negative() ){ // no such unit or no net_side
 		ret = -1;
     }else{
@@ -576,7 +576,7 @@ shell_endp_15m(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
     endp_15min_payload *p,*p1;
     app_frame *fr, *fr1;
 	int ret = 0;
-    
+
     fr = new app_frame(APP_ENDP_15MIN,APP_GET_NEXT,app_frame::REQUEST,1,chan);
     p = (endp_15min_payload*)fr->payload_ptr();
     p->unit = u;
@@ -590,19 +590,19 @@ shell_endp_15m(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
     if( !fr1->frame_ptr() ){
 		ret = -1;
 		goto exit;
-    } 
+    }
 
     if( fr1->is_negative() ){ // no such unit or no net_side
 		ret = -1;
 		goto exit;
     } else {
 		p1 = (endp_15min_payload*)fr1->payload_ptr();
-		if( p1->unit != p->unit || p1->side != p->side 
+		if( p1->unit != p->unit || p1->side != p->side
 			|| p1->loop != p->loop ){
 			ret = -1;
 		}
 		printf("unit=\"%s\"\nside=\"%s\"\nloop=\"%d\"\n",unit2string((unit)p1->unit),side2string((side)p1->side),p1->loop);
-		printf("int=\"%d\"\n",p1->int_num);	
+		printf("int=\"%d\"\n",p1->int_num);
 		// Human readable time
 		char s[256];
 		time_t tm = time(NULL);
@@ -611,13 +611,13 @@ shell_endp_15m(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
 			int_offs--;
 		tm -= tm%(15*60);
 		tm -= 15*60*int_offs;
-		strftime(s,256,"%d %b %G",localtime(&tm));                                  
+		strftime(s,256,"%d %b %G",localtime(&tm));
 		printf("int_day=\"%s\"\n",s);
 		strftime(s,256,"%R",localtime(&tm));
-		printf("time_end=\"%s\"\n",s);             
+		printf("time_end=\"%s\"\n",s);
 		tm -= 15*60;
 		strftime(s,256,"%R",localtime(&tm));
-		printf("time_start=\"%s\"\n",s);             
+		printf("time_start=\"%s\"\n",s);
 		// Statistics
 		float percent = ((float)p1->cntrs.mon_sec/(15*60))*100; // Percentage of day
 		printf("es=\"%u\"\nses=\"%u\"\ncrc=\"%d\"\nlosws=\"%u\"\nuas=\"%u\"\nmon_sec=\"%d\"\nmon_pers=\"%.2f\"\n",
@@ -642,7 +642,7 @@ shell_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
     endp_1day_payload *p,*p1;
     app_frame *fr, *fr1;
 	int ret = 0;
-    
+
     fr = new app_frame(APP_ENDP_1DAY,APP_GET_NEXT,app_frame::REQUEST,1,chan);
     p = (endp_1day_payload*)fr->payload_ptr();
     p->unit = u;
@@ -655,17 +655,17 @@ shell_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
 
     fr1 = new app_frame(b,size);
     if( !fr1->frame_ptr() ){
-		//		printf("No response\n");		
+		//		printf("No response\n");
 		ret = -1;
 		goto exit;
-    } 
+    }
     if( fr1->is_negative() ){ // no such unit or no net_side
 		//		printf("Negative response\n");
 		ret = -1;
 		goto exit;
     } else {
 		p1 = (endp_1day_payload*)fr1->payload_ptr();
-		if( p1->unit != p->unit || p1->side != p->side 
+		if( p1->unit != p->unit || p1->side != p->side
 			|| p1->loop != p->loop ){
 			//			printf("Error response\n");
 			ret = -1;
@@ -680,7 +680,7 @@ shell_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
 		if( tm%(24*60*60) )
 			int_offs--;
 		tm -= tm%(24*60*60) + int_offs*24*60*60;
-		strftime(s,256,"%d %b %G",localtime(&tm));                                  
+		strftime(s,256,"%d %b %G",localtime(&tm));
 		printf("int_day=\"%s\"\n",s);
 		// Statistics
 		float percent = ((float)p1->cntrs.mon_sec/(24*60*60))*100; // Percentage of day
@@ -730,16 +730,16 @@ int shell_cprof_list(app_comm_cli &cli)
 		if( !resp->frame_ptr() ){
 			ret = -1;
 			goto exit;
-		} 
+		}
 		if( resp->is_negative() ){
 			ret = -1;
 			goto exit;
 		}
-	
+
         p = (cprof_list_payload*)resp->payload_ptr();
 		for(int i=0;i<p->filled;i++){
 			profiles[profiles_num++] = strdup(p->pname[i]);
-		}	
+		}
 
 		if( !p->filled )
 			break;
@@ -749,7 +749,7 @@ int shell_cprof_list(app_comm_cli &cli)
 		delete resp;
 		resp = NULL;
     }while( flag );
-	
+
 	printf("cprof_list=\"");
 	for(int i=0;i<profiles_num;i++){
 		printf("%s ",profiles[i]);
@@ -785,7 +785,7 @@ int shell_cprof_info(app_comm_cli &cli,char *prof,int ind)
     if( !fr1->frame_ptr() ){
 		ret = -1;
 		goto exit;
-    } 
+    }
     if( fr1->is_negative() ){ // no such unit or no net_side
 		ret = -1;
 		goto exit;
@@ -798,16 +798,18 @@ int shell_cprof_info(app_comm_cli &cli,char *prof,int ind)
 // 			   p->conf.rate);
 
 		p = (cprof_payload*)fr1->payload_ptr();
+		char buf[256];
+		EOC_dev::comp_name(p->comp,buf);
 		if( ind ){
 			printf("cprof%d=\"%s\"\n",ind,p->pname);
-			printf("annex%d=\"%s\"\npower%d=\"%s\"\nrate%d=\"%d\"\ntcpam%d=\"%s\"\n",
+			printf("annex%d=\"%s\"\npower%d=\"%s\"\nrate%d=\"%d\"\ntcpam%d=\"%s\"\ncompat%d=\"%s\"\n",
 				   ind,annex2string(p->conf.annex),ind,power2string(p->conf.power),
-				   ind,p->conf.rate,ind,tcpam2string(p->conf.tcpam));
+				   ind,p->conf.rate,ind,tcpam2string(p->conf.tcpam),ind,buf);
 		}else{
 			printf("cprof=\"%s\"\n",p->pname);
-			printf("annex=\"%s\"\npower=\"%s\"\nrate=\"%d\"\ntcpam=\"%s\"\n",
+			printf("annex=\"%s\"\npower=\"%s\"\nrate=\"%d\"\ntcpam=\"%s\"\ncompat%d=\"%s\"\n",
 				   annex2string(p->conf.annex),power2string(p->conf.power),
-				   p->conf.rate,tcpam2string(p->conf.tcpam));
+				   p->conf.rate,tcpam2string(p->conf.tcpam),ind,buf);
 		}
     }
 exit:
@@ -851,16 +853,16 @@ int shell_cprof_full(app_comm_cli &cli)
 		if( !resp->frame_ptr() ){
 			ret = -1;
 			goto exit;
-		} 
+		}
 		if( resp->is_negative() ){
 			ret = -1;
 			goto exit;
 		}
-	
+
         p = (cprof_list_payload*)resp->payload_ptr();
 		for(int i=0;i<p->filled;i++){
 			shell_cprof_info(cli,p->pname[i],++profiles_num);
-		}	
+		}
 
 		if( !p->filled )
 			break;
@@ -870,7 +872,7 @@ int shell_cprof_full(app_comm_cli &cli)
 		delete resp;
 		resp = NULL;
     }while( flag );
-	
+
  exit:
 	if( req )
 		delete req;

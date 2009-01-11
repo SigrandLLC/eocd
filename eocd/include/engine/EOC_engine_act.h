@@ -37,7 +37,7 @@ class EOC_engine_act : public EOC_engine {
     int register_handlers();
     int app_request(app_frame *fr);
 	// virtual function of EOC_engine
-	int local_configure(int &ch){ 
+	int local_configure(int &ch){
 		PDEBUG(DERR,"START,pbo_changed=%d",pbo_changed);
 		ch = 0;
 		if( pbo_changed ){

@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <string.h>
+
+//#define EOC_DEBUG
 #include <eoc_debug.h>
 #include <utils/hash_table.h>
 
@@ -43,11 +45,14 @@ hash_table::find(char *name,int nsize)
 	PDEBUG(DERR,"name=%s, nsize=%d",name,nsize);
 	int i = _hash(name);
 
-	PDEBUG(DERR,"_hash=%d",i);
+	PDEBUG(DERR,"_hash=%d, table[i].size=%d",i,table[i].size());
 
 	if( !table[i].size() ){ // hash list is empty
-    return NULL;
-  }
+		PDEBUG(DFULL,"return NULL");
+    	return NULL;
+  	}
+	
+	PDEBUG(DFULL,"Continue to search");
 
 	list<hash_elem *>::iterator p = table[i].begin();
 
@@ -60,6 +65,8 @@ hash_table::find(char *name,int nsize)
 	}
 	return NULL;
 }
+
+// vy moska maladec))))
 
 int
 hash_table::add(hash_elem *el)

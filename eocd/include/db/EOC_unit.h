@@ -52,6 +52,13 @@ class EOC_unit{
       inv_info = *resp;
       inv_info_setted = 1;
     }
+
+    int set_inv_info(resp_inventory_1 *resp){
+	  inv_info.shdsl_ver = resp->shdsl_ver; 
+		//      inv_info = *resp;
+      inv_info_setted = 1;
+    }
+
     u8 eoc_softw_ver(){ return eoc_softw_v; }
     
     EOC_side *nside(){ return side[net_side]; }
@@ -64,6 +71,30 @@ class EOC_unit{
         return -1;
       return 0;
     }
+
+    int integrity(resp_inventory_1 *resp){
+      if( !inv_info_setted )
+        return 0;
+		if( inv_info.shdsl_ver != resp->shdsl_ver )
+			return -1;
+		if( memcmp(inv_info.ven_lst,resp->ven_lst,3) )
+			return -1;
+		if( memcmp(inv_info.ven_issue,resp->ven_issue,2) )
+			return -1;
+		if( memcmp(inv_info.softw_ver,resp->softw_ver,2) )
+			return -1;
+/* TODO: complete!!!!
+typedef struct{
+    u8 unit_id_code[10];
+    u8 res1;
+    u8 ven_id[8];
+    u8 ven_model[12];
+    u8 ven_serial[12];
+    u8 other[12];
+*/
+      return 0;
+    }
+
 
     resp_inventory inventory_info(){ return inv_info; }
 

@@ -12,7 +12,7 @@ include $(TOPDIR)/version.mk
 
 INCLUDES=-I$(TOPDIR)/include/
 INCLUDES += -I$(TOPDIR)/libconfig/
-CPPFLAGS=$(INCLUDES) -DEOC_VER="\"$(EOC_VER)\""
+CPPFLAGS=$(INCLUDES) -DEOC_VER="\"$(EOC_VER)\"" 
 #-g 
 ifeq ($(VIRT),1)
 CPPFLAGS += -DVIRTUAL_DEVS
@@ -41,7 +41,9 @@ all: $(TARGS)
 	$(CXX) -g $(INCLUDES) -o result main.cpp $(OBJECTS) libconfig++.a
 
 all-mips: $(TARGS) 
-	$(CXX) $(CPPFLAGS) -o eocd eocd.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
+	$(CC) $(CPPFLAGS) -c md5.c
+	$(CC) $(CPPFLAGS) -DSHELL -c kdb.c 
+	$(CXX) $(CPPFLAGS) -o eocd eocd.cpp kdb.o md5.o $(OBJECTS) libconfig/.libs/libconfig++.a
 
 fake-mips: $(TARGS) 
 #	$(CXX) -g $(INCLUDES) -o result main.cpp $(OBJECTS) libconfig/.libs/libconfig++.a

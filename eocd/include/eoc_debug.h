@@ -13,9 +13,13 @@ extern int debug_lev;
 #ifdef EOC_DEBUG
 #	include <cassert>
 #	define ASSERT(x) assert(x)
-#       define PDEBUG(lev,fmt,args...)							\
+#   define PDEBUG(lev,fmt,args...)							\
 	if( lev<=debug_lev )										\
 		printf("%s : " fmt " \n",__FUNCTION__, ## args  )
+
+#   define PDEBUGL(lev,fmt,args...)							\
+	if( lev<=debug_lev )										\
+		printf(fmt,## args)
 
 
 #	define EDEBUG(lev,function)					\
