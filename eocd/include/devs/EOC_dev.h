@@ -28,13 +28,13 @@ public:
 	static void comp_name(compatibility_t c,char *buf){
 		switch(c){
 		case comp_base:
-			strcpy(buf,"base-compat");
+			strcpy(buf,"base");
 			return;
 		case comp_ext1:
-			strcpy(buf,"extend1-compat");
+			strcpy(buf,"extended");
 			return;
 		default:
-			strcpy(buf,"unknown-compat");
+			strcpy(buf,"unknown");
 			return;
 		}
 	}

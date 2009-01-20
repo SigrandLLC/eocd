@@ -69,7 +69,7 @@ void print_sensors(app_comm_cli &cli,char *chan,int indent=0)
     app_frame *req = new app_frame(APP_SENSORS,APP_GET,app_frame::REQUEST,1,chan);
     app_frame *resp;
     char *buf;
-	
+
 	((sensors_payload *)req->payload_ptr())->unit = _unit;
     cli.send(req->frame_ptr(),req->frame_size());
 	cli.wait();
@@ -78,13 +78,13 @@ void print_sensors(app_comm_cli &cli,char *chan,int indent=0)
 		delete req;
 		return;
     }
-    
+
     resp = new app_frame(buf,size);
     if( !resp->frame_ptr() ){
 		print_error("error: bad message from eocd");
 		goto err_exit;
-    } 
-    
+    }
+
     if( resp->is_negative() ){ // no such unit or no net_side
 		print_error("error: negative response from server");
 		goto err_exit;
@@ -122,8 +122,8 @@ void print_pbo(app_comm_cli &cli,char *chan,int indent=0)
     app_frame *req = new app_frame(APP_PBO,APP_GET,app_frame::REQUEST,1,chan);
     app_frame *resp;
     char *buf;
-    
-	
+
+
     cli.send(req->frame_ptr(),req->frame_size());
 	cli.wait();
     int size = cli.recv(buf);
@@ -131,13 +131,13 @@ void print_pbo(app_comm_cli &cli,char *chan,int indent=0)
 		delete req;
 		return;
     }
-    
+
     resp = new app_frame(buf,size);
     if( !resp->frame_ptr() ){
 		print_error("error: bad message from eocd");
 		goto err_exit;
-    } 
-    
+    }
+
     if( resp->is_negative() ){ // no such unit or no net_side
 		print_error("error: negative response from server");
 		goto err_exit;
@@ -168,7 +168,7 @@ void print_short_chan(app_comm_cli &cli,char *chan)
     app_frame *req = new app_frame(APP_SPAN_PARAMS,APP_GET,app_frame::REQUEST,1,chan);
     app_frame *resp;
     char *buf;
-    
+
     cli.send(req->frame_ptr(),req->frame_size());
 	cli.wait();
     int size = cli.recv(buf);
@@ -176,13 +176,13 @@ void print_short_chan(app_comm_cli &cli,char *chan)
 		delete req;
 		return;
     }
-    
+
     resp = new app_frame(buf,size);
     if( !resp->frame_ptr() ){
 		print_error("error: bad message from eocd");
 		goto err_exit;
-    } 
-    
+    }
+
     if( resp->is_negative() ){ // no such unit or no net_side
 		print_error("error: negative response from server");
 		goto err_exit;
@@ -199,13 +199,13 @@ void print_short_chan(app_comm_cli &cli,char *chan)
     return;
 }
 
-void 
+void
 print_exact(app_comm_cli &cli,char *chan)
 {
     app_frame *req = new app_frame(APP_SPAN_PARAMS,APP_GET,app_frame::REQUEST,1,chan);
     app_frame *resp;
     char *buf;
-    
+
     cli.send(req->frame_ptr(),req->frame_size());
     cli.wait();
     int size = cli.recv(buf);
@@ -213,13 +213,13 @@ print_exact(app_comm_cli &cli,char *chan)
 		delete req;
 		return;
     }
-    
+
     resp = new app_frame(buf,size);
     if( !resp->frame_ptr() ){
 		print_error("error: bad message from eocd");
 		goto exit;
-    } 
-    
+    }
+
     if( resp->is_negative() ){ // no such unit or no net_side
 		print_error("error: negative response from server");
 		goto exit;
@@ -293,8 +293,8 @@ void shell_exact(app_comm_cli &cli,char *chan)
     if( !resp->frame_ptr() ){
 		print_error("Bad message from server");
 		goto exit;
-    } 
-    
+    }
+
     if( (ret=resp->is_negative()) ){ // no such unit or no net_side
 		if( ret != ERNODB ){
 			print_error();
@@ -366,13 +366,13 @@ int print_short(app_comm_cli &cli,int indent = 0)
     int flag = 0;
 	struct eoc_channel channels[MAX_CHANS];
 	int ret = 0;
-	
+
 	int channels_num = 0;
 
 	if( mode == NORMAL ){
 		printf("Short information about served channels:\n");
 	}
-	
+
     do{
         cli.send(req->frame_ptr(),req->frame_size());
 		cli.wait();
@@ -390,7 +390,7 @@ int print_short(app_comm_cli &cli,int indent = 0)
 			delete resp;
 			delete req;
 			return -1;
-		} 
+		}
 		if( resp->is_negative() ){ // no such unit or no net_side
 			if( mode == JASON ){
 				jason_error((char*)"error: negative response from server");
@@ -400,7 +400,7 @@ int print_short(app_comm_cli &cli,int indent = 0)
 			delete resp;
 			return -1;
 		}
-	
+
         span_name_payload *p = (span_name_payload*)resp->payload_ptr();
 		for(int i=0;i<p->filled && channels_num < MAX_CHANS;i++){
 			switch( mode ){
@@ -411,17 +411,18 @@ int print_short(app_comm_cli &cli,int indent = 0)
 			case SHELL:
 			case JASON:
 				channels[channels_num].name = strdup(p->spans[i].name);
-				channels[channels_num++].t = p->spans[i].t;
+				channels[channels_num].t = p->spans[i].t;
+				channels[channels_num++].comp = p->spans[i].comp;
 				break;
 			}
-		}	
+		}
 		if( !p->filled )
 			break;
 		flag = !p->last_msg;
 		req->chan_name(p->spans[p->filled-1].name);
 		delete resp;
     }while( flag );
-	
+
 	switch ( mode ){
 	case SHELL:
 		printf("eoc_channels=\"");
@@ -445,7 +446,7 @@ void print_full(app_comm_cli &cli)
     app_frame *req = new app_frame(APP_SPAN_NAME,APP_GET,app_frame::REQUEST,1,"");
     char *buf;
     int flag = 0;
-    
+
     printf("Full information about served channels:\n");
     do{
         cli.send(req->frame_ptr(),req->frame_size());
@@ -460,12 +461,12 @@ void print_full(app_comm_cli &cli)
 			delete resp;
 			delete req;
 			return;
-		} 
+		}
 		if( resp->is_negative() ){ // no such unit or no net_side
 			delete resp;
 			break;
 		}
-	
+
         span_name_payload *p = (span_name_payload*)resp->payload_ptr();
 		for(int i=0;i<p->filled;i++){
 			printf("-----------------------------------------------------\n");
@@ -474,7 +475,7 @@ void print_full(app_comm_cli &cli)
 				printf("Channel: %s\n",p->spans[i].name);
 				print_exact(cli,p->spans[i].name);
 			}
-		}	
+		}
 		if( !p->filled )
 			break;
 		flag = !p->last_msg;
@@ -510,7 +511,7 @@ int rst_relative(app_comm_cli &cli,char *chan)
 		delete resp;
 		delete req;
 		return 0;
-	} 
+	}
 	int ret;
 	if( (ret=resp->is_negative()) ){ // no such unit or no net_side
 		print_error("Cannot reset relative counters: (%d) %s\n",ret,err_strings[ret-1]);
@@ -525,7 +526,7 @@ main(int argc, char *argv[] )
 {
     char iface[256] = "";
     char *sock_name = "/var/eocd/eocd-socket";
-	
+
     // process command line arguments here
     while (1) {
         int option_index = -1;
@@ -666,7 +667,7 @@ main(int argc, char *argv[] )
 			return 0;
 		}
     }
-    
+
     // Connect to eocd server
 	app_comm_cli *cli1;
 	switch( mode ){
@@ -687,7 +688,7 @@ main(int argc, char *argv[] )
 		return 0;
     }
 	app_comm_cli &cli = *cli1;
-    
+
     // Do requested work
     switch(type){
 	case PBO:
@@ -747,7 +748,7 @@ main(int argc, char *argv[] )
 		break;
     case FULL:
 		if( mode != NORMAL ){
-			if( print_short(cli) ) 
+			if( print_short(cli) )
 				return 0;
 		}else
 			print_full(cli);
@@ -774,7 +775,7 @@ main(int argc, char *argv[] )
 			break;
 		}
     }
-	
+
 	if( mode == JASON ){
 		jason_flush();
 	}

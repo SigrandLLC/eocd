@@ -33,6 +33,11 @@ class EOC_engine{
     dev_type get_type(){ return type; }
 	virtual int local_configure(int &ch){ch=0; return 0;}
     int configure(char *ch_name); // Slave configuration, Repeater need no configuration
+    EOC_dev::compatibility_t get_compat(){
+    	if( type == repeater )
+    		return EOC_dev::comp_base;
+    	return dev1->comp();
+    }
     int check_compat(){
     	// Slave & repeaters are always compatible with profile.
     	// They have no much to do with profiles

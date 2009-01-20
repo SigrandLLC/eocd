@@ -196,8 +196,8 @@ void jason_short_channel(int indent, struct eoc_channel *chan) {
 	bprintf("\"type\" : \"%s\"\n",chan->t == slave ? "slave" : "master");
 	do_indent(indent + 1);
 	char buf[128];
-	EOC_dev::comp_name(chan->comp,)
-	bprintf("\"compat\" : \"%s\"\n",chan->t == slave ? "slave" : "master");
+	EOC_dev::comp_name(chan->comp,buf);
+	bprintf("\"compat\" : \"%s\"\n",buf);
 	do_indent(indent);
 	bprintf("}");
 }

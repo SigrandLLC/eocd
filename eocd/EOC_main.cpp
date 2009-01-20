@@ -22,6 +22,7 @@
 
 #include <EOC_main.h>
 #include <EOC_pci.h>
+#include <EOC_cfg_options.h>
 
 #include <app-if/err_codes.h>
 
@@ -760,7 +761,6 @@ extern "C" {
 int EOC_main::
 read_config()
 {
-	Config cfg;
 	char *name;
 	int i;
 	tick_per_min = TICK_PER_MINUTE_DEF;
@@ -832,112 +832,187 @@ read_config()
 		}
 
 		// 2. read all elements of conf_profiles
-		if( !(ret = kdb_appget("sys_eocd_spanprofiles",&opt) ) ) {
-			break;
-		} else if( ret> 1 ) {
-			syslog(LOG_ERR,"eocd(read_config): Found several options containing \"sys_eocd_spanprofiles\". Use first: %s",opt);
-			PDEBUG(DERR,"eocd(read_config): Found several options containing \"sys_eocd_spanprofiles\". Use first: %s",opt);
-		}
+#define OPTINDEX(grp,grpsize,name,idx) \
+	idx = -1; \
+	for(int k=0;k<grpsize;k++){ \
+		if( !strncmp(grp[k].optname(),name,MAX_OPTSTR) ){ \
+			idx = k; \
+			break; \
+		} \
+	}
 
-		for(;;topt = NULL) {
-			char name[256] = {0};
-			char *prof_opts[] = {
-				"tcpam"/*0*/,"rate"/*1*/,"annex"/*2*/,
-				"power"/*3*/, "comp"/*4*/
-			};
-#define OPT_QUAN sizeof(prof_opts)/sizeof(char*)
-			unsigned int opt_values[OPT_QUAN] = {0};
+		for(int i=0;;i++) {
 			char option[256];
-			char *option_val;
-			int i = 0;
+			cfg_option prof_opts[] = { cfg_option("name"),cfg_option("tcpam",tcpam_vals,tcpam_vsize),
+				cfg_option("annex",annex_vals,annex_vsize),cfg_option("power",power_vals,power_vsize),
+				cfg_option("rate",0,0,1,64),cfg_option("mrate",0,0,1,64),cfg_option("comp",comp_vals,comp_vsize) };
+			int prof_optsnum = sizeof(prof_opts)/sizeof(cfg_option);
 
-			PDEBUG(DFULL,"token=%p",token);
-			token = strtok_r(topt," ",&saveptr);
-			if( !token )
-			break;
-			PDEBUG(DFULL,"token=%p",token);
-			strncpy(name,token,256);
-			//name = token;
-			for(i=0;i<OPT_QUAN;i++) {
-				// Construct option name
-				PDEBUG(DFULL,"loop start: name(%p)=%s",name,name);
-				snprintf(option,256,"%s_%s_%s",prof_prefix,name,prof_opts[i]);
-				if( !(ret = kdb_appget(option,&option_val)) ) {
-					syslog(LOG_ERR,"eocd(read_config): Profile option %s not found",option);
-					PDEBUG(DERR,"eocd(read_config): Profile option %s not found",option);
+			char *str1,*str2;
+			char *token,*subtoken;
+			char *saveptr1,*saveptr2;
+			int j;
+
+			sprintf(option,"sys_eocd_sprof_%d",i);
+			if( !(ret = kdb_appget(option,&opt)) ) {
+				break;
+			} else if( ret> 1 ) {
+				syslog(LOG_ERR,"eocd(read_config): Found several options containing \"%s\". Use first: %s",option,opt);
+				PDEBUG(DERR,"eocd(read_config): Found several options containing \"%s\". Use first: %s",option,opt);
+			}
+
+			str1 = opt;
+
+			for (j = 1; ; j++, str1 = NULL) {
+				token = strtok_r(str1, " ", &saveptr1);
+				if (token == NULL)
 					break;
-				} else if(ret>1) {
-					syslog(LOG_ERR,"eocd(read_config): Found several options containing \"%s\". Use first: %s",
-						option,option_val);
-					PDEBUG(DERR,"eocd(read_config): Found several options containing \"%s\". Use first: %s",
-						option,option_val);
+				printf("%d: %s\n", j, token);
+
+				char ptrs[2][MAX_OPTSTR];
+				int i;
+				for (i=0,str2 = token; i<2 ; str2 = NULL,i++) {
+					subtoken = strtok_r(str2,"=", &saveptr2);
+					if (subtoken == NULL)
+						break;
+					//printf(" --> %s\n", subtoken);
+					strncpy(ptrs[i],subtoken,MAX_OPTSTR);
 				}
-				opt_values[i] = atoi(option_val);
-				PDEBUG(DFULL,"loop end: name(%p)=%s",name,name);
+				printf("%s = %s\n",ptrs[0],ptrs[1]);
+				for(i=0;i<prof_optsnum;i++){
+					cfg_option::chk_res ret;
+					ret = prof_opts[i].chk_option(ptrs[0],ptrs[1]);
+					if( ret == cfg_option::Accept || ret == cfg_option::Exist )
+						break;
+				}
 			}
 
-			if( i != OPT_QUAN ) {
-				syslog(LOG_ERR,"eocd(read_config): Skip profile \"%s\", not all options presents",name);
-				PDEBUG(DERR,"eocd(read_config): Skip profile \"%s\", not all options presents",name);
+			int errflg = 0;
+			for(j=0;j<prof_optsnum;j++){
+				if( !prof_opts[i].is_valid() ){
+					syslog(LOG_ERR,"eocd(read_config): profile \"%s\", wrong \"%s\" value",option,prof_opts[i].optname());
+					PDEBUG(DERR,"eocd(read_config): profile \"%s\", wrong \"%s\" value",option,prof_opts[j].optname());
+					errflg = 1;
+				}
+				if( !strncmp(prof_opts[j].optname(),"name",5) && prof_opts[j].is_int() ){
+					syslog(LOG_ERR,"eocd(read_config): FATAL ERROR \"%s\" should be string value",prof_opts[j].optname());
+					PDEBUG(DERR,"eocd(read_config): FATAL ERROR \"%s\" should be string value",prof_opts[j].optname());
+					exit(0);
+				}else if( strncmp(prof_opts[j].optname(),"name",5) && !prof_opts[j].is_int() ){
+					syslog(LOG_ERR,"eocd(read_config): FATAL ERROR \"%s\" should be int value",prof_opts[j].optname());
+					PDEBUG(DERR,"eocd(read_config): FATAL ERROR \"%s\" should be int value",prof_opts[j].optname());
+					exit(0);
+				}
+				// DEBUG
+				if( prof_opts[j].is_int() ){
+					PDEBUG(DFULL," %s = %d",prof_opts[j].optname(),prof_opts[j].value());
+				}else{
+					PDEBUG(DFULL," %s = %s",prof_opts[j].optname(),prof_opts[j].svalue());
+				}
+			}
+
+			if( errflg ){ // Skip prifile
+				syslog(LOG_ERR,"eocd(read_config): Skip profile \"%s\"",option);
+				PDEBUG(DERR,"eocd(read_config): Skip profile \"%s\"",option);
 				continue;
 			}
 
-			// Check input values
-			if( opt_values[2]>2 ) {
-				syslog(LOG_ERR,"eocd(read_config): Skip profile \"%s\", wrong \"%s_%s_%s\" value: %d , may be 1-4",
-					name,prof_prefix,name,prof_opts[2],opt_values[2]);
-				PDEBUG(DERR,"eocd(read_config): Skip profile \"%s\", wrong \"%s_%s_%s\" value: %d , may be 1-4",
-					name,prof_prefix,name,prof_opts[2],opt_values[2]);
-				continue;
-			}
-
-			if( opt_values[0] < 1 ) {
-				syslog(LOG_ERR,"eocd(read_config): Skip profile \"%s\", wrong \"%s_%s_%s\" value: %d , may be 1-6",
-					name,prof_prefix,name,prof_opts[0],opt_values[0]);
-				PDEBUG(DERR,"eocd(read_config): Skip profile \"%s\", wrong \"%s_%s_%s\" value: %d , may be 1-6",
-					name,prof_prefix,name,prof_opts[0],opt_values[0]);
-				continue;
-			}
-			PDEBUG(DERR,"TCPAM=%d",opt_values[0]);
-
-			if( opt_values[3]>3 ) {
-				syslog(LOG_ERR,"eocd(read_config): Skip profile \"%s\", wrong \"%s_%s_%s\" value: %d , may be 1-3",
-					name,prof_prefix,name,prof_opts[3],opt_values[3]);
-				PDEBUG(DERR,"eocd(read_config): Skip profile \"%s\", wrong \"%s_%s_%s\" value: %d , may be 1-3",
-					name,prof_prefix,name,prof_opts[3],opt_values[3]);
-				continue;
-			}
-
-			if( opt_values[4]> EOC_dev::comp_max ) {
-				syslog(LOG_ERR,"eocd(read_config): Skip profile \"%s\", wrong \"%s_%s_%s\" value: %d , may be 0-%d",
-					name,prof_prefix,name,prof_opts[4],opt_values[4],(int)EOC_dev::comp_max-1);
-				PDEBUG(DERR,"eocd(read_config): Skip profile \"%s\", wrong \"%s_%s_%s\" value: %d , may be 0-%d",
-					name,prof_prefix,name,prof_opts[4],opt_values[4],(int)EOC_dev::comp_max-1);
-				continue;
-			}
-
+			// Create new profile and set all default values
 			conf_profile *nprof = new conf_profile;
 			memset(nprof,0,sizeof(conf_profile));
 			// Profile service info
-			nprof->name = strndup(name,256);
-			nprof->nsize = strnlen(name,256);
 			nprof->access = conf_profile::profRW;
 			// Profile content
-			nprof->conf.annex = (annex_t)opt_values[2];
 			nprof->conf.wires = twoWire; // nprof->conf.wires = (wires_t)wires;
-			nprof->conf.power = (power_t)opt_values[3];
 			nprof->conf.line_probe = disable;
-			nprof->conf.rate = opt_values[1];
-			nprof->conf.tcpam = (tcpam_t)opt_values[0];
+
+
+			int ind;
+			char *curopt;
+			// Profile name
+			curopt = "name";
+			OPTINDEX(prof_opts,prof_optsnum,curopt,ind);
+			if( ind < 0 ){
+				syslog(LOG_ERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
+				PDEBUG(DERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
+				exit(0);
+			}
+			nprof->name = strndup(prof_opts[ind].svalue(),256);
+			nprof->nsize = strnlen(nprof->name,256);
+
+			// Profile annex value
+			curopt = "annex";
+			OPTINDEX(prof_opts,prof_optsnum,curopt,ind);
+			if( ind < 0 ){
+				syslog(LOG_ERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
+				PDEBUG(DERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
+				exit(0);
+			}
+			nprof->conf.annex = (annex_t)prof_opts[ind].value();
+
+			// Profile power value
+			curopt = "power";
+			OPTINDEX(prof_opts,prof_optsnum,curopt,ind);
+			if( ind < 0 ){
+				syslog(LOG_ERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
+				PDEBUG(DERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
+				exit(0);
+			}
+			nprof->conf.power = (power_t)prof_opts[ind].value();
+
+			// Profile tcpam val
+			curopt = "tcpam";
+			OPTINDEX(prof_opts,prof_optsnum,curopt,ind);
+			if( ind < 0 ){
+				syslog(LOG_ERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
+				PDEBUG(DERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
+				exit(0);
+			}
+			nprof->conf.tcpam = (tcpam_t)prof_opts[ind].value();
+
+
+			// Profile tcpam val
+			curopt = "rate";
+			OPTINDEX(prof_opts,prof_optsnum,curopt,ind);
+			if( ind < 0 ){
+				syslog(LOG_ERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
+				PDEBUG(DERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
+				exit(0);
+			}
+			nprof->conf.rate = prof_opts[ind].value();
+			if( (int)nprof->conf.rate < 0 ){
+				// Get mrate value
+				PDEBUG(DFULL,"Get mrate option value");
+				curopt = "mrate";
+				OPTINDEX(prof_opts,prof_optsnum,curopt,ind);
+				if( ind < 0 ){
+					syslog(LOG_ERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
+					PDEBUG(DERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
+					exit(0);
+				}
+				nprof->conf.rate = prof_opts[ind].value();
+			}
+
 			// compatibility
-			nprof->comp = (EOC_dev::compatibility_t)opt_values[4];
+			curopt = "comp";
+			OPTINDEX(prof_opts,prof_optsnum,curopt,ind);
+			if( ind < 0 ){
+				syslog(LOG_ERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
+				PDEBUG(DERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
+				exit(0);
+			}
+			nprof->comp = (EOC_dev::compatibility_t)prof_opts[ind].value();
+
+			// Check compatibility
 			if( nprof->check_comp() ) {
+				PDEBUG(DERR,"Not compatible!");
 				char buf[256];
 				EOC_dev::comp_name(nprof->comp,buf);
 				syslog(LOG_ERR,"eocd(read_config): Skip profile \"%s\", settings not compatible with %s level",
-					name,buf);
+					nprof->name,buf);
+				PDEBUG(DERR,"After syslog!");
 				PDEBUG(DERR,"eocd(read_config): Skip profile \"%s\", settings not compatible with %s level",
-					name,buf);
+					nprof->name,buf);
 				continue;
 			}
 
@@ -1480,6 +1555,7 @@ int EOC_main::app_spanname(app_frame *fr) {
 				: el->nsize;
 			strncpy(p->spans[filled].name, el->name, cp_len);
 			p->spans[filled].t = el->eng->get_type();
+			p->spans[filled].comp = el->eng->get_compat();
 			filled++;
 			el = (channel_elem*) channels.next(el->name, el->nsize);
 		}

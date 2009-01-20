@@ -23,3 +23,7 @@ Version 2.18 (07.12.08)
 Version 2.25 (11.01.09)
 	1. Add initial Kdb support 
 	2. Add profiles compatibility logic
+
+Version 2.26 (19.01.09)
+	1. Change kdb span profile representation. Now it presented as
+		sys_eocd_sprof_<x>="name=<prof-name> tcpam={TCPAMXXX} rate=<rate> annex={A,B} power={on,off} [mrate=<rate>]"

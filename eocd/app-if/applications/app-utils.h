@@ -5,10 +5,11 @@
 struct eoc_channel{
 	char *name;
 	dev_type t;
+	EOC_dev::compatibility_t comp;
 };
 
 
-// Convertions between strings and vars 
+// Convertions between strings and vars
 char *unit2string(unit u);
 unit string2unit(char *u);
 char *side2string(side s);

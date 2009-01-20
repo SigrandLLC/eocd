@@ -32,6 +32,7 @@ typedef enum { APP_SET,APP_GET,APP_GET_NEXT } app_types;
 struct span_desc{
     char name[SPAN_NAME_LEN];
 	dev_type t;
+	EOC_dev::compatibility_t comp;
 };
 
 typedef struct{
