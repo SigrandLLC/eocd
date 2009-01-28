@@ -27,3 +27,11 @@ Version 2.25 (11.01.09)
 Version 2.26 (19.01.09)
 	1. Change kdb span profile representation. Now it presented as
 		sys_eocd_sprof_<x>="name=<prof-name> tcpam={TCPAMXXX} rate=<rate> annex={A,B} power={on,off} [mrate=<rate>]"
+
+Version 2.27 (28.01.09)
+	1. Fix kdb config profiles processing
+	2. Fix hash_table processing
+	3. Fix destruction of conf. profiles and channels
+	NOTE: memory leack while configuration still presents
+
+

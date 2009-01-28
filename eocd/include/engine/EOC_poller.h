@@ -32,12 +32,17 @@ class EOC_poller{
 			req_hndl[i] = NULL;
     }
     ~EOC_poller(){
-		delete db;
-		delete sch;
-		delete cfg;
+    	if( db ){
+    		delete db;
+    		db = NULL;
+    	}
+    	if( sch ){
+    		delete sch;
+    		sch = NULL;
+    	}
     }
     void link_state(EOC_dev::Linkstate link);
-    inline EOC_dev::Linkstate link_state(){ 
+    inline EOC_dev::Linkstate link_state(){
 		return ((sch->state()==EOC_scheduler::Offline) ? EOC_dev::OFFLINE : EOC_dev::ONLINE);
     }
 
@@ -50,7 +55,7 @@ class EOC_poller{
     inline int unit_quan(){ db->unit_quan(); }
     inline int reg_quan(){ db->reg_quan(); }
     inline int link_established(){ db->link_state(); }
-      
+
 };
 
 #endif

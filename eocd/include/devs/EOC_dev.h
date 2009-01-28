@@ -7,6 +7,8 @@
 #include <generic/EOC_msg.h>
 #include <generic/EOC_responses.h>
 
+#define EOCD
+
 class EOC_dev {
 public:
 	typedef enum {

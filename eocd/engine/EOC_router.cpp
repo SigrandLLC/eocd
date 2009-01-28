@@ -5,18 +5,16 @@
 #include <generic/EOC_responses.h>
 #include <generic/EOC_requests.h>
 
-#include <eoc_debug.h>
-
 EOC_router::EOC_router(dev_type r,EOC_dev *side)
 {
     int i;
     // initial initialising
-    if( !side ) 
+    if( !side )
 		return;
     zero_init();
     // setup router
     switch(r){
-    case master:	
+    case master:
         ifs[if_cnt].sunit = stu_c;
 		ifs[if_cnt].out_dir = EOC_msg::DOWNSTREAM;
 		ifs[if_cnt].in_dir = EOC_msg::UPSTREAM;
@@ -37,7 +35,7 @@ EOC_router::EOC_router(dev_type r,EOC_dev *side)
     // loopback setup
     loop_head = loop_tail = 0;
 }
-	
+
 EOC_router::EOC_router(dev_type r,EOC_dev *nside,EOC_dev *cside)
 {
     int i;
@@ -49,11 +47,11 @@ EOC_router::EOC_router(dev_type r,EOC_dev *nside,EOC_dev *cside)
 		return;
 
     ifs[net_side].in_dir = EOC_msg::UPSTREAM;
-    ifs[net_side].out_dir = EOC_msg::DOWNSTREAM;    
+    ifs[net_side].out_dir = EOC_msg::DOWNSTREAM;
     ifs[net_side].state = eoc_Offline;
     ifs[net_side].sdev = nside;
     ifs[cust_side].in_dir = EOC_msg::DOWNSTREAM;
-    ifs[cust_side].out_dir = EOC_msg::UPSTREAM;    
+    ifs[cust_side].out_dir = EOC_msg::UPSTREAM;
     ifs[cust_side].state = eoc_Offline;
     ifs[cust_side].sdev = cside;
     if_cnt = 2;
@@ -66,7 +64,9 @@ EOC_router::EOC_router(dev_type r,EOC_dev *nside,EOC_dev *cside)
 
 EOC_router::~EOC_router(){
     int i;
+	PDEBUG(DFULL,"start");
     for(i=0;i<if_cnt;i++){
+    	PDEBUG(DFULL,"delete %d dev",i);
 		delete ifs[i].sdev;
     }
 }
@@ -149,8 +149,8 @@ EOC_router::process_discovery(int if_ind,EOC_msg *m)
     EOC_dev *dev = get_route_dev(if_ind);
     unit u;
     resp_discovery *r;
-    
-    (*m->payload())++;    
+
+    (*m->payload())++;
     u = (unit)(*m->payload() + 2);
     resp = new EOC_msg(m,RESP_DISCOVERY_SZ);
 
@@ -168,7 +168,7 @@ EOC_router::process_discovery(int if_ind,EOC_msg *m)
 		PDEBUG(DERR,"\tmessage src=%d,dst=%d,id=%d",resp->src(),resp->dst(),resp->type());
 		resp->src(ifs[if_ind].sunit);
         r=(resp_discovery*)resp->payload();
-		// Setup some fields	
+		// Setup some fields
 		strcpy((char*)r->vendor_id,"Vendor"); // "Sigrand"); TODO: maybe OEM?
         r->eoc_softw_ver=1;
 		r->shdsl_ver = 0x80;
@@ -184,7 +184,7 @@ EOC_router::csunit()
     int i;
     if( !if_cnt )
 		return err;
-	
+
     switch( type ){
     case slave:
 		return stu_c;
@@ -202,7 +202,7 @@ EOC_router::nsunit()
     int i;
     if( !if_cnt )
 		return err;
-	
+
     switch( type ){
     case slave:
 		return stu_r;
@@ -220,7 +220,7 @@ EOC_router::csdev()
     int i;
     if( !if_cnt )
 		return NULL;
-	
+
     switch( type ){
     case master:
 		return ifs[0].sdev;
@@ -234,12 +234,12 @@ EOC_router::csdev()
 
 
 EOC_dev *
-EOC_router::nsdev()    
+EOC_router::nsdev()
 {
     int i;
     if( !if_cnt )
 		return NULL;
-	
+
     switch( type ){
     case master:
 		return NULL;
@@ -349,13 +349,13 @@ EOC_router::receive()
 			delete m;
 			continue;
 		}
-	
+
 		PDEBUG(DERR,"ROUTER(%s): Not REQ_DISCOVERY",(type==master)?"master":"slave");
-		// retranslate Broadcast to next device	
+		// retranslate Broadcast to next device
 		if( m->dst() == BCAST && route_dev ){
-			PDEBUG(DERR,"ROUTER(%s): retranslate broadcast",(type==master)?"master":"slave");	    
+			PDEBUG(DERR,"ROUTER(%s): retranslate broadcast",(type==master)?"master":"slave");
 			if( route_dev->send(m) ){
-				// send error handling 
+				// send error handling
 			}
 		}
 
@@ -365,7 +365,7 @@ EOC_router::receive()
 				PDEBUG(DERR,"ROUTER(%s): state is eoc_Discovery",(type==master)?"master":"slave");
 				delete m;
 				icnt++;
-				continue;		    
+				continue;
 			}
 			ret = m;
 			goto exit;
@@ -390,8 +390,8 @@ int
 EOC_router::send(EOC_msg *m)
 {
     EOC_msg::Direction dir;
-    int i; 
-    int ret = 0;   
+    int i;
+    int ret = 0;
     u8 loop_added = 0;
 
 	// This is outgoing message - get direction
@@ -411,7 +411,7 @@ EOC_router::send(EOC_msg *m)
 			//			new_m->dst(ifs[i].sunit);
 			ret += add_loop(new_m);
 			PDEBUG(DERR,"ROUTER(%s): LOOPBACK: src(%d) dst(%d) id(%d), RET=%d",(type==master)?"master":"slave",
-				   m->src(),m->dst(),m->type(),ret); 
+				   m->src(),m->dst(),m->type(),ret);
 			if( m->dst() != BCAST ){
 				// We send localy addressed msg - quit
 				return ret;
@@ -419,8 +419,8 @@ EOC_router::send(EOC_msg *m)
 			break;
 		}
 	}
-	
-	
+
+
 	// Send message through dedicated interface
     for(i=0;i<if_cnt;i++){
 		if( ifs[i].out_dir == dir ){
@@ -429,7 +429,7 @@ EOC_router::send(EOC_msg *m)
 			PDEBUG(DFULL,"Sending message");
 			if( link != EOC_dev::OFFLINE ){
 				PDEBUG(DERR,"ROUTER(%s): OUT: src(%d) dst(%d) id(%d)",(type==master)?"master":"slave",
-						m->src(),m->dst(),m->type()); 
+						m->src(),m->dst(),m->type());
 				ret += ifs[i].sdev->send(m);
 			}
 			PDEBUG(DFULL,"Sending message - complete");

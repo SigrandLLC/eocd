@@ -1,6 +1,11 @@
 #ifndef EOC_ENGINE_ACT_H
 #define EOC_ENGINE_ACT_H
 
+// TODO: delete - debug
+#include <sys/types.h>
+#include <dirent.h>
+//-----------------------
+
 #include <devs/EOC_dev.h>
 #include <devs/EOC_dev_terminal.h>
 
@@ -24,9 +29,11 @@ class EOC_engine_act : public EOC_engine {
  public:
     EOC_engine_act(EOC_dev_terminal *d1,EOC_config *cfg,u16 ticks_p_min=0,u16 rmax = 10);
     inline ~EOC_engine_act(){
-		if( rtr ) delete rtr;
-		if( resp ) delete resp;
-		if( poll ) delete poll;
+    	PDEBUG(DFULL,"destructor");
+		if( poll ){
+			delete poll;
+			poll = NULL;
+		}
     }
 
     int setup_state_act();

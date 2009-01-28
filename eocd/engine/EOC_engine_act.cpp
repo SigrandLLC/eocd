@@ -36,18 +36,18 @@ register_handlers(){
 // Terminal constructor
 
 EOC_engine_act::
-EOC_engine_act(EOC_dev_terminal *d1,EOC_config *c,u16 ticks_p_min,u16 rmax) : 
+EOC_engine_act(EOC_dev_terminal *d1,EOC_config *c,u16 ticks_p_min,u16 rmax) :
 	EOC_engine(d1,c,master,rmax)
 {
 	ASSERT( d1 );
 	recv_max = rmax;
 	poll = new EOC_poller(cfg,ticks_p_min,rtr->loops());
 	register_handlers();
-  pbo_changed = 0;
+	pbo_changed = 0;
 }
 
 //----------------------------------------------------------------------
-// setup_state - setups poller link status if i really changes 
+// setup_state - setups poller link status if i really changes
 // on device
 
 int EOC_engine_act::
@@ -99,13 +99,13 @@ set_pbo(int &mode,char *buf)
   if( !strncmp(pbo_vals,buf,PBO_SETTING_LEN) ){
   	return 0;
   }
-  
+
   if( buf )
     strncpy(pbo_vals,buf,PBO_SETTING_LEN);
   else
     pbo_vals[0] = '\0';
   pbo_changed = 1;
-  
+
   return 0;
 }
 
@@ -131,7 +131,7 @@ schedule(char *ch_name)
 
 	if( setup_state_act() )
     return -1;
-    
+
 	int i=0;
 	int cnt;
 
@@ -152,8 +152,8 @@ schedule(char *ch_name)
           break;
         }
       }else if( ret ){
-        // several messages to respond  
-        for(i=0;i<cnt;i++){ 
+        // several messages to respond
+        for(i=0;i<cnt;i++){
           if( rtr->send(ret[i]) ){
             for(int j=0;j<cnt;j++){
               delete ret[j];
@@ -164,7 +164,7 @@ schedule(char *ch_name)
             break;
           }
         }
-				// BUG fix (03.07.08): missing of this loop 
+				// BUG fix (03.07.08): missing of this loop
 				// leads to memory leack
 				for(int j=0;j<cnt;j++){
 					delete ret[j];
@@ -199,7 +199,7 @@ schedule(char *ch_name)
 
 
 int EOC_engine_act::
-app_request(app_frame *fr){ 
+app_request(app_frame *fr){
 
 	switch( fr->id() ){
 	case APP_SPAN_PARAMS: {
@@ -235,7 +235,7 @@ app_request(app_frame *fr){
       break;
     }
     p->max_prate = cfg.rate;
-    p->act_prate = cfg.rate; 
+    p->act_prate = cfg.rate;
     p->tcpam = cfg.tcpam;
     break;
   }

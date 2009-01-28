@@ -8,6 +8,8 @@
 #include <list>
 using namespace std;
 
+#define EOC_DEBUG
+#include <generic/EOC_generic.h>
 
 class hash_elem{
   public:
@@ -23,23 +25,29 @@ class hash_elem{
         return 1;
       return 0;
     }
+
+    ~hash_elem(){
+    	PDEBUG(DFULL,"destruct %s hash element",name);
+    	free(name);
+    	PDEBUG(DFULL,"end");
+    }
 };
 
 
 class hash_table{
   private:
     list< hash_elem *> table[HASH_SIZE];
-    int _hash(char *name);
+    int _hash(const char *name);
     int max_hash_name;
     // sequential list of table items
     hash_elem *head,*tail;
   public:
     hash_table(int mhash_name);
     ~hash_table();
-    hash_elem *find(char *name, int nsize);
+    hash_elem *find(const char *name, int nsize);
     int add(hash_elem *el);
-    hash_elem *del(char *name,int nsize);
-    hash_elem *del_nofree(char *name,int nsize);
+    hash_elem *del(const char *name,int nsize);
+    //hash_elem *del_nofree(char *name,int nsize);
     void sort();
     // sequential trace
     inline hash_elem *first(){ return head; }
@@ -50,7 +58,7 @@ class hash_table{
       return el->next;
     }
     // Clear table from non actual rows (which wasnt updated)
-    void clear();
+    void clear(void (*del_func)(hash_elem *el));
 };
 
 #endif

@@ -10,6 +10,7 @@
 #include <generic/EOC_msg.h>
 #include <generic/EOC_generic.h>
 #include <devs/EOC_dev.h>
+#define EOC_DEBUG
 #include <eoc_debug.h>
 
 
@@ -27,7 +28,7 @@ class EOC_router{
     struct interface ifs[SHDSL_MAX_IF];
     unsigned char if_cnt,if_poll;
     int max_recv_msg;
-    
+
     inline void zero_init();
     inline EOC_dev *get_route_dev(int if_ind);
     inline int out_direction(EOC_msg::Direction *dir);
@@ -91,14 +92,14 @@ class EOC_router{
     int send(EOC_msg *m);
 
     unit csunit();
-    unit nsunit();    
+    unit nsunit();
     EOC_dev *csdev();
-    EOC_dev *nsdev();    
+    EOC_dev *nsdev();
 
     int csunit(unit u);
     int nsunit(unit u);
     int term_unit(unit u);
-    void update_state();    
+    void update_state();
     int loops();
 };
 

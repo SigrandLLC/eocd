@@ -1,4 +1,4 @@
-/*************************************************************************** 
+/***************************************************************************
  *
  * Copyright (c) 2005,2007    Vladislav Moskovets (webface-dev(at)vlad.org.ua)
  *
@@ -18,7 +18,7 @@
  *
  *************************************************************************** */
 
-/* TODO: 
+/* TODO:
  *	* multiline import (export)
  *	* raw block partition support for storage
  *	* types
@@ -139,7 +139,7 @@ char *get_dbfilename()
         strcpy(db_filename, getenv("KDB"));
     else if(!getuid())
         strcpy(db_filename, "/etc/kdb");
-    else 
+    else
         sprintf(db_filename, "%s/.kdb", getenv("HOME"));
 
     return  db_filename;
@@ -250,7 +250,7 @@ int db_unserialize(const char *buf)
 	int len=strlen(buf);
     char name[len+10], value[len+10];
 	debug("DEBUG: db_unserialize ('%s')\n", buf);
-	if ( parse_pair(buf, name, value) ) 
+	if ( parse_pair(buf, name, value) )
 		return db_add(str_unescape(name), str_unescape(value), false);
 	else
 		return false;
@@ -318,7 +318,7 @@ int db_read()
 int sort_func(const void *pa, const void *pb){
 	_db_record *a=(_db_record*)pa;
 	_db_record *b=(_db_record*)pb;
-	
+
 	debug("DEBUG: sort() compare '%s' and '%s'\n", a->name, b->name);
 	return strcmp(a->name, b->name);
 }
@@ -336,7 +336,7 @@ inline int print_pair(const char* name, const char* value)
 		prefix="export ";
 	//debug("DEBUG: print_pair(): %s%s=%s\n", prefix, name, value);
 	switch(quotation) {
-		case 0: 
+		case 0:
 			if (name)
 				printf("%s%s=%s\n", prefix, name, value);
 			else
@@ -392,8 +392,8 @@ int find_key(const char *key)
     if ( !key )
         return false;
 
-    for(i=0; i<db_lines_count; i++) 
-        if (!strcmp(key, db_lines[i].name)) 
+    for(i=0; i<db_lines_count; i++)
+        if (!strcmp(key, db_lines[i].name))
             return i;
 
     return -1;
@@ -454,13 +454,13 @@ int db_write(int md5)
 	struct cvs_MD5Context context;
 	unsigned char checksum[16];
 	FILE *fd;
-	
+
 	/* backup kdb and MD5 of kdb */
 	if (md5)
 	{
 		/* generate MD5 file name */
-		snprintf(kdb_md5, FILE_BUF, "%s%s", get_dbfilename(), MD5_SUFFIX);	
-		
+		snprintf(kdb_md5, FILE_BUF, "%s%s", get_dbfilename(), MD5_SUFFIX);
+
 		/* copy db file to reserve file */
 		if (copyfile(get_dbfilename(), KDB_RES) == false)
 		{
@@ -468,11 +468,11 @@ int db_write(int md5)
 			syslog(LOG_ERR, "Can't copy %s to %s", get_dbfilename(), KDB_RES);
 			return false;
 		}
-		
+
 		/* copy db MD5 file to reserve file */
 		copyfile(kdb_md5, KDB_RES_MD5);
 	}
-	
+
 	// sorts the data
 	debug("DEBUG: sorts data\n");
 	db_sort();
@@ -489,7 +489,7 @@ int db_write(int md5)
 	p+=sprintf(buf, HEADER_LINE);
 
 	// write all db_lines
-    for(i=0; i<db_lines_count; i++) 
+    for(i=0; i<db_lines_count; i++)
 		p+=db_serialize(i, p);
 	// append footer
 	strcat(p, FOOTER_LINE);
@@ -498,12 +498,12 @@ int db_write(int md5)
 	debug("DEBUG: writing data to database\n");
 	fwrite(buf, 1, p-buf, db_file);
 	free(buf);
-	
+
 	if (md5)
 	{
 		/* calculate MD5 */
 		rewind(db_file);
-	
+
 		cvs_MD5Init(&context);
 		while ((count = fread(filebuf, 1, FILE_BUF, db_file)) > 0)
 			cvs_MD5Update(&context, filebuf, count);
@@ -513,7 +513,7 @@ int db_write(int md5)
 			return false;
 		}
 		cvs_MD5Final(checksum, &context);
-		
+
 		/* write MD5 */
 		fd = fopen(kdb_md5, "w");
 		if (!fd)
@@ -522,7 +522,7 @@ int db_write(int md5)
 			syslog(LOG_ERR, "fopen '%s' %s\n", kdb_md5, strerror(errno));
 			return false;
 		}
-		
+
 		for (i = 0; i < 16; i++)
 		{
 			if (fprintf(fd, "%02x", (unsigned int) checksum[i]) < 0)
@@ -538,7 +538,7 @@ int db_write(int md5)
 		}
 		fclose(fd);
 	}
-	
+
     return result;
 }
 
@@ -583,10 +583,10 @@ int import(const char *filename)
 
 	db_file = NULL;
 	db_open();
-	
+
 	/* write kdb and generate md5 */
 	db_write(1);
-	
+
 	need_write++;
 
     return result;
@@ -613,10 +613,10 @@ int export(const char *filename)
 	db_read();
 	tmp = db_file;
 	db_file = file;
-	
+
 	/* write KDB without generating MD5 */
 	db_write(0);
-	
+
     fclose(file);
 	db_file = tmp;
     return true;
@@ -635,11 +635,11 @@ int edit(const char* me)
     else
         sprintf(editor, "vi %s", tmpname);
 
-    
+
     sprintf(buf, "%s export > %s", me, tmpname);
     if (system(buf))
         return false;
-    
+
     if (! system(editor))  {
         result=import(tmpname);
         remove(tmpname);
@@ -653,11 +653,11 @@ int rename(const char *oldkey, const char* newkey)
 	db_read();
 	// first - remove newkey
     int index = find_key(newkey);
-	if ( index != -1 ) 
+	if ( index != -1 )
 		db_del_index(index);
 	// replace oldkey name to new name
     index = find_key(oldkey);
-	if ( index == -1 ) 
+	if ( index == -1 )
 		return false;
 	db_set_index(index, newkey, NULL, true);
 	return ++need_write;
@@ -668,7 +668,7 @@ int get(const char *key)
 	int i;
     db_read();
 
-	WILDCARD_LOOP(i, key) 
+	WILDCARD_LOOP(i, key)
 		print_pair(NULL, db_lines[i].value);
 
 	return true;
@@ -680,7 +680,8 @@ int kdb_appget(const char *key,char **ptr)
 	static char buf[512];
     db_read();
 
-	WILDCARD_LOOP(i, key){ 
+printf("KDB: buf=%p\n",buf);
+	WILDCARD_LOOP(i, key){
 		if( !cnt ){
 			snprintf(buf,512,"%s",db_lines[i].value);
 		}
@@ -704,7 +705,7 @@ int set(const char *str)
 	int i;
 
 	db_read();
-	if (!parse_pair(str, iname, ivalue)) 
+	if (!parse_pair(str, iname, ivalue))
 		return false;
 
 	if (! strcmp (ivalue, ENV_STRING) ) {
@@ -760,7 +761,7 @@ int sublist(const char *key)
                 print_pair(s, db_lines[i].value);
 				count++;
             }
-        } 
+        }
     }
 	print_count(count);
 
@@ -787,7 +788,7 @@ int keylist(const char *key)
 // sub sub keylist with wildcard matching
 // finds patter in 'name=value'
 // and cutoff cut_prefix and cut_suffix
-// Example: 
+// Example:
 // # kdb ls
 // sys_iface_dsl0_valid=1
 // sys_iface_dsl1_valid=0
@@ -797,7 +798,7 @@ int keylist(const char *key)
 // dsl0
 // eth0
 // eth1
-// 
+//
 int sskeylist(const char* pattern, const char *cut_prefix, const char* cut_suffix)
 {
     int i=0, count=0;
@@ -819,7 +820,7 @@ int sskeylist(const char* pattern, const char *cut_prefix, const char* cut_suffi
 					tail[0]='\0';
                 print_pair(NULL, strbuf);
             }
-        } 
+        }
     }
 
 	return true;
@@ -841,7 +842,7 @@ int listrm(const char *key)
 	};
 	strncpy(prefix_name, key, s-key+1);
 	debug("DEBUG: prefix_name=%s\n", prefix_name);
-	
+
 	// finds all key_[0-9]+ keys, and move it to local_lines array
 	i=0;
 	while(true) {
@@ -895,14 +896,14 @@ int list_getnextindex(const char *name)
 }
 
 // UNFINISHED!!!
-int list_getnext(const char *str) 
+int list_getnext(const char *str)
 {
     int result=true;
 	int i, index;
 	const int max_index=MAX_LINES/2;
     char name[MAX_LINE_SIZE], value[MAX_LINE_SIZE], s[MAX_LINE_SIZE];
     db_read();
-	
+
 	parse_pair(str, name, value);
 
 	for ( i=0; i < strlen(name); i++ )
@@ -910,7 +911,7 @@ int list_getnext(const char *str)
 			name[i]='\0';
 			break;
 		}
-	
+
 	/*
 	for ( index=0; index < max_index; index++ ) {
 		sprintf(s, "%s%d_", name, index);
@@ -929,15 +930,15 @@ int listadd(const char* str)
 	int i,index;
     char name[MAX_LINE_SIZE], value[MAX_LINE_SIZE], s[MAX_LINE_SIZE];
     db_read();
-	
+
 	parse_pair(str, name, value);
-	
+
 	// check for '_' at the end of string
 	if ( name[strlen(name)-1] != '_' ) {
 		syslog(LOG_ERR, "Error: key should ends with '_'\n");
 		return false;
 	};
-		
+
 	snprintf(s, sizeof(s), "%s%d", name, list_getnextindex(name));
 
 	if (! strcmp (value, ENV_STRING) ) {
@@ -962,7 +963,7 @@ int list(const char *key)
     int i=0, count=0;
 	const char *wkey;
 
-	// use '*' if key is empty 
+	// use '*' if key is empty
 	if (key && key[0])
 		wkey=key;
 	else
@@ -995,7 +996,7 @@ int createdb(const char *filename)
 
 	db_open();
 	need_write=true;
-   
+
     return true;
 };
 
@@ -1032,11 +1033,11 @@ int main(int argc, char **argv)
 
 	openlog("kdb", LOG_PERROR, LOG_USER);
 
-    if ( argc <= optind ) 
+    if ( argc <= optind )
         show_usage(argv[0]);
 
 	while(true) {
-		if ( optind >= argc ) 
+		if ( optind >= argc )
 			break;
 
 		strcpy(cmd, argv[optind]);
@@ -1075,9 +1076,9 @@ int main(int argc, char **argv)
 				result = sskeylist(param, pref, suff);
 				optind+=1;
 			} else
-				result = false; 
+				result = false;
 		}
-		
+
 		else if ( (!strcmp(cmd, "del")) || (!strcmp(cmd, "rm")) )
 			result = del(param);
 		else if ( !strcmp(cmd, "edit") )
@@ -1090,7 +1091,7 @@ int main(int argc, char **argv)
 			result = import(param);
 		else if ( !strcmp(cmd, "export") )
 			result = export(param);
-		else 
+		else
 			show_usage(argv[0]);
 		if (!result)
 			break;
@@ -1149,7 +1150,7 @@ char *str_escape(const char *source)
 			*q++ = '\\';
 			*q++ = 'v';
 			break;
-		case '\\': case '"': case '\'': 
+		case '\\': case '"': case '\'':
 			*q++ = '\\';
 			*q++ = *p;
 			break;
@@ -1245,7 +1246,7 @@ int is_wildcarded(const char *str)
 
 /* Wildcard code from ndtpd */
 /*
- * Copyright (c) 1997, 98, 2000, 01  
+ * Copyright (c) 1997, 98, 2000, 01
  *    Motoyuki Kasahara
  *    ndtpd-3.1.5
  */
@@ -1253,7 +1254,7 @@ int is_wildcarded(const char *str)
 /*
  * Do wildcard pattern matching.
  * In the pattern, the following characters have special meaning.
- * 
+ *
  *   `*'    matches any sequence of zero or more characters.
  *   '\x'   a character following a backslash is taken literally.
  *          (e.g. '\*' means an asterisk itself.)
@@ -1302,7 +1303,7 @@ int copyfile(const char *src, const char *dst)
 	fd_src = fopen(src, "r");
 	if (!fd_src)
 		return false;
-	
+
 	/* open destination file for W */
 	fd_dst = fopen(dst, "w");
 	if (!fd_dst)
@@ -1310,7 +1311,7 @@ int copyfile(const char *src, const char *dst)
 		fclose(fd_src);
 		return false;
 	}
-	
+
 	/* copy file */
 	while (count = fread(buf, 1, FILE_BUF, fd_src))
 	{
@@ -1320,20 +1321,20 @@ int copyfile(const char *src, const char *dst)
 			fclose(fd_src);
 			return false;
 		}
-		
+
 		if (fwrite(buf, 1, count, fd_dst) != count)
 		{
 			fclose(fd_src);
 			fclose(fd_dst);
 			return false;
 		}
-		
+
 		if (feof(fd_src))
-			break;		
+			break;
 	}
-	
+
 	fclose(fd_src);
 	fclose(fd_dst);
-	
+
 	return true;
 }

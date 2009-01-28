@@ -1,6 +1,11 @@
 #ifndef EOC_ENGINE_H
 #define EOC_ENGINE_H
 
+// TODO: delete - debug
+#include <sys/types.h>
+#include <dirent.h>
+//-----------------------
+
 #include <devs/EOC_dev.h>
 #include <devs/EOC_dev_terminal.h>
 #include <generic/EOC_types.h>
@@ -23,9 +28,22 @@ class EOC_engine{
     EOC_engine(EOC_dev_terminal *d1,EOC_config *c,dev_type t = slave,u16 rmax = RECV_ONCE);
     EOC_engine(EOC_dev *d1,EOC_dev *d2, u16 rmax = RECV_ONCE);
     inline ~EOC_engine(){
-		if( rtr ) delete rtr;
-		if( resp ) delete resp;
-		if( cfg ) delete cfg;
+    	PDEBUG(DFULL,"delete responder");
+		if( resp ){
+			delete resp;
+			resp = NULL;
+		}
+    	PDEBUG(DFULL,"delete config");
+    	if( cfg ){
+    		delete cfg;
+    		cfg = NULL;
+    	}
+    	PDEBUG(DFULL,"delete router");
+		if( rtr ){
+			delete rtr;
+			rtr = NULL;
+		}
+    	PDEBUG(DFULL,"end");
     }
 	EOC_config *config(){ return cfg; }
     int setup_state();

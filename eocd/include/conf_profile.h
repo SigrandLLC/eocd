@@ -6,6 +6,9 @@
 #include <generic/span_conf_type.h>
 #include <devs/EOC_dev.h>
 
+#define EOC_DEBUG
+#include <generic/EOC_generic.h>
+
 struct span_compat_info {
 	tcpam_t tcpam_max;
 	int rate_max;
@@ -42,6 +45,11 @@ public:
 
 		comp = EOC_dev::comp_base;
 	}
+
+	~conf_profile() {
+		PDEBUG(DFULL,"destructor");
+	}
+
 	int check_comp() {
 		if (!((unsigned int) comp < COMP_LEV_NUM)) {
 			PDEBUG(DERR, "Comp level = %d > %d", (int) comp, COMP_LEV_NUM);
@@ -53,6 +61,8 @@ public:
 		return !((conf.tcpam <= comp_levels[(int) comp].tcpam_max) && (conf.rate
 			<= comp_levels[(int) comp].rate_max));
 	}
+
+
 };
 
 #endif

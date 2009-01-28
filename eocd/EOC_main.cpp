@@ -36,54 +36,55 @@ EOC_dev_terminal *init_dev(char *name);
 #ifndef VIRTUAL_DEVS
 EOC_dev_terminal *
 init_dev(char *name) {
-	char *path = OS_IF_PATH;
+	char path[] = OS_IF_PATH;
 	DIR *dir;
 	struct dirent *ent;
 	EOC_dev_terminal *dev = NULL;
 
-	if (!(dir = opendir(path))) {
-		printf("Cannot open %s\n", path);
+	PDEBUG(DFULL,"start: path=%s. Continue?:",path);
+	dir = opendir(path);
+	if (!dir) {
+		PDEBUG(DERR,"Cannot open %s\n", path);
 		return NULL;
 	}
-
+	PDEBUG(DFULL,"readdir");
 	while ((ent = readdir(dir))) {
+		PDEBUG(DFULL,"Check %s entry",ent->d_name);
+
 		if (!strcmp(ent->d_name, name)) {
-			printf("IF %s is phisicaly present\n", name);
+			PDEBUG(DERR,"IF %s is phisicaly present\n", name);
 			char cfg_dir[PATH_SIZE];
 			DIR *dir1;
 			mr17h_conf_dir(ent->d_name, cfg_dir, PATH_SIZE);
 			if (dir1 = opendir(cfg_dir)) {
-				printf("Seems it mr17h\n");
+				PDEBUG(DERR,"Seems it mr17h\n");
 				dev = (EOC_dev_terminal*) new EOC_mr17h(name);
 				closedir(dir1);
 				side_perf s;
 				if (!dev->init_ok()) {
-					printf("Error initialising %s\n", name);
+					PDEBUG(DERR,"Error initialising %s\n", name);
 					delete dev;
-					return NULL;
+					dev = NULL;
+					goto exit;
 				}
-				printf("Dev %s successfully initialised\n", name);
-				return dev;
+				PDEBUG(DERR,"Dev %s successfully initialised\n", name);
+				goto exit;
 			}
-			/*      else {
-			 snprintf(cfg_dir,256,"/sys/bus/pci/drivers/sg16lan/%s",ent->d_name);
-			 if( dir1 = opendir(cfg_dir) ){
-			 dev = new EOC_mr16h(name);
-			 closedir(dir1);
-			 if( !dev.init_ok() ){
-			 delete dev;
-			 return NULL;
-			 }
-			 return dev;
-			 }
-			 }
-			 */
 		}
 	}
+exit:
 	closedir(dir);
-	return NULL;
+	return dev;
 }
 #endif // #ifndef VIRTUAL_DEVS
+
+void del_channel_elem(hash_elem *h) {
+	delete (channel_elem*)h;
+}
+void del_conf_profile(hash_elem *h) {
+	delete (conf_profile*) h;
+}
+
 #ifndef KDB_CONFIG
 
 int EOC_main::read_config() {
@@ -376,6 +377,12 @@ int EOC_main::read_config() {
 				if (memcmp(&cprof->conf, &nprof->conf,
 					sizeof(span_conf_profile_t))) {
 					PDEBUG(DERR, "Profile changed - modify");
+					// TODO: ERROR SHOULD BE FIXED! WE NEED TO COPY ONLY ->conf PART!!!!
+					PDEBUG(
+						DERR,
+						"(line %d),ERROR SHOULD BE FIXED! WE NEED TO COPY ONLY ->conf PART!!!!",
+						__LINE__);
+					exit(0);
 					memcpy(cprof, nprof, sizeof(conf_profile));
 					delete nprof;
 				}
@@ -758,6 +765,19 @@ extern "C" {
 	int kdbinit();
 }
 
+void strprint(char *ch,int len)
+{
+	printf("\n---------------------\n");
+	for(int i=0;i<len;i++){
+		if( ch[i] != '\0')
+			printf("%c",ch[i]);
+		else
+			printf("\0");
+	}
+	printf("\n---------------------\n");
+
+}
+
 int EOC_main::
 read_config()
 {
@@ -797,38 +817,34 @@ read_config()
 
 		// 1. Add default configuration profile compatible with all devices
 		{
-			conf_profile *nprof = new conf_profile;
-			memset(nprof,0,sizeof(conf_profile));
-			nprof->name = strdup("default");
-			nprof->nsize = strlen(nprof->name);
-			nprof->access = conf_profile::profRO;
-			// Profile settings
-			nprof->conf.annex = annex_a;
-			nprof->conf.wires = twoWire;
-			nprof->conf.power = noPower;
-			nprof->conf.clk = localClk;
-			nprof->conf.line_probe = disable;
-			nprof->conf.rate = 2304;
-			nprof->conf.tcpam = tcpam16;
-			// compatibility: default is basic
-			nprof->comp = EOC_dev::comp_base;
-			// Check compatibility. Should never be erroneous
-			if( nprof->check_comp() ) {
-				syslog(LOG_ERR,"eocd(read_config): Fatal error: \"default\" profile is not compatible with basical level");
-				PDEBUG(DERR,"eocd(read_config): Fatal error: \"default\" profile is not compatible with basical level");
-				exit(1);
-			}
-
-			PDEBUG(DERR,"Save profile %s",nprof->name);
-			conf_profile *cprof = (conf_profile *)conf_profs.find(nprof->name,nprof->nsize);
+			char *defname = "default";
+			conf_profile *cprof = (conf_profile *)conf_profs.find(defname,strlen(defname));
 			if( !cprof ) {
-				PDEBUG(DERR,"Create new profile");
-				// New profile
-				nprof->is_updated = 1;
-				conf_profs.add(nprof);
-			} else {
-				cprof->is_updated = 1;
+				cprof = new conf_profile;
+				memset(cprof,0,sizeof(conf_profile));
+				cprof->name = strdup("default");
+				cprof->nsize = strlen(cprof->name);
+				cprof->access = conf_profile::profRO;
+				// Profile settings
+				cprof->conf.annex = annex_a;
+				cprof->conf.wires = twoWire;
+				cprof->conf.power = noPower;
+				cprof->conf.clk = localClk;
+				cprof->conf.line_probe = disable;
+				cprof->conf.rate = 2304;
+				cprof->conf.tcpam = tcpam16;
+				// compatibility: default is basic
+				cprof->comp = EOC_dev::comp_base;
+				// Check compatibility. Should never be erroneous
+				if( cprof->check_comp() ) {
+					syslog(LOG_ERR,"eocd(read_config): Fatal error: \"default\" profile is not compatible with basical level");
+					PDEBUG(DERR,"eocd(read_config): Fatal error: \"default\" profile is not compatible with basical level");
+					exit(1);
+				}
+				conf_profs.add(cprof);
 			}
+			cprof->is_updated = 1;
+			PDEBUG(DERR,"Save profile %s",cprof->name);
 		}
 
 		// 2. read all elements of conf_profiles
@@ -841,11 +857,12 @@ read_config()
 		} \
 	}
 
+		// Changing profile index till fault
 		for(int i=0;;i++) {
 			char option[256];
-			cfg_option prof_opts[] = { cfg_option("name"),cfg_option("tcpam",tcpam_vals,tcpam_vsize),
-				cfg_option("annex",annex_vals,annex_vsize),cfg_option("power",power_vals,power_vsize),
-				cfg_option("rate",0,0,1,64),cfg_option("mrate",0,0,1,64),cfg_option("comp",comp_vals,comp_vsize) };
+			cfg_option prof_opts[] = {cfg_option(1,"name"),cfg_option(1,"tcpam",tcpam_vals,tcpam_vsize),
+				cfg_option(1,"annex",annex_vals,annex_vsize),cfg_option(1,"power",power_vals,power_vsize),
+				cfg_option(1,"rate",0,0,1,64),cfg_option(0,"mrate",0,0,1,64),cfg_option(1,"comp",comp_vals,comp_vsize)};
 			int prof_optsnum = sizeof(prof_opts)/sizeof(cfg_option);
 
 			char *str1,*str2;
@@ -863,188 +880,179 @@ read_config()
 
 			str1 = opt;
 
-			for (j = 1; ; j++, str1 = NULL) {
+			for (j = 1;; j++, str1 = NULL) {
 				token = strtok_r(str1, " ", &saveptr1);
 				if (token == NULL)
-					break;
+				break;
 				printf("%d: %s\n", j, token);
 
 				char ptrs[2][MAX_OPTSTR];
 				int i;
-				for (i=0,str2 = token; i<2 ; str2 = NULL,i++) {
+				for (i=0,str2 = token; i<2; str2 = NULL,i++) {
 					subtoken = strtok_r(str2,"=", &saveptr2);
 					if (subtoken == NULL)
-						break;
+					break;
 					//printf(" --> %s\n", subtoken);
 					strncpy(ptrs[i],subtoken,MAX_OPTSTR);
 				}
 				printf("%s = %s\n",ptrs[0],ptrs[1]);
-				for(i=0;i<prof_optsnum;i++){
+				for(i=0;i<prof_optsnum;i++) {
 					cfg_option::chk_res ret;
 					ret = prof_opts[i].chk_option(ptrs[0],ptrs[1]);
 					if( ret == cfg_option::Accept || ret == cfg_option::Exist )
-						break;
+					break;
 				}
 			}
 
 			int errflg = 0;
-			for(j=0;j<prof_optsnum;j++){
-				if( !prof_opts[i].is_valid() ){
-					syslog(LOG_ERR,"eocd(read_config): profile \"%s\", wrong \"%s\" value",option,prof_opts[i].optname());
+			for(j=0;j<prof_optsnum;j++) {
+				if( !prof_opts[j].is_valid() && prof_opts[j].is_basic() ) {
+					syslog(LOG_ERR,"eocd(read_config): profile \"%s\", wrong \"%s\" value",option,prof_opts[j].optname());
 					PDEBUG(DERR,"eocd(read_config): profile \"%s\", wrong \"%s\" value",option,prof_opts[j].optname());
 					errflg = 1;
 				}
-				if( !strncmp(prof_opts[j].optname(),"name",5) && prof_opts[j].is_int() ){
+				if( !strncmp(prof_opts[j].optname(),"name",5) && prof_opts[j].is_int() ) {
 					syslog(LOG_ERR,"eocd(read_config): FATAL ERROR \"%s\" should be string value",prof_opts[j].optname());
 					PDEBUG(DERR,"eocd(read_config): FATAL ERROR \"%s\" should be string value",prof_opts[j].optname());
 					exit(0);
-				}else if( strncmp(prof_opts[j].optname(),"name",5) && !prof_opts[j].is_int() ){
+				} else if( strncmp(prof_opts[j].optname(),"name",5) && !prof_opts[j].is_int() ) {
 					syslog(LOG_ERR,"eocd(read_config): FATAL ERROR \"%s\" should be int value",prof_opts[j].optname());
 					PDEBUG(DERR,"eocd(read_config): FATAL ERROR \"%s\" should be int value",prof_opts[j].optname());
 					exit(0);
 				}
 				// DEBUG
-				if( prof_opts[j].is_int() ){
+				if( prof_opts[j].is_int() ) {
 					PDEBUG(DFULL," %s = %d",prof_opts[j].optname(),prof_opts[j].value());
-				}else{
+				} else {
 					PDEBUG(DFULL," %s = %s",prof_opts[j].optname(),prof_opts[j].svalue());
 				}
 			}
 
-			if( errflg ){ // Skip prifile
+			if( errflg ) { // Skip prifile
 				syslog(LOG_ERR,"eocd(read_config): Skip profile \"%s\"",option);
 				PDEBUG(DERR,"eocd(read_config): Skip profile \"%s\"",option);
 				continue;
 			}
 
-			// Create new profile and set all default values
-			conf_profile *nprof = new conf_profile;
-			memset(nprof,0,sizeof(conf_profile));
-			// Profile service info
-			nprof->access = conf_profile::profRW;
-			// Profile content
-			nprof->conf.wires = twoWire; // nprof->conf.wires = (wires_t)wires;
-			nprof->conf.line_probe = disable;
-
-
+			// Get profile name
 			int ind;
 			char *curopt;
 			// Profile name
 			curopt = "name";
 			OPTINDEX(prof_opts,prof_optsnum,curopt,ind);
-			if( ind < 0 ){
+			if( ind < 0 ) {
 				syslog(LOG_ERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
 				PDEBUG(DERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
 				exit(0);
 			}
-			nprof->name = strndup(prof_opts[ind].svalue(),256);
-			nprof->nsize = strnlen(nprof->name,256);
+			// Find profile
+			int namelen = strnlen(prof_opts[ind].svalue(),256);
+			conf_profile *cprof = (conf_profile *)conf_profs.find(prof_opts[ind].svalue(),namelen);
+			if( !cprof ) {
+				cprof = new conf_profile;
+				memset(cprof,0,sizeof(conf_profile));
+				cprof->name = strndup(prof_opts[ind].svalue(),256);
+				cprof->nsize = namelen;
+				// Profile service info
+				cprof->access = conf_profile::profRW;
+				// Profile content
+				cprof->conf.wires = twoWire; // nprof->conf.wires = (wires_t)wires;
+				cprof->conf.line_probe = disable;
+				conf_profs.add(cprof);
+			} else if( cprof->access == conf_profile::profRO ) {
+				continue;
+			}
 
 			// Profile annex value
 			curopt = "annex";
 			OPTINDEX(prof_opts,prof_optsnum,curopt,ind);
-			if( ind < 0 ){
+			if( ind < 0 ) {
 				syslog(LOG_ERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
 				PDEBUG(DERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
 				exit(0);
 			}
-			nprof->conf.annex = (annex_t)prof_opts[ind].value();
+			cprof->conf.annex = (annex_t)prof_opts[ind].value();
 
 			// Profile power value
 			curopt = "power";
 			OPTINDEX(prof_opts,prof_optsnum,curopt,ind);
-			if( ind < 0 ){
+			if( ind < 0 ) {
 				syslog(LOG_ERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
 				PDEBUG(DERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
 				exit(0);
 			}
-			nprof->conf.power = (power_t)prof_opts[ind].value();
+			cprof->conf.power = (power_t)prof_opts[ind].value();
 
 			// Profile tcpam val
 			curopt = "tcpam";
 			OPTINDEX(prof_opts,prof_optsnum,curopt,ind);
-			if( ind < 0 ){
+			if( ind < 0 ) {
 				syslog(LOG_ERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
 				PDEBUG(DERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
 				exit(0);
 			}
-			nprof->conf.tcpam = (tcpam_t)prof_opts[ind].value();
-
+			cprof->conf.tcpam = (tcpam_t)prof_opts[ind].value();
 
 			// Profile tcpam val
 			curopt = "rate";
 			OPTINDEX(prof_opts,prof_optsnum,curopt,ind);
-			if( ind < 0 ){
+			if( ind < 0 ) {
 				syslog(LOG_ERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
 				PDEBUG(DERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
 				exit(0);
 			}
-			nprof->conf.rate = prof_opts[ind].value();
-			if( (int)nprof->conf.rate < 0 ){
+			cprof->conf.rate = prof_opts[ind].value();
+			if( (int)cprof->conf.rate < 0 ) {
 				// Get mrate value
 				PDEBUG(DFULL,"Get mrate option value");
 				curopt = "mrate";
 				OPTINDEX(prof_opts,prof_optsnum,curopt,ind);
-				if( ind < 0 ){
+				if( ind < 0 ) {
 					syslog(LOG_ERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
 					PDEBUG(DERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
 					exit(0);
 				}
-				nprof->conf.rate = prof_opts[ind].value();
+				cprof->conf.rate = prof_opts[ind].value();
 			}
 
 			// compatibility
 			curopt = "comp";
 			OPTINDEX(prof_opts,prof_optsnum,curopt,ind);
-			if( ind < 0 ){
+			if( ind < 0 ) {
 				syslog(LOG_ERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
 				PDEBUG(DERR,"eocd(read_config): FATAL ERROR cannot find \"%s\" index",curopt);
 				exit(0);
 			}
-			nprof->comp = (EOC_dev::compatibility_t)prof_opts[ind].value();
+			cprof->comp = (EOC_dev::compatibility_t)prof_opts[ind].value();
 
 			// Check compatibility
-			if( nprof->check_comp() ) {
+			if( cprof->check_comp() ) {
 				PDEBUG(DERR,"Not compatible!");
 				char buf[256];
-				EOC_dev::comp_name(nprof->comp,buf);
+				EOC_dev::comp_name(cprof->comp,buf);
 				syslog(LOG_ERR,"eocd(read_config): Skip profile \"%s\", settings not compatible with %s level",
-					nprof->name,buf);
+					cprof->name,buf);
 				PDEBUG(DERR,"After syslog!");
 				PDEBUG(DERR,"eocd(read_config): Skip profile \"%s\", settings not compatible with %s level",
-					nprof->name,buf);
+					cprof->name,buf);
 				continue;
 			}
 
-			PDEBUG(DERR,"Save profile %s",nprof->name);
-			conf_profile *cprof = (conf_profile *)conf_profs.find(nprof->name,nprof->nsize);
-			if( !cprof ) {
-				PDEBUG(DERR,"Create new profile");
-				// New profile
-				nprof->is_updated = 1;
-				conf_profs.add(nprof);
-			} else {
-				PDEBUG(DERR,"Profile exist");
-				if( memcmp(&cprof->conf,&nprof->conf,sizeof(span_conf_profile_t)) ) {
-					PDEBUG(DERR,"Profile changed - modify");
-					memcpy(cprof,nprof,sizeof(conf_profile));
-					delete nprof;
-				}
-				cprof->is_updated = 1;
-			}
-
+			PDEBUG(DERR,"Save profile %s",cprof->name);
+			cprof->is_updated = 1;
 		}
 	}while(0);
 	PDEBUG(DFULL,"Clear conf table from old profiles");
-	conf_profs.clear();
+	conf_profs.clear(del_conf_profile);
 	conf_profs.sort();
 
 	//----------- read channels configuration ------------------//
 	do {
-		char *saveptr;
-		char *prof_prefix = "sys_eocd_sprof";
+		char *saveptr = NULL;
+		char *chan_prefix = "sys_eocd_chan";
 		char *popt;
 		char *topt;
+		char chlist[512];
 
 		if( !(ret = kdb_appget("sys_eocd_channels",&opt) ) ) {
 			break;
@@ -1052,20 +1060,23 @@ read_config()
 			syslog(LOG_ERR,"eocd(read_config): Found several options containing \"sys_eocd_channels\". Use first: %s",opt);
 			PDEBUG(DERR,"eocd(read_config): Found several options containing \"sys_eocd_channels\". Use first: %s",opt);
 		}
+		strncpy(chlist,opt,512);
 
-		PDEBUG(DFULL,"start channel processing");
-		for(topt=opt;;topt=NULL) {
+		PDEBUG(DFULL,"start channels processing, opt=\"%s\"",chlist);
+		for(topt=chlist;;topt=NULL) {
 			char pci_pair[256],*ptoken,*tpair=NULL;
 			char *saveptr1 = NULL;
 			int pcislot = -1;
 			int pcidev = -1;
 			int valid = 1;
-			char *chan_prefix = "sys_eocd_chan";
 			char option[256];
 			char *option_val;
 
-			if( !(ptoken = strtok_r(topt," ",&saveptr)) )
-			break;
+			if( !(ptoken = strtok_r(topt," ",&saveptr)) ) {
+				PDEBUG(DFULL,"ptoken = 0");
+				break;
+			}
+
 			strncpy(pci_pair,ptoken,256);
 			PDEBUG(DFULL,"Process channel: pci_pair(%p)=%s",pci_pair,pci_pair);
 
@@ -1088,6 +1099,7 @@ read_config()
 					break;
 				}
 			}
+
 			if( cnt != 2 ) {
 				syslog(LOG_ERR,"eocd(read_config): Error channel identification: %s",pci_pair);
 				PDEBUG(DERR,"eocd(read_config): Error channel identification: %s, slot=%d, dev=%d",pci_pair,pcislot,pcidev);
@@ -1107,9 +1119,10 @@ read_config()
 			PDEBUG(DFULL,"master option=%s",option);
 			if( ret = kdb_appget(option,&option_val)) {
 				master = atoi(option_val);
-			}else{
+			} else {
 				master = -1;
 			}
+
 			if( master != 1 && master != 0) {
 				syslog(LOG_ERR,"eocd(read_config): wrong \"%s\" value in %s channel: %d , may be 0,1. Will set default",
 					option,name,master);
@@ -1127,6 +1140,7 @@ read_config()
 			} else {
 				cprof = strdup("default");
 			}
+
 			PDEBUG(DFULL,"CPROF=%s",cprof);
 			// check that strdup succeed
 			if( !cprof ) {
@@ -1134,6 +1148,7 @@ read_config()
 				PDEBUG(DERR,"eocd(read_config): Not enought memory");
 				exit(1);
 			}
+
 			PDEBUG(DFULL,"Check CPROF=%s",cprof);
 			// check that profile exist
 			if( conf_profs.find((char*)cprof,strlen(cprof)) == NULL ) {
@@ -1150,8 +1165,9 @@ read_config()
 			// Apply configuration to channel. We now can always apply
 			int eocd_apply = 1;
 
+
 			// Check existence of channel
-			channel_elem *el = (channel_elem *) channels.find(name, strlen(name));
+			channel_elem *el = (channel_elem *)channels.find(name,strlen(name));
 			PDEBUG(DFULL,"el=%p",el);
 			if( master < 0 ) {
 				if( !el ) {
@@ -1233,7 +1249,7 @@ read_config()
 		}
 	}while(0);
 	PDEBUG(DFULL,"Clear Channels table from old channels");
-	channels.clear();
+	channels.clear(del_channel_elem);
 	channels.sort();
 
 	// Close KDB data base
@@ -1248,30 +1264,60 @@ int EOC_main::
 write_config() {return -ENIMPL;}
 
 #endif // KDB_CONFIG
+
+
 int EOC_main::add_slave(char *name, char *cprof, int app_cfg) {
 	PDEBUG(DERR, "Add slave %s", name);
+
 	do {
 		channel_elem *el = (channel_elem *) channels.find(name, strlen(name));
 		if (el) { // If this device exist in current configuration
+
 			if (el->eng->get_type() != slave) {
 				PDEBUG(DERR, "Reinit device %s", name);
-				channels.del(name, strlen(name));
+				PDEBUG(DFULL,"%s pointer = %p",el->name,el);
+				channel_elem *d = (channel_elem*) channels.del(name, strlen(
+					name));
+				delete d;
 				break;
+			}
+			// Check if some of optins changed
+			EOC_config *cfg = ((EOC_engine_act*) el->eng)->config();
+			// Configuration profile name
+			cfg->cprof(cprof);
+			if (el->eng->check_compat()) {
+				char *p = strdup("default");
+				cfg->cprof(p);
+				syslog(
+					LOG_ERR,
+					"eocd(add_master): Device \"%s\": not compatible with profile \"%s\", set profile=\"default\"",
+					el->eng->dev1_name(), cprof);
+				PDEBUG(
+					DERR,
+					"eocd(add_master): Device \"%s\": not compatible with profile \"%s\", set profile=\"default\"",
+					el->eng->dev1_name(), cprof);
+
 			}
 			el->is_updated = 1;
 			return 0;
 		}
 	} while (0);
 
+	PDEBUG(DFULL,"Initialize device");
 	EOC_dev_terminal *dev = init_dev(name);
-	if (!dev)
+	if (!dev){
+		PDEBUG(DERR,"dev = %p",dev);
 		return -1;
+	}
+
+	PDEBUG(DFULL,"Initialize config");
 	EOC_config *cfg = new EOC_config(&conf_profs, cprof, app_cfg);
 	PDEBUG(DERR, "CONFIG=%p,cprof=%s", cfg, cfg->cprof());
 	channel_elem *el = new channel_elem(dev, cfg);
 	el->name = name;
 	el->nsize = strlen(name);
 	el->is_updated = 1;
+	PDEBUG(DFULL,"%s pointer = %p",el->name,el);
 	channels.add(el);
 	channels.sort();
 	return 0;
@@ -1280,6 +1326,17 @@ int EOC_main::add_slave(char *name, char *cprof, int app_cfg) {
 int EOC_main::add_master(char *name, char *cprof, char *aprof, int reps,
 	int tick_per_min, int pbomode, char *pboval, int app_cfg) {
 	PDEBUG(DERR, "start");
+
+{
+	PDEBUG(DFULL,"Try to opendir");
+	DIR *dir;
+	if ( dir = opendir(OS_IF_PATH)) {
+		PDEBUG(DFULL,"opendir - success; close");
+		closedir(dir);
+	}
+}
+
+
 	do {
 		PDEBUG(DERR, "call channels.find");
 		channel_elem *el = (channel_elem*) channels.find(name, strlen(name));
@@ -1288,7 +1345,10 @@ int EOC_main::add_master(char *name, char *cprof, char *aprof, int reps,
 			// If type of interface is changed
 			if (el->eng->get_type() != master) {
 				PDEBUG(DERR, "Reinit device %s", name);
-				channels.del(name, strlen(name));
+				PDEBUG(DFULL,"%s pointer = %p",el->name,el);
+				channel_elem *d = (channel_elem*) channels.del(name, strlen(
+					name));
+				delete d;
 				break;
 			}
 			// Check if some of optins changed
@@ -1319,21 +1379,30 @@ int EOC_main::add_master(char *name, char *cprof, char *aprof, int reps,
 		}
 	} while (0);
 
+{
+	PDEBUG(DFULL,"Try to opendir");
+	DIR *dir;
+	if ( dir = opendir(OS_IF_PATH)) {
+		PDEBUG(DFULL,"opendir - success; close");
+		closedir(dir);
+	}
+}
+
 	PDEBUG(DERR, "call init_dev");
 	EOC_dev_terminal *dev = (EOC_dev_terminal *) init_dev(name);
 	PDEBUG(DERR, "dev=%p", dev);
 	if (!dev) {
 		syslog(LOG_ERR, "eocd(add_master): Cannot initialize device \"%s\"",
-			dev->if_name());
+			name);
 		PDEBUG(DERR, "eocd(add_master): Cannot initialize device \"%s\"",
-			dev->if_name());
+			name);
 		return -1;
 	}
 
 	EOC_config *cfg = new EOC_config(&conf_profs, &alarm_profs, cprof, aprof,
 		reps, app_cfg);
 
-	// Check capability
+	// Check compatibility
 	conf_profile *prof = (conf_profile*) cfg->conf();
 	if (dev->comp() < prof->comp) {
 		syslog(
@@ -1349,10 +1418,12 @@ int EOC_main::add_master(char *name, char *cprof, char *aprof, int reps,
 	}
 
 	PDEBUG(DERR, "CONFIG=%p", cfg);
+
 	channel_elem *el = new channel_elem(dev, cfg, tick_per_min);
 	el->name = name;
 	el->nsize = strlen(name);
 	el->is_updated = 1;
+	PDEBUG(DFULL,"%s pointer = %p",el->name,el);
 	((EOC_engine_act*) el->eng)->set_pbo(pbomode, pboval);
 	channels.add(el);
 	channels.sort();
@@ -1804,7 +1875,7 @@ int EOC_main::app_list_cprof(app_frame *fr) {
 			prof = (conf_profile*) conf_profs.next(prof->name, prof->nsize);
 		}
 		p->filled = filled;
-		p->last_msg = (prof && (filled = PROF_NAMES_NUM)) ? 0 : 1;
+		p->last_msg = (prof && (filled == PROF_NAMES_NUM)) ? 0 : 1;
 		for (int i = 0; i < filled; i++)
 			PDEBUG(DERR, "pname[%d]=%s", i, p->pname[i]);
 		return 0;
@@ -1955,7 +2026,8 @@ int EOC_main::app_del_cprof(app_frame *fr) {
 		}
 		el = (channel_elem *) channels.next(el->name, el->nsize);
 	}
-	conf_profs.del(prof->name, prof->nsize);
+	el = (channel_elem *) conf_profs.del(prof->name, prof->nsize);
+	delete el;
 	return 0;
 }
 
@@ -2033,7 +2105,8 @@ int EOC_main::app_del_chan(app_frame *fr) {
 		fr->negative(ERCHNEXIST);
 		return 0;
 	}
-	channels.del(el->name, el->nsize);
+	el = channels.del(el->name, el->nsize);
+	delete el;
 	configure_channels();
 	return 0;
 }

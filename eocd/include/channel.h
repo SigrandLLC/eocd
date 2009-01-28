@@ -13,20 +13,29 @@
 #include <engine/EOC_engine.h>
 #include <engine/EOC_engine_act.h>
 
+#define EOC_DEBUG
+#include <generic/EOC_generic.h>
+
 class channel_elem: public hash_elem {
 protected:
 public:
 	EOC_engine *eng;
 	channel_elem(EOC_dev_terminal *dev, EOC_config *c) {
+		PDEBUG(DFULL,"create EOC_engine");
 		eng = new EOC_engine(dev, c);
 	}
 	channel_elem(EOC_dev_terminal *dev, EOC_config *c, u32 tick_per_min) {
-		eng = new EOC_engine_act(dev, c, tick_per_min);
+		EOC_engine_act *tmp = new EOC_engine_act(dev, c, tick_per_min);
+		eng = (EOC_engine *)tmp;
+		PDEBUG(DFULL,"create EOC_engine_act: %p",eng);
 	}
-	~channel_elem() {
+	~channel_elem(){
+		PDEBUG(DFULL,"destructor");
 		if (eng->get_type() == master) {
+			PDEBUG(DFULL,"delete EOC_engine_act: %p",eng);
 			delete (EOC_engine_act*) eng;
 		} else {
+			PDEBUG(DFULL,"delete EOC_engine: %p",eng);
 			delete eng;
 		}
 	}
