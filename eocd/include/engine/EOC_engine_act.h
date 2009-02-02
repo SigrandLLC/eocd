@@ -27,7 +27,7 @@ class EOC_engine_act : public EOC_engine {
 	int pbo_mode,pbo_changed;
 	char pbo_vals[PBO_SETTING_LEN];
  public:
-    EOC_engine_act(EOC_dev_terminal *d1,EOC_config *cfg,u16 ticks_p_min=0,u16 rmax = 10);
+    EOC_engine_act(EOC_dev_terminal *d1,EOC_config *cfg,EOC_dev::dev_del_func df = NULL,u16 ticks_p_min=0,u16 rmax = 10);
     inline ~EOC_engine_act(){
     	PDEBUG(DFULL,"destructor");
 		if( poll ){

@@ -10,6 +10,7 @@
 #include <generic/EOC_msg.h>
 #include <generic/EOC_generic.h>
 #include <devs/EOC_dev.h>
+
 #define EOC_DEBUG
 #include <eoc_debug.h>
 
@@ -25,6 +26,7 @@ class EOC_router{
     enum {SHDSL_MAX_IF=2};
  protected:
     dev_type type;
+    EOC_dev::dev_del_func delete_dev;
     struct interface ifs[SHDSL_MAX_IF];
     unsigned char if_cnt,if_poll;
     int max_recv_msg;
@@ -84,8 +86,8 @@ class EOC_router{
 
  public:
 
-    EOC_router(dev_type r,EOC_dev *side);
-    EOC_router(dev_type r,EOC_dev *nside,EOC_dev *cside);
+    EOC_router(dev_type r,EOC_dev *side,EOC_dev::dev_del_func df = NULL);
+    EOC_router(dev_type r,EOC_dev *nside,EOC_dev *cside,EOC_dev::dev_del_func df = NULL);
     ~EOC_router();
 
     EOC_msg *receive();

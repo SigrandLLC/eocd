@@ -21,7 +21,7 @@ EOC_mr17h(char *name)
     DIR *dir;
 	char *ver;
 
-    ifname = strndup(name,256);
+    ifname = name; //strndup(name,256);
     conf_path = new char[PATH_SIZE];
     chan_path = NULL;
     valid = 0;

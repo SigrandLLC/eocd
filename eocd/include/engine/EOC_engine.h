@@ -25,8 +25,8 @@ class EOC_engine{
     EOC_config *cfg;
     u16 recv_max;
  public:
-    EOC_engine(EOC_dev_terminal *d1,EOC_config *c,dev_type t = slave,u16 rmax = RECV_ONCE);
-    EOC_engine(EOC_dev *d1,EOC_dev *d2, u16 rmax = RECV_ONCE);
+    EOC_engine(EOC_dev_terminal *d1,EOC_config *c,dev_type t = slave,EOC_dev::dev_del_func df = NULL,u16 rmax = RECV_ONCE);
+    EOC_engine(EOC_dev *d1,EOC_dev *d2,EOC_dev::dev_del_func df = NULL,u16 rmax = RECV_ONCE);
     inline ~EOC_engine(){
     	PDEBUG(DFULL,"delete responder");
 		if( resp ){

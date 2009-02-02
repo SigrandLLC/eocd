@@ -11,6 +11,7 @@
 
 class EOC_dev {
 public:
+	typedef void (*dev_del_func)(EOC_dev *dev);
 	typedef enum {
 		OFFLINE, ONLINE
 	} Linkstate;

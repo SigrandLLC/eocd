@@ -11,7 +11,7 @@
 #include <syslog.h>
 
 // Terminal constructor
-EOC_engine::EOC_engine(EOC_dev_terminal *d1, EOC_config *c, dev_type t,
+EOC_engine::EOC_engine(EOC_dev_terminal *d1, EOC_config *c,dev_type t,EOC_dev::dev_del_func df,
 	u16 rmax) {
 	PDEBUG(DFULL,"start");
 	ASSERT(d1 && (t == master || t == slave) && c);
@@ -19,7 +19,7 @@ EOC_engine::EOC_engine(EOC_dev_terminal *d1, EOC_config *c, dev_type t,
 	type = t;
 	recv_max = rmax;
 	PDEBUG(DFULL,"create EOC_router");
-	rtr = new EOC_router(type, d1);
+	rtr = new EOC_router(type, d1, df);
 	PDEBUG(DFULL,"create EOC_responder");
 	resp = new EOC_responder(rtr);
 	dev1 = d1;
@@ -29,11 +29,11 @@ EOC_engine::EOC_engine(EOC_dev_terminal *d1, EOC_config *c, dev_type t,
 
 //----------------------------------------------------------------------
 // Repeater constructor
-EOC_engine::EOC_engine(EOC_dev *d1, EOC_dev *d2, u16 rmax) {
+EOC_engine::EOC_engine(EOC_dev *d1, EOC_dev *d2,EOC_dev::dev_del_func df,u16 rmax) {
 	ASSERT(d1 && d2);
 	type = repeater;
 	recv_max = rmax;
-	rtr = new EOC_router(type, d1, d2);
+	rtr = new EOC_router(type, d1, d2, df);
 	resp = new EOC_responder(rtr);
 	dev1 = d1;
 	dev2 = d2;

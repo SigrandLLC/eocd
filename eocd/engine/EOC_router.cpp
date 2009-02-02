@@ -5,12 +5,13 @@
 #include <generic/EOC_responses.h>
 #include <generic/EOC_requests.h>
 
-EOC_router::EOC_router(dev_type r,EOC_dev *side)
+EOC_router::EOC_router(dev_type r,EOC_dev *side,EOC_dev::dev_del_func df)
 {
     int i;
     // initial initialising
     if( !side )
 		return;
+    delete_dev = df;
     zero_init();
     // setup router
     switch(r){
@@ -36,13 +37,13 @@ EOC_router::EOC_router(dev_type r,EOC_dev *side)
     loop_head = loop_tail = 0;
 }
 
-EOC_router::EOC_router(dev_type r,EOC_dev *nside,EOC_dev *cside)
+EOC_router::EOC_router(dev_type r,EOC_dev *nside,EOC_dev *cside,EOC_dev::dev_del_func df)
 {
     int i;
     // initial initialising
     zero_init();
     // setup router
-
+    delete_dev = df;
     if( r != repeater || !nside || !cside)
 		return;
 
@@ -67,7 +68,11 @@ EOC_router::~EOC_router(){
 	PDEBUG(DFULL,"start");
     for(i=0;i<if_cnt;i++){
     	PDEBUG(DFULL,"delete %d dev",i);
-		delete ifs[i].sdev;
+    	if( delete_dev){
+    		delete_dev(ifs[i].sdev);
+    	}else{
+    		delete ifs[i].sdev;
+    	}
     }
 }
 

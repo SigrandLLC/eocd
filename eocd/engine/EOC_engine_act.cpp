@@ -36,8 +36,8 @@ register_handlers(){
 // Terminal constructor
 
 EOC_engine_act::
-EOC_engine_act(EOC_dev_terminal *d1,EOC_config *c,u16 ticks_p_min,u16 rmax) :
-	EOC_engine(d1,c,master,rmax)
+EOC_engine_act(EOC_dev_terminal *d1,EOC_config *c,EOC_dev::dev_del_func df,u16 ticks_p_min,u16 rmax) :
+	EOC_engine(d1,c,master,df,rmax)
 {
 	ASSERT( d1 );
 	recv_max = rmax;

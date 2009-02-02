@@ -121,10 +121,10 @@ annex2string(annex_t a)
 	static char buf[64];
 	switch( a ){
 	case annex_a:
-		strcpy(buf,"AnnexA");
+		strcpy(buf,"A");
 		break;
 	case annex_b:
-		strcpy(buf,"AnnexB");
+		strcpy(buf,"B");
 		break;
 	default:
 		strcpy(buf,"unknown");

@@ -29,9 +29,15 @@ Version 2.26 (19.01.09)
 		sys_eocd_sprof_<x>="name=<prof-name> tcpam={TCPAMXXX} rate=<rate> annex={A,B} power={on,off} [mrate=<rate>]"
 
 Version 2.27 (28.01.09)
-	1. Fix kdb config profiles processing
+	1. Fix kdb config profiles processing (power option, e.t.c)
 	2. Fix hash_table processing
 	3. Fix destruction of conf. profiles and channels
 	NOTE: memory leack while configuration still presents
 
-
+Version 2.28 (02.02.09)
+	1. Fix memory leacks (in EOC_router, eoc_channel, conf_profile).
+	The problem was in use delete operator with parent-class, in this 
+	case only general destructor was called. This causes memory leacks.
+	2. Change eoc-info behaviour: show "A" not "AnnexA" e.t.c.
+	
+		

@@ -49,6 +49,8 @@ fake-mips: $(TARGS)
 #	$(CXX) -g $(INCLUDES) -o result main.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
 	$(CXX) -g $(INCLUDES) -o eocd-fake eocd-fake.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
 
+memleak-test:
+	$(CXX) -g $(INCLUDES) -o memleak-test memleak-test.cpp kdb.o md5.o $(OBJECTS) 
 
 local: EOC_main.o EOC_pci.o
 	cp $^ build/    
@@ -75,7 +77,7 @@ clean:
 	make -C db clean
 	make -C app-if clean
 	rm -f *.o
-	rm -f result eocd eocd-fake
+	rm -f result eocd eocd-fake memleak-test
 	rm -f build/*.o
 
 

@@ -76,6 +76,11 @@ exit:
 	closedir(dir);
 	return dev;
 }
+
+void delete_dev(EOC_dev *dev){
+	delete (EOC_mr17h*)dev;
+}
+
 #endif // #ifndef VIRTUAL_DEVS
 
 void del_channel_elem(hash_elem *h) {
@@ -1313,7 +1318,7 @@ int EOC_main::add_slave(char *name, char *cprof, int app_cfg) {
 	PDEBUG(DFULL,"Initialize config");
 	EOC_config *cfg = new EOC_config(&conf_profs, cprof, app_cfg);
 	PDEBUG(DERR, "CONFIG=%p,cprof=%s", cfg, cfg->cprof());
-	channel_elem *el = new channel_elem(dev, cfg);
+	channel_elem *el = new channel_elem(dev, cfg,delete_dev);
 	el->name = name;
 	el->nsize = strlen(name);
 	el->is_updated = 1;
@@ -1419,7 +1424,7 @@ int EOC_main::add_master(char *name, char *cprof, char *aprof, int reps,
 
 	PDEBUG(DERR, "CONFIG=%p", cfg);
 
-	channel_elem *el = new channel_elem(dev, cfg, tick_per_min);
+	channel_elem *el = new channel_elem(dev, cfg,delete_dev,tick_per_min);
 	el->name = name;
 	el->nsize = strlen(name);
 	el->is_updated = 1;

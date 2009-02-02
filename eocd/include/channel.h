@@ -20,12 +20,12 @@ class channel_elem: public hash_elem {
 protected:
 public:
 	EOC_engine *eng;
-	channel_elem(EOC_dev_terminal *dev, EOC_config *c) {
+	channel_elem(EOC_dev_terminal *dev, EOC_config *c,EOC_dev::dev_del_func df) {
 		PDEBUG(DFULL,"create EOC_engine");
-		eng = new EOC_engine(dev, c);
+		eng = new EOC_engine(dev, c, slave,df);
 	}
-	channel_elem(EOC_dev_terminal *dev, EOC_config *c, u32 tick_per_min) {
-		EOC_engine_act *tmp = new EOC_engine_act(dev, c, tick_per_min);
+	channel_elem(EOC_dev_terminal *dev, EOC_config *c,EOC_dev::dev_del_func df,u32 tick_per_min) {
+		EOC_engine_act *tmp = new EOC_engine_act(dev, c, df, tick_per_min);
 		eng = (EOC_engine *)tmp;
 		PDEBUG(DFULL,"create EOC_engine_act: %p",eng);
 	}
