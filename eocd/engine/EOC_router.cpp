@@ -310,27 +310,27 @@ EOC_router::receive()
     update_state();
     PDEBUG(DFULL,"ROUTER(%s): if_poll = %d, state = %d",(type==master)?"master":"slave",if_poll,ifs[if_poll].state );
     if( ifs[if_poll].state == eoc_Offline ){
-		PDEBUG(DERR,"ROUTER(%s): EOC is offline",(type==master)?"master":"slave");
+		PDEBUG(DFULL,"ROUTER(%s): EOC is offline",(type==master)?"master":"slave");
 		goto exit;
     }
 
-	PDEBUG(DERR,"ROUTER(%s): get loop msg",(type==master)?"master":"slave");
+	PDEBUG(DFULL,"ROUTER(%s): get loop msg",(type==master)?"master":"slave");
     if( m = get_loop() ){
-		PDEBUG(DERR,"ROUTER(%s): new loop msg",(type==master)?"master":"slave");
+		PDEBUG(DFULL,"ROUTER(%s): new loop msg",(type==master)?"master":"slave");
 		if( (m->type() == REQ_DISCOVERY) ){
-			PDEBUG(DERR,"ROUTER(%s): is DISCOVERY",(type==master)?"master":"slave");
+			PDEBUG(DFULL,"ROUTER(%s): is DISCOVERY",(type==master)?"master":"slave");
 			if( resp = process_discovery(if_poll,m) ){
-				PDEBUG(DERR,"ROUTER(%s): process discovery success,resp->id=%d",(type==master)?"master":"slave",resp->type());
+				PDEBUG(DFULL,"ROUTER(%s): process discovery success,resp->id=%d",(type==master)?"master":"slave",resp->type());
 				if( send(resp) ){
-					PDEBUG(DERR,"Error in send loopback message");
+					PDEBUG(DFULL,"Error in send loopback message");
 				}
 
 			} else{
-				PDEBUG(DERR,"ROUTER(%s): error in process discovery",(type==master)?"master":"slave");
+				PDEBUG(DFULL,"ROUTER(%s): error in process discovery",(type==master)?"master":"slave");
 				/* TODO: LOG error */
 			}
 		}else if( !(ifs[if_poll].state == eoc_Discovery) ){
-			PDEBUG(DERR,"ROUTER(%s): not discovery",(type==master)?"master":"slave");
+			PDEBUG(DFULL,"ROUTER(%s): not discovery",(type==master)?"master":"slave");
 			return m;
 		}else{
 			delete m;
@@ -339,35 +339,35 @@ EOC_router::receive()
 
     while( (m = poll_dev->recv()) && (icnt<max_recv_msg) ){
 		m->direction(dir);
-        PDEBUG(DERR,"ROUTER(%s): IN: src(%d) dst(%d) id(%d)",(type==master)?"master":"slave",m->src(),m->dst(),m->type());
+        PDEBUG(DFULL,"ROUTER(%s): IN: src(%d) dst(%d) id(%d)",(type==master)?"master":"slave",m->src(),m->dst(),m->type());
 		if( (m->type() == REQ_DISCOVERY) ){
-			PDEBUG(DERR,"ROUTER(%s): DISCOVERY",(type==master)?"master":"slave");
+			PDEBUG(DFULL,"ROUTER(%s): DISCOVERY",(type==master)?"master":"slave");
 			if( resp = process_discovery(if_poll,m) ){
-				PDEBUG(DERR,"ROUTER(%s): success in process discovery",(type==master)?"master":"slave");
+				PDEBUG(DFULL,"ROUTER(%s): success in process discovery",(type==master)?"master":"slave");
 				if( route_dev )
 					route_dev->send(m);
 				poll_dev->send(resp);
 			}else{
-				PDEBUG(DERR,"ROUTER(%s): error in process discovery",(type==master)?"master":"slave");
+				PDEBUG(DFULL,"ROUTER(%s): error in process discovery",(type==master)?"master":"slave");
 			}
 			icnt++;
 			delete m;
 			continue;
 		}
 
-		PDEBUG(DERR,"ROUTER(%s): Not REQ_DISCOVERY",(type==master)?"master":"slave");
+		PDEBUG(DFULL,"ROUTER(%s): Not REQ_DISCOVERY",(type==master)?"master":"slave");
 		// retranslate Broadcast to next device
 		if( m->dst() == BCAST && route_dev ){
-			PDEBUG(DERR,"ROUTER(%s): retranslate broadcast",(type==master)?"master":"slave");
+			PDEBUG(DFULL,"ROUTER(%s): retranslate broadcast",(type==master)?"master":"slave");
 			if( route_dev->send(m) ){
 				// send error handling
 			}
 		}
 
 		if( m->dst() == u || m->dst() == BCAST ){
-			PDEBUG(DERR,"ROUTER(%s): DEST = %d",(type==master)?"master":"slave",m->dst());
+			PDEBUG(DFULL,"ROUTER(%s): DEST = %d",(type==master)?"master":"slave",m->dst());
 			if( ifs[if_poll].state == eoc_Discovery ){
-				PDEBUG(DERR,"ROUTER(%s): state is eoc_Discovery",(type==master)?"master":"slave");
+				PDEBUG(DFULL,"ROUTER(%s): state is eoc_Discovery",(type==master)?"master":"slave");
 				delete m;
 				icnt++;
 				continue;
@@ -375,7 +375,7 @@ EOC_router::receive()
 			ret = m;
 			goto exit;
 		} else if( route_dev ){
-			PDEBUG(DERR,"ROUTER(%s): resend to next",(type==master)?"master":"slave");
+			PDEBUG(DFULL,"ROUTER(%s): resend to next",(type==master)?"master":"slave");
 			if( route_dev->send(m) ){
 				delete m;
 				break;
@@ -386,7 +386,7 @@ EOC_router::receive()
     }
  exit:
     if_poll = (if_poll+1)<if_cnt ?  if_poll+1 : 0;
-    PDEBUG(DERR,"ROUTER(%s): return :%08x",(type==master)?"master":"slave",ret);
+    PDEBUG(DFULL,"ROUTER(%s): return :%08x",(type==master)?"master":"slave",ret);
     return ret;
 }
 
@@ -415,7 +415,7 @@ EOC_router::send(EOC_msg *m)
 			EOC_msg *new_m = new EOC_msg(m);
 			//			new_m->dst(ifs[i].sunit);
 			ret += add_loop(new_m);
-			PDEBUG(DERR,"ROUTER(%s): LOOPBACK: src(%d) dst(%d) id(%d), RET=%d",(type==master)?"master":"slave",
+			PDEBUG(DFULL,"ROUTER(%s): LOOPBACK: src(%d) dst(%d) id(%d), RET=%d",(type==master)?"master":"slave",
 				   m->src(),m->dst(),m->type(),ret);
 			if( m->dst() != BCAST ){
 				// We send localy addressed msg - quit
@@ -433,7 +433,7 @@ EOC_router::send(EOC_msg *m)
 			EOC_dev::Linkstate link = iface->sdev->link_state();
 			PDEBUG(DFULL,"Sending message");
 			if( link != EOC_dev::OFFLINE ){
-				PDEBUG(DERR,"ROUTER(%s): OUT: src(%d) dst(%d) id(%d)",(type==master)?"master":"slave",
+				PDEBUG(DFULL,"ROUTER(%s): OUT: src(%d) dst(%d) id(%d)",(type==master)?"master":"slave",
 						m->src(),m->dst(),m->type());
 				ret += ifs[i].sdev->send(m);
 			}

@@ -43,9 +43,9 @@ class EOC_router{
     EOC_msg *loopb[LOOPB_BUF_SZ];
     inline int inc(int ind,int max_ind){ return (ind+1<max_ind) ? ind+1 : 0; }
     inline int add_loop(EOC_msg *m){
-		PDEBUG(DERR,"START: loop_head=%d,loop_tail=%d",loop_head,loop_tail);
+		PDEBUG(DFULL,"START: loop_head=%d,loop_tail=%d",loop_head,loop_tail);
 		if( loop_head == inc(loop_tail,LOOPB_BUF_SZ) ){
-			PDEBUG(DERR,"Loop is full - drom msg: src=%d, dst=%d, type=%d",m->src(),m->dst(),m->type());
+			PDEBUG(DFULL,"Loop is full - drom msg: src=%d, dst=%d, type=%d",m->src(),m->dst(),m->type());
 			return -1;
 		}
 		loopb[loop_tail] = m;
@@ -55,23 +55,23 @@ class EOC_router{
 
     inline EOC_msg *get_loop(){
 		EOC_msg *m;
-		PDEBUG(DERR,"START: loop_head=%d,loop_tail=%d",loop_head,loop_tail);
+		PDEBUG(DFULL,"START: loop_head=%d,loop_tail=%d",loop_head,loop_tail);
 		if( loop_head == loop_tail ) {
-			PDEBUG(DERR,"Loop is empty - nothing to get");
+			PDEBUG(DFULL,"Loop is empty - nothing to get");
 			return NULL;
 		}
 
 		int tmp = loop_head;
 		while( tmp != loop_tail ){
 			EOC_msg *tm = loopb[tmp];
-			PDEBUG(DERR,"LOOPBACK IN: src(%d) dst(%d) id(%d)",tm->src(),tm->dst(),tm->type());
+			PDEBUG(DFULL,"LOOPBACK IN: src(%d) dst(%d) id(%d)",tm->src(),tm->dst(),tm->type());
 			tmp = inc(tmp,LOOPB_BUF_SZ);
 		}
 
 		m = loopb[loop_head];
 		loop_head = inc(loop_head,LOOPB_BUF_SZ);
 
-		PDEBUG(DERR,"END: loop_head=%d,loop_tail=%d",loop_head,loop_tail);
+		PDEBUG(DFULL,"END: loop_head=%d,loop_tail=%d",loop_head,loop_tail);
 		return m;
     }
 	inline void free_loop(){

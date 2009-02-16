@@ -44,7 +44,7 @@ gen_request(){
     if( sch->request(el) ){
 		return NULL;
     }
-	
+
     if( el.type>=REQUEST_QUAN || !req_hndl[el.type] ){
 		//PDEBUG(0,"Scheduled invalid type of message: %d",el.type);
 		return NULL;
@@ -55,7 +55,7 @@ gen_request(){
 int EOC_poller::
 process_msg(EOC_msg *m)
 {
-    // Check that we have assosiated handler 
+    // Check that we have assosiated handler
     // & we request this response
     if( !m ){
 		PDEBUG(DERR,"!m");
@@ -66,16 +66,19 @@ process_msg(EOC_msg *m)
 		PDEBUG(DERR,"!m->is_response");
 		return -1;
 	}
+    PDEBUG(DFULL,"check db->response(m,1)")
 	if( db->response(m,1) ){
-		PDEBUG(DERR,"db->response(m,1)");
+		PDEBUG(DERR,"error in db->response(m,1)");
 		return -1;
 	}
+    PDEBUG(DFULL,"sch->response(m)")
 	if( sch->response(m) ){
 		PDEBUG(DERR,"sch->response(m)");
 		return -1;
 	}
 
     // commit changes to EOC DataBase
+    PDEBUG(DFULL,"return db->response(m,0)")
     return db->response(m,0);
 }
 
@@ -92,13 +95,13 @@ app_request(app_frame *fr)
 		// 		p->region0 = 1;
 		// 		p->region1 = 1;
 		// 		p->max_prate = 0;
-		// 		p->act_prate = 0; 
+		// 		p->act_prate = 0;
 		// 		fr->response();
 		// 		break;
 		// 	}
 	case APP_ENDP_CONF:{
 		endp_conf_payload *p = (endp_conf_payload*)fr->payload_ptr();
-		if( db->check_exist((unit)p->unit,(side)p->side,p->loop) ){
+		if( db->check_exist((unit)p->unit,(side)p->side,p->loop,1) ){
 			fr->negative(ERNOELEM);
 			return 0;
 		}

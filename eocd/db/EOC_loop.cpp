@@ -15,7 +15,7 @@ status_diff(side_perf *info,counters_t &cntrs)
     cntrs.es = modulo_diff(last_msg.es,info->es,255,"es");
     cntrs.ses = modulo_diff(last_msg.ses,info->ses,255,"ses");
     cntrs.crc = modulo_diff(last_msg.crc,info->crc,65535,"crc");
-    cntrs.losws = modulo_diff(last_msg.losws,info->losws,255,"losws"); 
+    cntrs.losws = modulo_diff(last_msg.losws,info->losws,255,"losws");
     cntrs.uas = modulo_diff(last_msg.uas,info->uas,255,"uas");
     last_msg = *info;
 }
@@ -29,7 +29,7 @@ setup_cur_status(side_perf *info)
     state.stat.dcContFault = info->dc_cont_flt;
     state.stat.powerBackoff = info->pwr_bckoff_st;
 }
-    
+
 int EOC_loop::
 get_localtime(time_t *t,struct tm &ret){
     struct tm *ptr = localtime(t);
@@ -50,10 +50,10 @@ shift_rings(){
 
     // get tm structures
     if( get_localtime(&cur,cur_tm) || get_localtime(&_15m,_15m_tm) || get_localtime(&_1d,_1d_tm)){
-        //TODO eoc_log("Cannot convert time info for 15 min timestamp"); 
+        //TODO eoc_log("Cannot convert time info for 15 min timestamp");
         return;
     }
-        
+
     cur_int_tm = cur_tm;
     cur_int_tm.tm_min = (((int)cur_int_tm.tm_min)/EOC_15MIN_INT_LEN)*EOC_15MIN_INT_LEN;
     int _15m_int = (_15m_tm.tm_min + _15m_tm.tm_hour*60 + _15m_tm.tm_yday*60*24 )/EOC_15MIN_INT_LEN;
@@ -67,10 +67,10 @@ shift_rings(){
 		time(&_15m);
 		get_localtime(&_15m,_15m_tm);
 		_15m_tm.tm_min = (((int)_15m_tm.tm_min)/EOC_15MIN_INT_LEN)*EOC_15MIN_INT_LEN;
-		_15m_tm.tm_sec = 0;    
+		_15m_tm.tm_sec = 0;
 		_15min_ints[0]->tstamp = mktime(&_15m_tm);
     }
-	
+
     if( _1d_tm.tm_year == cur_tm.tm_year ){
 		PDEBUG(DFULL,"----------- Shift 1DAYS ---------------");
 		PDEBUG(DFULL,"shift days: sshift_val=%d",_1d_tm.tm_yday - cur_tm.tm_yday);
@@ -84,35 +84,35 @@ shift_rings(){
 		// Monitor Seconds counter update
 		if( shift_num ){
 			// update_mon_sec(); - dont need it, because in 15min part all work is done
-			_1day_ints.shift(shift_num);       
+			_1day_ints.shift(shift_num);
 			_1day_ints[0]->tstamp = cur_ts;
-		}		
+		}
     }else{
-        // TODO : count difference to different years 
+        // TODO : count difference to different years
     }
 }
 
-            
+
 EOC_loop::
 EOC_loop() : _15min_ints(EOC_15MIN_INTS) , _1day_ints(EOC_1DAY_INTS) {
     struct tm _15mtm,_1dtm;
     time_t t;
     memset(&state,0,sizeof(state));
 	is_first_msg = 1;
-    memset(&last_msg,0,sizeof(last_msg));	
+    memset(&last_msg,0,sizeof(last_msg));
     time(&t);
     if( get_localtime(&t,_15mtm)){
-        // TODO: eoc_log("Error getting time"); 
+        // TODO: eoc_log("Error getting time");
         return ;
     }
     if( get_localtime(&t,_1dtm)){
-        // TODO: eoc_log("Error getting time"); 
+        // TODO: eoc_log("Error getting time");
         return ;
     }
 
     _15mtm.tm_min = (((int)_15mtm.tm_min)/EOC_15MIN_INT_LEN)*EOC_15MIN_INT_LEN;
-    _15mtm.tm_sec = 0;    
-    
+    _15mtm.tm_sec = 0;
+
     _1dtm.tm_sec = 0;
     _1dtm.tm_min = 0;
     _1dtm.tm_hour = 0;
@@ -130,7 +130,7 @@ EOC_loop() : _15min_ints(EOC_15MIN_INTS) , _1day_ints(EOC_1DAY_INTS) {
 int EOC_loop::
 short_status(s8 snr_margin)
 {
-    shift_rings();	
+    shift_rings();
     // change online data
     state.snr_marg = snr_margin;
 
@@ -152,7 +152,7 @@ full_status(side_perf *info,int rel)
 	    cntrs.es = info->es;
     	cntrs.ses = info->ses;
 	    cntrs.crc = info->crc;
-    	cntrs.losws = info->losws; 
+    	cntrs.losws = info->losws;
 	    cntrs.uas = info->uas;
 	} else {
 		if( is_first_msg ){
@@ -164,12 +164,12 @@ full_status(side_perf *info,int rel)
 		}
 	    status_diff(info,cntrs);
 	}
-	
-    shift_rings();	
+
+    shift_rings();
     // change online data
     state.loop_attn = info->loop_attn;
     state.snr_marg = info->snr_marg;
-    setup_cur_status(info);	
+    setup_cur_status(info);
     // Change counters
 	PDEBUG(DFULL,"es=%u, ses=%u, cv=%u, losws=%u,uas=%u",
 		info->es,info->ses,info->crc,info->losws,info->uas);
@@ -180,7 +180,7 @@ full_status(side_perf *info,int rel)
 	// Monitoring seconds
 	update_mon_sec();
  exit:
-    PDEBUG(DERR,"FULL STATUS:\n"
+    PDEBUG(DFULL,"FULL STATUS:\n"
 		   "\tinfo: es(%u) ses(%u) crc(%u) losws(%u) uas(%u)\n"
 		   "\tcntrs: es(%u) ses(%u) crc(%u) losws(%u) uas(%u)\n"
 		   "\tlast: es(%u) ses(%u) crc(%u) losws(%u) uas(%u)\n",

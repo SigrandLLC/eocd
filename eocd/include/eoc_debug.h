@@ -17,7 +17,7 @@ extern int debug_lev;
 #   define PDEBUG(lev,fmt,args...)							\
 { \
 	if( lev<=debug_lev ){ \
-		printf("%s : " fmt " \n",__FUNCTION__, ## args  ); \
+		printf("%s(%s) : " fmt " \n",__FILE__,__FUNCTION__, ## args  ); \
 		fflush(stdout); \
 	} \
 }

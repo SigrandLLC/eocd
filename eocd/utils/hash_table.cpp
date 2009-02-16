@@ -37,10 +37,10 @@ int hash_table::_hash(const char *name) {
 
 hash_elem *
 hash_table::find(const char *name, int nsize) {
-	PDEBUG(DERR, "name=%s, nsize=%d", name, nsize);
+	PDEBUG(DFULL, "name=%s, nsize=%d", name, nsize);
 	int i = _hash(name);
 
-	PDEBUG(DERR, "_hash=%d, table[i].size=%d", i, table[i].size());
+	PDEBUG(DFULL, "_hash=%d, table[i].size=%d", i, table[i].size());
 
 	if (!table[i].size()) { // hash list is empty
 		PDEBUG(DFULL, "return NULL");
@@ -145,20 +145,20 @@ void hash_table::clear(void (*del_func)(hash_elem *el)) {
 	hash_elem *el = first();
 	while (el) {
 		hash_elem *tmp;
-		PDEBUG(DERR, "Process %s profile", el->name);
+		PDEBUG(DFULL, "Process %s entry", el->name);
 		if (!el->is_updated) {
 			tmp = el;
 			el = next(el->name,el->nsize);
-			PDEBUG(DERR, "Delete row: %s", tmp->name);
+			PDEBUG(DFULL, "Delete row: %s", tmp->name);
 			tmp = del(tmp->name, tmp->nsize);
 
 			if( tmp ){
 				PDEBUG(DFULL,"delete elem=%s",tmp->name);
 				del_func(tmp);
 			}
-			PDEBUG(DERR, "Next is: %s", el ? el->name : "NULL");
+			PDEBUG(DFULL, "Next is: %s", el ? el->name : "NULL");
 		} else {
-			PDEBUG(DERR, "Keep profile %s", el->name);
+			PDEBUG(DFULL, "Keep profile %s", el->name);
 			el->is_updated = 0;
 			el = next(el->name, el->nsize);
 		}
@@ -166,9 +166,9 @@ void hash_table::clear(void (*del_func)(hash_elem *el)) {
 	}
 	// DEBUG PRINT
 	el = first();
-	PDEBUG(DERR, "Print new conf table");
+	PDEBUG(DFULL, "Print new table");
 	while (el) {
-		PDEBUG(DERR, "\t%s", el->name);
+		PDEBUG(DFULL, "\t%s", el->name);
 		el = next(el->name, el->nsize);
 	}
 }

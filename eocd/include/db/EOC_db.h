@@ -2,7 +2,7 @@
  * EOC_db.h:
  *	EOC channel configuration & status storage
  */
- 
+
 #ifndef EOC_DATABASE_H
 #define EOC_DATABASE_H
 
@@ -50,21 +50,21 @@ public:
     int response_chk(EOC_msg *m){ return 0; }
     int response(EOC_msg *m,int check = 0);
 
-    // TODO: 
+    // TODO:
     // what to do if inventory information of unit differs
 //    int add_unit(unit u, resp_inventory *resp);
     int clear();
     int app_request(app_frame *fr);
-    int unit_quan();
-    int reg_quan();
+    int unit_quan(int ignore_discov = 0);
+    int reg_quan(int ignore_discov = 0);
 
     int link_state();
     void link_down();
     void link_up();
 
-    int check_exist(unit u);
-    EOC_side *check_exist(unit u,side s);
-    EOC_loop *check_exist(unit u,side s,int loop);
+    int check_exist(unit u,int ignore_discov);
+    EOC_side *check_exist(unit u,side s, int ignore_discov);
+    EOC_loop *check_exist(unit u,side s,int loop, int ignore_discov);
 };
 
 #endif

@@ -49,13 +49,12 @@ class EOC_poller{
     int register_request(u8 type,request_handler_t h);
     int unregister_request(u8 type);
     EOC_msg *gen_request();
-	void finish_poll(){ sch->tick(); }
+    void finish_poll(){ sch->tick(); }
     int process_msg(EOC_msg *m);
     int app_request(app_frame *fr);
-    inline int unit_quan(){ db->unit_quan(); }
-    inline int reg_quan(){ db->reg_quan(); }
-    inline int link_established(){ db->link_state(); }
-
+    inline int unit_quan(int m){ return db->unit_quan(m); }
+    inline int reg_quan(int m){ return db->reg_quan(m); }
+    inline int link_established(){ return db->link_state(); }
 };
 
 #endif
