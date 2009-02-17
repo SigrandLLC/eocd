@@ -44,3 +44,7 @@ Version 2.29 (15.02.09)
 	1. Add offline browsing of channel statistic
 	2. Fix unit delete policy at discovery phase
 	3. Format some code
+
+Version 2.30 (17.02.09)
+	1. Fix `eoc-info -n -idslX` tcpam representation (remove unneded comma)
+	

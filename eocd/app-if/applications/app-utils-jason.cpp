@@ -315,7 +315,7 @@ int jason_spanstat(int indent, app_comm_cli &cli, char *chan) {
 		do_indent(indent + 1);
 		bprintf("\"annex\" : \"%s\",\n",annex2string(annex));
 		do_indent(indent + 1);
-		bprintf("\"tcpam\" : \"%s\",\n",tcpam2STRING((tcpam_t)p1->tcpam));
+		bprintf("\"tcpam\" : \"%s\"\n",tcpam2STRING((tcpam_t)p1->tcpam));
 		do_indent(indent);
 		bprintf("}");
 	}
