@@ -176,17 +176,6 @@ int jason_sensors(int indent, app_comm_cli &cli, char *chan, unit u) {
 	return ret;
 }
 
-void jason_pbo(int indent, int mode, char *val) {
-	do_indent(indent);
-	bprintf("\"pbo\" : {\n");
-	do_indent(indent + 1);
-	bprintf("\"mode\" : \"%d\",",mode);
-	do_indent(indent + 1);
-	bprintf("\"val\" : \"%s\"",val);
-	do_indent(indent);
-	bprintf("}");
-}
-
 void jason_short_channel(int indent, struct eoc_channel *chan) {
 	do_indent(indent);
 	bprintf("{\n");

@@ -104,9 +104,6 @@ public:
 		return 0;
 	}
 	virtual int statistics(int loop, side_perf &stat) = 0;
-	virtual int set_pbo(int &mode, char *buf) = 0;
-	virtual int get_pbo(int &mode, char *buf) = 0;
-
 };
 
 #endif

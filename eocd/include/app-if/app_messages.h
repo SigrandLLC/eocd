@@ -13,10 +13,10 @@ typedef enum { APP_SPAN_NAME=0,APP_SPAN_PARAMS,APP_SPAN_CONF,APP_SPAN_STATUS,
 			   APP_ENDP_1DAY, APP_ENDP_MAINT, APP_UNIT_MAINT, APP_CPROF,
 			   APP_LIST_CPROF, APP_ADD_CPROF, APP_DEL_CPROF, APP_LOOP_RCNTRST,
 			   APP_ADD_CHAN, APP_DEL_CHAN, APP_CHNG_CHAN, APP_ENDP_APROF,
-			   APP_DUMP_CFG,APP_SENSORS, APP_PBO
+			   APP_DUMP_CFG,APP_SENSORS
 } app_ids;
 
-#define app_ids_num 23
+#define app_ids_num 22
 
 typedef enum { APP_SET,APP_GET,APP_GET_NEXT } app_types;
 
@@ -287,17 +287,6 @@ typedef struct{
 } chan_chng_payload;
 #define CHAN_CHNG_PAY_SZ sizeof(chan_chng_payload)
 #define CHAN_CHNG_CH_SZ 0
-
-typedef struct{
-	u8 mode;
-	char val[PBO_SETTING_LEN];
-} chan_pbo_payload;
-#define PBO_PAY_SZ sizeof(chan_pbo_payload)
-typedef struct{
-	u8 mode : 1;
-	u8 val : 1;
-} chan_pbo_changes;
-#define PBO_CH_SZ sizeof(chan_pbo_changes)
 
 // --------- Dump configuration -------------- //
 #define DUMP_CFG_PAY_SZ 1

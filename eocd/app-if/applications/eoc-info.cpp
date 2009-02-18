@@ -24,7 +24,7 @@ extern "C"{
 
 typedef enum {NORMAL,SHELL,JASON} output_mode;
 output_mode mode = NORMAL;
-typedef enum {NONE,PSHORT,PEXACT,PFULL,SHORT,FULL,EXACT,RESET,SENSORS,PBO} type_t;
+typedef enum {NONE,PSHORT,PEXACT,PFULL,SHORT,FULL,EXACT,RESET,SENSORS} type_t;
 type_t type = NONE;
 unit _unit = unknown;
 side _side = no_side;
@@ -59,7 +59,6 @@ void print_usage(char *name)
 		   "  -v, --relative-rst\tReset relative counters\n"
 		   "  -w, --show-slaves\tLists slave interfaces (use with -r & -s)\n"
 		   "  -j, --sensors\tShows sensors state\n"
-		   "  -o, --pbo\tPower backoff settings\n"
 		   "  -h, --help\t\tThis page\n"
 		   ,name);
 }
@@ -115,53 +114,6 @@ void print_sensors(app_comm_cli &cli,char *chan,int indent=0)
     delete req;
     return;
 }
-
-
-void print_pbo(app_comm_cli &cli,char *chan,int indent=0)
-{
-    app_frame *req = new app_frame(APP_PBO,APP_GET,app_frame::REQUEST,1,chan);
-    app_frame *resp;
-    char *buf;
-
-
-    cli.send(req->frame_ptr(),req->frame_size());
-	cli.wait();
-    int size = cli.recv(buf);
-    if( size <=0 ){
-		delete req;
-		return;
-    }
-
-    resp = new app_frame(buf,size);
-    if( !resp->frame_ptr() ){
-		print_error("error: bad message from eocd");
-		goto err_exit;
-    }
-
-    if( resp->is_negative() ){ // no such unit or no net_side
-		print_error("error: negative response from server");
-		goto err_exit;
-    }
-    {
-		chan_pbo_payload *p = (chan_pbo_payload *)resp->payload_ptr();
-		switch( mode ){
-		case NORMAL:
-			printf("pbo_mode = %d, Value=%s\n",p->mode,p->val);
-			break;
-		case SHELL:
-			printf("pbo_mode=%d\npbo_val=%s\n",p->mode,p->val);
-			break;
-		case JASON:
-			jason_pbo(indent,p->mode,p->val);
-			break;
-		}
-    }
- err_exit:
-    delete resp;
-    delete req;
-    return;
-}
-
 
 void print_short_chan(app_comm_cli &cli,char *chan)
 {
@@ -546,7 +498,6 @@ main(int argc, char *argv[] )
 		{"row-shell", 0, 0, 'r'},
 		{"jason", 0, 0, 'n'},
 		{"sensors", 0, 0, 'j'},
-		{"pbo", 0, 0, 'o'},
 		{"help", 0, 0, 'h'},
 		{0, 0, 0, 0}
 	};
@@ -659,9 +610,6 @@ main(int argc, char *argv[] )
 		case 'j':
 			type = SENSORS;
 			break;
-		case 'o':
-			type = PBO;
-			break;
 		case 'h':
 			print_usage(argv[0]);
 			return 0;
@@ -691,13 +639,6 @@ main(int argc, char *argv[] )
 
     // Do requested work
     switch(type){
-	case PBO:
-		if( !strlen(iface) ){
-			print_error("No interface name given\n");
-			return 0;
-		}
-		print_pbo(cli,iface);
-		return 0;
 	case SENSORS:
 		if( _unit == unknown || !strlen(iface) ){
 			print_error("No unit setted\n");

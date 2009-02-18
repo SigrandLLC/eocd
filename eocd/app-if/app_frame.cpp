@@ -1,6 +1,6 @@
 #include <app-if/app_frame.h>
 
-app_frame::    
+app_frame::
 app_frame(app_ids id,app_types type,roles role,u8 act_seconds,char *dname){
 	u32 psize,csize;
 	int offs;
@@ -145,10 +145,6 @@ size_by_id(app_ids id,app_types type,u32 &psize,u32 &csize)
 		psize = SENSORS_PAY_SZ;
 		csize = SENSORS_CH_SZ;
 		break;
-	case APP_PBO:
-		psize = PBO_PAY_SZ;
-		csize = PBO_CH_SZ;
-		break;	
     default:
         return -1;
     }
@@ -159,9 +155,9 @@ size_by_id(app_ids id,app_types type,u32 &psize,u32 &csize)
     }else{
         csize = 0;
     }
-    return size;    
+    return size;
 }
-    
+
 const char *app_frame::
 chan_name(){
 	return hdr->dname;

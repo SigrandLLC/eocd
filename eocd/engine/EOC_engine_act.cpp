@@ -40,7 +40,6 @@ EOC_engine_act::EOC_engine_act(EOC_dev_terminal *d1, EOC_config *c,
 	recv_max = rmax;
 	poll = new EOC_poller(cfg, ticks_p_min, rtr->loops());
 	register_handlers();
-	pbo_changed = 0;
 }
 
 //----------------------------------------------------------------------
@@ -73,40 +72,6 @@ int EOC_engine_act::setup_state_act() {
 		poll->link_state(EOC_dev::ONLINE);
 	}
 	return 0;
-}
-
-//----------------------------------------------------------------------
-// PBO
-
-int EOC_engine_act::get_pbo(int &mode, char *buf) {
-	mode = pbo_mode;
-	strncpy(buf, pbo_vals, PBO_SETTING_LEN);
-	return 0;
-}
-
-int EOC_engine_act::set_pbo(int &mode, char *buf) {
-	// TODO: do this correctly !!!! When we think that pbo changed?
-	PDEBUG(DERR, "START");
-	if(!strncmp(pbo_vals, buf, PBO_SETTING_LEN)){
-		return 0;
-	}
-
-	if(buf)
-		strncpy(pbo_vals, buf, PBO_SETTING_LEN);
-	else
-		pbo_vals[0] = '\0';
-	pbo_changed = 1;
-
-	return 0;
-}
-
-int EOC_engine_act::apply_pbo() {
-	PDEBUG(DERR, "START");
-	int ret = dev1->set_pbo(pbo_mode, pbo_vals);
-	PDEBUG(DERR, "setted");
-	ret += dev1->get_pbo(pbo_mode, pbo_vals);
-	pbo_changed = 0;
-	return ret;
 }
 
 //----------------------------------------------------------------------

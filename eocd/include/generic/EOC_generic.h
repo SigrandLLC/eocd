@@ -13,7 +13,6 @@ typedef enum { no_side=-1,net_side=0,cust_side } side;
 #define MAX_LOOPS 4
 #define MAX_UNITS 10
 #define MAX_REPEATERS (MAX_UNITS-2)
-#define PBO_SETTING_LEN 3*16
 
 // EOC messages
 #define REQUEST_QUAN 128

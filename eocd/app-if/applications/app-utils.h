@@ -47,7 +47,6 @@ void do_indent(int indent);
 void jason_error(int ret,int indent = 0);
 void jason_error(char *s,int indent = 0);
 void jason_sensor(int indent,int snum,int cur,int cnt);
-void jason_pbo(int indent,int mode,char *val);
 void jason_short_channel(int indent,struct eoc_channel *chan);
 int jason_channels_list(struct eoc_channel *channels,int cnum);
 int jason_spanconf(int indent,app_comm_cli &cli,char *chan);
