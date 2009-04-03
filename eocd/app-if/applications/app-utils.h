@@ -1,13 +1,55 @@
+#ifndef APP_UTILS_H
+#define APP_UTILS_H
+
 #include <generic/EOC_generic.h>
 #include <app-if/app_comm_cli.h>
 #include <app-if/app_frame.h>
 
+typedef enum {NORMAL,JSON} output_t;
+typedef enum {NONE,HELP,CHANNEL,PROFILE} object_t;
 struct eoc_channel{
 	char *name;
 	dev_type t;
 	EOC_dev::compatibility_t comp;
 };
 
+typedef enum {BASE, RELA, SENS,INT15,INT1D,TBL_FULL,SHORT } table_type_t;
+typedef enum {noint, m15int,d1int } interval_t;
+
+typedef struct{
+	u8 have_cside : 1;
+	u8 have_nside : 1;
+	endp_cur_payload sides[2];
+	sensors_payload sensors;
+	int sints15m_cnt[2];
+	endp_int_payload *sints15m[2];
+	int sints1d_cnt[2];
+	endp_int_payload *sints1d[2];
+} unit_info_t;
+
+typedef struct {
+	table_type_t tbl_type;
+	char name[32];
+	dev_type type;
+	EOC_dev::compatibility_t comp;
+	int unit_cnt;
+	int link_on;
+	bool units_map[10];
+	unit_info_t units[10];
+	span_conf_payload conf;
+	span_status_payload stat;
+} channel_info_t;
+
+typedef struct {
+    char pname[SNMP_ADMIN_LEN+1];
+    span_conf_profile_t conf;
+    EOC_dev::compatibility_t comp;
+} confprof_info_t;
+
+typedef struct {
+	int size,used;
+	confprof_info_t *cinfos; 
+} profiles_info_t;
 
 // Convertions between strings and vars
 char *unit2string(unit u);
@@ -21,42 +63,9 @@ char *tcpam2STRING(tcpam_t code);
 tcpam_t string2tcpam(char *str);
 char *power2string(power_t a);
 power_t string2power(char *a);
+bool unit_is_ok(unit u,channel_info_t &info);
+int side2index(side s,unit u,channel_info_t &info);
+int setup_sides(unit u,channel_info_t &info);
+void init_chan_info(struct eoc_channel &ch,channel_info_t &info);
 
-
-// Normal mode output functions
-int print_cur_payload(endp_cur_payload *p );
-int print_int_payload(endp_int_payload *p,char *display);
-int print_endp_cur(app_comm_cli &cli,char *chan,unit u,side s,int loop);
-int print_endp_15m(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum);
-int print_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum);
-
-//---------- Shell mode output functions -------------//
-int shell_channel(app_comm_cli &cli,char *chan,span_params_payload *p);
-int shell_spanconf(app_comm_cli &cli,char *chan,int type=1);
-int shell_endp_cur(app_comm_cli &cli,char *chan,unit u,side s,int loop);
-int shell_endp_15m(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum);
-int shell_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum);
-int shell_cprof_info(app_comm_cli &cli,char *cprof,int ind);
-int shell_cprof_full(app_comm_cli &cli);
-int shell_cprof_list(app_comm_cli &cli);
-
-//--------- JASON mode output functions -------------//
-int jason_init();
-int jason_flush();
-void do_indent(int indent);
-void jason_error(int ret,int indent = 0);
-void jason_error(char *s,int indent = 0);
-void jason_sensor(int indent,int snum,int cur,int cnt);
-void jason_short_channel(int indent,struct eoc_channel *chan);
-int jason_channels_list(struct eoc_channel *channels,int cnum);
-int jason_spanconf(int indent,app_comm_cli &cli,char *chan);
-int jason_spanstat(int indent,app_comm_cli &cli,char *chan);
-int jason_channel(int indent,app_comm_cli &cli,char *chan,span_params_payload *p);
-int jason_m15ints(int indent,app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum = -1);
-int jason_d1ints(int indent,app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum = -1);
-int jason_loop(int indent, app_comm_cli &cli,char *chan,unit u,side s,int loop);
-int jason_side(int indent,app_comm_cli &cli,char *chan,span_params_payload *p,unit u,side s);
-int jason_exact(int indent,app_comm_cli &cli,char *chan,unit u);
-int jason_cprof_full(app_comm_cli &cli);
-
-
+#endif

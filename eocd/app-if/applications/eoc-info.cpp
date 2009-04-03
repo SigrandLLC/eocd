@@ -16,463 +16,216 @@ extern "C"{
 #include <app-if/err_strings.h>
 
 #include "app-utils.h"
+#include "app-utils-json.h"
+#include "app-utils-table.h"
+#include "app-utils-accum.h"
 
 #ifndef EOC_VER
 #define EOC_VER "0.0"
 #endif
 
 
-typedef enum {NORMAL,SHELL,JASON} output_mode;
-output_mode mode = NORMAL;
-typedef enum {NONE,PSHORT,PEXACT,PFULL,SHORT,FULL,EXACT,RESET,SENSORS} type_t;
-type_t type = NONE;
-unit _unit = unknown;
-side _side = no_side;
-int _loop = -1;
-int _dint = 0, _mint = 0;
-char *prof=NULL;
-
-#define print_error(fmt,args...)							\
-	if( mode == NORMAL ){ printf(fmt "\n", ## args);	}	\
-	else { if( mode == SHELL ) printf("eoc_error=1\n"); }   \
-
+output_t output = NORMAL;
+object_t obj = NONE;
+bool full = false;
+bool reset_rel = false;
+char *ifname = NULL;
+char *profname = NULL;
+unit u = unknown;
+side s = no_side;
+table_type_t ttype = BASE;
 
 void print_usage(char *name)
 {
     printf("eoc-info versoin: %s\n",EOC_VER);
 	printf("Usage: %s [-s|-f] [-i ] [-u [--row]] \n"
-		   "Options:\n"
-		   "  -s, --short\t\tShort info about served channels\n"
-		   "  -f, --full\t\tFull info about served channels\n"
-		   "  -i, --iface=<iface>\tGEt information about channel <iface>\n"
-		   "  -u, --unit=<unit>\tSTU-C,STU-R,SRU1...SRU8, use only with \'-i\'\n"
-		   "  -e, --endpoint=<endp>\tCustSide,NetSide, use only with \'-u\'\n"
-		   "  -l, --loop=<loop#>\tLoop number:0,1,2,3; use only with  \'-e\'\n"
-		   "  -m, --m15int=<#int>\t15 minutes interval number (conflicts with -d)\n"
-		   "  -d, --d1int=<#int>\t1 day interval number (conflicts with -m)\n"
-		   "  -t, --profile-list\tprofiles names list (only for row-shell & jason modes)\n"
-		   "  -p, --profile[=<name>]\tInformation about profile <name>. If <name> is ommited\n"
-		   "                        \tlists names of all profiles\n"
-		   "  -a, --all-profiles\tInformation about all profiles in system\n"
-		   "  -r, --row-shell\t\tRow shell output (for use in scripts)\n"
-		   "  -n,--jason\t\tprint in JASON (Java Script Object Notation format)\n"
-		   "  -v, --relative-rst\tReset relative counters\n"
-		   "  -w, --show-slaves\tLists slave interfaces (use with -r & -s)\n"
-		   "  -j, --sensors\tShows sensors state\n"
-		   "  -h, --help\t\tThis page\n"
+		   "Output mode (default:normal=human readable):\n"
+		   "  -j, --json    Output for WEB interface in Java Script Object Notation format\n"
+		   "Object (default:channel):\n"
+		   "  If no additional options provided - short output about supported \n"
+		   "  channels/profiles displayed\n"
+		   "  -c, --channel  Get information about channels\n"
+		   "  -p, --profile  Get information about profiles\n"
+		   "Target specification(default:full)\n"
+		   "  -f, --full  Get information about all served channels/profiles\n"
+		   "  For channels:\n"
+		   "    -i, --iface=<iface>    Get information about channel <iface>\n"
+		   "    -u, --unit=<unit>      STU-C,STU-R,SRU1...SRU8 (use only with \'-i\')\n"
+		   "    -e, --endpoint=<endp>  Set endpoint to <endp> (use only with \'-i\')\n"
+		   "  For profiles:\n"
+		   "    -n, --profname=<prof>  Get information about profile <prof>\n"
+		   "Requested information for channel (default:base):\n"
+		   "  -b, --base      Gate basic information: SNR Marg.,Loop atten.,ES,SES,LOSWS,UAS\n"
+		   "  -r, --relative  Same as basic but relative counters also displayed\n"
+		   "  -s, --sensors   Get information about sensors\n"
+		   "  -m, --min15int  Get information about 15-munute intervals (conflict with -d)\n"
+		   "  -d, --day1int   Get information about 1-day intervals (conflict with -m)\n"
+           "Actions:\n"
+		   "  -a, --relative-rst  Reset relative counters\n"
+		   "Help page:\n"
+		   "  -h, --help  This page\n"
 		   ,name);
 }
 
-void print_sensors(app_comm_cli &cli,char *chan,int indent=0)
-{
-    app_frame *req = new app_frame(APP_SENSORS,APP_GET,app_frame::REQUEST,1,chan);
-    app_frame *resp;
-    char *buf;
-
-	((sensors_payload *)req->payload_ptr())->unit = _unit;
-    cli.send(req->frame_ptr(),req->frame_size());
-	cli.wait();
-    int size = cli.recv(buf);
-    if( size <=0 ){
-		delete req;
-		return;
-    }
-
-    resp = new app_frame(buf,size);
-    if( !resp->frame_ptr() ){
-		print_error("error: bad message from eocd");
-		goto err_exit;
-    }
-
-    if( resp->is_negative() ){ // no such unit or no net_side
-		print_error("error: negative response from server");
-		goto err_exit;
-    }
-    {
-		sensors_payload *p = (sensors_payload *)resp->payload_ptr();
-		switch (mode){
-		case NORMAL:
-			printf(" %s %s: ",chan, unit2string(_unit));
-			printf("\tSensor1: current=%d, count=%d\n",p->state.sensor1,p->sens1);
-			printf("\tSensor2: current=%d, count=%d\n",p->state.sensor2,p->sens2);
-			printf("\tSensor3: current=%d, count=%d\n",p->state.sensor3,p->sens3);
-			break;
-		case SHELL:
-			printf("sens1_cur=%d\nsens1_cnt=%d\n",p->state.sensor1,p->sens1);
-			printf("sens2_cur=%d\nsens2_cnt=%d\n",p->state.sensor2,p->sens2);
-			printf("sens3_cur=%d\nsens3_cnt=%d\n",p->state.sensor3,p->sens3);
-			break;
-		case JASON:
-			jason_sensor(indent,1,p->state.sensor1,p->sens1);
-			jason_sensor(indent,2,p->state.sensor2,p->sens2);
-			jason_sensor(indent,3,p->state.sensor3,p->sens3);
-			break;
-		}
-    }
- err_exit:
-    delete resp;
-    delete req;
-    return;
-}
-
-void print_short_chan(app_comm_cli &cli,char *chan)
-{
-    app_frame *req = new app_frame(APP_SPAN_PARAMS,APP_GET,app_frame::REQUEST,1,chan);
-    app_frame *resp;
-    char *buf;
-
-    cli.send(req->frame_ptr(),req->frame_size());
-	cli.wait();
-    int size = cli.recv(buf);
-    if( size <=0 ){
-		delete req;
-		return;
-    }
-
-    resp = new app_frame(buf,size);
-    if( !resp->frame_ptr() ){
-		print_error("error: bad message from eocd");
-		goto err_exit;
-    }
-
-    if( resp->is_negative() ){ // no such unit or no net_side
-		print_error("error: negative response from server");
-		goto err_exit;
-    }
-    {
-		span_params_payload *p = (span_params_payload *)resp->payload_ptr();
-		int repeaters = (p->link_establ) ? p->units-2 : p->units-1;
-		printf(" %s: %d repeaters, %s\n",chan,(repeaters<0) ? 0 : repeaters,
-			   (p->link_establ) ? "online" : "offline");
-    }
- err_exit:
-    delete resp;
-    delete req;
-    return;
-}
+// --------------- CHANNEL objects processing -------------------------//
 
 void
-print_exact(app_comm_cli &cli,char *chan)
+process_channel(app_comm_cli &cli)
 {
-    app_frame *req = new app_frame(APP_SPAN_PARAMS,APP_GET,app_frame::REQUEST,1,chan);
-    app_frame *resp;
-    char *buf;
+	struct eoc_channel channels[MAX_CHANNELS];
+	int chan_cnt;
 
-    cli.send(req->frame_ptr(),req->frame_size());
-    cli.wait();
-    int size = cli.recv(buf);
-    if( !size ){
-		delete req;
-		return;
-    }
-
-    resp = new app_frame(buf,size);
-    if( !resp->frame_ptr() ){
-		print_error("error: bad message from eocd");
-		goto exit;
-    }
-
-    if( resp->is_negative() ){ // no such unit or no net_side
-		print_error("error: negative response from server");
-		goto exit;
-    }
-	{
-		span_params_payload *p = (span_params_payload *)resp->payload_ptr();
-		if( _unit == unknown ){
-			// Print General statistics for all units,sides,loops
-			for(int i=0;i<p->units;i++){
-				for(int j=0;j<p->loops;j++){
-					print_endp_cur(cli,chan,(unit)(i+1),net_side,j);
-					print_endp_cur(cli,chan,(unit)(i+1),cust_side,j);
-				}
-			}
-			goto exit;
-		}else if( _unit > p->units ){
-			print_error("error: no such unit: %s",unit2string(_unit));
-			goto exit;
-		}
-
-		// Print general statistics for all sides,loops
-		if( _side == no_side ){
-			for(int j=0;j<p->loops;j++){
-				print_endp_cur(cli,chan,_unit,net_side,j);
-				print_endp_cur(cli,chan,_unit,cust_side,j);
-			}
-			goto exit;
-		}
-
-		// Print General statistics for all loops
-		if( _loop<0 ){
-			for(int j=0;j<p->loops;j++){
-				print_endp_cur(cli,chan,_unit,_side,j);
-			}
-			goto exit;
-		}
-
-		// Print General statistics for fixed params
-		if( !_mint && !_dint ){
-			print_endp_cur(cli,chan,_unit,_side,_loop);
-		}
-
-		if( _mint ){
-			print_endp_15m(cli,chan,_unit,_side,_loop,_mint);
-		}else{
-			print_endp_1d(cli,chan,_unit,_side,_loop,_dint);
-		}
+	if( accum_channel_list(cli,channels,chan_cnt,output) ){
+		exit(0);
 	}
- exit:
-    delete resp;
-    delete req;
-    return;
-
+/*
+printf("GETTED channel list: ");
+for(int i=0; i< chan_cnt; i++){
+	printf("%s ", channels[i].name);
 }
-
-void shell_exact(app_comm_cli &cli,char *chan)
-{
-    app_frame *req = new app_frame(APP_SPAN_PARAMS,APP_GET,app_frame::REQUEST,1,chan);
-    app_frame *resp;
-    char *buf;
-	int ret = 0;
-
-    cli.send(req->frame_ptr(),req->frame_size());
-    cli.wait();
-    int size = cli.recv(buf);
-    if( !size ){
-		delete req;
-		return;
-    }
-    resp = new app_frame(buf,size);
-    if( !resp->frame_ptr() ){
-		print_error("Bad message from server");
-		goto exit;
-    }
-
-    if( (ret=resp->is_negative()) ){ // no such unit or no net_side
-		if( ret != ERNODB ){
-			print_error();
-			printf("err_srting=\"(%d) %s\"\n",ret,err_strings[ret-1]);
-			goto exit;
-		}else{
-			shell_spanconf(cli,chan,0);
-			goto exit;
-		}
-    }
-
-	{
-		span_params_payload *p = (span_params_payload *)resp->payload_ptr();
-		if( _unit == unknown ){
-			// Print General statistics for SRU-C, CustSide, loop0
-			shell_channel(cli,chan,p);
-			goto exit;
-		}else if( _unit > p->units ){
-			print_error();
-			goto exit;
-		}
-
-		// Print general statistics for all NetSide,loop0
-		if( _side == no_side ){
-			if( _unit >= sru1 || _unit == stu_r ){
-				if( shell_endp_cur(cli,chan,_unit,net_side,0) ){
-					print_error("error: while printing NetSide current status");
-				}
-			}else if( shell_endp_cur(cli,chan,_unit,cust_side,0) ){
-				print_error("error: while printing CustSide current status");
-			}
-			goto exit;
-		}
-
-		// Print General statistics for all loop0
-		if( _loop<0 ){
-			if( shell_endp_cur(cli,chan,_unit,_side,0) )
-				print_error();
-			goto exit;
-		}
-
-		// Print General statistics for fixed params
-		if( !_mint && !_dint ){
-			if( shell_endp_cur(cli,chan,_unit,_side,_loop) )
-				print_error();
-			goto exit;
-		}
-
-		if( _mint ){
-			if( shell_endp_15m(cli,chan,_unit,_side,_loop,_mint) )
-				print_error();
-		}else{
-			if( shell_endp_1d(cli,chan,_unit,_side,_loop,_dint) )
-				print_error();
-		}
-	}
- exit:
-    delete resp;
-    delete req;
-    return;
-}
-
-
-#define MAX_CHANS 256
-int print_short(app_comm_cli &cli,int indent = 0)
-{
-    app_frame *req = new app_frame(APP_SPAN_NAME,APP_GET,app_frame::REQUEST,1,"");
-    char *buf;
-    int flag = 0;
-	struct eoc_channel channels[MAX_CHANS];
-	int ret = 0;
-
-	int channels_num = 0;
-
-	if( mode == NORMAL ){
-		printf("Short information about served channels:\n");
-	}
-
-    do{
-        cli.send(req->frame_ptr(),req->frame_size());
-		cli.wait();
-		int size = cli.recv(buf);
-		if( size<=0 )
+printf("\n");
+*/
+	
+	if( ifname ){ // Channel name was specified
+		channel_info_t info;
+		switch( output ){
+		case NORMAL:
+			info.tbl_type = ttype;
 			break;
-
-        app_frame *resp = new app_frame(buf,size);
-		if( !resp->frame_ptr() ){
-			if( mode == JASON ){
-				jason_error((char*)"error: bad message from eocd");
-			}else{
-				print_error("error: bad message from eocd");
-			}
-			delete resp;
-			delete req;
-			return -1;
-		}
-		if( resp->is_negative() ){ // no such unit or no net_side
-			if( mode == JASON ){
-				jason_error((char*)"error: negative response from server");
-			}else{
-				print_error("error: negative response from server");
-			}
-			delete resp;
-			return -1;
+		case JSON:
+			info.tbl_type = TBL_FULL;
+			break;
 		}
 
-        span_name_payload *p = (span_name_payload*)resp->payload_ptr();
-		for(int i=0;i<p->filled && channels_num < MAX_CHANS;i++){
-			switch( mode ){
-			case NORMAL:
-				if( p->spans[i].t == master )
-					print_short_chan(cli,p->spans[i].name);
-				break;
-			case SHELL:
-			case JASON:
-				channels[channels_num].name = strdup(p->spans[i].name);
-				channels[channels_num].t = p->spans[i].t;
-				channels[channels_num++].comp = p->spans[i].comp;
+		if( !chan_cnt ){
+			print_error(output,"No channels served");
+			exit(0);
+		}
+		
+		bool found = false;
+		int index = -1;
+		for(int i=0;i<chan_cnt;i++){
+			if( !strcmp(ifname,channels[i].name) ){
+				found = true;
+				index = i;
 				break;
 			}
 		}
-		if( !p->filled )
-			break;
-		flag = !p->last_msg;
-		req->chan_name(p->spans[p->filled-1].name);
-		delete resp;
-    }while( flag );
 
-	switch ( mode ){
-	case SHELL:
-		printf("eoc_channels=\"");
-		for(int i=0;i<channels_num;i++){
-			printf("%s.%c ",channels[i].name,(channels[i].t==slave) ? 's' : 'm');
-			free(channels[i].name);
+		if( !found ){
+			print_error(output,"No requested channel found: %s",ifname);
+			exit(0);
 		}
-		printf("\"\n");
-		break;
-	case JASON:
-		ret = jason_channels_list(channels,channels_num);
-		break;
-	}
 
-    delete req;
-	return ret;
-}
-
-void print_full(app_comm_cli &cli)
-{
-    app_frame *req = new app_frame(APP_SPAN_NAME,APP_GET,app_frame::REQUEST,1,"");
-    char *buf;
-    int flag = 0;
-
-    printf("Full information about served channels:\n");
-    do{
-        cli.send(req->frame_ptr(),req->frame_size());
-		cli.wait();
-		int size = cli.recv(buf);
-		if( size<=0 )
-			break;
-
-        app_frame *resp = new app_frame(buf,size);
-		if( !resp->frame_ptr() ){
-			printf("Bad message from eocd\n");
-			delete resp;
-			delete req;
+		// for JSON we always display info by units
+		if( output == JSON ){
+			init_chan_info(channels[index],info);
+			if( accum_channel(cli,info,output,u) )
+				exit(0);
+			if( u == unknown ){
+				// printf("json_channel(0,info);\n");
+				json_channel(0,info);
+			}else{
+				// printf("json_unit(0,info,%s);\n",unit2string(u));
+				json_unit(0,info,u);
+			}
+			json_flush();
 			return;
 		}
-		if( resp->is_negative() ){ // no such unit or no net_side
-			delete resp;
-			break;
-		}
 
-        span_name_payload *p = (span_name_payload*)resp->payload_ptr();
-		for(int i=0;i<p->filled;i++){
-			printf("-----------------------------------------------------\n");
-			_unit = unknown;
-			if( p->spans[i].t == master ){
-				printf("Channel: %s\n",p->spans[i].name);
-				print_exact(cli,p->spans[i].name);
+		if( u == unknown ){
+			init_chan_info(channels[index],info);
+			if( accum_channel(cli,info,output,BCAST) )
+				exit(0);
+			// printf("table_channels(&info,1);\n");				
+			table_channels(&info,1);
+		}else{
+			init_chan_info(channels[index],info);
+			if(accum_channel(cli,info,output,u))
+				exit(0);
+			if(s==no_side){
+				//printf("table_unit(&info,%s);\n", unit2string(u));
+				table_unit(info, u);
+			}else{
+				//printf("table_side(&info,%s,%s);\n", unit2string(u),side2string(s));
+				table_side(info, u, s);
+				table_delim(info);
 			}
 		}
-		if( !p->filled )
-			break;
-		flag = !p->last_msg;
-		req->chan_name(p->spans[p->filled-1].name);
-		delete resp;
-    }while( flag );
-    delete req;
+	}else{
+		// Accumulate information about all channels
+		if( !full ){
+			// Print short information about sered channels
+			switch( output ){
+			case NORMAL:{
+				channel_info_t *chan_infos = new channel_info_t[chan_cnt];
+				for(int i=0;i<chan_cnt;i++){
+					init_chan_info(channels[i],chan_infos[i]);
+					chan_infos[i].tbl_type = SHORT;
+					if( accum_channel(cli,chan_infos[i],output) )
+						exit(0);
+				}
+				table_print_short(chan_infos,chan_cnt);
+				delete[] chan_infos;
+				break;
+			}
+			case JSON:
+				json_print_short(channels,chan_cnt);
+				json_flush();
+				break;
+			}
+		}else{
+			if( !chan_cnt ){
+				print_error(output,"No channels served");
+				exit(0);
+			}
+		
+			if( output == JSON ){
+				channel_info_t info;
+				init_chan_info(channels[0],info);
+				info.tbl_type = TBL_FULL;				
+				if( accum_channel(cli,info,output) )
+					exit(0);
+				json_channel(0,info);
+				json_flush();
+				return;
+			}
+
+			channel_info_t *chan_infos = new channel_info_t[chan_cnt];
+			for(int i=0;i<chan_cnt;i++){
+				init_chan_info(channels[i],chan_infos[i]);
+				chan_infos[i].tbl_type = ttype;
+				if( accum_channel(cli,chan_infos[i],output,BCAST) )
+					exit(0);
+			}
+			table_channels(chan_infos,chan_cnt);
+		}
+	}
 }
 
-int rst_relative(app_comm_cli &cli,char *chan)
+// --------------- PROFILE objects processing -------------------------//
+
+void
+process_profile(app_comm_cli &cli)
 {
-    app_frame *req = new app_frame(APP_LOOP_RCNTRST,APP_GET,app_frame::REQUEST,1,chan);
-	char *buf;
-    loop_rcntrst_payload *p;
+	profiles_info_t info;
 
-	if( (_unit<0) || (_side<0) || (_loop<0) ){
-		return -1;
+	if( output == JSON ){
+		accum_profiles(cli,info,output);
+		json_cprofiles(info);
+		json_flush();
+		return;
 	}
-
-	p = (loop_rcntrst_payload *)req->payload_ptr();
-	p->unit = (u8)_unit;
-	p->side = (u8)_side;
-	p->loop = (u8)_loop;
-	cli.send(req->frame_ptr(),req->frame_size());
-	cli.wait();
-	int size = cli.recv(buf);
-	if( size<=0 )
-		return 0;
-
-	app_frame *resp = new app_frame(buf,size);
-	if( !resp->frame_ptr() ){
-		print_error("Bad message from eocd\n");
-		delete resp;
-		delete req;
-		return 0;
+	
+	if(profname){
+		accum_profiles(cli,info,output,profname);
+	}else{
+		accum_profiles(cli,info,output);
 	}
-	int ret;
-	if( (ret=resp->is_negative()) ){ // no such unit or no net_side
-		print_error("Cannot reset relative counters: (%d) %s\n",ret,err_strings[ret-1]);
-		delete resp;
-		print_error("Cannot reset relative counters\n");
-	}
-	return 0;
+	table_cprofiles(info);
 }
 
+// --------------- MAIN -----------------------------------------------//
 int
 main(int argc, char *argv[] )
 {
@@ -483,243 +236,141 @@ main(int argc, char *argv[] )
     while (1) {
         int option_index = -1;
     	static struct option long_options[] = {
-		{"short", 0, 0, 's'},
+		{"json", 0, 0, 'j'},
+		{"channel", 0, 0, 'c'},
+		{"profile", 0, 0, 'p'},
 		{"full", 0, 0, 'f'},
-		{"iface", 1, 0, 'i'},
+		{"interface", 1, 0, 'i'},
 		{"unit", 1, 0, 'u'},
 		{"endpoint", 1, 0, 'e'},
-		{"loop", 1, 0, 'l'},
-		{"m15int", 1, 0, 'm'},
-		{"d1int", 1, 0, 'd'},
-		{"relative-rst", 0, 0, 'v'},
-		{"profile-list",0, 0, 't'},
-		{"all-profiles",0, 0, 'a'},
-		{"profile", 1, 0, 'p'},
-		{"row-shell", 0, 0, 'r'},
-		{"jason", 0, 0, 'n'},
-		{"sensors", 0, 0, 'j'},
+		{"profname", 1, 0, 'p'},
+		{"base",0, 0, 'b'},
+		{"relative",0, 0, 'r'},
+		{"sensors", 0, 0, 's'},
+		{"ints15min", 0, 0, 'm'},
+		{"ints1day", 0, 0, 'd'},
 		{"help", 0, 0, 'h'},
+		{"relative-rst", 0, 0, 'a'},
 		{0, 0, 0, 0}
-	};
+		};
 
-		int c = getopt_long (argc, argv, "sfhi:u:e:l:m:d:rnp:tavo",long_options, &option_index);
+		int c = getopt_long (argc, argv, "jcpfi:u:e:n:brsmdha",long_options, &option_index);
         if (c == -1)
     	    break;
 		switch (c) {
-        case 's':
-			if( type == NONE )
-				type = SHORT;
+        case 'c':
+			// Check that JSON was not setted
+			if( obj <= HELP ){
+				obj = CHANNEL;
+			}
             break;
-        case 'f':
-			type = FULL;
+        case 'j':
+			// highest object priority
+			output = JSON;
     	    break;
-		case 'i':
-			if( type != FULL ){
-				type = EXACT;
-				strncpy(iface,optarg,255);
-			}
-			break;
-		case 'u':
-			{
-				_unit = string2unit(optarg);
-				if( _unit == unknown ){
-					print_error("Error unit name: %s\n",optarg);
-					return 0;
-				}
-			}
-			break;
-		case 'e':
-			{
-				_side = string2side(optarg);
-				if( _side == no_side ){
-					print_error("Error endpoint name: %s\n",optarg);
-					exit(1);
-				}
-			}
-			break;
-		case 'l':
-			{
-				char *endp;
-				_loop = strtoul(optarg,&endp,0);
-				if( optarg == endp ){
-					print_error("Wrong loop number: %s\n",optarg);
-					exit(1);
-				}
-			}
-			break;
-		case 'm':
-			{
-				char *endp;
-				_mint = strtoul(optarg,&endp,0);
-				if( optarg == endp ){
-					printf("Wrong 15 minutes interval number: %s\n",optarg);
-					exit(1);
-				}
-				if( _dint > 0 ){
-					printf("Conflicting options --m15int (-m) and --d1int (-d)\n");
-					exit(1);
-				}
-			}
-			break;
-		case 'd':
-			{
-				char *endp;
-				_dint = strtoul(optarg,&endp,0);
-				if( optarg == endp ){
-					printf("Wrong 1 day interval number: %s\n",optarg);
-					exit(1);
-				}
-				if( _mint > 0 ){
-					printf("Conflicting options --m15int (-m) and --d1int (-d)\n");
-					exit(1);
-				}
-			}
-			break;
-		case 't':
-			{
-				if( type < PEXACT )
-					type = PSHORT;
-			}
-			break;
 		case 'p':
-			{
-				if( type < PFULL ){
-					type = PEXACT;
-					prof=strndup(optarg,SNMP_ADMIN_LEN);
-				}
-			}
+			obj = PROFILE;
 			break;
-		case 'a':
-			{
-				if( type < SHORT ){
-					type = PFULL;
-				}
-			}
+		case 'f':
+			full = true;
 			break;
-		case 'r':
-			if( mode == NORMAL ){ // Jason has higher priopity
-				mode = SHELL;
-			}
+		case 'i':
+			ifname = strndup(optarg,256);
 			break;
 		case 'n':
-			mode = JASON;
+			profname = strndup(optarg,256);
 			break;
-		case 'v':
-			type = RESET;
+		case 'u':{
+			u = string2unit(optarg);
+			if( u == unknown ){
+				print_error(output,"Error unit name: %s\n",optarg);
+				exit(1);
+			}
 			break;
-		case 'j':
-			type = SENSORS;
+		}
+		case 'e':{
+			s = string2side(optarg);
+			if( s == no_side ){
+				print_error(output,"Error endpoint name: %s\n",optarg);
+				exit(1);
+			}
+			break;
+		}
+		case 'b':
+			ttype = BASE;
+			break;
+		case 'r':
+			ttype = RELA;
+			break;
+		case 's':
+			ttype = SENS;
+			break;
+		case 'm':
+			ttype = INT15;
+			break;
+		case 'd':
+			ttype = INT1D;
+			break;		
+		case 'a':
+			reset_rel = true;
 			break;
 		case 'h':
-			print_usage(argv[0]);
-			return 0;
+			if( obj == NONE ){
+				obj = HELP;
+			}
+			break;
 		}
     }
+    
+	switch( obj ){
+	case NONE:
+		obj = CHANNEL;
+		break;
+	case HELP:
+		print_usage(argv[0]);
+		exit(0);
+	default:
+		break;
+	}
 
     // Connect to eocd server
 	app_comm_cli *cli1;
-	switch( mode ){
+	switch( output ){
 	case NORMAL:
 		cli1 = new app_comm_cli(sock_name);
 		break;
-	case JASON:
+	case JSON:
 		// Initialize JASON pipe
-		if( jason_init() )
+		if( json_init() )
 			return 0;
-	case SHELL:
-		// Both for SHELL & JASON
 		cli1 = new app_comm_cli(sock_name,1);
 		break;
 	}
     if( !cli1->init_ok() ){
-		print_error("Cannot connect to %s\n",sock_name);
+		print_error(output,"Cannot connect to %s\n",sock_name);
 		return 0;
     }
 	app_comm_cli &cli = *cli1;
 
-    // Do requested work
-    switch(type){
-	case SENSORS:
-		if( _unit == unknown || !strlen(iface) ){
-			print_error("No unit setted\n");
-			return 0;
+	// reset relative counters if requested
+	if( reset_rel ){
+		if( obj == CHANNEL && ifname && u != unknown && s != no_side ){
+			if( rst_relative(cli,ifname,u,s,output) )
+				exit(1);
+		}else{
+			print_error(output,"Cannot reset relative counters. Not all components provided.\nNeed interface name,unit,side");
+			exit(1);
 		}
-		print_sensors(cli,iface);
-		return 0;
-	case RESET:
-		rst_relative(cli,iface);
-		break;
-	case PSHORT:
-		switch( mode ){
-		case SHELL:
-			shell_cprof_list(cli);
-			break;
-		case JASON:
-			if( jason_cprof_full(cli) )
-				return 0;
-		default:
-			break;
-		}
-		break;
-	case PEXACT:
-		switch( mode ){
-		case SHELL:
-			if( shell_cprof_info(cli,prof,0) )
-				print_error();
-			break;
-		case JASON:
-			if( jason_cprof_full(cli) )
-				return 0;
-		default:
-			break;
-		}
-		break;
-	case PFULL:
-		switch( mode ){
-		case SHELL:
-			if( shell_cprof_full(cli) )
-				print_error();
-			break;
-		case JASON:
-			if( jason_cprof_full(cli) )
-				return 0;
-		default:
-			break;
-		}
-		break;
-    case FULL:
-		if( mode != NORMAL ){
-			if( print_short(cli) )
-				return 0;
-		}else
-			print_full(cli);
-		break;
-    case SHORT:
-		if( print_short(cli) )
-			return 0;
-		break;
-    case EXACT:
-		//		printf("D: Exact\n");
-		switch(mode){
-		case NORMAL:
-			//			printf("D: NORMAL\n");
-			print_exact(cli,iface);
-			break;
-		case SHELL:
-			//			printf("D: SHELL\n");
-			shell_exact(cli,iface);
-			break;
-		case JASON:
-			//			printf("D: SHELL\n");
-			if( jason_exact(0,cli,iface,_unit) )
-				return 0;
-			break;
-		}
-    }
+	}
 
-	if( mode == JASON ){
-		jason_flush();
+    // Do requested work
+	switch( obj ){
+	case PROFILE:
+		process_profile(cli);
+		break;
+	case CHANNEL:
+		process_channel(cli);
+		break;
 	}
     return 0;
 }
-
