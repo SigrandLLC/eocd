@@ -7,7 +7,7 @@
 
 inline int
 mr17h_conf_dir(char *name,char *buf,int max_size){
-    return snprintf(buf,max_size,"/sys/class/net/%s/sg17_private",name);
+    return snprintf(buf,max_size,"/sys/class/net/%s/sg_private",name);
 }
 
 class EOC_mr17h : public EOC_dev_terminal{
