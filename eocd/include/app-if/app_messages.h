@@ -13,10 +13,10 @@ typedef enum { APP_SPAN_NAME=0,APP_SPAN_PARAMS,APP_SPAN_CONF,APP_SPAN_STATUS,
 			   APP_ENDP_1DAY, APP_ENDP_MAINT, APP_UNIT_MAINT, APP_CPROF,
 			   APP_LIST_CPROF, APP_ADD_CPROF, APP_DEL_CPROF, APP_LOOP_RCNTRST,
 			   APP_ADD_CHAN, APP_DEL_CHAN, APP_CHNG_CHAN, APP_ENDP_APROF,
-			   APP_DUMP_CFG,APP_SENSORS
+			   APP_DUMP_CFG,APP_SENSORS,APP_SENSOR_FULL
 } app_ids;
 
-#define app_ids_num 22
+#define app_ids_num 23
 
 typedef enum { APP_SET,APP_GET,APP_GET_NEXT } app_types;
 
@@ -251,6 +251,24 @@ typedef struct{
 #define SENSORS_PAY_SZ sizeof(sensors_payload)
 #define SENSORS_CH_SZ 0
 
+#define MSG_SENS_EVENTS 10
+struct sens_event{
+	int index;
+	time_t start,end;
+	u16 cnt;
+};
+
+typedef struct{
+    u8 unit;
+    u32 num : 31;
+    u32 last : 1;
+    u32 index;
+    int cnt;
+    struct sens_event ev[MSG_SENS_EVENTS];
+    
+} sensor_full_payload;
+#define SENSOR_FULL_PAY_SZ sizeof(sensor_full_payload)
+#define SENSOR_FULL_CH_SZ 0
 
 //----------- Endpoint counters reset ------------//
 

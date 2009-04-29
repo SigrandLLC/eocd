@@ -10,7 +10,7 @@ static char *err_strings[] = { "", "Wrong type of request",
 	"Channel not maintain SHDSL data base", "Unexpected error",
 	"Requested element not exist",
 	"Some settings of profile not compatible with devices",
-	"Profile is read-only", "Finction is not implemented" };
+	"Profile is read-only", "Finction is not implemented","Requested not existing sensor" };
 
 #define ERR_STR_SIZE sizeof(err_codes)
 

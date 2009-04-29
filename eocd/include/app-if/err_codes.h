@@ -18,8 +18,8 @@ enum err_codes {
 	ERNOELEM, // Requested unit not exist
 	ERPNCOMP, // Some settings of profile not compatible with devices
 	ERPRONLY, // Profile is read-only
-	ENIMPL,
-// Finction is not implemented
+	ENIMPL, // Finction is not implemented
+	ERNOSENSOR, // Requested not existing sensor
 };
 
 #endif

@@ -145,6 +145,10 @@ size_by_id(app_ids id,app_types type,u32 &psize,u32 &csize)
 		psize = SENSORS_PAY_SZ;
 		csize = SENSORS_CH_SZ;
 		break;
+	case APP_SENSOR_FULL:
+		psize = SENSOR_FULL_PAY_SZ;
+		csize = SENSOR_FULL_CH_SZ;
+		break;
     default:
         return -1;
     }

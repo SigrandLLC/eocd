@@ -42,7 +42,7 @@ class EOC_db{
     static int _appreq_unitmaint(EOC_db *db,app_frame *fr);
 	static int _appreq_cntrst(EOC_db *db,app_frame *fr);
 	static int _appreq_sensors(EOC_db *db,app_frame *fr);
-
+	static int _appreq_sensor_full(EOC_db *db, app_frame *fr);
     inline int register_handlers();
 
 public:

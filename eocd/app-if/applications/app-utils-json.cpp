@@ -153,18 +153,66 @@ int json_print_short(struct eoc_channel *channels, int cnum) {
 	return ret;
 }
 
-void json_sensor(int indent, int snum, int cur, int cnt) {
+void json_sensor_events(int indent,int snum,unit_info_t &uinfo)
+{
+	struct sens_event *events = uinfo.sens_events[snum-1];
+	int offset = 0;
+	
+	for(int i=0;i<uinfo.sens_events_num[snum-1];i++){
+		do_indent(indent+offset);
+		bprintf("{\n");
+		offset++;
+		do_indent(indent+offset);
+		bprintf("\"event\": \"%d\",\n",events[i].index);
+
+		char s[256];
+		strftime(s, 256, "%d %b %G", localtime(&events[i].start));
+		do_indent(indent + offset);
+		bprintf("\"day_start\" : \"%s\",\n",s);
+
+		strftime(s, 256, "%R", localtime(&events[i].start));
+		do_indent(indent + offset);
+		bprintf("\"time_start\" : \"%s\",\n",s);
+
+		if( !events[i].end ){
+			events[i].end = time(NULL);
+		}
+		strftime(s, 256, "%R", localtime(&events[i].end));
+		do_indent(indent + offset);
+		bprintf("\"time_end\" : \"%s\",\n",s);
+		
+		do_indent(indent + offset);
+		bprintf("\"count\" : \"%d\"\n",events[i].cnt);
+		
+		offset--;
+		do_indent(indent+offset);
+		bprintf("}");
+		if( i != uinfo.sens_events_num[snum-1]-1)
+			bprintf(",");
+		bprintf("\n");
+	}
+}
+
+void json_sensor(int indent, int snum, int cur, int cnt, unit_info_t &uinfo) {
 	do_indent(indent);
 	bprintf("{\n");
 	do_indent(indent + 1);
-	bprintf("\"num\" : \"%d\",",snum);
+	bprintf("\"num\" : \"%d\",\n",snum);
 	do_indent(indent + 1);
-	bprintf("\"cur\" : \"%d\",",cur);
+	bprintf("\"cur\" : \"%d\",\n",cur);
 	do_indent(indent + 1);
-	bprintf("\"cnt\" : \"%d\"",cur);
+	bprintf("\"cnt\" : \"%d\"\n",cnt);
+	// Sensor events
+	do_indent(indent+1);
+	bprintf("\"events\" : [\n",cnt);
+	json_sensor_events(indent+2,snum,uinfo);
+	do_indent(indent+1);
+	bprintf("]\n");
+	
 	do_indent(indent);
 	bprintf("}");
 }
+
 
 int 
 json_sensors(int indent, channel_info_t &info, unit u) 
@@ -174,11 +222,11 @@ json_sensors(int indent, channel_info_t &info, unit u)
 		return -1;
 	}
 	sensors_payload &p = info.units[(int)u-1].sensors;
-	json_sensor(indent, 1, p.state.sensor1, p.sens1);
+	json_sensor(indent, 1, p.state.sensor1, p.sens1,info.units[(int)u-1]);
 	bprintf(",\n");
-	json_sensor(indent, 2, p.state.sensor2, p.sens2);
+	json_sensor(indent, 2, p.state.sensor2, p.sens2,info.units[(int)u-1]);
 	bprintf(",\n");
-	json_sensor(indent, 3, p.state.sensor3, p.sens3);
+	json_sensor(indent, 3, p.state.sensor3, p.sens3,info.units[(int)u-1]);
 	bprintf("\n");
 	return 0;
 }
@@ -317,7 +365,12 @@ json_m15ints(int indent, channel_info_t &info, unit u, side s)
 
 		offset--;
 		do_indent(indent + offset);
-		bprintf("}");
+		if( i == (cnt-1) ){
+			bprintf("}\n");
+		}else{
+			bprintf("},\n");
+		}
+		
 	}
 	return 0;
 }
@@ -382,7 +435,11 @@ json_d1ints(int indent, channel_info_t &info, unit u, side s)
 
 		offset--;
 		do_indent(indent + offset);
-		bprintf("}");
+		if( i == (cnt-1) ){
+			bprintf("}\n");
+		}else{
+			bprintf("},\n");
+		}
 	}
 	return 0;
 }

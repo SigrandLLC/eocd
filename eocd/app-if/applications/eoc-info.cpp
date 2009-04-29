@@ -58,6 +58,7 @@ void print_usage(char *name)
 		   "  -b, --base      Gate basic information: SNR Marg.,Loop atten.,ES,SES,LOSWS,UAS\n"
 		   "  -r, --relative  Same as basic but relative counters also displayed\n"
 		   "  -s, --sensors   Get information about sensors\n"
+		   "  -v, --sens-full Full informations about sensors\n"
 		   "  -m, --min15int  Get information about 15-munute intervals (conflict with -d)\n"
 		   "  -d, --day1int   Get information about 1-day intervals (conflict with -m)\n"
            "Actions:\n"
@@ -247,6 +248,7 @@ main(int argc, char *argv[] )
 		{"base",0, 0, 'b'},
 		{"relative",0, 0, 'r'},
 		{"sensors", 0, 0, 's'},
+		{"sens-full", 0, 0, 'v'},		
 		{"ints15min", 0, 0, 'm'},
 		{"ints1day", 0, 0, 'd'},
 		{"help", 0, 0, 'h'},
@@ -254,7 +256,7 @@ main(int argc, char *argv[] )
 		{0, 0, 0, 0}
 		};
 
-		int c = getopt_long (argc, argv, "jcpfi:u:e:n:brsmdha",long_options, &option_index);
+		int c = getopt_long (argc, argv, "jcpfi:u:e:n:brsmdhav",long_options, &option_index);
         if (c == -1)
     	    break;
 		switch (c) {
@@ -304,6 +306,9 @@ main(int argc, char *argv[] )
 			break;
 		case 's':
 			ttype = SENS;
+			break;
+		case 'v':
+			ttype = SENS_FULL;
 			break;
 		case 'm':
 			ttype = INT15;

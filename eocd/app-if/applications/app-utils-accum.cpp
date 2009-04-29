@@ -296,7 +296,8 @@ accum_unit(app_comm_cli &cli,channel_info_t &info,unit u,output_t omode)
 	default:
 		break;
 	}
-		// Get info about sensors
+
+	// Get info about sensors
 	app_frame *req = new app_frame(APP_SENSORS, APP_GET, app_frame::REQUEST, 1,
 		info.name);
 	app_frame *resp = NULL;
@@ -318,6 +319,43 @@ accum_unit(app_comm_cli &cli,channel_info_t &info,unit u,output_t omode)
 		unit_info_t &uinfo = info.units[(int)u-1];
 		uinfo.sensors = *p;
 	}
+	
+	// Get info about sensors events
+	for(int i = 0;i<3;i++){
+		unit_info_t &uinfo = info.units[(int)u-1];
+		int j;
+		int last = 0;
+		for(j=0;j<SENS_EVENTS_NUM && !last;){
+			app_frame *req = new app_frame(APP_SENSOR_FULL, APP_GET,
+				app_frame::REQUEST, 1, info.name);
+			app_frame *resp = NULL;
+			char *buf;
+			int ret = 0;
+
+			if(!req){
+				print_error(omode,"fatal error (%s): low on memory\n",info.name);
+				exit(0);
+			}
+
+			((sensor_full_payload *)req->payload_ptr())->unit = u;
+			((sensor_full_payload *)req->payload_ptr())->num = i;
+			((sensor_full_payload *)req->payload_ptr())->index = j;
+			
+
+			if(ret = eocd_request(cli, req, resp, omode)){ // no such unit or no net_side
+				//print_errcode(omode,ret,info.name);
+				break;
+			}
+
+			sensor_full_payload *p = (sensor_full_payload *)resp->payload_ptr();
+			unit_info_t &uinfo = info.units[(int)u-1];
+			for(int k=0;(k<p->cnt) && j<SENS_EVENTS_NUM; k++,j++){
+				uinfo.sens_events[i][j] = p->ev[k];
+			}
+			last = p->last;
+		}
+		uinfo.sens_events_num[i] = j;
+	}	
 exit:
 	if( resp )
 	    delete resp;

@@ -2,6 +2,7 @@
 #define APP_UTILS_H
 
 #include <generic/EOC_generic.h>
+#include <db/EOC_unit.h>
 #include <app-if/app_comm_cli.h>
 #include <app-if/app_frame.h>
 
@@ -13,7 +14,7 @@ struct eoc_channel{
 	EOC_dev::compatibility_t comp;
 };
 
-typedef enum {BASE, RELA, SENS,INT15,INT1D,TBL_FULL,SHORT } table_type_t;
+typedef enum {BASE, RELA, SENS,INT15,INT1D,TBL_FULL,SHORT,SENS_FULL } table_type_t;
 typedef enum {noint, m15int,d1int } interval_t;
 
 typedef struct{
@@ -21,6 +22,8 @@ typedef struct{
 	u8 have_nside : 1;
 	endp_cur_payload sides[2];
 	sensors_payload sensors;
+	struct sens_event sens_events[3][SENS_EVENTS_NUM];
+	int sens_events_num[3];
 	int sints15m_cnt[2];
 	endp_int_payload *sints15m[2];
 	int sints1d_cnt[2];

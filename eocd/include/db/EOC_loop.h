@@ -115,7 +115,7 @@ class EOC_loop{
 		int i = index;
 		while( !_15min_ints[i] && i<EOC_15MIN_INTS )
 			i++;
-		if( !_15min_ints[i] )
+		if( i==EOC_15MIN_INTS || !_15min_ints[i] )
 			return -1;
 		cntrs = *_15min_ints[i];
 		index = i;
@@ -137,7 +137,7 @@ class EOC_loop{
 		int i = index;
 		while( !_1day_ints[i] && i<EOC_1DAY_INTS )
 			i++;
-		if( !_1day_ints[i] )
+		if( i==EOC_1DAY_INTS || !_1day_ints[i] )
 			return -1;
 		cntrs = *_1day_ints[i];
 		index = i;

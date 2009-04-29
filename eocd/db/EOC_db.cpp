@@ -64,6 +64,7 @@ int EOC_db::register_handlers()
 	app_handlers[APP_UNIT_MAINT] = _appreq_unitmaint;
 	app_handlers[APP_LOOP_RCNTRST] = _appreq_cntrst;
 	app_handlers[APP_SENSORS] = _appreq_sensors;
+	app_handlers[APP_SENSOR_FULL] = _appreq_sensor_full;
 }
 
 EOC_db::EOC_db(EOC_scheduler *s, int lnum)
@@ -572,12 +573,12 @@ int EOC_db::_resp_test(EOC_db *db, EOC_msg *m, int check)
 int EOC_db::app_request(app_frame *fr)
 {
 	PDEBUG(DERR, "Start. frame id=%d", fr->id());
-	if(!app_handlers[fr->id()]){
+	if( (fr->id()>= app_ids_num) || !app_handlers[fr->id()]){
 		fr->negative(ERPARAM);
 		PDEBUG(DERR, "No id=%d handler found", fr->id());
 		return -1;
 	}
-	PDEBUG(DERR, "Call %d handler", fr->id());
+	PDEBUG(DERR, "Call %d handler, APP_SENSOR_FULL=%d", fr->id(),APP_SENSOR_FULL);
 	return app_handlers[fr->id()](this, fr);
 }
 
@@ -829,4 +830,75 @@ int EOC_db::_appreq_sensors(EOC_db *db, app_frame *fr)
 	un->sensor_get(p->state, p->sens1, p->sens2, p->sens3);
 	PDEBUG(DFULL, "Return successfull");
 	return 0;
+}
+
+int EOC_db::_appreq_sensor_full(EOC_db *db, app_frame *fr)
+{
+	PDEBUG(DERR, "start");
+	sensor_full_payload *p = (sensor_full_payload*)fr->payload_ptr();
+	unit u = (unit)p->unit;
+	EOC_unit *un;
+
+	
+	
+	PDEBUG(DFULL, "DB: Sensor state request");
+	if(!p){
+		fr->negative(ERPARAM);
+		PDEBUG(DERR, "Error !p");
+		return -1;
+	}
+	PDEBUG(DFULL, "#1");
+	if(db->check_exist((unit)p->unit,1)){
+		PDEBUG(DERR, "DB sensor state: error check exist: unit(%d)", p->unit);
+		fr->negative(ERNOELEM);
+		return 0;
+	}
+
+	// Sensors are installed only on regenerators
+	if(u==stu_c||u==stu_r){
+		PDEBUG(DERR, "DB sensor state: no sensors on terminals");
+		fr->negative(ERNOELEM);
+		return 0;
+	}
+	
+	if( p->num > 3 ){
+		PDEBUG(DERR, "DB full sensor state: sensor #%d not exist",p->num);
+		fr->negative(ERNOSENSOR);
+		return 0;
+	}
+
+	PDEBUG(DFULL, "Point to requested unit");
+	un = db->units[(int)u-1];
+	
+	PDEBUG(DERR,"num=%d, index=%d",p->num,p->index);
+	
+	sens_events ev;
+	switch(fr->type()){
+	case APP_GET:
+	case APP_GET_NEXT: {
+		int index = p->index;
+		int flag = 0;
+		PDEBUG(DFULL, "Get-NEXT");
+		int i=0,ret = 0;
+		
+		do{
+			PDEBUG(DFULL, "Process event #%d", index);
+			if( ret = un->sensor_event(p->num,index,ev)){
+				break;
+			}
+			p->ev[i].index = index; 
+			p->ev[i].cnt = ev.event_descr(p->ev[i].start,p->ev[i].end);
+			i++;
+			index++;
+		}while( i<MSG_SENS_EVENTS && index < SENS_EVENTS_NUM);
+
+		p->last = (ret) ? 1 : 0;
+		p->cnt = i;
+		PDEBUG(DERR,"Return: cnt=%d, last=%d",p->cnt,p->last);
+		return 0;
+	}
+	default:
+		fr->negative(ERTYPE);
+		return 0;
+	}
 }
