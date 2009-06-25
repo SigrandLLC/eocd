@@ -4,7 +4,7 @@ extern "C"{
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <stdio.h>
-#include<errno.h>
+#include <errno.h>
 #include <string.h>
 #include <stdlib.h>
 #include <getopt.h>

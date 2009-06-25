@@ -201,7 +201,7 @@ void json_sensor(int indent, int snum, int cur, int cnt, unit_info_t &uinfo) {
 	do_indent(indent + 1);
 	bprintf("\"cur\" : \"%d\",\n",cur);
 	do_indent(indent + 1);
-	bprintf("\"cnt\" : \"%d\"\n",cnt);
+	bprintf("\"cnt\" : \"%d\",\n",cnt);
 	// Sensor events
 	do_indent(indent+1);
 	bprintf("\"events\" : [\n",cnt);
