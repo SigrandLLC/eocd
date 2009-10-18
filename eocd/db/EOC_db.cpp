@@ -419,6 +419,9 @@ int EOC_db::_resp_nside_perf(EOC_db *db, EOC_msg *m, int check)
 	ASSERT(m->type()==RESP_NSIDE_PERF);
 	int rel;
 
+	PDEBUG(DFULL, "NET SIDE STATUS RESPONSE (start): src(%d) dst(%d)", m->src(), m->dst());
+
+
 	if(m->payload_sz()==RESP_NSIDE_PERF_SZ-1){
 		PDEBUG(DFULL, "Call resp_perf_convert");
 		resp_perf_convert((side_perf*)&tmp_resp, m->payload(), m->payload_sz());
@@ -457,7 +460,7 @@ int EOC_db::_resp_nside_perf(EOC_db *db, EOC_msg *m, int check)
 		return 0;
 	}
 
-	PDEBUG(DFULL, "NET SIDE PERF RESPONSE: src(%d) dst(%d)", m->src(), m->dst());
+	PDEBUG(DFULL, "NET SIDE PERF STATUS RESPONSE (commit): src(%d) dst(%d)", m->src(), m->dst());
 
 	if(nsloop){
 		PDEBUG(DFULL, "Call nsloop->full_status");
@@ -473,6 +476,8 @@ int EOC_db::_resp_cside_perf(EOC_db *db, EOC_msg *m, int check)
 	ASSERT(m&&db);
 	ASSERT(m->type()==RESP_CSIDE_PERF);
 	int rel = 0;
+
+	PDEBUG(DFULL, "CUST SIDE STATUS RESPONSE (start): src(%d) dst(%d)", m->src(), m->dst());
 
 	if(m->payload_sz()==RESP_NSIDE_PERF_SZ-1){
 		PDEBUG(DFULL, "Call resp_perf_convert");
@@ -495,8 +500,7 @@ int EOC_db::_resp_cside_perf(EOC_db *db, EOC_msg *m, int check)
 	if(check)
 		return 0;
 
-	PDEBUG(DINFO, "CUST SIDE PERF RESPONSE: src(%d) dst(%d)", m->src(),
-		m->dst());
+	PDEBUG(DFULL, "CUST SIDE PERF STATUS RESPONSE (commit): src(%d) dst(%d)", m->src(), m->dst());
 
 	if(csloop){
 		csloop->full_status(resp, rel);

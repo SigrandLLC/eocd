@@ -384,10 +384,10 @@ accum_channel(app_comm_cli &cli,channel_info_t &info,output_t omode,unit u)
 		exit(0);
 	}
 
-    if( ret = eocd_request(cli,req,resp,omode) ){ // no such unit or no net_side
+  if( ret = eocd_request(cli,req,resp,omode) ){ // no such unit or no net_side
 		print_errcode(omode,ret,info.name);
 		goto exit;
-    } else {
+  } else {
 		span_params_payload *p = (span_params_payload *)resp->payload_ptr();
 		info.unit_cnt = p->units;
 		info.link_on = p->link_establ;
@@ -395,24 +395,9 @@ accum_channel(app_comm_cli &cli,channel_info_t &info,output_t omode,unit u)
 			print_error(omode,"error (%s): at this moment we don't support more than one loop",info.name);
 			goto exit;
 		}
-		// Get information about units
-		
+		// Drop discovered units map
 		for(int i=0;i<p->units;i++)
 			info.units_map[i] = false;
-		switch( u ){
-		case BCAST:
-			for(int i=0;i<p->units;i++){
-				info.units_map[i] = true;
-				accum_unit(cli,info,(unit)(i+1),omode);
-			}
-			break;
-		case unknown:
-			break;
-		default:
-			info.units_map[(int)u-1] = true;
-			accum_unit(cli,info,u,omode);
-			break;
-		}
 	}
 	if( req ){
 		delete req;
@@ -455,6 +440,35 @@ accum_channel(app_comm_cli &cli,channel_info_t &info,output_t omode,unit u)
 	} else {
 		info.stat = *(span_status_payload*)resp->payload_ptr();
 	}
+
+  // Get information about units
+	switch( u ){
+	case BCAST:
+    // poll STU-C
+    info.units_map[(int)(stu_c) - 1] = true; // STU-C always available
+  	accum_unit(cli,info,stu_c,omode);
+    
+    // poll pepeaters
+		for(int i=0;i<info.stat.nreps;i++){
+			info.units_map[i] = true;
+			accum_unit(cli,info,(unit)(i+3),omode);
+		}
+
+    // poll STU-R    
+    if( info.link_on ){
+			info.units_map[(int)(stu_r) - 1] = true;
+			accum_unit(cli,info,stu_r,omode);
+    }      
+    
+		break;
+	case unknown:
+		break;
+	default:
+		info.units_map[(int)u-1] = true;
+		accum_unit(cli,info,u,omode);
+		break;
+	}
+
 	
 exit:
 	if (req)

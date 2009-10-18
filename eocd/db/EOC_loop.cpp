@@ -95,30 +95,33 @@ shift_rings(){
 
 EOC_loop::
 EOC_loop() : _15min_ints(EOC_15MIN_INTS) , _1day_ints(EOC_1DAY_INTS) {
-    struct tm _15mtm,_1dtm;
-    time_t t;
-    memset(&state,0,sizeof(state));
+  struct tm _15mtm,_1dtm;
+  time_t t;
+  memset(&state,0,sizeof(state));
+  state.loop_attn = -127;
+  state.snr_marg = -127;
+    
 	is_first_msg = 1;
-    memset(&last_msg,0,sizeof(last_msg));
-    time(&t);
-    if( get_localtime(&t,_15mtm)){
-        // TODO: eoc_log("Error getting time");
-        return ;
-    }
-    if( get_localtime(&t,_1dtm)){
-        // TODO: eoc_log("Error getting time");
-        return ;
-    }
+  memset(&last_msg,0,sizeof(last_msg));
+  time(&t);
+  if( get_localtime(&t,_15mtm)){
+    // TODO: eoc_log("Error getting time");
+    return ;
+  }
+  if( get_localtime(&t,_1dtm)){
+    // TODO: eoc_log("Error getting time");
+    return ;
+  }
 
-    _15mtm.tm_min = (((int)_15mtm.tm_min)/EOC_15MIN_INT_LEN)*EOC_15MIN_INT_LEN;
-    _15mtm.tm_sec = 0;
+  _15mtm.tm_min = (((int)_15mtm.tm_min)/EOC_15MIN_INT_LEN)*EOC_15MIN_INT_LEN;
+  _15mtm.tm_sec = 0;
 
-    _1dtm.tm_sec = 0;
-    _1dtm.tm_min = 0;
-    _1dtm.tm_hour = 0;
+  _1dtm.tm_sec = 0;
+  _1dtm.tm_min = 0;
+  _1dtm.tm_hour = 0;
 
-    _15min_ints[0]->tstamp = mktime(&_15mtm);
-    _1day_ints[0]->tstamp = mktime(&_1dtm);
+  _15min_ints[0]->tstamp = mktime(&_15mtm);
+  _1day_ints[0]->tstamp = mktime(&_1dtm);
 
 	// Link UP/DOWN status
 	lstate = 0;
@@ -147,7 +150,7 @@ full_status(side_perf *info,int rel)
     counters_t cntrs;
 	side_perf last = last_msg;
 	memset(&cntrs,0,sizeof(cntrs)); /// DEBUG - TODO: delete
-    PDEBUG(DINFO,"FULL STATUS: attn=%d SNR=%d\n",info->loop_attn,info->snr_marg);
+    PDEBUG(DINFO,"FULL STATUS RESPONSE: attn=%d SNR=%d\n",info->loop_attn,info->snr_marg);
 	if( rel ){
 	    cntrs.es = info->es;
     	cntrs.ses = info->ses;

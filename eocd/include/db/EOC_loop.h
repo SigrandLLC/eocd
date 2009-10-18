@@ -158,6 +158,8 @@ class EOC_loop{
 		if( !lstate )
 			return;
 		lstate  = 0;
+    state.loop_attn = -127;
+    state.snr_marg = -127;
 	}
 
 	void update_mon_sec()

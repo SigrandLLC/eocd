@@ -261,7 +261,7 @@ bool
 unit_is_ok(unit u,channel_info_t &info)
 {
 	int i = (int)u-1; 
-	if( !(i < info.unit_cnt) || !info.units_map[i] )
+	if( !info.units_map[i] )
 		return false;
 	return true;
 }
