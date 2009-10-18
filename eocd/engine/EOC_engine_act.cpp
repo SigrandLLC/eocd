@@ -170,6 +170,7 @@ int EOC_engine_act::app_request(app_frame *fr) {
 	case APP_SPAN_STATUS: {
 		span_status_payload *p = (span_status_payload*)fr->payload_ptr();
 		p->nreps = poll->reg_quan(1);
+		p->nreps_avail = poll->reg_quan(0);
 		if(!rtr->csdev()){
 			fr->negative(ERUNEXP);
 			break;

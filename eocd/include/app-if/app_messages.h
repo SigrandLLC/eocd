@@ -62,6 +62,7 @@ typedef struct{
 
 typedef struct{
     s8 nreps;
+    s8 nreps_avail;
     u32 max_lrate;
     u32 act_lrate;
     u8 region0 : 1;

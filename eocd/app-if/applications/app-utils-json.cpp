@@ -264,6 +264,8 @@ int json_spanstat(int indent, channel_info_t &info)
 	do_indent(indent + 1);
 	bprintf("\"reg_num\" : \"%d\",\n",p.nreps);
 	do_indent(indent + 1);
+	bprintf("\"reg_num_avail\" : \"%d\",\n",p.nreps_avail);
+	do_indent(indent + 1);
 	bprintf("\"rate\" : \"%d\",\n",p.max_lrate);
 	do_indent(indent + 1);
 	bprintf("\"annex\" : \"%s\",\n",annex2string(annex));
