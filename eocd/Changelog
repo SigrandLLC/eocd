@@ -47,4 +47,9 @@ Version 2.29 (15.02.09)
 
 Version 2.30 (17.02.09)
 	1. Fix `eoc-info -n -idslX` tcpam representation (remove unneded comma)
+
+Version 2.37 (30.10.09)
+  1. Change poll frequency (from one time in 5 sec to 1 time in sec)
+  2. Change debug output to correspond to levels
+  3. Add unit state representation for WEB
 	

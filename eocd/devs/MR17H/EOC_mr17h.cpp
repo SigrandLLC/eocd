@@ -9,7 +9,7 @@
 
 #include <generic/EOC_generic.h>
 #include <devs/EOC_mr17h.h>
-#define EOC_DEBUG
+//#define EOC_DEBUG
 #include <eoc_debug.h>
 
 

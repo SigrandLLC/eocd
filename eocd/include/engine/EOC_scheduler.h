@@ -41,8 +41,8 @@ class EOC_scheduler{
 		statem = new state_machine;
 		// Sched request after response in 60/12 = 5 sec 		
 		ts_offs = tick_per_minute/12; 
-		// Wait for response to request 60/6 = 20 sec 		
-		wait_to = tick_per_minute/3; 
+		// Wait for response to request 60/6 = 10 sec 		
+		wait_to = tick_per_minute/6; 
 		jump_Offline();
     }
     //

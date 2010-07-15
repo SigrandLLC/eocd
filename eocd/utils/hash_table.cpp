@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define EOC_DEBUG
+//#define EOC_DEBUG
 #include <eoc_debug.h>
 #include <utils/hash_table.h>
 

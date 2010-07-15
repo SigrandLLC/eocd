@@ -14,8 +14,8 @@ using namespace std;
 #define KDB_CONFIG
 
 
-#define TICK_PER_MINUTE_MAX 60
-#define TICK_PER_MINUTE_DEF 12
+#define TICK_PER_MINUTE_MAX 120
+#define TICK_PER_MINUTE_DEF 60
 
 
 class EOC_main{

@@ -59,9 +59,9 @@ shift_rings(){
     int _15m_int = (_15m_tm.tm_min + _15m_tm.tm_hour*60 + _15m_tm.tm_yday*60*24 )/EOC_15MIN_INT_LEN;
     int _15m_int_cur = (cur_tm.tm_min + cur_tm.tm_hour*60 + cur_tm.tm_yday*60*24)/EOC_15MIN_INT_LEN;
     int shift_num = int_diff(_15m_int,_15m_int_cur,EOC_15MIN_INTS,"15m");
-	PDEBUG(DFULL,"SHIFT=%d,cur=%d,last=%d",shift_num,_15m_int_cur,_15m_int);
+		// PDEBUG(DFULL,"SHIFT=%d,cur=%d,last=%d",shift_num,_15m_int_cur,_15m_int);
     if( shift_num ){
-		PDEBUG(DFULL,"----------- Shift 15MINUTES ---------------");
+		// PDEBUG(DFULL,"----------- Shift 15MINUTES ---------------");
 		update_mon_sec();
 		_15min_ints.shift(shift_num);
 		time(&_15m);
@@ -72,21 +72,21 @@ shift_rings(){
     }
 
     if( _1d_tm.tm_year == cur_tm.tm_year ){
-		PDEBUG(DFULL,"----------- Shift 1DAYS ---------------");
-		PDEBUG(DFULL,"shift days: sshift_val=%d",_1d_tm.tm_yday - cur_tm.tm_yday);
-        shift_num = cur_tm.tm_yday - _1d_tm.tm_yday;
+			//PDEBUG(DFULL,"----------- Shift 1DAYS ---------------");
+			//PDEBUG(DFULL,"shift days: sshift_val=%d",_1d_tm.tm_yday - cur_tm.tm_yday);
+    	shift_num = cur_tm.tm_yday - _1d_tm.tm_yday;
 
-		_1d_tm = cur_tm;
-		_1d_tm.tm_sec = 0;
-		_1d_tm.tm_min = 0;
-		_1d_tm.tm_hour = 0;
-		time_t cur_ts = mktime(&_1d_tm);
-		// Monitor Seconds counter update
-		if( shift_num ){
-			// update_mon_sec(); - dont need it, because in 15min part all work is done
-			_1day_ints.shift(shift_num);
-			_1day_ints[0]->tstamp = cur_ts;
-		}
+			_1d_tm = cur_tm;
+			_1d_tm.tm_sec = 0;
+			_1d_tm.tm_min = 0;
+			_1d_tm.tm_hour = 0;
+			time_t cur_ts = mktime(&_1d_tm);
+			// Monitor Seconds counter update
+			if( shift_num ){
+				// update_mon_sec(); - dont need it, because in 15min part all work is done
+				_1day_ints.shift(shift_num);
+				_1day_ints[0]->tstamp = cur_ts;
+			}
     }else{
         // TODO : count difference to different years
     }
@@ -133,11 +133,9 @@ EOC_loop() : _15min_ints(EOC_15MIN_INTS) , _1day_ints(EOC_1DAY_INTS) {
 int EOC_loop::
 short_status(s8 snr_margin)
 {
-    shift_rings();
-    // change online data
-    state.snr_marg = snr_margin;
-
-	PDEBUG(DFULL,"Lstate=%d",lstate);
+  shift_rings();
+  // change online data
+  state.snr_marg = snr_margin;
 	// Monitoring seconds
 	update_mon_sec();
 
@@ -147,7 +145,7 @@ short_status(s8 snr_margin)
 int EOC_loop::
 full_status(side_perf *info,int rel)
 {
-    counters_t cntrs;
+  counters_t cntrs;
 	side_perf last = last_msg;
 	memset(&cntrs,0,sizeof(cntrs)); /// DEBUG - TODO: delete
     PDEBUG(DINFO,"FULL STATUS RESPONSE: attn=%d SNR=%d\n",info->loop_attn,info->snr_marg);
@@ -165,30 +163,28 @@ full_status(side_perf *info,int rel)
     		state.snr_marg = info->snr_marg;
 			goto exit;
 		}
-	    status_diff(info,cntrs);
+	  status_diff(info,cntrs);
 	}
 
-    shift_rings();
-    // change online data
-    state.loop_attn = info->loop_attn;
-    state.snr_marg = info->snr_marg;
-    setup_cur_status(info);
-    // Change counters
-	PDEBUG(DFULL,"es=%u, ses=%u, cv=%u, losws=%u,uas=%u",
-		info->es,info->ses,info->crc,info->losws,info->uas);
-    state.elem.addit(cntrs);
+  shift_rings();
+  // change online data
+  state.loop_attn = info->loop_attn;
+  state.snr_marg = info->snr_marg;
+  setup_cur_status(info);
+  // Change counters
+  state.elem.addit(cntrs);
 	tstate.addit(cntrs);
-    _15min_ints[0]->addit(cntrs);
-    _1day_ints[0]->addit(cntrs);
+  _15min_ints[0]->addit(cntrs);
+  _1day_ints[0]->addit(cntrs);
 	// Monitoring seconds
 	update_mon_sec();
  exit:
-    PDEBUG(DFULL,"FULL STATUS:\n"
-		   "\tinfo: es(%u) ses(%u) crc(%u) losws(%u) uas(%u)\n"
-		   "\tcntrs: es(%u) ses(%u) crc(%u) losws(%u) uas(%u)\n"
-		   "\tlast: es(%u) ses(%u) crc(%u) losws(%u) uas(%u)\n",
-		   info->es,info->ses,info->crc,info->losws,info->uas,
-		   cntrs.es,cntrs.ses,cntrs.crc,cntrs.losws,cntrs.uas,
+    PDEBUG(DFULL,"FULL STATUS RESPONCE:");
+		PDEBUG(DFULL,"info: es(%u) ses(%u) crc(%u) losws(%u) uas(%u)\n",
+				info->es,info->ses,info->crc,info->losws,info->uas);
+		PDEBUG(DFULL,"cntrs: es(%u) ses(%u) crc(%u) losws(%u) uas(%u)\n",
+				cntrs.es,cntrs.ses,cntrs.crc,cntrs.losws,cntrs.uas);
+		PDEBUG(DFULL,"last: es(%u) ses(%u) crc(%u) losws(%u) uas(%u)\n",
 		   last.es,last.ses,last.crc,last.losws,last.uas);
 	return 0;
 }

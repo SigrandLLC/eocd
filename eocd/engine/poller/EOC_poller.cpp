@@ -57,29 +57,31 @@ process_msg(EOC_msg *m)
 {
     // Check that we have assosiated handler
     // & we request this response
-    if( !m ){
-		PDEBUG(DERR,"!m");
+  PDEBUG(DERR,"\nSTART. msg: src(%d) dst(%d) id(%d)",
+    m->src(), m->dst(), m->type());
+
+  if( !m ){
+		PDEBUG(DERR,"ERROR: !m");
 		return -1;
 	}
-    unsigned char type = m->type()-REQUEST_QUAN;
-    if(	!m->is_response() ){
-		PDEBUG(DERR,"!m->is_response");
-		return -1;
-	}
-    PDEBUG(DFULL,"check db->response(m,1)")
-	if( db->response(m,1) ){
-		PDEBUG(DERR,"error in db->response(m,1)");
-		return -1;
-	}
-    PDEBUG(DFULL,"sch->response(m)")
-	if( sch->response(m) ){
-		PDEBUG(DERR,"sch->response(m)");
+  unsigned char type = m->type()-REQUEST_QUAN;
+  if(	!m->is_response() ){
+		PDEBUG(DERR,"ERROR: !m->is_response");
 		return -1;
 	}
 
-    // commit changes to EOC DataBase
-    PDEBUG(DFULL,"return db->response(m,0)")
-    return db->response(m,0);
+	if( db->response(m,1) ){
+		PDEBUG(DERR,"ERROR: error in db->response(m,1)");
+		return -1;
+	}
+
+	if( sch->response(m) ){
+		PDEBUG(DERR,"ERROR: sch->response(m)");
+		return -1;
+	}
+
+  // commit changes to EOC DataBase
+  return db->response(m,0);
 }
 
 int EOC_poller::

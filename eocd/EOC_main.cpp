@@ -9,7 +9,7 @@
 
 // local includes
 
-#define EOC_DEBUG
+//#define EOC_DEBUG
 #include <generic/EOC_generic.h>
 #include <snmp/snmp-generic.h>
 #include <utils/hash_table.h>

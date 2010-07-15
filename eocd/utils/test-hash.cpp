@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <utils/hash_table.h>
 
-int debug_lev = 1;
 
 class hash_el : public hash_elem{
 public:

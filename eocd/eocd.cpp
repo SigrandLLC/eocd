@@ -174,6 +174,7 @@ int main( int argc, char *argv[] ) {
 	syslog( LOG_INFO, "starting" );
 
 	debug_lev = DOFF;
+	daemon_mode = 0;
 
 	// process command line arguments here
 	while (1) {
@@ -193,6 +194,7 @@ int main( int argc, char *argv[] ) {
     switch (c) {
 		case 'd':
       need_daemonize = 1;
+			daemon_mode = 1;
 			break;
 		case 'c':
       strncpy(config_path,optarg,256);
@@ -231,8 +233,7 @@ int main( int argc, char *argv[] ) {
 
 	// Daemonize
 	if( need_daemonize ){
-		debug_lev = DOFF;
-	    parent = daemonize();
+	  parent = daemonize();
 	}
 
 	signal(SIGPIPE,SIG_IGN);

@@ -86,14 +86,11 @@ int EOC_engine_act::schedule(char *ch_name) {
 	int i = 0;
 	int cnt;
 
-	PDEBUG(DFULL, "Receiving");
+	PDEBUG(DFULL, "schedule -------------------------------------------------");
+//	PDEBUG(DFULL, "Receiving");
 	while((m = rtr->receive())&&i<recv_max){
-		PDEBUG(DFULL, "process message: src=%d, dst=%d,type=%d", m->src(),
-			m->dst(), m->type());
 		m->set_chname(ch_name);
-		PDEBUG(DFULL, "after setting name");
 		if(m->is_request()){
-			PDEBUG(DFULL, "m->is_request()");
 			if(resp->request(m, ret, cnt)){
 				PDEBUG(DERR, "error in resp->request(m, ret, cnt)");
 				delete m;
@@ -123,14 +120,14 @@ int EOC_engine_act::schedule(char *ch_name) {
 				}
 				// BUG fix (03.07.08): missing of this loop
 				// leads to memory leack
-				PDEBUG(DFULL,"Cleaning all ret-related memory");
+				// PDEBUG(DFULL,"Cleaning all ret-related memory");
 				for(int j = 0;j<cnt;j++){
 					delete ret[j];
 				}
 				delete[] ret;
 			}
 		}else if(m->is_response()){
-			PDEBUG(DFULL, "m->is_response()");
+			// PDEBUG(DFULL, "m->is_response()");
 			if(poll->process_msg(m)){
 				PDEBUG(DERR, "error processing msg; src=%d,dst=%d,id=%d",
 					m->src(), m->dst(), m->type());
@@ -142,9 +139,11 @@ int EOC_engine_act::schedule(char *ch_name) {
 		i++;
 	}
 
-	PDEBUG(DFULL, "Sending");
+	//PDEBUG(DFULL, "Sending");
 	// Send one EOC request
 	while(m = poll->gen_request()){
+    PDEBUG(DINFO,"REQUEST: src(%d) dst(%d) id(%d)",
+      m->src(), m->dst(), m->type() );
 		if(rtr->send(m)){
 			PDEBUG(DFULL,"error in rtr->send(m)");
 			delete m;
@@ -153,7 +152,7 @@ int EOC_engine_act::schedule(char *ch_name) {
 		delete m;
 	}
 	poll->finish_poll();
-	PDEBUG(DFULL, "exit");
+	//PDEBUG(DFULL, "exit");
 	return 0;
 }
 

@@ -179,9 +179,9 @@ class EOC_loop{
 				_15min_ints[0]->cntrs.mon_sec += cur-moni_ts;
 				_1day_ints[0]->cntrs.mon_sec += cur-moni_ts;
 				moni_ts = cur;
-				PDEBUG(DFULL,"Int exceeds: cur=%d,tmp_cur=%d\nmoni_ts=%d",bkp,cur,moni_ts);
+				// PDEBUG(DFULL,"Int exceeds: cur=%d,tmp_cur=%d\nmoni_ts=%d",bkp,cur,moni_ts);
 			}else{
-				PDEBUG(DFULL,"Normal: cur=%d, moni_ts=%d",cur,moni_ts);
+				// PDEBUG(DFULL,"Normal: cur=%d, moni_ts=%d",cur,moni_ts);
 				_15min_ints[0]->cntrs.mon_sec += cur-moni_ts;
 				_1day_ints[0]->cntrs.mon_sec += cur-moni_ts;
 				moni_ts = cur;
