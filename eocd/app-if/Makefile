@@ -17,7 +17,7 @@ install: app_comm.o app_comm_cli.o app_comm_srv.o app_frame.o
 	cp $^ $(TOPDIR)/build
 
 all: install  apps
-#	g++ $(CPPFLAGS) -o result main.cpp
+#	g++ $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o result main.cpp
 
 apps: install
 	make -C applications

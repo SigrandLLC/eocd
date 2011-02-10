@@ -10,9 +10,9 @@ all: EOC_mr17h.o
 	cp EOC_mr17h.o $(TOPDIR)/build
 
 apps: all
-	$(CXX) $(CPPFLAGS) -o sender sender.cpp $(TOPDIR)/build/EOC_msg.o EOC_mr17h.o $(TOPDIR)/build/EOC_dev_terminal.o
-	$(CXX) $(CPPFLAGS) -o receiver receiver.cpp $(TOPDIR)/build/EOC_msg.o EOC_mr17h.o $(TOPDIR)/build/EOC_dev_terminal.o
-	$(CXX) $(CPPFLAGS) -o conf conf.cpp EOC_mr17h.o $(TOPDIR)/build/EOC_dev_terminal.o $(TOPDIR)/build/EOC_msg.o
+	$(CXX) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o sender         sender.cpp $(TOPDIR)/build/EOC_msg.o EOC_mr17h.o $(TOPDIR)/build/EOC_dev_terminal.o
+	$(CXX) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o receiver     receiver.cpp $(TOPDIR)/build/EOC_msg.o EOC_mr17h.o $(TOPDIR)/build/EOC_dev_terminal.o
+	$(CXX) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o conf conf.cpp EOC_mr17h.o $(TOPDIR)/build/EOC_dev_terminal.o    $(TOPDIR)/build/EOC_msg.o
 
 clean:
 	rm -f *.o
