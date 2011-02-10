@@ -25,11 +25,10 @@ TARGS :=generic engine devs utils local db app-if
 OBJECTS := build/*.o
 
 #ifneq ($(VIRT),1)
-CROSSDIR=/home/artpol/OpenWRT/
-CC=$(CROSSDIR)/staging_dir_mipsel/bin/mipsel-linux-uclibc-gcc
-CXX=$(CROSSDIR)/staging_dir_mipsel/bin/mipsel-linux-uclibc-g++
-AR=$(CROSSDIR)/staging_dir_mipsel/bin/mipsel-linux-uclibc-ar
-RANLIB=$(CROSSDIR)/staging_dir_mipsel/bin/mipsel-linux-uclibc-ranlib
+CC     ?= $(CROSS_PREFIX)gcc
+CXX    ?= $(CROSS_PREFIX)g++
+AR     ?= $(CROSS_PREFIX)ar
+RANLIB ?= $(CROSS_PREFIX)ranlib
 #else
 #RANLIB=ranlib
 #endif
@@ -40,10 +39,14 @@ export CXX AR RANLIB CC TOPDIR INCLUDES CPPFLAGS
 all: $(TARGS)
 	$(CXX) -g $(INCLUDES) -o result main.cpp $(OBJECTS) libconfig++.a
 
-all-mips: $(TARGS)
-	$(CC) $(CPPFLAGS) -c md5.c
-	$(CC) $(CPPFLAGS) -DSHELL -c kdb.c
-	$(CXX) $(CPPFLAGS) -o eocd eocd.cpp kdb.o md5.o $(OBJECTS) libconfig/.libs/libconfig++.a
+md5.o : md5.c
+	$(CC)  $(CPPFLAGS) $(CFLAGS)         -c md5.c
+
+kdb.o : kdb.c
+	$(CC)  $(CPPFLAGS) $(CFLAGS) -DSHELL -c kdb.c
+
+all-mips: $(TARGS) md5.o kdb.o
+	$(CXX) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o eocd eocd.cpp kdb.o md5.o $(OBJECTS) libconfig/.libs/libconfig++.a
 
 fake-mips: $(TARGS)
 #	$(CXX) -g $(INCLUDES) -o result main.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
