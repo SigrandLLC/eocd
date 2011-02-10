@@ -2,7 +2,7 @@
 .ad l
 .nh
 .SH NAME
-net-snmp agent related processing \- 
+net-snmp agent related processing \-
 .SS "Data Structures"
 
 .in +1c
@@ -282,7 +282,7 @@ net-snmp agent related processing \-
 .br
 .in -1c
 .SH "Function Documentation"
-.PP 
+.PP
 .SS "NETSNMP_STATIC_INLINE int _request_set_error (\fBnetsnmp_request_info\fP * request, int mode, int error_value)"
 .PP
 set error for a request Definition at line 3075 of file snmp_agent.c.
@@ -301,7 +301,7 @@ This function checks for packets arriving on the SNMP port and processes them(sn
 .PP
 \fBReturns:\fP
 .RS 4
-Returns a positive integer if packets were processed, and -1 if an error was found. 
+Returns a positive integer if packets were processed, and -1 if an error was found.
 .RE
 .PP
 Definition at line 500 of file snmp_agent.c.
@@ -385,7 +385,7 @@ SNMP_ERR_INCONSISTENTNAME
 .PP
 \fBReturns:\fP
 .RS 4
-Returns error_value under all conditions. 
+Returns error_value under all conditions.
 .RE
 .PP
 Definition at line 2890 of file snmp_agent.c.
@@ -412,9 +412,9 @@ Referenced by netsnmp_handler_check_cache().
 .PP
 set error for a request \fBParameters:\fP
 .RS 4
-\fIrequest\fP request which has error 
+\fIrequest\fP request which has error
 .br
-\fIerror_value\fP error value for request 
+\fIerror_value\fP error value for request
 .RE
 .PP
 Definition at line 3140 of file snmp_agent.c.
@@ -424,14 +424,14 @@ References _request_set_error(), netsnmp_request_info_s::agent_req_info, and net
 .PP
 set error for all requests \fBParameters:\fP
 .RS 4
-\fIrequests\fP request list 
+\fIrequests\fP request list
 .br
-\fIerror_value\fP error value for requests 
+\fIerror_value\fP error value for requests
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-SNMPERR_SUCCESS, or an error code 
+SNMPERR_SUCCESS, or an error code
 .RE
 .PP
 paranoid sanity checks Definition at line 3155 of file snmp_agent.c.
@@ -448,16 +448,16 @@ use netsnmp_request_set_error_all
 .PP
 \fBParameters:\fP
 .RS 4
-\fIreqinfo\fP agent_request_info pointer for requests 
+\fIreqinfo\fP agent_request_info pointer for requests
 .br
-\fIrequests\fP request list 
+\fIrequests\fP request list
 .br
-\fIerror_value\fP error value for requests 
+\fIerror_value\fP error value for requests
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-error_value 
+error_value
 .RE
 .PP
 Definition at line 3319 of file snmp_agent.c.
@@ -474,16 +474,16 @@ deprecated, use netsnmp_request_set_error instead \fBDeprecated\fP
 .PP
 \fBParameters:\fP
 .RS 4
-\fImode\fP Net-SNMP agent processing mode 
+\fImode\fP Net-SNMP agent processing mode
 .br
-\fIrequest\fP request_info pointer 
+\fIrequest\fP request_info pointer
 .br
-\fIerror_value\fP error value for requests 
+\fIerror_value\fP error value for requests
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-error_value 
+error_value
 .RE
 .PP
 Definition at line 3303 of file snmp_agent.c.
@@ -498,16 +498,16 @@ deprecated, use netsnmp_request_set_error instead \fBDeprecated\fP
 .PP
 \fBParameters:\fP
 .RS 4
-\fIreqinfo\fP agent_request_info pointer for request 
+\fIreqinfo\fP agent_request_info pointer for request
 .br
-\fIrequest\fP request_info pointer 
+\fIrequest\fP request_info pointer
 .br
-\fIerror_value\fP error value for requests 
+\fIerror_value\fP error value for requests
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-error_value 
+error_value
 .RE
 .PP
 

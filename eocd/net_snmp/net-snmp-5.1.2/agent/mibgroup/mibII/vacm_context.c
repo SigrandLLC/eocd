@@ -135,10 +135,10 @@ vacm_context_handler(netsnmp_mib_handler *handler,
         switch (reqinfo->mode) {
         case MODE_GET:
             /*
-             * if here we should have a context_ptr passed in already 
+             * if here we should have a context_ptr passed in already
              */
             /*
-             * only one column should ever reach us, so don't check it 
+             * only one column should ever reach us, so don't check it
              */
             snmp_set_var_typed_value(var, ASN_OCTET_STR,
                                      context_ptr->context_name,
@@ -149,7 +149,7 @@ vacm_context_handler(netsnmp_mib_handler *handler,
         default:
             /*
              * We should never get here, getnext already have been
-             * handled by the table_iterator and we're read_only 
+             * handled by the table_iterator and we're read_only
              */
             snmp_log(LOG_ERR,
                      "vacm_context table accessed as mode=%d.  We're improperly registered!",

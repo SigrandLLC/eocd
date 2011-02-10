@@ -6,7 +6,7 @@ WriteMakefile(
     'VERSION_FROM'	=> 'Storage.pm', # finds $VERSION
     'PREREQ_PM'		=> {# SNMP => 5.0,
 			    AnyData => 0}, # e.g., Module::Name => 1.1
-    'PM'                => { 
+    'PM'                => {
 	'Format.pm' => '$(INST_LIBDIR)/Format/SNMP.pm',
 	'Storage.pm' => '$(INST_LIBDIR)/Storage/SNMP.pm',
     },

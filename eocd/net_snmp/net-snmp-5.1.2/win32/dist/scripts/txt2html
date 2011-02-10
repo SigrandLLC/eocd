@@ -4,7 +4,7 @@
 #
 # Written by:     Alex Burger
 # Date:           March 18th, 2004
-# 
+#
 
 # Set to 1 to use fixed width font (<tt>)
 $fixed_width = 0;
@@ -52,4 +52,4 @@ if ($fixed_width == 1) {
 print "</p>\n";
 print "</body>\n";
 print "</html>\n";
-  
+

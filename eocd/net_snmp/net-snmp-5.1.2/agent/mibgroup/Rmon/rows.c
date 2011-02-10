@@ -1,5 +1,5 @@
 /**************************************************************
- * Copyright (C) 2001 Alex Rozin, Optical Access 
+ * Copyright (C) 2001 Alex Rozin, Optical Access
  *
  *                     All Rights Reserved
  *
@@ -8,7 +8,7 @@
  * provided that the above copyright notice appear in all copies and that
  * both that copyright notice and this permission notice appear in
  * supporting documentation.
- * 
+ *
  * ALEX ROZIN DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
  * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
  * ALEX ROZIN BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
@@ -35,13 +35,13 @@
 #define MAX_CREATION_TIME	60
 
 /*
- * *************************** 
+ * ***************************
  */
 /*
- * static file scope functions 
+ * static file scope functions
  */
 /*
- * *************************** 
+ * ***************************
  */
 
 static void
@@ -54,14 +54,14 @@ rowapi_delete(RMON_ENTRY_T * eold)
     table_ptr = (TABLE_DEFINTION_T *) eold->table_ptr;
 
     /*
-     * delete timout scheduling 
+     * delete timout scheduling
      */
     snmp_alarm_unregister(eold->timer_id);
     ag_trace("Entry %ld in %s has been deleted",
              eold->ctrl_index, table_ptr->name);
 
     /*
-     * It it was valid entry => deactivate it 
+     * It it was valid entry => deactivate it
      */
     if (RMON1_ENTRY_VALID == eold->status) {
         if (table_ptr->ClbkDeactivate)
@@ -69,7 +69,7 @@ rowapi_delete(RMON_ENTRY_T * eold)
     }
 
     /*
-     * delete it in users's sence 
+     * delete it in users's sence
      */
     if (table_ptr->ClbkDelete)
         table_ptr->ClbkDelete((RMON_ENTRY_T *) eold->body);
@@ -82,7 +82,7 @@ rowapi_delete(RMON_ENTRY_T * eold)
         AGFREE(eold->owner);
 
     /*
-     * delete it from the list in table 
+     * delete it from the list in table
      */
 
     table_ptr->current_number_of_entries--;
@@ -124,7 +124,7 @@ rowapi_deactivate(TABLE_DEFINTION_T * table_ptr, RMON_ENTRY_T * eptr)
 {
     if (RMON1_ENTRY_UNDER_CREATION == eptr->status) {
         /*
-         * nothing to do 
+         * nothing to do
          */
         return SNMP_ERR_NOERROR;
     }
@@ -184,7 +184,7 @@ ROWAPI_new(TABLE_DEFINTION_T * table_ptr, u_long ctrl_index)
     register RMON_ENTRY_T *enew;
 
     /*
-     * check on 'max.number' 
+     * check on 'max.number'
      */
     if (table_ptr->max_number_of_entries > 0 &&
         table_ptr->current_number_of_entries >=
@@ -192,14 +192,14 @@ ROWAPI_new(TABLE_DEFINTION_T * table_ptr, u_long ctrl_index)
         return -1;
 
     /*
-     * allocate memory for the header 
+     * allocate memory for the header
      */
     enew = (RMON_ENTRY_T *) AGMALLOC(sizeof(RMON_ENTRY_T));
     if (!enew)
         return -2;
 
     /*
-     * init the header 
+     * init the header
      */
     memset(enew, 0, sizeof(RMON_ENTRY_T));
     enew->ctrl_index = ctrl_index;
@@ -208,7 +208,7 @@ ROWAPI_new(TABLE_DEFINTION_T * table_ptr, u_long ctrl_index)
     enew->only_just_created = 1;
 
     /*
-     * create the body: alloc it and set defaults 
+     * create the body: alloc it and set defaults
      */
     if (table_ptr->ClbkCreate) {
         if (0 != table_ptr->ClbkCreate(enew)) {
@@ -220,7 +220,7 @@ ROWAPI_new(TABLE_DEFINTION_T * table_ptr, u_long ctrl_index)
     table_ptr->current_number_of_entries++;
 
     /*
-     * find the place : before 'eptr' and after 'prev' 
+     * find the place : before 'eptr' and after 'prev'
      */
     for (eptr = table_ptr->first; eptr; eptr = eptr->next) {
         if (ctrl_index < eptr->ctrl_index)
@@ -229,7 +229,7 @@ ROWAPI_new(TABLE_DEFINTION_T * table_ptr, u_long ctrl_index)
     }
 
     /*
-     * insert it 
+     * insert it
      */
     enew->next = eptr;
     if (prev)
@@ -246,13 +246,13 @@ ROWAPI_new(TABLE_DEFINTION_T * table_ptr, u_long ctrl_index)
 }
 
 /*
- * ****************************** 
+ * ******************************
  */
 /*
- * external usage (API) functions 
+ * external usage (API) functions
  */
 /*
- * ****************************** 
+ * ******************************
  */
 
 void
@@ -319,7 +319,7 @@ ROWAPI_get_clone(TABLE_DEFINTION_T * table_ptr,
     }
 
     /*
-     * get it 
+     * get it
      */
     eptr = ROWAPI_find(table_ptr, ctrl_index);
 
@@ -329,7 +329,7 @@ ROWAPI_get_clone(TABLE_DEFINTION_T * table_ptr,
         }
 
         /*
-         * get it 
+         * get it
          */
         eptr = ROWAPI_find(table_ptr, ctrl_index);
         if (!eptr)              /* it is unbelievable, but ... :( */
@@ -403,11 +403,11 @@ ROWAPI_action_check(TABLE_DEFINTION_T * table_ptr, u_long ctrl_index)
     }
 
     /*
-     * test owner string 
+     * test owner string
      */
     if (RMON1_ENTRY_UNDER_CREATION != eptr->status) {
         /*
-         * Only the same value is allowed 
+         * Only the same value is allowed
          */
         if (eptr->new_owner &&
             (!eptr->owner
@@ -440,7 +440,7 @@ ROWAPI_action_check(TABLE_DEFINTION_T * table_ptr, u_long ctrl_index)
         /*
          * Our MIB understanding extension: we permit to set
          * VALID when entry doesn't exit, in this case PDU has to have
-         * the nessessary & valid set of non-default values 
+         * the nessessary & valid set of non-default values
          */
         if (table_ptr->ClbkValidate) {
             return table_ptr->ClbkValidate(eptr);
@@ -448,8 +448,8 @@ ROWAPI_action_check(TABLE_DEFINTION_T * table_ptr, u_long ctrl_index)
         break;
     case RMON1_ENTRY_UNDER_CREATION:
         /*
-         * Our MIB understanding extension: we permit to travel from 
-         * VALID to 'UNDER_CREATION' state 
+         * Our MIB understanding extension: we permit to travel from
+         * VALID to 'UNDER_CREATION' state
          */
         break;
     }
@@ -492,7 +492,7 @@ ROWAPI_commit(TABLE_DEFINTION_T * table_ptr, u_long ctrl_index)
         /*
          * Our MIB understanding extension: we permit to set
          * VALID when entry doesn't exit, in this case PDU has to have
-         * the nessessary & valid set of non-default values 
+         * the nessessary & valid set of non-default values
          */
         if (eptr->new_owner) {
             if (eptr->owner)
@@ -508,7 +508,7 @@ ROWAPI_commit(TABLE_DEFINTION_T * table_ptr, u_long ctrl_index)
     case RMON1_ENTRY_UNDER_CREATION:   /* deactivate (if need) and copy tmp => eprt */
         /*
          * Our MIB understanding extension: we permit to travel from
-         * VALID to 'UNDER_CREATION' state 
+         * VALID to 'UNDER_CREATION' state
          */
         rowapi_deactivate(table_ptr, eptr);
         if (eptr->new_owner) {
@@ -610,7 +610,7 @@ ROWAPI_do_another_action(oid * name, int tbl_first_index_begin,
 }
 
 /*
- * data tables API section 
+ * data tables API section
  */
 
 int
@@ -824,7 +824,7 @@ ROWDATAAPI_header_DataEntry(struct variable * vp, oid * name,
         if (hdr) {
             scrlr = extract_scroller(hdr->body);
             /*
-             * ag_trace ("get next after (%d %d)", (int) ctrl_indx, (int) data_index); 
+             * ag_trace ("get next after (%d %d)", (int) ctrl_indx, (int) data_index);
              */
             bptr = scrlr->first_data_ptr;
             for (iii = 0; iii < scrlr->data_stored && bptr;
@@ -838,7 +838,7 @@ ROWDATAAPI_header_DataEntry(struct variable * vp, oid * name,
 
             if (!bptr) {        /* travel to next row */
                 /*
-                 * ag_trace ("Dbg: travel to next row"); 
+                 * ag_trace ("Dbg: travel to next row");
                  */
                 for (hdr = hdr->next; hdr; hdr = hdr->next) {
                     if (RMON1_ENTRY_VALID != hdr->status)
@@ -859,7 +859,7 @@ ROWDATAAPI_header_DataEntry(struct variable * vp, oid * name,
             }
             if (bptr) {         /* set new index */
                 /*
-                 * ag_trace ("Dbg: So (%d %d)", (int) hdr->index, (int) bptr->data_index); 
+                 * ag_trace ("Dbg: So (%d %d)", (int) hdr->index, (int) bptr->data_index);
                  */
                 name[vp->namelen] = hdr->ctrl_index;
                 name[vp->namelen + 1] = bptr->data_index;

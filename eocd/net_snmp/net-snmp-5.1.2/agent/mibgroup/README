@@ -2,7 +2,7 @@ This directory holds the implementation of individual MIB groups.
 Currently, this contains the eight MIB-2 groups, plus a basic template
 for new MIB groups (examples/example.c and examples/example.h)
 
-Additionally, you may wish to check out the 'mib2c' perl script in the 
+Additionally, you may wish to check out the 'mib2c' perl script in the
 SRCDIR/local directory that can convert a written mib into C template
 files for use with this package as mib modules.
 
@@ -50,7 +50,7 @@ Each group consists of two files:
 		on this group
 	- an initialisation function (optional)
         - a routine to parse an snmpd.conf line.
-        - a routine to free resources from above and return to 
+        - a routine to free resources from above and return to
                 default settings.
 	- 'header' function(s) to map the OID requested
 		to the next appropriate OID

@@ -12,7 +12,7 @@
 /* #define USE_PROC_CMDLINE */
 
 /*
- * red hat >= 5.0 doesn't have this 
+ * red hat >= 5.0 doesn't have this
  */
 #ifndef MNTTYPE_PROC
 #define MNTTYPE_PROC "proc"

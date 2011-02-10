@@ -101,7 +101,7 @@ netsnmp_scalar_group_helper_handler(netsnmp_mib_handler *handler,
         if (cmp != 0 ||
             requests->requestvb->name_length <= reginfo->rootoid_len) {
 	    /*
-	     * Common prefix doesn't match, or only *just* matches 
+	     * Common prefix doesn't match, or only *just* matches
 	     *  the registered root (so can't possibly match a scalar)
 	     */
             netsnmp_set_request_error(reqinfo, requests, ret);
@@ -109,7 +109,7 @@ netsnmp_scalar_group_helper_handler(netsnmp_mib_handler *handler,
         } else {
 	    /*
 	     * Otherwise,
-	     *     extract the object subidentifier from the request, 
+	     *     extract the object subidentifier from the request,
 	     *     check this is (probably) valid, and then fudge the
 	     *     registered 'rootoid' to match, before passing the
 	     *     request off to the next handler ('scalar').
@@ -152,7 +152,7 @@ netsnmp_scalar_group_helper_handler(netsnmp_mib_handler *handler,
 	 */
 	if (subid > sgroup->ubound)
             return SNMP_ERR_NOERROR;
-        
+
         reginfo->rootoid[reginfo->rootoid_len++] = subid;
         ret = netsnmp_call_next_handler(handler, reginfo, reqinfo,
                                             requests);
@@ -172,11 +172,11 @@ netsnmp_scalar_group_helper_handler(netsnmp_mib_handler *handler,
         return ret;
     }
     /*
-     * got here only if illegal mode found 
+     * got here only if illegal mode found
      */
     return SNMP_ERR_GENERR;
 }
 
 /*
- * @} 
+ * @}
  */

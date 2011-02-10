@@ -298,7 +298,7 @@ cacheKernelRTE(u_long dst)
 {
     return 0;                   /* for now */
     /*
-     * ...... 
+     * ......
      */
 }
 
@@ -475,7 +475,7 @@ write_rte(int action,
         /*
          *  flag meaning:
          *
-         *  IPROUTEPROTO (rt_proto): none: (cant set == 3 (netmgmt)) 
+         *  IPROUTEPROTO (rt_proto): none: (cant set == 3 (netmgmt))
          *
          *  IPROUTEMETRIC1:  1 iff gateway, 0 otherwise
          *  IPROUTETYPE:     4 iff gateway, 3 otherwise
@@ -511,7 +511,7 @@ write_rte(int action,
             } else {
 
                 /*
-                 * it must be valid now, so flush to kernel 
+                 * it must be valid now, so flush to kernel
                  */
 
                 if (oldty != 2) {       /* was the old entry valid ?  */
@@ -523,7 +523,7 @@ write_rte(int action,
                 }
 
                 /*
-                 * not invalid, so remove from cache 
+                 * not invalid, so remove from cache
                  */
 
                 flags = (rp->rt_type == 4 ? RTF_GATEWAY : 0);
@@ -642,7 +642,7 @@ write_rte(int action,
 
     case RESERVE2:
         /*
-         * Save the old value, in case of UNDO 
+         * Save the old value, in case of UNDO
          */
         if (oldroute_row == NULL) {
             oldroute_row =
@@ -675,7 +675,7 @@ write_rte(int action,
         case IPROUTEAGE:
             /*
              * Irrespective of suppied value, this will be set with 0.
-             * * As row will be updated and this field gives the number of 
+             * * As row will be updated and this field gives the number of
              * * seconds since this route was last updated
              */
             route_row->dwForwardAge = *((int *) var_val);
@@ -705,7 +705,7 @@ write_rte(int action,
         return retval;
     case UNDO:
         /*
-         * Reverse the SET action and free resources 
+         * Reverse the SET action and free resources
          */
         if (oldroute_row) {
             *route_row = *oldroute_row;
@@ -718,10 +718,10 @@ write_rte(int action,
 
     case COMMIT:
         /*
-         * When this case entered 'route_row' will have user supplied values for asked entries. 
-         * * Thats why it is enough if we call SetIpForwardEntry/CreateIpForwardEntry only once 
+         * When this case entered 'route_row' will have user supplied values for asked entries.
+         * * Thats why it is enough if we call SetIpForwardEntry/CreateIpForwardEntry only once
          * * SetIpForwardENtry is not done in ACTION phase, as that will reset ipRouteAge on success
-         * * and if any varbind fails, then we can't UNDO the change for ipROuteAge. 
+         * * and if any varbind fails, then we can't UNDO the change for ipROuteAge.
          */
         if (route_row) {
             if (!create_flag) {
@@ -732,7 +732,7 @@ write_rte(int action,
                     retval = SNMP_ERR_COMMITFAILED;
                 } else {
                     /*
-                     * SET on IpRouteNextHop, IpRouteMask & ipRouteDest creates new row. 
+                     * SET on IpRouteNextHop, IpRouteMask & ipRouteDest creates new row.
                      * *If Set succeeds, then delete the old row.
                      * * Don't know yet whether SET on ipRouteIfIndex creates new row.
                      * * If it creates then index_flag should be added to following if statement
@@ -749,7 +749,7 @@ write_rte(int action,
                 }
             }
             /*
-             * Only if create_flag, mask, nexthop, ifIndex and metric are specified, create new entry 
+             * Only if create_flag, mask, nexthop, ifIndex and metric are specified, create new entry
              */
             if (create_flag) {
                 if (mask_flag && nexthop_flag && metric_flag && index_flag) {
@@ -762,7 +762,7 @@ write_rte(int action,
                     }
                 } else {
                     /*
-                     * For new entry, mask, nexthop, ifIndex and metric must be supplied 
+                     * For new entry, mask, nexthop, ifIndex and metric must be supplied
                      */
                     snmp_log(LOG_ERR,
                              "case COMMIT, can't create without index, mask, nextHop and metric\n");
@@ -773,7 +773,7 @@ write_rte(int action,
 
     case FREE:
         /*
-         * Free any resources allocated 
+         * Free any resources allocated
          */
         free(oldroute_row);
         oldroute_row = NULL;

@@ -6,7 +6,7 @@
 #define IPCIDRROUTETABLE_COLUMNS_H
 
 /*
- * column number definitions for table ipCidrRouteTable 
+ * column number definitions for table ipCidrRouteTable
  */
 #define COLUMN_IPCIDRROUTEDEST		1
 #define COLUMN_IPCIDRROUTEMASK		2

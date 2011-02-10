@@ -2,7 +2,7 @@
 .ad l
 .nh
 .SH NAME
-asn1 parsing and datatype manipulation routines. \- 
+asn1 parsing and datatype manipulation routines. \-
 .SS "Defines"
 
 .in +1c
@@ -81,7 +81,7 @@ asn1 parsing and datatype manipulation routines. \-
 .br
 .in -1c
 .SH "Detailed Description"
-.PP 
+.PP
 Note on
 .PP
 Re-allocating reverse ASN.1 encoder functions. Synopsis:
@@ -93,7 +93,7 @@ Re-allocating reverse ASN.1 encoder functions. Synopsis:
  size_t buf_len = 100, offset = 0;
  long data = 12345;
  int allow_realloc = 1;
- 
+
  if (asn_realloc_rbuild_int(&buf, &buf_len, &offset, allow_realloc,
                             type, &data, sizeof(long)) == 0) {
      error;
@@ -109,7 +109,7 @@ NOTE WELL: after calling one of these functions with allow_realloc non-zero, buf
  size_t buf_len = 100, offset = 0;
  long data1 = 1234, data2 = 5678;
  int rc = 0, allow_realloc = 1;
- 
+
  rc  = asn_realloc_rbuild_int(&buf, &buf_len, &offset, allow_realloc,
                                 type, &data1, sizeof(long));
  ptr = buf[buf_len - offset];   / * points at encoding of data1 * /
@@ -130,7 +130,7 @@ ptr is **INVALID** at this point. In general, you should store the offset value 
  size_t buf_len = 100, offset = 0, ptr_offset;
  long data1 = 1234, data2 = 5678;
  int rc = 0, allow_realloc = 1;
- 
+
  rc  = asn_realloc_rbuild_int(&buf, &buf_len, &offset, allow_realloc,
                               type, &data1, sizeof(long));
  ptr_offset = offset;
@@ -154,7 +154,7 @@ Of course, you can pass allow_realloc as zero, to indicate that you do not wish 
  u_char my_static_buffer[100], *cp = NULL;
  size_t my_static_buffer_len = 100;
  float my_pi = (float)22/(float)7;
- 
+
  cp = asn_rbuild_float(my_static_buffer, &my_static_buffer_len,
                        ASN_OPAQUE_FLOAT, &my_pi, sizeof(float));
  if (cp == NULL) {
@@ -170,7 +170,7 @@ IS EQUIVALENT TO:
  size_t my_static_buffer_len = 100, my_offset = 0;
  float my_pi = (float)22/(float)7;
  int rc = 0;
- 
+
  rc = asn_realloc_rbuild_float(&my_static_buffer, &my_static_buffer_len,
                                &my_offset, 0,
                                ASN_OPAQUE_FLOAT, &my_pi, sizeof(float));

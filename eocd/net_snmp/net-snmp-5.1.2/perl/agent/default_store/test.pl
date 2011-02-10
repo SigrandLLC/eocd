@@ -6,9 +6,9 @@
 # Change 1..1 below to 1..last_test_to_print .
 # (It may become useful if the test is moved to ./t subdirectory.)
 
-BEGIN { $| = 1; 
+BEGIN { $| = 1;
 
-	%tests = ( 
+	%tests = (
                   "NETSNMP_DS_AGENT_VERBOSE"               => 0,
                   "NETSNMP_DS_AGENT_ROLE"                  => 1,
                   "NETSNMP_DS_AGENT_NO_ROOT_ACCESS"        => 2,
@@ -26,7 +26,7 @@ BEGIN { $| = 1;
                   "NETSNMP_DS_AGENT_AGENTX_PING_INTERVAL"  => 3,
 		  );
 
-	print "1.." . (scalar(keys(%tests)) + 2) . "\n"; 
+	print "1.." . (scalar(keys(%tests)) + 2) . "\n";
     }
 END {print "not ok 1\n" unless $loaded;}
 use NetSNMP::agent::default_store (':all');

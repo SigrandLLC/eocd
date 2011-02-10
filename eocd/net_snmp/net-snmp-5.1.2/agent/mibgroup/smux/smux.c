@@ -119,7 +119,7 @@ static int      nauths, npeers = 0;
 
 struct variable2 smux_variables[] = {
     /*
-     * bogus entry, as in pass.c 
+     * bogus entry, as in pass.c
      */
     {MIBINDEX, ASN_INTEGER, RWRITE, var_smux, 0, {MIBINDEX}},
 };
@@ -146,7 +146,7 @@ smux_parse_peer_auth(const char *token, char *cptr)
     aptr->sa_active_fd = -1;
     if (!cptr) {
         /*
-         * null passwords OK 
+         * null passwords OK
          */
         Auths[nauths++] = aptr;
         DEBUGMSGTL(("smux_conf", "null password\n"));
@@ -162,7 +162,7 @@ smux_parse_peer_auth(const char *token, char *cptr)
         return;
     }
     /*
-     * oid 
+     * oid
      */
     aptr->sa_oid_len = parse_miboid(cptr, aptr->sa_oid);
 
@@ -173,7 +173,7 @@ smux_parse_peer_auth(const char *token, char *cptr)
     cptr = skip_white(cptr);
 
     /*
-     * password 
+     * password
      */
     if (cptr)
         strcpy(aptr->sa_passwd, cptr);
@@ -217,13 +217,13 @@ real_init_smux(void)
     }
 
     /*
-     * Reqid 
+     * Reqid
      */
     smux_reqid = 0;
     smux_listen_sd = -1;
 
     /*
-     * Receive timeout 
+     * Receive timeout
      */
     smux_rcv_timeout.tv_sec = 0;
     smux_rcv_timeout.tv_usec = 500000;
@@ -234,7 +234,7 @@ real_init_smux(void)
     memset(&lo_socket, (0), sizeof(lo_socket));
     lo_socket.sin_family = AF_INET;
 
-    smux_socket = netsnmp_ds_get_string(NETSNMP_DS_APPLICATION_ID, 
+    smux_socket = netsnmp_ds_get_string(NETSNMP_DS_APPLICATION_ID,
 					NETSNMP_DS_SMUX_SOCKET);
 #ifdef LOCAL_SMUX
     if (!smux_socket)
@@ -300,7 +300,7 @@ var_smux(struct variable * vp,
 
     *write_method = var_smux_write;
     /*
-     * search the active registration list 
+     * search the active registration list
      */
     for (rptr = ActiveRegs; rptr; rptr = rptr->sr_next) {
         if (0 >= snmp_oidtree_compare(vp->name, vp->namelen, rptr->sr_name,
@@ -327,7 +327,7 @@ var_smux(struct variable * vp,
         return NULL;
     } else {
         /*
-         * set the type and return the value 
+         * set the type and return the value
          */
         vp->type = val_type;
         return valptr;
@@ -358,7 +358,7 @@ var_smux_write(int action,
     name_length = name_len;
 
     /*
-     * XXX find the descriptor again 
+     * XXX find the descriptor again
      */
     for (rptr = ActiveRegs; rptr; rptr = rptr->sr_next) {
         if (!snmp_oidtree_compare(name, name_len, rptr->sr_name,
@@ -371,7 +371,7 @@ var_smux_write(int action,
         DEBUGMSGTL(("smux", "[var_smux_write] entering RESERVE1\n"));
 
         /*
-         * length might be long 
+         * length might be long
          */
         var_len += (*(var_val + 1) & ASN_LONG_LEN) ?
             var_len + ((*(var_val + 1) & 0x7F) + 2) : 2;
@@ -417,14 +417,14 @@ var_smux_write(int action,
 
         while (1) {
             /*
-             * peek at what's received 
+             * peek at what's received
              */
             if ((len = recv(rptr->sr_fd, buf,
                             SMUXMAXPKTSIZE, MSG_PEEK)) <= 0) {
                 DEBUGMSGTL(("smux",
                             "[var_smux_write] peek failed or timed out\n"));
                 /*
-                 * do we need to do a peer cleanup in this case?? 
+                 * do we need to do a peer cleanup in this case??
                  */
                 smux_peer_cleanup(rptr->sr_fd);
                 return SNMP_ERR_GENERR;
@@ -435,26 +435,26 @@ var_smux_write(int action,
             DEBUGDUMPSETUP("var_smux_write", buf, len);
 
             /*
-             * determine if we received more than one packet 
+             * determine if we received more than one packet
              */
             packet_len = len;
             ptr = asn_parse_header(buf, &packet_len, &type);
             packet_len += (ptr - buf);
             if (len > (ssize_t)packet_len) {
                 /*
-                 * set length to receive only the first packet 
+                 * set length to receive only the first packet
                  */
                 len = packet_len;
             }
 
             /*
-             * receive the first packet 
+             * receive the first packet
              */
             if ((len = recv(rptr->sr_fd, buf, len, 0)) <= 0) {
                 DEBUGMSGTL(("smux",
                             "[var_smux_write] recv failed or timed out\n"));
                 /*
-                 * do we need to do a peer cleanup in this case?? 
+                 * do we need to do a peer cleanup in this case??
                  */
                 smux_peer_cleanup(rptr->sr_fd);
                 return SNMP_ERR_GENERR;
@@ -472,10 +472,10 @@ var_smux_write(int action,
 
 
                 /*
-                 * go and peek at received data again 
+                 * go and peek at received data again
                  */
                 /*
-                 * we could receive the reply or another trap 
+                 * we could receive the reply or another trap
                  */
             } else {
                 ptr = buf;
@@ -560,13 +560,13 @@ smux_accept(int sd)
 
     alen = sizeof(struct sockaddr_in);
     /*
-     * this may be too high 
+     * this may be too high
      */
     tv.tv_sec = 5;
     tv.tv_usec = 0;
 
     /*
-     * connection request 
+     * connection request
      */
     DEBUGMSGTL(("smux", "[smux_accept] Calling accept()\n"));
     errno = 0;
@@ -586,7 +586,7 @@ smux_accept(int sd)
         }
 
         /*
-         * now block for an OpenPDU 
+         * now block for an OpenPDU
          */
         if ((length = recv(fd, (char *) data, SMUXMAXPKTSIZE, 0)) <= 0) {
             DEBUGMSGTL(("smux",
@@ -596,7 +596,7 @@ smux_accept(int sd)
             return -1;
         }
         /*
-         * try to authorize him 
+         * try to authorize him
          */
         ptr = data;
         len = length;
@@ -624,7 +624,7 @@ smux_accept(int sd)
         }
 
         /*
-         * he's OK 
+         * he's OK
          */
 #ifdef SO_RCVTIMEO
         if (setsockopt
@@ -639,12 +639,12 @@ smux_accept(int sd)
         DEBUGMSGTL(("smux", "[smux_accept] fd %d\n", fd));
 
         /*
-         * Process other PDUs already read, e.g. a registerRequest. 
+         * Process other PDUs already read, e.g. a registerRequest.
          */
         len = length - (ptr - data);
         if (smux_pdu_process(fd, ptr, len) < 0) {
             /*
-             * Easy come, easy go.  Clean-up is already done. 
+             * Easy come, easy go.  Clean-up is already done.
              */
             return -1;
         }
@@ -661,7 +661,7 @@ smux_process(int fd)
     length = recv(fd, (char *) data, SMUXMAXPKTSIZE, 0);
     if (length <= 0) {
         /*
-         * the peer went away, close this descriptor 
+         * the peer went away, close this descriptor
          * * and delete it from the list
          */
         DEBUGMSGTL(("smux",
@@ -726,10 +726,10 @@ smux_pdu_process(int fd, u_char * data, size_t length)
             snmp_log(LOG_INFO, "Got trap from peer on fd %d\n", fd);
             ptr = smux_trap_process(ptr, &len);
             /*
-             * watch out for close on top of this...should return correct end 
+             * watch out for close on top of this...should return correct end
              */
             /*
-             * debug this... 
+             * debug this...
              */
             ptr = NULL;
             break;
@@ -848,7 +848,7 @@ smux_send_close(int fd, int reason)
                     reason));
 
     /*
-     * send a response back 
+     * send a response back
      */
     if (send(fd, (char *) outpacket, 3, 0) < 0) {
         snmp_log_perror("[smux_snmp_close] send failed");
@@ -867,7 +867,7 @@ smux_auth_peer(oid * name, size_t namelen, char *passwd, int fd)
             if (!(strcmp(Auths[i]->sa_passwd, passwd)) &&
                 (Auths[i]->sa_active_fd == -1)) {
                 /*
-                 * matched, mark the auth 
+                 * matched, mark the auth
                  */
                 Auths[i]->sa_active_fd = fd;
                 return 1;
@@ -875,7 +875,7 @@ smux_auth_peer(oid * name, size_t namelen, char *passwd, int fd)
         }
     }
     /*
-     * did not match oid and passwd 
+     * did not match oid and passwd
      */
     return 0;
 }
@@ -883,7 +883,7 @@ smux_auth_peer(oid * name, size_t namelen, char *passwd, int fd)
 
 /*
  * XXX - Bells and Whistles:
- * Need to catch signal when snmpd goes down and send close pdu to gated 
+ * Need to catch signal when snmpd goes down and send close pdu to gated
  */
 static u_char  *
 smux_close_process(int fd, u_char * ptr, size_t * len)
@@ -892,7 +892,7 @@ smux_close_process(int fd, u_char * ptr, size_t * len)
     int             length = *len;
 
     /*
-     * This is the integer part of the close pdu 
+     * This is the integer part of the close pdu
      */
     while (length--) {
         down = (down << 8) | (long) *ptr;
@@ -945,7 +945,7 @@ smux_rreq_process(int sd, u_char * ptr, size_t * len)
 
     if (operation == SMUX_REGOP_DELETE) {
         /*
-         * search the active list for this registration 
+         * search the active list for this registration
          */
         rptr =
             smux_find_match(ActiveRegs, sd, oid_name, oid_name_len,
@@ -953,22 +953,22 @@ smux_rreq_process(int sd, u_char * ptr, size_t * len)
         if (rptr) {
             rpriority = rptr->sr_priority;
             /*
-             * unregister the mib 
+             * unregister the mib
              */
             unregister_mib(rptr->sr_name, rptr->sr_name_len);
             /*
-             * find a replacement 
+             * find a replacement
              */
             nrptr =
                 smux_find_replacement(rptr->sr_name, rptr->sr_name_len);
             if (nrptr) {
                 /*
-                 * found one 
+                 * found one
                  */
                 smux_replace_active(rptr, nrptr);
             } else {
                 /*
-                 * no replacement found 
+                 * no replacement found
                  */
                 smux_list_detach(&ActiveRegs, &rptr);
                 free(rptr);
@@ -977,7 +977,7 @@ smux_rreq_process(int sd, u_char * ptr, size_t * len)
             return ptr;
         }
         /*
-         * search the passive list for this registration 
+         * search the passive list for this registration
          */
         rptr =
             smux_find_match(PassiveRegs, sd, oid_name, oid_name_len,
@@ -1042,7 +1042,7 @@ smux_rreq_process(int sd, u_char * ptr, size_t * len)
                         goto done;
                     } else {
                         /*
-                         * Equal or worse priority 
+                         * Equal or worse priority
                          */
                         do {
                             nrptr->sr_priority++;
@@ -1059,7 +1059,7 @@ smux_rreq_process(int sd, u_char * ptr, size_t * len)
                 } else {        /* oid_name_len > rptr->sr_name_len */
                     /*
                      * This tree is scoped by a current
-                     * * active tree.  
+                     * * active tree.
                      */
                     do {
                         nrptr->sr_priority++;
@@ -1180,12 +1180,12 @@ smux_list_add(smux_reg ** head, smux_reg * add)
                                   rptr->sr_name, rptr->sr_name_len);
         if ((result == 0) && (add->sr_priority == rptr->sr_priority)) {
             /*
-             * same tree, same pri, nope 
+             * same tree, same pri, nope
              */
             return -1;
         } else if (result < 0) {
             /*
-             * this can only happen if we go before the head 
+             * this can only happen if we go before the head
              */
             add->sr_next = *head;
             *head = add;
@@ -1194,7 +1194,7 @@ smux_list_add(smux_reg ** head, smux_reg * add)
                                      rptr->sr_next->sr_name,
                                      rptr->sr_next->sr_name_len)) < 0) {
             /*
-             * insert here 
+             * insert here
              */
             add->sr_next = rptr->sr_next;
             rptr->sr_next = add;
@@ -1202,7 +1202,7 @@ smux_list_add(smux_reg ** head, smux_reg * add)
         }
     }
     /*
-     * compare the last one 
+     * compare the last one
      */
     if ((snmp_oid_compare(add->sr_name, add->sr_name_len, rptr->sr_name,
                           rptr->sr_name_len) == 0)
@@ -1222,7 +1222,7 @@ smux_list_add(smux_reg ** head, smux_reg * add)
  *      - Least difference in subtree length
  *      - Best (lowest) priority
  *
- * For example, if we need to replace .1.3.6.1.69, 
+ * For example, if we need to replace .1.3.6.1.69,
  * we would pick .1.3.6.1.69.1 instead of .1.3.6.69.1.1
  *
  */
@@ -1290,7 +1290,7 @@ smux_snmp_process(int exact,
 
     while (1) {
         /*
-         * peek at what's received 
+         * peek at what's received
          */
         length = recv(sd, (char *) result, SMUXMAXPKTSIZE, MSG_PEEK);
         if (length < 0) {
@@ -1304,20 +1304,20 @@ smux_snmp_process(int exact,
         DEBUGDUMPSETUP("smux_snmp_process", result, length);
 
         /*
-         * determine if we received more than one packet 
+         * determine if we received more than one packet
          */
         packet_len = length;
         ptr = asn_parse_header(result, &packet_len, &type);
         packet_len += (ptr - result);
         if (length > packet_len) {
             /*
-             * set length to receive only the first packet 
+             * set length to receive only the first packet
              */
             length = packet_len;
         }
 
         /*
-         * receive the first packet 
+         * receive the first packet
          */
         length = recv(sd, (char *) result, length, 0);
         if (length < 0) {
@@ -1336,18 +1336,18 @@ smux_snmp_process(int exact,
             smux_trap_process(ptr, &length);
 
             /*
-             * go and peek at received data again 
+             * go and peek at received data again
              */
             /*
-             * we could receive the reply or another trap 
+             * we could receive the reply or another trap
              */
         } else {
             /*
-             * Interpret reply 
+             * Interpret reply
              */
             ptr = smux_parse(result, objid, len, return_len, return_type);
             /*
-             * ptr will point to query result or NULL if error 
+             * ptr will point to query result or NULL if error
              */
             break;
         }
@@ -1396,7 +1396,7 @@ smux_parse(u_char * rsp,
     }
 
     /*
-     * XXX How to send something intelligent back in case of an error 
+     * XXX How to send something intelligent back in case of an error
      */
     DEBUGMSGTL(("smux",
                 "[smux_parse] Message type %d, reqid %d, errstat %d, \n\terrindex %d\n",
@@ -1405,7 +1405,7 @@ smux_parse(u_char * rsp,
         return NULL;
 
     /*
-     * stuff to return 
+     * stuff to return
      */
     return (smux_parse_var
             (ptr, &length, objid, oidlen, return_len, return_type));
@@ -1442,7 +1442,7 @@ smux_parse_var(u_char * varbind,
     }
 
     /*
-     * get hold of the objid and the asn1 coded value 
+     * get hold of the objid and the asn1 coded value
      */
     var_name_len = MAX_OID_LEN;
     ptr = snmp_parse_var_op(ptr, var_name, &var_name_len, vartype,
@@ -1455,7 +1455,7 @@ smux_parse_var(u_char * varbind,
     DEBUGMSGOID(("smux", objid, *oidlen));
     DEBUGMSG(("smux", "\n"));
     /*
-     * XXX 
+     * XXX
      */
     len = SMUXMAXPKTSIZE;
     DEBUGMSGTL(("smux",
@@ -1499,7 +1499,7 @@ smux_parse_var(u_char * varbind,
         break;
     case ASN_OCTET_STR:
         /*
-         * XXX 
+         * XXX
          */
         if (len == 0)
             return NULL;
@@ -1524,7 +1524,7 @@ smux_parse_var(u_char * varbind,
         break;
     case ASN_BIT_STR:
         /*
-         * XXX 
+         * XXX
          */
         if (len == 0)
             return NULL;
@@ -1541,7 +1541,7 @@ smux_parse_var(u_char * varbind,
 }
 
 /*
- * XXX This is a bad hack - do not want to muck with ucd code 
+ * XXX This is a bad hack - do not want to muck with ucd code
  */
 static int
 smux_build(u_char type,
@@ -1557,14 +1557,14 @@ smux_build(u_char type,
     long            errindex = 0;
 
     /*
-     * leave space for Seq and length 
+     * leave space for Seq and length
      */
     save1 = packet;
     ptr = packet + 4;
     len = *length - 4;
 
     /*
-     * build reqid 
+     * build reqid
      */
     ptr = asn_build_unsigned_int(ptr, &len,
                                  (u_char) (ASN_UNIVERSAL | ASN_PRIMITIVE |
@@ -1575,7 +1575,7 @@ smux_build(u_char type,
     }
 
     /*
-     * build err stat 
+     * build err stat
      */
     ptr = asn_build_int(ptr, &len,
                         (u_char) (ASN_UNIVERSAL | ASN_PRIMITIVE |
@@ -1585,7 +1585,7 @@ smux_build(u_char type,
     }
 
     /*
-     * build err index 
+     * build err index
      */
     ptr = asn_build_int(ptr, &len,
                         (u_char) (ASN_UNIVERSAL | ASN_PRIMITIVE |
@@ -1605,7 +1605,7 @@ smux_build(u_char type,
     }
 
     /*
-     * build var list : snmp_build_var_op not liked by gated XXX 
+     * build var list : snmp_build_var_op not liked by gated XXX
      */
     ptr = snmp_build_var_op(ptr, objid, oidlen, val_type, val_len,
                             val, &len);
@@ -1635,12 +1635,12 @@ smux_peer_cleanup(int sd)
     nfound = 0;
 
     /*
-     * close the descriptor 
+     * close the descriptor
      */
     close(sd);
 
     /*
-     * delete all of the passive registrations that this peer owns 
+     * delete all of the passive registrations that this peer owns
      */
     for (rptr = PassiveRegs; rptr; rptr = nrptr) {
         nrptr = rptr->sr_next;
@@ -1651,7 +1651,7 @@ smux_peer_cleanup(int sd)
         rptr = nrptr;
     }
     /*
-     * find replacements for all of the active registrations found 
+     * find replacements for all of the active registrations found
      */
     for (rptr = ActiveRegs; rptr; rptr = rptr2) {
         rptr2 = rptr->sr_next;
@@ -1672,12 +1672,12 @@ smux_peer_cleanup(int sd)
     }
 
     /*
-     * decrement the peer count 
+     * decrement the peer count
      */
     npeers--;
 
     /*
-     * make his auth available again 
+     * make his auth available again
      */
     for (i = 0; i < nauths; i++) {
         if (Auths[i]->sa_active_fd == sd) {
@@ -1698,7 +1698,7 @@ smux_send_rrsp(int sd, int pri)
     int             intsize = sizeof(int);
     u_int           mask = ((u_int) 0xFF) << (8 * (sizeof(int) - 1));
     /*
-     * e.g. mask is 0xFF000000 on a 32-bit machine 
+     * e.g. mask is 0xFF000000 on a 32-bit machine
      */
     int             sent;
 
@@ -1711,7 +1711,7 @@ smux_send_rrsp(int sd, int pri)
     *ptr++ = (u_char) intsize;
 
     /*
-     * Copy each byte, most significant first. 
+     * Copy each byte, most significant first.
      */
     while (intsize--) {
         *ptr++ = (u_char) ((pri & mask) >> (8 * (sizeof(int) - 1)));
@@ -1743,7 +1743,7 @@ smux_trap_process(u_char * rsp, size_t * len)
     ptr = rsp;
 
     /*
-     * parse the sub-agent enterprise oid 
+     * parse the sub-agent enterprise oid
      */
     datalen = MAX_OID_LEN;
     if ((ptr = asn_parse_objid(ptr, len,
@@ -1755,7 +1755,7 @@ smux_trap_process(u_char * rsp, size_t * len)
     }
 
     /*
-     * parse the agent-addr ipAddress 
+     * parse the agent-addr ipAddress
      */
     datalen = SMUXMAXSTRLEN;
     if (((ptr = asn_parse_string(ptr, len,
@@ -1768,7 +1768,7 @@ smux_trap_process(u_char * rsp, size_t * len)
     }
 
     /*
-     * parse the generic trap int 
+     * parse the generic trap int
      */
     datalen = sizeof(long);
     if ((ptr = asn_parse_int(ptr, len, &vartype, &trap, datalen)) == NULL) {
@@ -1778,7 +1778,7 @@ smux_trap_process(u_char * rsp, size_t * len)
     }
 
     /*
-     * parse the specific trap int 
+     * parse the specific trap int
      */
     datalen = sizeof(long);
     if ((ptr = asn_parse_int(ptr, len,
@@ -1789,7 +1789,7 @@ smux_trap_process(u_char * rsp, size_t * len)
     }
 
     /*
-     * parse the timeticks timestamp 
+     * parse the timeticks timestamp
      */
     datalen = sizeof(u_long);
     if (((ptr = asn_parse_unsigned_int(ptr, len,
@@ -1802,7 +1802,7 @@ smux_trap_process(u_char * rsp, size_t * len)
     }
 
     /*
-     * parse out the overall sequence 
+     * parse out the overall sequence
      */
     ptr = asn_parse_header(ptr, len, &vartype);
     if (ptr == NULL || vartype != (ASN_SEQUENCE | ASN_CONSTRUCTOR)) {
@@ -1810,12 +1810,12 @@ smux_trap_process(u_char * rsp, size_t * len)
     }
 
     /*
-     * parse the variable bindings 
+     * parse the variable bindings
      */
     while (ptr && *len) {
 
         /*
-         * get the objid and the asn1 coded value 
+         * get the objid and the asn1 coded value
          */
         var_name_len = MAX_OID_LEN;
         ptr = snmp_parse_var_op(ptr, var_name, &var_name_len, &vartype,
@@ -1865,7 +1865,7 @@ smux_trap_process(u_char * rsp, size_t * len)
         case ASN_OPAQUE:
         case ASN_OCTET_STR:
             /*
-             * XXX 
+             * XXX
              */
             if (len == 0)
                 return NULL;
@@ -1889,7 +1889,7 @@ smux_trap_process(u_char * rsp, size_t * len)
             break;
         case ASN_BIT_STR:
             /*
-             * XXX 
+             * XXX
              */
             if (len == 0)
                 return NULL;
@@ -1927,13 +1927,13 @@ smux_trap_process(u_char * rsp, size_t * len)
     }
 
     /*
-     * send the traps 
+     * send the traps
      */
     send_enterprise_trap_vars(trap, specific, (oid *) & sa_enterpriseoid,
                               sa_enterpriseoid_len, snmptrap_head);
 
     /*
-     * free trap variables 
+     * free trap variables
      */
     snmp_free_varbind(snmptrap_head);
 

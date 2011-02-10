@@ -1,13 +1,13 @@
 /*
  * tunnel.c --
- * 
+ *
  *      An implementation of the TUNNEL-MIB for the UCD-SNMP 4.2
  *      agent running on Linux 2.2.x.
- *      
+ *
  * Copyright (c) 2000 Frank Strauss <strauss@ibr.cs.tu-bs.de>
  *
  *                          All Rights Reserved
- * 
+ *
  * Permission to use, copy, modify and distribute this software and its
  * documentation for any purpose and without fee is hereby granted,
  * provided that the above copyright notice appears in all copies and
@@ -16,7 +16,7 @@
  * The Regents of the University of California not be used in advertising
  * or publicity pertaining to distribution of the software without
  * specific written permission.
- * 
+ *
  * THE AUTHOR AND CMU AND THE REGENTS OF THE UNIVERSITY OF CALIFORNIA
  * DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS.  IN NO EVENT SHALL
@@ -76,7 +76,7 @@
 
 
 /*
- * This is used, because the TUNNEL-MIB augments ifTable. 
+ * This is used, because the TUNNEL-MIB augments ifTable.
  */
 extern unsigned char *var_ifEntry(struct variable *,
                                   oid *, size_t *,
@@ -123,13 +123,13 @@ struct tunnel {
 
 /*
  * variable4 tunnel_variables:
- *   this variable defines function callbacks and type return information 
- *   for the tunnel mib section 
+ *   this variable defines function callbacks and type return information
+ *   for the tunnel mib section
  */
 
 struct variable4 tunnel_variables[] = {
     /*
-     * magic number        , variable type , ro/rw , callback fn  , L, oidsuffix 
+     * magic number        , variable type , ro/rw , callback fn  , L, oidsuffix
      */
 #define   LOCALADDRESS          1
     {LOCALADDRESS, ASN_IPADDRESS, RWRITE, var_tunnelIfEntry, 3, {1, 1, 1}},
@@ -188,7 +188,7 @@ init_tunnel(void)
                         "Linux 2.2.x kernels.");
 
     /*
-     * register ourselves with the agent to handle our mib tree 
+     * register ourselves with the agent to handle our mib tree
      */
     REGISTER_MIB("tunnel", tunnel_variables, variable4,
                  tunnel_variables_oid);
@@ -321,7 +321,7 @@ updateTunnel(struct tunnel *tunnel)
     struct ifreq    ifrq;
 
     /*
-     * NOTE: getTunnelParm() may adjust the passed ifname. 
+     * NOTE: getTunnelParm() may adjust the passed ifname.
      */
     parm = getTunnelParm(tunnel->ifname);
     if (!parm) {
@@ -366,7 +366,7 @@ updateTunnel(struct tunnel *tunnel)
     tunnel->security = 1;
     tunnel->tos = (parm->iph.tos & 1) ? -1 : parm->iph.tos;
     /*
-     * XXX: adjust tos mapping (kernel <-> TUNNEL-MIB::tunnelIfTOS) 
+     * XXX: adjust tos mapping (kernel <-> TUNNEL-MIB::tunnelIfTOS)
      */
 
     return tunnel;
@@ -384,7 +384,7 @@ updateTunnels(void)
     int             type;
 
     /*
-     * uptime the tunnels we have so far 
+     * uptime the tunnels we have so far
      */
     for (tunnel = tunnels; tunnel; tunnel = tunnel->next) {
         DEBUGMSG(("tunnel",
@@ -394,7 +394,7 @@ updateTunnels(void)
     }
 
     /*
-     * look for new tunnels 
+     * look for new tunnels
      */
     for (; max_index < 256; max_index++) {
         DEBUGMSG(("tunnel",
@@ -748,7 +748,7 @@ writeTOS(int action, unsigned char *var_val,
             return SNMP_ERR_NOSUCHNAME;
         }
         /*
-         * this does not cover all meaningful values: 
+         * this does not cover all meaningful values:
          */
         parm->iph.tos = (*(long *) var_val == -1) ? 1 : *(long *) var_val;
         setTunnelParm(tunnel->ifname, parm);
@@ -802,19 +802,19 @@ var_tunnelIfEntry(struct variable *vp,
         tunnel = getNextTunnelByIfIndex(name[*length - 1]);
         if (!tunnel) {
             /*
-             * end of column, continue with first row of next column 
+             * end of column, continue with first row of next column
              */
             tunnel = tunnels;
             name[tunnel_len + 2]++;
             if (name[tunnel_len + 2] > 6) {
                 /*
-                 * there is no next column 
+                 * there is no next column
                  */
                 return NULL;
             }
             if (!tunnel) {
                 /*
-                 * there is no (next) row 
+                 * there is no (next) row
                  */
                 return NULL;
             }
@@ -923,19 +923,19 @@ var_tunnelConfigEntry(struct variable *vp,
         tunnel = getNextTunnelByConfigOid(name, length);
         if (!tunnel) {
             /*
-             * end of column, continue with first row of next column 
+             * end of column, continue with first row of next column
              */
             tunnel = tunnels;
             name[tunnel_len + 2]++;
             if (name[tunnel_len + 2] > 6) {
                 /*
-                 * there is no next column 
+                 * there is no next column
                  */
                 return NULL;
             }
             if (!tunnel) {
                 /*
-                 * there is no (next) row 
+                 * there is no (next) row
                  */
                 return NULL;
             }

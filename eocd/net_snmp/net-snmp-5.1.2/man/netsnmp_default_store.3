@@ -2,7 +2,7 @@
 .ad l
 .nh
 .SH NAME
-storage space for defaults \- The purpose of the default storage is three-fold:.  
+storage space for defaults \- The purpose of the default storage is three-fold:.
 
 .PP
 .SS "Data Structures"
@@ -64,7 +64,7 @@ storage space for defaults \- The purpose of the default storage is three-fold:.
 .br
 .in -1c
 .SH "Detailed Description"
-.PP 
+.PP
 The purpose of the default storage is three-fold:. 1) To create a global storage space without creating a whole bunch of globally accessible variables or a whole bunch of access functions to work with more privately restricted variables.
 .PP
 2) To provide a single location where the thread lock- ing needs to be implemented. At the time of this writing, however, thread locking is not yet in place.
@@ -187,11 +187,11 @@ library strings
 .IP "\(bu" 2
 #define NETSNMP_DS_LIB_SECMODEL 10
 .IP "\(bu" 2
-#define NETSNMP_DS_LIB_MIBDIRS 11 
+#define NETSNMP_DS_LIB_MIBDIRS 11
 .PP
 
 .SH "Function Documentation"
-.PP 
+.PP
 .SS "int netsnmp_ds_set_boolean (int storeid, int which, int value)"
 .PP
 Stores 'true' or 'false' given an int value for value into netsnmp_ds_booleans[store][which] slot. \fBParameters:\fP
@@ -205,7 +205,7 @@ Stores 'true' or 'false' given an int value for value into netsnmp_ds_booleans[s
 .PP
 \fBReturns:\fP
 .RS 4
-Returns SNMPPERR_GENERR if the storeid and which parameters do not correspond to a valid slot, or SNMPERR_SUCCESS otherwise. 
+Returns SNMPPERR_GENERR if the storeid and which parameters do not correspond to a valid slot, or SNMPERR_SUCCESS otherwise.
 .RE
 .PP
 Definition at line 183 of file default_store.c.

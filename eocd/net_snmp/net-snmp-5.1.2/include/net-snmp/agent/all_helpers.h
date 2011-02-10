@@ -20,14 +20,14 @@ extern          "C" {
 #include <net-snmp/agent/bulk_to_next.h>
 #include <net-snmp/agent/mode_end_call.h>
 /*
- * #include <net-snmp/agent/set_helper.h> 
+ * #include <net-snmp/agent/set_helper.h>
  */
 #include <net-snmp/agent/table.h>
 #include <net-snmp/agent/table_data.h>
 #include <net-snmp/agent/table_dataset.h>
 #include <net-snmp/agent/table_iterator.h>
 /*
- * #include <net-snmp/agent/table_array.h> 
+ * #include <net-snmp/agent/table_array.h>
  */
 
 void            netsnmp_init_helpers(void);

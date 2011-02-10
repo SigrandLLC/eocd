@@ -183,7 +183,7 @@ main(int argc, char *argv[])
 
     session.callback = snmp_input;
     session.callback_magic = NULL;
-    netsnmp_ds_set_int(NETSNMP_DS_LIBRARY_ID, NETSNMP_DS_LIB_DEFAULT_PORT, 
+    netsnmp_ds_set_int(NETSNMP_DS_LIBRARY_ID, NETSNMP_DS_LIB_DEFAULT_PORT,
 		       SNMP_TRAP_PORT);
 
     if (session.version == SNMP_VERSION_3 && !inform) {
@@ -193,26 +193,26 @@ main(int argc, char *argv[])
          * notion of a persistent engine.  Hence, our boots and time
          * values are probably always really wacked with respect to what
          * a manager would like to see.
-         * 
+         *
          * The following should be enough to:
-         * 
+         *
          * 1) prevent the library from doing discovery for engineid & time.
          * 2) use our engineid instead of the remote engineid for
          * authoritative & privacy related operations.
          * 3) The remote engine must be configured with users for our engineID.
-         * 
-         * -- Wes 
+         *
+         * -- Wes
          */
 
         /*
          * setup the engineID based on IP addr.  Need a different
          * algorthim here.  This will cause problems with agents on the
-         * same machine sending traps. 
+         * same machine sending traps.
          */
         setup_engineID(NULL, NULL);
 
         /*
-         * pick our own engineID 
+         * pick our own engineID
          */
         if (session.securityEngineIDLen == 0 ||
             session.securityEngineID == NULL) {
@@ -229,7 +229,7 @@ main(int argc, char *argv[])
          * set boots and time, which will cause problems if this
          * machine ever reboots and a remote trap receiver has cached our
          * boots and time...  I'll cause a not-in-time-window report to
-         * be sent back to this machine. 
+         * be sent back to this machine.
          */
         if (session.engineBoots == 0)
             session.engineBoots = 1;
@@ -240,7 +240,7 @@ main(int argc, char *argv[])
     ss = snmp_open(&session);
     if (ss == NULL) {
         /*
-         * diagnose snmp_open errors with the input netsnmp_session pointer 
+         * diagnose snmp_open errors with the input netsnmp_session pointer
          */
         snmp_sess_perror("snmptrap", &session);
         SOCK_CLEANUP;

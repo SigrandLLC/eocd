@@ -60,7 +60,7 @@ init_hr_print(void)
     init_device[HRDEV_PRINTER] = Init_HR_Print;
     next_device[HRDEV_PRINTER] = Get_Next_HR_Print;
     /*
-     * save_device[ HRDEV_PRINTER ] = Save_HR_Print;        
+     * save_device[ HRDEV_PRINTER ] = Save_HR_Print;
      */
 #ifdef HRPRINT_MONOTONICALLY_INCREASING
     dev_idx_inc[HRDEV_PRINTER] = 1;
@@ -79,11 +79,11 @@ init_hr_print(void)
  * Arguments:
  * vp     IN      - pointer to variable entry that points here
  * name    IN/OUT  - IN/name requested, OUT/name found
- * length  IN/OUT  - length of IN/OUT oid's 
+ * length  IN/OUT  - length of IN/OUT oid's
  * exact   IN      - TRUE if an exact match was requested
  * var_len OUT     - length of variable or 0 if function returned
  * write_method
- * 
+ *
  */
 int
 header_hrprint(struct variable *vp,
@@ -102,7 +102,7 @@ header_hrprint(struct variable *vp,
 
     memcpy((char *) newname, (char *) vp->name, vp->namelen * sizeof(oid));
     /*
-     * Find "next" print entry 
+     * Find "next" print entry
      */
 
     Init_HR_Print();
@@ -115,7 +115,7 @@ header_hrprint(struct variable *vp,
         if (exact && (result == 0)) {
             LowIndex = print_idx;
             /*
-             * Save printer status information 
+             * Save printer status information
              */
             break;
         }
@@ -123,7 +123,7 @@ header_hrprint(struct variable *vp,
             (LowIndex == -1 || print_idx < LowIndex)) {
             LowIndex = print_idx;
             /*
-             * Save printer status information 
+             * Save printer status information
              */
 #ifdef HRPRINT_MONOTONICALLY_INCREASING
             break;

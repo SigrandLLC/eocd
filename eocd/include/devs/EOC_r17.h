@@ -24,7 +24,7 @@ public:
     //----- SHDSL settings ---------//
     int tresholds(s8 loop_attn,s8 snr_m);
     int statistics(int loop,side_perf &stat);
-    
+
 };
 
 #endif

@@ -70,12 +70,12 @@ init_memory_dynix(void)
 
     /*
      * Define the OID pointer to the top of the mib tree that we're
-     * registering underneath 
+     * registering underneath
      */
     oid             mem_variables_oid[] = { UCDAVIS_MIB, MEMMIBNUM };
 
     /*
-     * register ourselves with the agent to handle our mib tree 
+     * register ourselves with the agent to handle our mib tree
      */
     REGISTER_MIB("ucd-snmp/memory", extensible_mem_variables, variable2,
                  mem_variables_oid);
@@ -95,7 +95,7 @@ var_extensible_mem(struct variable *vp,
     static long     long_ret;
 
     /*
-     * Initialize the return value to 0 
+     * Initialize the return value to 0
      */
     long_ret = 0;
 
@@ -165,7 +165,7 @@ memory_free_config(void)
 
 
 /*
- * return is in sectors 
+ * return is in sectors
  */
 long
 getTotalSwap(void)
@@ -186,7 +186,7 @@ getTotalSwap(void)
 }
 
 /*
- * return is in sectors 
+ * return is in sectors
  */
 static long
 getFreeSwap(void)
@@ -209,7 +209,7 @@ getFreeSwap(void)
 }
 
 /*
- * return is in kilobytes 
+ * return is in kilobytes
  */
 static long
 getTotalFree(void)

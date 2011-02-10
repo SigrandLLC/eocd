@@ -58,7 +58,7 @@ PERFORMANCE OF THIS SOFTWARE.
 
 /*
  * XXXWWW merge todo: incl/excl range changes in differences between
- * 1.194 and 1.199 
+ * 1.194 and 1.199
  */
 
 #include <net-snmp/net-snmp-config.h>
@@ -205,7 +205,7 @@ extern netsnmp_subtree *subtrees;
  * were errors during the first two passes, writeVar is called in the third
  * pass once for each varbind, with the action set to FREE.  An opportunity
  * is thus provided to free those resources reserved in the first two passes.
- * 
+ *
  * writeVar(action, var_val, var_val_type, var_val_len, statP, name, name_len)
  * int      action;         IN - RESERVE1, RESERVE2, COMMIT, or FREE
  * u_char   *var_val;       IN - input or output buffer space
@@ -235,7 +235,7 @@ static void
 _init_agent_callback_transport(void)
 {
     /*
-     * always register a callback transport for internal use 
+     * always register a callback transport for internal use
      */
     callback_master_sess = netsnmp_callback_open(0, handle_snmp_packet,
                                                  netsnmp_agent_check_packet,
@@ -265,16 +265,16 @@ init_agent(const char *app)
     int             r = 0;
 
     /*
-     * get current time (ie, the time the agent started) 
+     * get current time (ie, the time the agent started)
      */
     gettimeofday(&starttime, NULL);
     starttime.tv_sec--;
     starttime.tv_usec += 1000000L;
 
     /*
-     * we handle alarm signals ourselves in the select loop 
+     * we handle alarm signals ourselves in the select loop
      */
-    netsnmp_ds_set_boolean(NETSNMP_DS_LIBRARY_ID, 
+    netsnmp_ds_set_boolean(NETSNMP_DS_LIBRARY_ID,
 			   NETSNMP_DS_LIB_ALARM_DONT_USE_SIG, 1);
 
 #ifdef CAN_USE_NLIST
@@ -290,16 +290,16 @@ init_agent(const char *app)
 #endif
 
     _init_agent_callback_transport();
-    
+
     netsnmp_init_helpers();
     init_traps();
     netsnmp_container_init_list();
 
     /*
-     * initialize agentx subagent if necessary. 
+     * initialize agentx subagent if necessary.
      */
 #ifdef USING_AGENTX_SUBAGENT_MODULE
-    if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+    if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 			       NETSNMP_DS_AGENT_ROLE) == SUB_AGENT) {
         r = subagent_pre_init();
         init_subagent();
@@ -307,7 +307,7 @@ init_agent(const char *app)
 #endif
 
     /*
-     * Register configuration tokens from transport modules.  
+     * Register configuration tokens from transport modules.
      */
 #ifdef SNMP_TRANSPORT_UDP_DOMAIN
     netsnmp_udp_agent_config_tokens_register();

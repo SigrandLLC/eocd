@@ -20,20 +20,20 @@ Log the source addresses of incoming requests.
 Append to the log file rather than truncating it.
 .TP
 .B "-c" \fIFILE
-Read 
+Read
 .I FILE
 as a configuration file
 (or a comma-separated list of configuration files).
 .TP
 .B -C
-Do not read any configuration files except the ones optionally specified by the 
-.B -c 
+Do not read any configuration files except the ones optionally specified by the
+.B -c
 option.
 Note that this behaviour also covers the persistent configuration files.
 This may result in dynamically-assigned values being reset following an
 agent restart, unless the relevant persistent config files are
 explicitly loaded using the
-.B -c 
+.B -c
 option.
 .TP
 .B -d
@@ -80,7 +80,7 @@ To get a list of compiled modules, run the agent with the arguments
 (assumes you have debugging support compiled in).
 .TP
 .BR -l "" " " "[\fIFILE" "" "]"
-Log all output from the agent (including stdout and stderr) to 
+Log all output from the agent (including stdout and stderr) to
 .IR FILE .
 If no filename is given, log to a default file set at compile time
 (normally /var/log/snmpd.log).
@@ -110,7 +110,7 @@ option.
 Save the process ID of the daemon in
 .IR FILE "."
 This option is being deprecated, and '-p FILE' should be used instead.
-.TP 
+.TP
 .B -q
 Print simpler output for easier automated parsing.
 .TP
@@ -184,7 +184,7 @@ IPv4-address[:port]
 pathname
 .IP "ipx" 28
 [network]:node[/port]
-.TP 28 
+.TP 28
 .IR "" "aal5pvc " or " pvc"
 [interface.][VPI.]VCI
 .TP 28
@@ -217,7 +217,7 @@ listen on TCP port 1161 on all IPv4 interfaces.
 listen on IPX port 40000 on all IPX interfaces.
 .TP 24
 .IR "unix:/tmp/local-agent"
-listen on the Unix domain socket 
+listen on the Unix domain socket
 .IR /tmp/local-agent .
 .TP 24
 .IR "/tmp/local-agent"

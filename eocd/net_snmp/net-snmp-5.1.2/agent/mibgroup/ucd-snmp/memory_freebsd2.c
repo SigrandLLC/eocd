@@ -6,7 +6,7 @@
 
 
 /*
- * Ripped from /usr/scr/usr.bin/vmstat/vmstat.c (covering all bases) 
+ * Ripped from /usr/scr/usr.bin/vmstat/vmstat.c (covering all bases)
  */
 #include <sys/param.h>
 #include <sys/time.h>
@@ -56,7 +56,7 @@
 #include "memory_freebsd2.h"
 
 /*
- * nlist symbols 
+ * nlist symbols
  */
 #define SUM_SYMBOL      "cnt"
 #ifndef openbsd2
@@ -64,17 +64,17 @@
 #endif
 
 /*
- * Default swap warning limit (kb) 
+ * Default swap warning limit (kb)
  */
 #define DEFAULTMINIMUMSWAP 16000
 
 /*
- * Swap warning limit 
+ * Swap warning limit
  */
 long            minimumswap;
 
 /*
- * Swap info 
+ * Swap info
  */
 quad_t          swapTotal;
 quad_t          swapUsed;
@@ -123,12 +123,12 @@ init_memory_freebsd2(void)
 
     /*
      * Define the OID pointer to the top of the mib tree that we're
-     * registering underneath 
+     * registering underneath
      */
     oid             mem_variables_oid[] = { UCDAVIS_MIB, MEMMIBNUM };
 
     /*
-     * register ourselves with the agent to handle our mib tree 
+     * register ourselves with the agent to handle our mib tree
      */
     REGISTER_MIB("ucd-snmp/memory", extensible_mem_variables, variable2,
                  mem_variables_oid);
@@ -152,10 +152,10 @@ memory_free_config(void)
 
 #ifndef freebsd4
 /*
- * Executes swapinfo and parses last line 
+ * Executes swapinfo and parses last line
  */
 /*
- * This is just way too ugly ;) 
+ * This is just way too ugly ;)
  */
 
 void
@@ -203,24 +203,24 @@ swapmode(void)
 
     swapUsed = swapTotal = swapFree = 0;
     /*
-     * Count up free swap space. 
+     * Count up free swap space.
      */
     for (i = 0; i < n; ++i)
         swapFree += kswap[i].ksw_total - kswap[i].ksw_used;
 
     /*
-     * Count up total swap space 
+     * Count up total swap space
      */
     for (i = 0; i < n; i++)
         swapTotal += kswap[i].ksw_total;
 
     /*
-     * Calculate used swap space 
+     * Calculate used swap space
      */
     swapUsed = swapTotal - swapFree;
 
     /*
-     * Convert to kb 
+     * Convert to kb
      */
     pagesize = getpagesize() / 1024;
 
@@ -236,11 +236,11 @@ swapmode(void)
  * Arguments:
  * vp     IN      - pointer to variable entry that points here
  * name    IN/OUT  - IN/name requested, OUT/name found
- * length  IN/OUT  - length of IN/OUT oid's 
+ * length  IN/OUT  - length of IN/OUT oid's
  * exact   IN      - TRUE if an exact match was requested
  * var_len OUT     - length of variable or 0 if function returned
  * write_method
- * 
+ *
  */
 
 static unsigned char *
@@ -270,27 +270,27 @@ var_extensible_mem(struct variable *vp,
         return (NULL);
 
     /*
-     * Memory info 
+     * Memory info
      */
     auto_nlist(SUM_SYMBOL, (char *) &mem, sizeof(mem));
     sysctl(total_mib, 2, &total, &total_size, NULL, 0);
 
     /*
-     * Swap info 
+     * Swap info
      */
     swapmode();
     /*
-     * getSwap(); 
+     * getSwap();
      */
 
     /*
-     * Physical memory 
+     * Physical memory
      */
     sysctl(phys_mem_mib, 2, &phys_mem, &phys_mem_size, NULL, 0);
 
 #ifdef BUFSPACE_SYMBOL
     /*
-     * Buffer space 
+     * Buffer space
      */
     auto_nlist(BUFSPACE_SYMBOL, (char *) &bufspace, sizeof(bufspace));
 #endif
@@ -298,7 +298,7 @@ var_extensible_mem(struct variable *vp,
     long_ret = 0;               /* set to 0 as default */
 
     /*
-     * Page-to-kb macro 
+     * Page-to-kb macro
      */
 #define ptok(p) ((p) * (mem.v_page_size >> 10))
 
@@ -324,7 +324,7 @@ var_extensible_mem(struct variable *vp,
         return ((u_char *) (&long_ret));
 
         /*
-         * these are not implemented 
+         * these are not implemented
          */
     case MEMTOTALSWAPTXT:
     case MEMUSEDSWAPTXT:

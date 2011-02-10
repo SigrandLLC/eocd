@@ -6,7 +6,7 @@ extern          "C" {
 #endif
 
 /*
- * null.h 
+ * null.h
  */
 
 /*

@@ -41,14 +41,14 @@ sub displaygraph {
 
 #    print STDERR join(",",@_),"\n";
 
-    return -1 if (!defined($dbh) || !defined($tablename) || 
-		  !defined ($config{'-columns'}) || 
+    return -1 if (!defined($dbh) || !defined($tablename) ||
+		  !defined ($config{'-columns'}) ||
 		  ref($config{'-columns'}) ne "ARRAY" ||
-		  !defined ($config{'-indexes'}) || 
+		  !defined ($config{'-indexes'}) ||
 		  ref($config{'-indexes'}) ne "ARRAY");
 
 
-    my $cmd = "SELECT " . 
+    my $cmd = "SELECT " .
 	join(",",@{$config{'-columns'}},
 	     @{$config{'-indexes'}}, $datecol) .
 		 " FROM $tablename $config{'-clauses'}";
@@ -67,7 +67,7 @@ sub displaygraph {
 	    if ($config{'-difference'} || $config{'-rate'}) {
 		if (defined($lastval{$row->{$config{'-indexes'}[0]}}{$j}{'value'})) {
 		    $data{$row->{$config{'-indexes'}[0]}}{$row->{$datecol}}{$j}=
-			$row->{$j} - 
+			$row->{$j} -
 			    $lastval{$row->{$config{'-indexes'}[0]}}{$j}{'value'};
 		    #
 		    # convert to a rate if desired.
@@ -90,19 +90,19 @@ sub displaygraph {
 	    #
 	    # limit the data to a vertical range.
 	    #
-	    if (defined($config{'-max'}) && 
-		$data{$row->{$config{'-indexes'}[0]}}{$row->{$datecol}}{$j} > 
+	    if (defined($config{'-max'}) &&
+		$data{$row->{$config{'-indexes'}[0]}}{$row->{$datecol}}{$j} >
 		$config{'-max'}) {
 		# set to max value
-		$data{$row->{$config{'-indexes'}[0]}}{$row->{$datecol}}{$j} = 
+		$data{$row->{$config{'-indexes'}[0]}}{$row->{$datecol}}{$j} =
 		    $config{'-max'};
 	    }
-	    
-	    if (defined($config{'-min'}) && 
-		$data{$row->{$config{'-indexes'}[0]}}{$row->{$datecol}}{$j} < 
+
+	    if (defined($config{'-min'}) &&
+		$data{$row->{$config{'-indexes'}[0]}}{$row->{$datecol}}{$j} <
 		$config{'-min'}) {
 		# set to min value
-		$data{$row->{$config{'-indexes'}[0]}}{$row->{$datecol}}{$j} = 
+		$data{$row->{$config{'-indexes'}[0]}}{$row->{$datecol}}{$j} =
 		    $config{'-min'};
 	    }
 	}
@@ -190,11 +190,11 @@ sub displaytable {
 
     # get a list of data from the table we want to display
     if ($config{'-xlat'}) {
-	( $xlattable = 
+	( $xlattable =
 	 $dbh->prepare("SELECT newname FROM $config{'-xlat'} where oldname = ?"))
 	    or die "\nnot ok: $DBI::errstr\n";
     }
-    
+
     # editable/markable setup
     my $edited = 0;
     my $editable = 0;
@@ -224,11 +224,11 @@ sub displaytable {
 	}
     }
 
-    if (($editable || $markable) && 
+    if (($editable || $markable) &&
 	$q->param('edited_' . toalpha($tablename))) {
 	$edited = 1;
     }
-	
+
     # table header
     my $doheader = 1;
     my @keys;
@@ -244,16 +244,16 @@ sub displaytable {
 	    foreach my $kk (keys(%$data)) {
 		push (@valuekeys, maybe_from_hex($kk)) if (!defined($indexhash{$kk}));
 	    }
-	    my $cmd = "update $tablename set " . 
-		join(" = ?, ",@valuekeys) . 
-		    " = ? where " . 
+	    my $cmd = "update $tablename set " .
+		join(" = ?, ",@valuekeys) .
+		    " = ? where " .
 			join(" = ? and ",@indexkeys) .
 			    " = ?";
 	    $uph = $dbh->prepare($cmd);
 #	    print STDERR "setting up: $cmd<br>\n";
 	}
 	if ($doheader) {
-	    if ($config{'-selectorder'} && 
+	    if ($config{'-selectorder'} &&
 		     ref($config{'-selectorder'}) eq "ARRAY") {
 		@keys = @{$config{'-selectorder'}};
 	    } elsif ($config{'-selectorder'}) {
@@ -266,7 +266,7 @@ sub displaytable {
 		print "<br><b>$config{'-title'}</b>\n";
 	    } elsif (!defined($config{'-notitle'})) {
 		print "<br><b>";
-		print "<a href=\"$ref\">" if (defined($dolink) && 
+		print "<a href=\"$ref\">" if (defined($dolink) &&
 					      defined($ref = &$dolink($tablename)));
 		if ($config{'-xlat'}) {
 		    my $toval = $xlattable->execute($tablename);
@@ -295,10 +295,10 @@ sub displaytable {
 		    print "<td>Mark</td>\n";
 		}
 		foreach $l (@keys) {
-		    if (!defined($prefs) || 
+		    if (!defined($prefs) ||
 			$prefs->execute($tablename, $l) eq "0E0") {
 			print "<th>";
-			print "<a href=\"$ref\">" if (defined($dolink) && 
+			print "<a href=\"$ref\">" if (defined($dolink) &&
 						      defined($ref = &$dolink($l)));
 			if ($config{'-xlat'}) {
 			    my $toval = $xlattable->execute($l);
@@ -334,13 +334,13 @@ sub displaytable {
 		foreach my $valkey (@valuekeys) {
 		    my ($value) = getquery($q, $data, \@indexkeys, $valkey);
 		    if ($value ne $data->{$valkey}) {
-			&$modifiedhook($dbh, $tablename, $valkey, 
+			&$modifiedhook($dbh, $tablename, $valkey,
 				       $data, @indexvalues);
 		    }
 		}
 	    }
-		    
-	    my $ret = $uph->execute(getquery($q, $data, \@indexkeys, @valuekeys), 
+
+	    my $ret = $uph->execute(getquery($q, $data, \@indexkeys, @valuekeys),
 				    @indexvalues);
 	    foreach my $x (@indexkeys) {
 		next if (defined($indexhash{$x}));
@@ -356,12 +356,12 @@ sub displaytable {
 		&{$config{'-onmarked'}}($dbh, $tablename, $data);
 	    }
 	}
-	    
+
 	foreach $key (@keys) {
-	    if (!defined($prefs) || 
+	    if (!defined($prefs) ||
 		$prefs->execute($tablename, $key) eq "0E0") {
 		print "<td>";
-		print "<a href=\"$ref\">" if (defined($datalink) && 
+		print "<a href=\"$ref\">" if (defined($datalink) &&
 					      defined($ref = &$datalink($key, $data->{$key})));
 		if ($editable && !defined($indexhash{$key})) {
 		    my $ukey = to_unique_key($key, $data, @indexkeys);
@@ -373,7 +373,7 @@ sub displaytable {
 			$sz = "size=" . $config{'-inputsize'};
 		    }
 		    print STDERR "size $key: $sz from $config{'-sizehash'}{$key} / $config{'-inputsize'}\n";
-		    print "<input type=text name=\"$ukey\" value=\"" . 
+		    print "<input type=text name=\"$ukey\" value=\"" .
 			maybe_to_hex($data->{$key}) . "\" $sz>";
 		} else {
 		    if ($config{'-printer'}) {
@@ -393,7 +393,7 @@ sub displaytable {
 	    &$endhook($dbh, $tablename, $data);
 	}
 	print "</tr>\n";
-	last if (defined($config{'-maxrows'}) && 
+	last if (defined($config{'-maxrows'}) &&
 		 $rowcount >= $config{'-maxrows'});
     }
     if ($rowcount > 0) {
@@ -511,7 +511,7 @@ the -select statement by textually parsing it's comma seperated list.
 If an array is passed containing the column names, that order will be
 used.
 
-Example: 
+Example:
 
   -select => distinct(column1) as foo, -selectorder => [qw(foo)]
 
@@ -560,15 +560,15 @@ they will be called like FUNC($dbh, TABLENAME).  When the data is
 being printed, they will be called like FUNC($dbh, TABLENAME, DATA),
 which DATA is a reference to the hash containing the row data.
 
-Example: 
+Example:
 
-  -endhook => sub { 
-      my ($d, $t, $data) = @_; 
-      if (defined($data)) { 
+  -endhook => sub {
+      my ($d, $t, $data) = @_;
+      if (defined($data)) {
 	  print "<td>",(100 * $data->{'column1'} / $data->{'column2'}),"</td>";
-      } else { 
-	  print "<td>Percentage</td>"; 
-      } 
+      } else {
+	  print "<td>Percentage</td>";
+      }
   }
 
 =item -clauses => sql_clauses

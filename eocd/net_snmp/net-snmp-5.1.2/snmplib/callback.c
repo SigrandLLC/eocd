@@ -1,5 +1,5 @@
 /*
- * callback.c: A generic callback mechanism 
+ * callback.c: A generic callback mechanism
  */
 /* Portions of this file are subject to the following copyright(s).  See
  * the Net-SNMP's COPYING file for more details and other copyrights
@@ -11,9 +11,9 @@
  * Use is subject to license terms specified in the COPYING file
  * distributed with the Net-SNMP package.
  */
-/** @defgroup callback A generic callback mechanism 
+/** @defgroup callback A generic callback mechanism
  *  @ingroup library
- * 
+ *
  *  @{
  */
 #include <net-snmp/net-snmp-config.h>
@@ -49,29 +49,29 @@ static struct snmp_gen_callback
                *thecallbacks[MAX_CALLBACK_IDS][MAX_CALLBACK_SUBIDS];
 
 /*
- * the chicken. or the egg.  You pick. 
+ * the chicken. or the egg.  You pick.
  */
 void
 init_callbacks(void)
 {
     /*
-     * probably not needed? Should be full of 0's anyway? 
+     * probably not needed? Should be full of 0's anyway?
      */
     /*
      * (poses a problem if you put init_callbacks() inside of
      * init_snmp() and then want the app to register a callback before
-     * init_snmp() is called in the first place.  -- Wes 
+     * init_snmp() is called in the first place.  -- Wes
      */
     /*
-     * memset(thecallbacks, 0, sizeof(thecallbacks)); 
+     * memset(thecallbacks, 0, sizeof(thecallbacks));
      */
     DEBUGMSGTL(("callback", "initialized\n"));
 }
 
 /**
  * This function registers a generic callback function.  The major and
- * minor values are used to set the new_callback function into a global 
- * static multi-dimensional array of type struct snmp_gen_callback.  
+ * minor values are used to set the new_callback function into a global
+ * static multi-dimensional array of type struct snmp_gen_callback.
  * The function makes sure to append this callback function at the end
  * of the link list, snmp_gen_callback->next.
  *
@@ -81,20 +81,20 @@ init_callbacks(void)
  *
  * @param minor is the SNMP callback minor type used
  *		- SNMP_CALLBACK_POST_READ_CONFIG
- *		- SNMP_CALLBACK_STORE_DATA	        
- *		- SNMP_CALLBACK_SHUTDOWN		        
- *		- SNMP_CALLBACK_POST_PREMIB_READ_CONFIG	
- *		- SNMP_CALLBACK_LOGGING			
- *		- SNMP_CALLBACK_SESSION_INIT	       
+ *		- SNMP_CALLBACK_STORE_DATA
+ *		- SNMP_CALLBACK_SHUTDOWN
+ *		- SNMP_CALLBACK_POST_PREMIB_READ_CONFIG
+ *		- SNMP_CALLBACK_LOGGING
+ *		- SNMP_CALLBACK_SESSION_INIT
  *
  * @param new_callback is the callback function that is registered.
  *
- * @param arg when not NULL is a void pointer used whenever new_callback 
+ * @param arg when not NULL is a void pointer used whenever new_callback
  *	function is exercised.
  *
- * @return 
+ * @return
  *	Returns SNMPERR_GENERR if major is >= MAX_CALLBACK_IDS or minor is >=
- *	MAX_CALLBACK_SUBIDS or a snmp_gen_callback pointer could not be 
+ *	MAX_CALLBACK_SUBIDS or a snmp_gen_callback pointer could not be
  *	allocated, otherwise SNMPERR_SUCCESS is returned.
  * 	- #define MAX_CALLBACK_IDS    2
  *	- #define MAX_CALLBACK_SUBIDS 16
@@ -153,7 +153,7 @@ netsnmp_register_callback(int major, int minor, SNMPCallback * new_callback,
  *
  * @param minor is the SNMP callback minor type used
  *
- * @param caller_arg is a void pointer which is sent in as the callback's 
+ * @param caller_arg is a void pointer which is sent in as the callback's
  *	serverarg parameter, if needed.
  *
  * @return Returns SNMPERR_GENERR if major is >= MAX_CALLBACK_IDS or
@@ -176,7 +176,7 @@ snmp_call_callbacks(int major, int minor, void *caller_arg)
                 major, minor));
 
     /*
-     * for each registered callback of type major and minor 
+     * for each registered callback of type major and minor
      */
     for (scp = thecallbacks[major][minor]; scp != NULL; scp = scp->next) {
 
@@ -184,7 +184,7 @@ snmp_call_callbacks(int major, int minor, void *caller_arg)
                     major, minor));
 
         /*
-         * call them 
+         * call them
          */
         (*(scp->sc_callback)) (major, minor, caller_arg,
                                scp->sc_client_arg);
@@ -241,7 +241,7 @@ snmp_callback_available(int major, int minor)
  *
  * @param target is the callback function that will be unregistered.
  *
- * @param arg is a void pointer used for comparison against the registered 
+ * @param arg is a void pointer used for comparison against the registered
  *	callback's sc_client_arg variable.
  *
  * @param matchargs is an integer used to bypass the comparison of arg and the
@@ -284,13 +284,13 @@ snmp_unregister_callback(int major, int minor, SNMPCallback * target,
 void
 clear_callback(void)
 {
-    unsigned int i = 0, j = 0; 
+    unsigned int i = 0, j = 0;
     struct snmp_gen_callback *scp = NULL, *next = NULL;
 
     DEBUGMSGTL(("callback", "clear callback\n"));
     for (i = 0; i < MAX_CALLBACK_IDS; i++) {
 	for (j = 0; j < MAX_CALLBACK_SUBIDS; j++) {
-	    scp = thecallbacks[i][j]; 
+	    scp = thecallbacks[i][j];
 	    while (scp != NULL) {
 		next = scp->next;
 		if (scp->sc_client_arg != NULL)

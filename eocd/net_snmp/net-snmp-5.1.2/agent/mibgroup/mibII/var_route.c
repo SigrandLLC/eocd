@@ -91,7 +91,7 @@ extern const struct in_addr *get_in_address(const void *, int, int);
  * Arguments:
  * vp           IN      - pointer to variable entry that points here
  * name          IN/OUT  - IN/name requested, OUT/name found
- * length        IN/OUT  - length of IN/OUT oid's 
+ * length        IN/OUT  - length of IN/OUT oid's
  * exact         IN      - TRUE if an exact match was requested
  * var_len       OUT     - length of variable or 0 if function returned
  * write_method  out     - pointer to function to set variable, otherwise 0
@@ -118,7 +118,7 @@ var_ipRouteEntry(struct variable *vp,
     *write_method = write_rte;
 
 #if 0
-  /** 
+  /**
   ** this optimisation fails, if there is only a single route avail.
   ** it is a very special case, but better leave it out ...
   **/
@@ -153,7 +153,7 @@ var_ipRouteEntry(struct variable *vp,
     } else {
 #endif                          /* 0 */
         /*
-         * fill in object part of name for current (less sizeof instance part) 
+         * fill in object part of name for current (less sizeof instance part)
          */
 
         memcpy((char *) Current, (char *) vp->name,
@@ -435,7 +435,7 @@ var_ipRouteEntry(struct variable * vp,
 
     *write_method = write_rte;
 
-    /** 
+    /**
      ** this optimisation fails, if there is only a single route avail.
      ** it is a very special case, but better leave it out ...
      **/
@@ -470,7 +470,7 @@ var_ipRouteEntry(struct variable * vp,
         RtIndex = saveRtIndex;
     } else {
         /*
-         * fill in object part of name for current (less sizeof instance part) 
+         * fill in object part of name for current (less sizeof instance part)
          */
 
         memcpy((char *) Current, (char *) vp->name,
@@ -632,7 +632,7 @@ var_ipRouteEntry(struct variable * vp,
 #if NEED_KLGETSA
         /*
          * XXX - Almost certainly not right
-         * but I don't have a suitable system to test this on 
+         * but I don't have a suitable system to test this on
          */
 #if NO_DUMMY_VALUES
         return NULL;
@@ -725,7 +725,7 @@ var_ipRouteEntry(struct variable * vp,
     *write_method = write_rte;
 
     /*
-     * fill in object part of name for current (less sizeof instance part) 
+     * fill in object part of name for current (less sizeof instance part)
      */
 
     memcpy((char *) current, (char *) vp->name, vp->namelen * sizeof(oid));
@@ -862,14 +862,14 @@ load_rtentries(struct radix_node *pt)
     } else {
         if (node.rn_flags & RNF_ROOT) {
             /*
-             * root node 
+             * root node
              */
             if (node.rn_dupedkey)
                 load_rtentries(node.rn_dupedkey);
             return;
         }
         /*
-         * get the route 
+         * get the route
          */
         klookup((unsigned long) pt, (char *) &rt, sizeof(RTENTRY));
 
@@ -902,7 +902,7 @@ load_rtentries(struct radix_node *pt)
             && ((rt.rt_flags & RTF_LLINFO) != RTF_LLINFO)) {
 #endif
             /*
-             * check for space and malloc 
+             * check for space and malloc
              */
             if (rtsize >= rtallocate) {
                 rthead =
@@ -1015,13 +1015,13 @@ Route_Scan_Reload(void)
     }
 
     /*
-     * reset the routing table size to zero -- was a CMU memory leak 
+     * reset the routing table size to zero -- was a CMU memory leak
      */
     rtsize = 0;
 
 #ifdef RTENTRY_4_4
     /*
-     * rtentry is a BSD 4.4 compat 
+     * rtentry is a BSD 4.4 compat
      */
 
 #if !defined(AF_UNSPEC)
@@ -1147,7 +1147,7 @@ Route_Scan_Reload(void)
     }
 
     /*
-     * reset the routing table size to zero -- was a CMU memory leak 
+     * reset the routing table size to zero -- was a CMU memory leak
      */
     rtsize = 0;
 
@@ -1236,7 +1236,7 @@ Route_Scan_Reload(void)
     struct timeval  now;
 
     /*
-     * allow 20 seconds in cache: 
+     * allow 20 seconds in cache:
      */
     gettimeofday(&now, (struct timezone *) 0);
     if (Time_Of_Last_Reload + 20 > now.tv_sec)
@@ -1279,7 +1279,7 @@ Route_Scan_Reload(void)
         /*
          * as with 1.99.14:
          * Iface Dest GW Flags RefCnt Use Metric Mask MTU Win IRTT
-         * eth0 0A0A0A0A 00000000 05 0 0 0 FFFFFFFF 1500 0 0 
+         * eth0 0A0A0A0A 00000000 05 0 0 0 FFFFFFFF 1500 0 0
          */
         if (8 != sscanf(line, "%s %x %x %x %u %d %d %x %*d %*d %*d\n",
                         rt->rt_dev,
@@ -1288,7 +1288,7 @@ Route_Scan_Reload(void)
                         &(((struct sockaddr_in *) &(rtent.rt_gateway))->
                           sin_addr.s_addr),
                         /*
-                         * XXX: fix type of the args 
+                         * XXX: fix type of the args
                          */
                         &flags, &refcnt, &use, &metric,
                         &(((struct sockaddr_in *) &(rtent.rt_genmask))->
@@ -1435,7 +1435,7 @@ var_ipRouteEntry(struct variable *vp,
     MIB_IPFORWARDROW temp_row;
 
 
-    /** 
+    /**
      ** this optimisation fails, if there is only a single route avail.
      ** it is a very special case, but better leave it out ...
      **/
@@ -1444,7 +1444,7 @@ var_ipRouteEntry(struct variable *vp,
 #endif
     if (route_row == NULL) {
         /*
-         * Free allocated memory in case of SET request's FREE phase 
+         * Free allocated memory in case of SET request's FREE phase
          */
         route_row = (PMIB_IPFORWARDROW) malloc(sizeof(MIB_IPFORWARDROW));
     }
@@ -1477,7 +1477,7 @@ var_ipRouteEntry(struct variable *vp,
         RtIndex = saveRtIndex;
     } else {
         /*
-         * fill in object part of name for current(less sizeof instance part) 
+         * fill in object part of name for current(less sizeof instance part)
          */
 
         memcpy((char *) Current, (char *) vp->name,
@@ -1490,14 +1490,14 @@ var_ipRouteEntry(struct variable *vp,
                 free(pIpRtrTable);
             Time_Of_Last_Reload = now.tv_sec;
             /*
-             * query for buffer size needed 
+             * query for buffer size needed
              */
             status = GetIpForwardTable(pIpRtrTable, &dwActualSize, TRUE);
             if (status == ERROR_INSUFFICIENT_BUFFER) {
                 pIpRtrTable = (PMIB_IPFORWARDTABLE) malloc(dwActualSize);
                 if (pIpRtrTable != NULL) {
                     /*
-                     * Get the sorted IP Route Table 
+                     * Get the sorted IP Route Table
                      */
                     status =
                         GetIpForwardTable(pIpRtrTable, &dwActualSize,
@@ -1523,7 +1523,7 @@ var_ipRouteEntry(struct variable *vp,
         }
         if (RtIndex >= rtsize) {
             /*
-             * for creation of new row, only ipNetToMediaTable case is considered 
+             * for creation of new row, only ipNetToMediaTable case is considered
              */
             if (*length == 14) {
                 create_flag = 1;
@@ -1683,7 +1683,7 @@ TAILQ_HEAD(, snmprt)
             break;
         }
         /*
-         * from rtsock.c 
+         * from rtsock.c
          */
 #define ROUNDUP(a) \
         ((a) > 0 ? (1 + (((a) - 1) | (sizeof(long) - 1))) : sizeof(long))
@@ -1691,13 +1691,13 @@ TAILQ_HEAD(, snmprt)
     }
     if (!gotdest) {
         /*
-         * XXX can't happen if code above is correct 
+         * XXX can't happen if code above is correct
          */
         snmp_log(LOG_ERR, "route no dest?\n");
         free(rt);
     } else {
         /*
-         * If no mask provided, it was a host route. 
+         * If no mask provided, it was a host route.
          */
         if (!gotmask)
             rt->netmask.s_addr = ~0;
@@ -1817,7 +1817,7 @@ var_ipRouteEntry(struct variable * vp,
     } else {
         /*
          * fill in object part of name for current
-         * (less sizeof instance part) 
+         * (less sizeof instance part)
          */
 
         memcpy(Current, vp->name, SNMP_MIN(sizeof(Current), (int)(vp->namelen) * sizeof(oid)));
@@ -1939,10 +1939,10 @@ init_var_route(void)
 #if defined(HAVE_SYS_SYSCTL_H) && !defined(linux)
 /*
  * get_address()
- * 
+ *
  * Traverse the address structures after a routing socket message and
  * extract a specific one.
- * 
+ *
  * Some of this is peculiar to IRIX 6.2, which doesn't have sa_len in
  * the sockaddr structure yet.  With sa_len, skipping an address entry
  * would be much easier.
@@ -1950,7 +1950,7 @@ init_var_route(void)
 #include <sys/un.h>
 
 /*
- * returns the length of a socket structure 
+ * returns the length of a socket structure
  */
 
 size_t
@@ -2022,7 +2022,7 @@ get_address(const void *_ap, int addresses, int wanted)
 
 /*
  * get_in_address()
- * 
+ *
  * Convenience function for the special case of get_address where an
  * AF_INET address is desired, and we're only interested in the in_addr
  * part.

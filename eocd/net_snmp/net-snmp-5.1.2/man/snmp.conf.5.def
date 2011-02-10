@@ -63,9 +63,9 @@ The default SNMPv3 context name you want to use.
 .IP "defPassphrase string"
 .IP "defAuthPassphrase string"
 .IP "defPrivPassphrase string"
-The default SNMPv3 USM passphrase(s) to use.  
+The default SNMPv3 USM passphrase(s) to use.
 .B defPassphrase
-will be used for both authentication and privacy pass phrases if it is 
+will be used for both authentication and privacy pass phrases if it is
 specified.
 .IP "defAuthType MD5|SHA"
 The SNMPv3 USM authentication type to use.
@@ -90,7 +90,7 @@ Whether the commands should log timestamps with their error/message
 logging or not.  Note that output will not look as pretty with
 timestamps if the source code that is doing the logging does
 incremental logging of messages that are not line buffered before
-being passed to the logging routines.  This option is only used when file logging is active. 
+being passed to the logging routines.  This option is only used when file logging is active.
 .IP "printNumericEnums (1|yes|true|0|no|false)"
 Equivalent to
 .BR -Oe .

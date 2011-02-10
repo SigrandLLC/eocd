@@ -1,10 +1,10 @@
 /*
  * EOC_resp_handlers.cpp:
- *	Contains handlers for EOC requests on Regenerators (SRUx) 
+ *	Contains handlers for EOC requests on Regenerators (SRUx)
  *	& Terminators (STU-C,STU-R)
  *	Prototype:
  *		EOC_msg *(*responder_handler_t)(EOC_dev *dev,EOC_msg *m);
- */  
+ */
 
 #include <generic/EOC_generic.h>
 #include <generic/EOC_msg.h>
@@ -27,9 +27,9 @@ EOC_responder::_inventory(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt)
     resp->shdsl_ver = 0x08;
     strncpy((char*)resp->ven_lst,"001",4); // Hardware version
     strncpy((char*)resp->ven_issue,"01",3); // Usage of the unit
-    strncpy((char*)resp->softw_ver,"000001",7); // Software version 
+    strncpy((char*)resp->softw_ver,"000001",7); // Software version
     memset(resp->unit_id_code,0,sizeof(resp->unit_id_code));
-    strncpy((char*)resp->ven_id,"Sgr\0",9);    
+    strncpy((char*)resp->ven_id,"Sgr\0",9);
     strncpy((char*)resp->ven_model,"001",14);
     strncpy((char*)resp->ven_serial,"001",14);
     memset((char*)resp->other,0,sizeof(resp->other));
@@ -59,7 +59,7 @@ EOC_responder::_configure(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt)
 			resp->utc = 1;
     }
     resp->loop_attn = loop;
-    resp->snr_marg = snr; 
+    resp->snr_marg = snr;
     return 0;
 }
 
@@ -74,10 +74,10 @@ collect_statistic(EOC_dev *dev,int loop_num,side_perf *perf,int *perf_change)
 			PDEBUG(DFULL,"Dev return nonzero statistic");
 			k++;
 		}while( (ret < 0) && (k<3) );
-	
+
 		if( ret<0 )
 	    	return -1;
-	
+
 		if( !ret ){
 			perf_change[loop] = 0;
 			continue;
@@ -116,7 +116,7 @@ EOC_responder::_status(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt)
 		if( (ns_loops_ch = collect_statistic(ns,loop_num,ns_perf,ns_perf_ch)) < 0 )
 			return -1;
     }
-    
+
     int array_len = loop_num + cs_loops_ch + ns_loops_ch;
     array = new EOC_msg*[array_len];
     for(int i=0;i<array_len;i++){
@@ -144,10 +144,10 @@ EOC_responder::_status(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt)
 				t->type(RESP_CSIDE_PERF);
 				offs++;
 				*(side_perf*)t->payload() = cs_perf[loop];
-				((side_perf*)t->payload())->loop_id = loop+1;	 
+				((side_perf*)t->payload())->loop_id = loop+1;
 			}
 		}
-    }	    
+    }
     // network side
     if( ns ){
 		for(loop=0;loop<loop_num;loop++){
@@ -157,11 +157,11 @@ EOC_responder::_status(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt)
 				EOC_msg *t = array[offs];
 				t->type(RESP_NSIDE_PERF);
 				offs++;
-				*(side_perf*)t->payload() = ns_perf[loop]; 
-				((side_perf*)t->payload())->loop_id = loop+1;	 
+				*(side_perf*)t->payload() = ns_perf[loop];
+				((side_perf*)t->payload())->loop_id = loop+1;
 			}
 		}
-    }	    
+    }
 
 #ifdef REPEATER
     extern u8 sensor_alarm_1,sensor_alarm_2,sensor_alarm_3;
@@ -175,7 +175,7 @@ EOC_responder::_status(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt)
 		resp->sensor1 = sensor_alarm_1;
 		resp->sensor2 = sensor_alarm_2;
 		resp->sensor3 = sensor_alarm_3;
-	 
+
 		sensor_alarm_1 = 0;
 		sensor_alarm_2 = 0;
 		sensor_alarm_3 = 0;

@@ -147,7 +147,7 @@ callback_pop_queue(int num)
 
 /*
  * Return a string representing the address in data, or else the "far end"
- * address if data is NULL.  
+ * address if data is NULL.
  */
 
 char *
@@ -172,9 +172,9 @@ netsnmp_callback_fmtaddr(netsnmp_transport *t, void *data, int len)
 
 
 /*
- * You can write something into opaque that will subsequently get passed back 
+ * You can write something into opaque that will subsequently get passed back
  * to your send function if you like.  For instance, you might want to
- * remember where a PDU came from, so that you can send a reply there...  
+ * remember where a PDU came from, so that you can send a reply there...
  */
 
 int
@@ -200,12 +200,12 @@ netsnmp_callback_recv(netsnmp_transport *t, void *buf, int size,
 
     if (mystuff->linkedto) {
         /*
-         * we're the client.  We don't need to do anything. 
+         * we're the client.  We don't need to do anything.
          */
     } else {
         /*
          * malloc the space here, but it's filled in by
-         * snmp_callback_created_pdu() below 
+         * snmp_callback_created_pdu() below
          */
         int            *returnnum = (int *) calloc(1, sizeof(int));
         *opaque = returnnum;
@@ -226,7 +226,7 @@ netsnmp_callback_send(netsnmp_transport *t, void *buf, int size,
     netsnmp_callback_pass *cp;
 
     /*
-     * extract the pdu from the hacked buffer 
+     * extract the pdu from the hacked buffer
      */
     netsnmp_transport *other_side;
     callback_hack  *ch = (callback_hack *) * opaque;
@@ -243,7 +243,7 @@ netsnmp_callback_send(netsnmp_transport *t, void *buf, int size,
     cp->pdu = snmp_clone_pdu(pdu);
     if (cp->pdu->transport_data) {
         /*
-         * not needed and not properly freed later 
+         * not needed and not properly freed later
          */
         SNMP_FREE(cp->pdu->transport_data);
     }
@@ -252,14 +252,14 @@ netsnmp_callback_send(netsnmp_transport *t, void *buf, int size,
         cp->pdu->flags ^= UCD_MSG_FLAG_EXPECT_RESPONSE;
 
     /*
-     * push the sent pdu onto the stack 
+     * push the sent pdu onto the stack
      */
     /*
-     * AND send a bogus byte to the remote callback receiver's pipe 
+     * AND send a bogus byte to the remote callback receiver's pipe
      */
     if (mystuff->linkedto) {
         /*
-         * we're the client, send it to the parent 
+         * we're the client, send it to the parent
          */
         cp->return_transport_num = mystuff->callback_num;
 
@@ -280,7 +280,7 @@ netsnmp_callback_send(netsnmp_transport *t, void *buf, int size,
 	}
         callback_push_queue(mystuff->linkedto, cp);
         /*
-         * we don't need the transport data any more 
+         * we don't need the transport data any more
          */
         if (*opaque) {
             SNMP_FREE(*opaque);
@@ -288,11 +288,11 @@ netsnmp_callback_send(netsnmp_transport *t, void *buf, int size,
         }
     } else {
         /*
-         * we're the server, send it to the person that sent us the request 
+         * we're the server, send it to the person that sent us the request
          */
         from = **((int **) opaque);
         /*
-         * we don't need the transport data any more 
+         * we don't need the transport data any more
          */
         if (*opaque) {
             SNMP_FREE(*opaque);
@@ -359,7 +359,7 @@ netsnmp_callback_accept(netsnmp_transport *t)
  * is the local address to bind to (i.e. this is a server-type
  * session); otherwise addr is the remote address to send things to
  * (and we make up a temporary name for the local end of the
- * connection).  
+ * connection).
  */
 
 netsnmp_transport *
@@ -371,14 +371,14 @@ netsnmp_callback_transport(int to)
     int             rc;
 
     /*
-     * transport 
+     * transport
      */
     t = SNMP_MALLOC_TYPEDEF(netsnmp_transport);
     if (!t)
         return NULL;
 
     /*
-     * our stuff 
+     * our stuff
      */
     mydata = SNMP_MALLOC_TYPEDEF(netsnmp_callback_info);
     mydata->linkedto = to;
@@ -437,7 +437,7 @@ netsnmp_callback_hook_build(netsnmp_session * sp,
 {
     /*
      * very gross hack, as this is passed later to the transport_send
-     * function 
+     * function
      */
     callback_hack  *ch = SNMP_MALLOC_TYPEDEF(callback_hack);
     DEBUGMSGTL(("transport_callback", "hook_build enter\n"));
@@ -501,10 +501,10 @@ netsnmp_callback_open(int attach_to,
     callback_sess.callback = return_func;
     if (attach_to) {
         /*
-         * client 
+         * client
          */
         /*
-         * trysess.community = (u_char *) callback_ss; 
+         * trysess.community = (u_char *) callback_ss;
          */
     } else {
         callback_sess.isAuthoritative = SNMP_SESS_AUTHORITATIVE;

@@ -5,10 +5,10 @@
 #include <sys/time.h>
 
 /*
- * uncomment if you don't have in_addr_t in netinet/in.h 
+ * uncomment if you don't have in_addr_t in netinet/in.h
  */
 /*
- * typedef u_int in_addr_t; 
+ * typedef u_int in_addr_t;
  */
 
 #include <ucd-snmp/asn1.h>

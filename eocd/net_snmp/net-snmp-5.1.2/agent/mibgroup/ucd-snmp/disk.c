@@ -191,7 +191,7 @@ struct variable2 extensible_disk_variables[] = {
 
 /*
  * Define the OID pointer to the top of the mib tree that we're
- * registering underneath 
+ * registering underneath
  */
 oid             disk_variables_oid[] = { UCDAVIS_MIB, DISKMIBNUM, 1 };
 
@@ -199,7 +199,7 @@ void
 init_disk(void)
 {
   /*
-   * register ourselves with the agent to handle our mib tree 
+   * register ourselves with the agent to handle our mib tree
    */
   REGISTER_MIB("ucd-snmp/disk", extensible_disk_variables, variable2,
 	       disk_variables_oid);
@@ -227,7 +227,7 @@ disk_free_config(void)
   }
 }
 
-static void 
+static void
 disk_parse_config(const char *token, char *cptr)
 {
 #if HAVE_FSTAB_H || HAVE_GETMNTENT || HAVE_STATFS
@@ -243,14 +243,14 @@ disk_parse_config(const char *token, char *cptr)
     config_perror(tmpbuf);
   } else {
     /*
-     * read disk path (eg, /1 or /usr) 
+     * read disk path (eg, /1 or /usr)
      */
     copy_nword(cptr, path, sizeof(path));
     cptr = skip_not_white(cptr);
     cptr = skip_white(cptr);
-	
+
     /*
-     * read optional minimum disk usage spec 
+     * read optional minimum disk usage spec
      */
     if(cptr != NULL) {
       if(strchr(cptr, '%') == 0) {
@@ -275,13 +275,13 @@ disk_parse_config(const char *token, char *cptr)
 #endif /* HAVE_FSTAB_H || HAVE_GETMNTENT || HAVE_STATFS */
 }
 
-static void 
+static void
 disk_parse_config_all(const char *token, char *cptr)
 {
 #if HAVE_FSTAB_H || HAVE_GETMNTENT || HAVE_STATFS
   char            tmpbuf[1024];
   int             minpercent = DISKMINPERCENT;
-    
+
   if (numdisks == MAXDISKS) {
     config_perror("Too many disks specified.");
     sprintf(tmpbuf, "\tignoring:  %s", cptr);
@@ -316,7 +316,7 @@ disk_parse_config_all(const char *token, char *cptr)
 
 
 static void
-add_device(char *path, char *device, int minspace, int minpercent, int override) 
+add_device(char *path, char *device, int minspace, int minpercent, int override)
 {
   int index;
   if (numdisks == MAXDISKS) {
@@ -335,13 +335,13 @@ add_device(char *path, char *device, int minspace, int minpercent, int override)
   else if(index == -1){
     /* add if and only if the device was found */
     if(device[0] != 0) {
-      copy_nword(path, disks[numdisks].path, 
+      copy_nword(path, disks[numdisks].path,
 		 sizeof(disks[numdisks].path));
-      copy_nword(device, disks[numdisks].device, 
+      copy_nword(device, disks[numdisks].device,
 		 sizeof(disks[numdisks].device));
       disks[numdisks].minimumspace = minspace;
       disks[numdisks].minpercent   = minpercent;
-      numdisks++;  
+      numdisks++;
     }
     else {
       disks[numdisks].minimumspace = -1;
@@ -359,7 +359,7 @@ modify_disk_parameters(int index, int minspace, int minpercent)
   disks[index].minpercent   = minpercent;
 }
 
-int disk_exists(char *path) 
+int disk_exists(char *path)
 {
   int index;
   for(index = 0; index < numdisks; index++) {
@@ -371,7 +371,7 @@ int disk_exists(char *path)
   return -1;
 }
 
-static void 
+static void
 find_and_add_allDisks(int minpercent)
 {
 #if HAVE_GETMNTENT
@@ -392,12 +392,12 @@ find_and_add_allDisks(int minpercent)
 
   int dummy = 0;
   char            tmpbuf[1024];
-  /* 
+  /*
    * find the device for the path and copy the device into the
    * string declared above and at the end of the routine return it
-   * to the caller 
+   * to the caller
    */
-#if HAVE_FSTAB_H || HAVE_GETMNTENT || HAVE_STATFS   
+#if HAVE_FSTAB_H || HAVE_GETMNTENT || HAVE_STATFS
 #if HAVE_GETMNTENT
 #if HAVE_SETMNTENT
   mntfp = setmntent(ETC_MNTTAB, "r");
@@ -461,8 +461,8 @@ find_and_add_allDisks(int minpercent)
   }
 #else
   config_perror("'disk' checks not supported on this architecture.");
-#endif                   /* HAVE_FSTAB_H || HAVE_GETMNTENT || HAVE_STATFS */  
- 
+#endif                   /* HAVE_FSTAB_H || HAVE_GETMNTENT || HAVE_STATFS */
+
 }
 
 static u_char *
@@ -492,9 +492,9 @@ find_device(char *path)
 
   /* find the device for the path and copy the device into the
    * string declared above and at the end of the routine return it
-   * to the caller 
+   * to the caller
    */
-#if HAVE_FSTAB_H || HAVE_GETMNTENT || HAVE_STATFS   
+#if HAVE_FSTAB_H || HAVE_GETMNTENT || HAVE_STATFS
 #if HAVE_GETMNTENT
 #if HAVE_SETMNTENT
   mntfp = setmntent(ETC_MNTTAB, "r");
@@ -550,7 +550,7 @@ find_device(char *path)
 #endif
 #else
   config_perror("'disk' checks not supported on this architecture.");
-#endif                   /* HAVE_FSTAB_H || HAVE_GETMNTENT || HAVE_STATFS */  
+#endif                   /* HAVE_FSTAB_H || HAVE_GETMNTENT || HAVE_STATFS */
   return device;
 }
 
@@ -560,11 +560,11 @@ find_device(char *path)
  * Arguments:
  * vp     IN      - pointer to variable entry that points here
  * name    IN/OUT  - IN/name requested, OUT/name found
- * length  IN/OUT  - length of IN/OUT oid's 
+ * length  IN/OUT  - length of IN/OUT oid's
  * exact   IN      - TRUE if an exact match was requested
  * var_len OUT     - length of variable or 0 if function returned
  * write_method
- * 
+ *
  */
 u_char         *
 var_extensible_disk(struct variable *vp,
@@ -674,8 +674,8 @@ var_extensible_disk(struct variable *vp,
    percent_inode = vfs.f_files == 0 ? 100.0 :
       (int) ((double) (vfs.f_files - vfs.f_ffree) /
 	          (double) (vfs.f_files) * 100.0 + 0.5);
-#endif 
-#endif /* defined(STRUCT_STATVFS_HAS_F_FILES) */ 
+#endif
+#endif /* defined(STRUCT_STATVFS_HAS_F_FILES) */
     switch (vp->magic) {
     case DISKTOTAL:
         long_ret = (long)(vfs.f_blocks * multiplier);
@@ -717,7 +717,7 @@ var_extensible_disk(struct variable *vp,
 #else
 #if HAVE_FSTAB_H
     /*
-     * read the disk information 
+     * read the disk information
      */
     if ((file = open(disks[disknum].device, 0)) < 0) {
         snmp_log(LOG_ERR, "Couldn't open device %s\n",

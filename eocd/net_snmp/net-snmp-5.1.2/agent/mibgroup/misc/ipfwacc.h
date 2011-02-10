@@ -6,18 +6,18 @@
 #define _MIBGROUP_IPFWACC_H
 
 /*
- * we use checkmib from the util_funcs module 
+ * we use checkmib from the util_funcs module
  */
 
 config_require(util_funcs)
 
     /*
-     * add the mib we implement to the list of default mibs to load 
+     * add the mib we implement to the list of default mibs to load
      */
 config_add_mib(UCD-IPFWACC-MIB)
 
     /*
-     * Magic number definitions: 
+     * Magic number definitions:
      */
 #define	IPFWACCINDEX		1
 #define	IPFWACCSRCADDR		2
@@ -46,7 +46,7 @@ config_add_mib(UCD-IPFWACC-MIB)
 #define	IPFWACCPORT9		25
 #define	IPFWACCPORT10		26
     /*
-     * function definitions 
+     * function definitions
      */
      extern void     init_ipfwacc(void);
      extern FindVarMethod var_ipfwacc;

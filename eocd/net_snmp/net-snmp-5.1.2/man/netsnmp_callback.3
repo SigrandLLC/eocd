@@ -2,7 +2,7 @@
 .ad l
 .nh
 .SH NAME
-A generic callback mechanism \- 
+A generic callback mechanism \-
 .SS "Functions"
 
 .in +1c
@@ -38,7 +38,7 @@ A generic callback mechanism \-
 .br
 .in -1c
 .SH "Function Documentation"
-.PP 
+.PP
 .SS "int snmp_call_callbacks (int major, int minor, void * caller_arg)"
 .PP
 This function calls the callback function for each registered callback of type major and minor. \fBParameters:\fP
@@ -57,9 +57,9 @@ Returns SNMPERR_GENERR if major is >= MAX_CALLBACK_IDS or minor is >= MAX_CALLBA
 .PP
 \fBSee also:\fP
 .RS 4
-\fBsnmp_register_callback\fP 
+\fBsnmp_register_callback\fP
 .PP
-\fBsnmp_unregister_callback\fP 
+\fBsnmp_unregister_callback\fP
 .RE
 .PP
 Definition at line 166 of file callback.c.
@@ -110,9 +110,9 @@ Returns SNMPERR_GENERR if major is >= MAX_CALLBACK_IDS or minor is >= MAX_CALLBA
 .PP
 \fBSee also:\fP
 .RS 4
-\fBsnmp_call_callbacks\fP 
+\fBsnmp_call_callbacks\fP
 .PP
-\fBsnmp_unregister_callback\fP 
+\fBsnmp_unregister_callback\fP
 .RE
 .PP
 Definition at line 106 of file callback.c.
@@ -142,9 +142,9 @@ Returns the number of callbacks that were unregistered.
 .PP
 \fBSee also:\fP
 .RS 4
-\fBsnmp_register_callback\fP 
+\fBsnmp_register_callback\fP
 .PP
-\fBsnmp_call_callbacks\fP 
+\fBsnmp_call_callbacks\fP
 .RE
 .PP
 Definition at line 259 of file callback.c.

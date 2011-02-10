@@ -6,9 +6,9 @@
 # Change 1..1 below to 1..last_test_to_print .
 # (It may become useful if the test is moved to ./t subdirectory.)
 
-BEGIN { $| = 1; 
+BEGIN { $| = 1;
 
-	%tests = ( 
+	%tests = (
                   "NETSNMP_DS_MAX_IDS"                     => 3,
                   "NETSNMP_DS_MAX_SUBIDS"                  => 32,
                   "NETSNMP_DS_LIBRARY_ID"                  => 0,
@@ -65,7 +65,7 @@ BEGIN { $| = 1;
                   "NETSNMP_DS_LIB_MIBDIRS"                 => 11,
 		  );
 
-	print "1.." . (scalar(keys(%tests)) + 10) . "\n"; 
+	print "1.." . (scalar(keys(%tests)) + 10) . "\n";
     }
 END {print "not ok 1\n" unless $loaded;}
 use NetSNMP::default_store (':all');
@@ -78,15 +78,15 @@ print "ok 1\n";
 # (correspondingly "not ok 13") depending on the success of chunk 13
 # of the test code):
 
-print ((netsnmp_ds_set_string(1, 1, "hi there") == 0) ? "ok 2\n" : "not ok 2\n"); 
-print ((netsnmp_ds_get_string(1, 1) eq "hi there") ? "ok 3\n" : "not ok 3\n"); 
-print ((netsnmp_ds_set_int(1, 1, 42) == 0) ? "ok 4\n" : "not ok 4\n"); 
-print ((netsnmp_ds_get_int(1, 1) == 42) ? "ok 5\n" : "not ok 5\n"); 
-print ((netsnmp_ds_get_int(1, 2) == 0) ? "ok 6\n" : "not ok 6\n"); 
-print ((NETSNMP_DS_LIB_REGEX_ACCESS == 15) ? "ok 7\n" : "not ok 7\n"); 
-print ((netsnmp_ds_get_int(NETSNMP_DS_APPLICATION_ID, 1) == 42) ? "ok 8\n" : "not ok 8\n"); 
-print ((netsnmp_ds_set_int(NETSNMP_DS_LIBRARY_ID, DS_LIB_DEFAULT_PORT, 9161) == 0) ? "ok 9\n" : "not ok 9\n"); 
-print ((netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID, DS_LIB_DEFAULT_PORT) == 9161) ? "ok 10\n" : "not ok 10\n"); 
+print ((netsnmp_ds_set_string(1, 1, "hi there") == 0) ? "ok 2\n" : "not ok 2\n");
+print ((netsnmp_ds_get_string(1, 1) eq "hi there") ? "ok 3\n" : "not ok 3\n");
+print ((netsnmp_ds_set_int(1, 1, 42) == 0) ? "ok 4\n" : "not ok 4\n");
+print ((netsnmp_ds_get_int(1, 1) == 42) ? "ok 5\n" : "not ok 5\n");
+print ((netsnmp_ds_get_int(1, 2) == 0) ? "ok 6\n" : "not ok 6\n");
+print ((NETSNMP_DS_LIB_REGEX_ACCESS == 15) ? "ok 7\n" : "not ok 7\n");
+print ((netsnmp_ds_get_int(NETSNMP_DS_APPLICATION_ID, 1) == 42) ? "ok 8\n" : "not ok 8\n");
+print ((netsnmp_ds_set_int(NETSNMP_DS_LIBRARY_ID, DS_LIB_DEFAULT_PORT, 9161) == 0) ? "ok 9\n" : "not ok 9\n");
+print ((netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID, DS_LIB_DEFAULT_PORT) == 9161) ? "ok 10\n" : "not ok 10\n");
 
 $c = 10;
 foreach my $i (keys(%tests)) {

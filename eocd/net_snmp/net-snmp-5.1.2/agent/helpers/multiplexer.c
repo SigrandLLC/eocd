@@ -87,7 +87,7 @@ netsnmp_multiplexer_helper_handler(netsnmp_mib_handler *handler,
     case MODE_GETBULK:
         /*
          * XXX: this needs to do better getbulk -> getnext
-         * handling (probably via a separate helper) 
+         * handling (probably via a separate helper)
          */
         handler = methods->getbulk_handler;
         if (!handler)           /* fallback to getnext handler */
@@ -111,7 +111,7 @@ netsnmp_multiplexer_helper_handler(netsnmp_mib_handler *handler,
         break;
 
         /*
-         * XXX: process SETs specially, and possibly others 
+         * XXX: process SETs specially, and possibly others
          */
     default:
         snmp_log(LOG_ERR, "unsupported mode for multiplexer: %d\n",

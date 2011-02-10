@@ -116,7 +116,7 @@ extern          "C" {
 
 
 
-    typedef void   
+    typedef void
         (netsnmp_object_monitor_callback) (netsnmp_monitor_callback_header
                                            *);
 

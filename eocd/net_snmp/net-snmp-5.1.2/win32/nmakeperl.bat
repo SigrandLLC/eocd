@@ -18,16 +18,16 @@ goto start
 
 :help
 echo .
-echo This script will compile the Net-SNMP Perl modules.  Net-SNMP must 
+echo This script will compile the Net-SNMP Perl modules.  Net-SNMP must
 echo already be installed.
 echo .
-echo The current install base is %INSTALL_BASE%.  
+echo The current install base is %INSTALL_BASE%.
 echo This must match the directory that Net-SNMP has been installed in.
 echo .
 echo To change the installation directory, modify the INSTALL_BASE variable
 echo inside this script.
 echo .
-echo Run this script from the base of the source directory, NOT the win32 
+echo Run this script from the base of the source directory, NOT the win32
 echo directory.
 echo .
 goto end

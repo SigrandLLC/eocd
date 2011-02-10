@@ -22,7 +22,7 @@ extern oid netsnmp_snmpTCPDomain[8];	/*  = { 1, 3, 6, 1, 3, 91, 1, 1 };  */
 netsnmp_transport *netsnmp_tcp_transport(struct sockaddr_in *addr, int local);
 
 /*
- * "Constructor" for transport domain object.  
+ * "Constructor" for transport domain object.
  */
 
 void            netsnmp_tcp_ctor(void);

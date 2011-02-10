@@ -7,13 +7,13 @@
 
                       All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the name of CMU not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 CMU DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -85,7 +85,7 @@ optProc(int argc, char *const *argv, int opt)
         while (*optarg) {
             switch (*optarg++) {
             case 'f':
-                netsnmp_ds_toggle_boolean(NETSNMP_DS_APPLICATION_ID, 
+                netsnmp_ds_toggle_boolean(NETSNMP_DS_APPLICATION_ID,
 					  NETSNMP_DS_APP_DONT_FIX_PDUS);
                 break;
             default:
@@ -128,7 +128,7 @@ main(int argc, char *argv[])
     int             exitval = 0;
 
     /*
-     * get the common command line arguments 
+     * get the common command line arguments
      */
     switch (arg = snmp_parse_args(argc, argv, &session, "C:", optProc)) {
     case -2:
@@ -153,7 +153,7 @@ main(int argc, char *argv[])
     }
 
     /*
-     * get the object names 
+     * get the object names
      */
     for (; arg < argc; arg++)
         names[current_name++] = argv[arg];
@@ -167,7 +167,7 @@ main(int argc, char *argv[])
     ss = snmp_open(&session);
     if (ss == NULL) {
         /*
-         * diagnose snmp_open errors with the input netsnmp_session pointer 
+         * diagnose snmp_open errors with the input netsnmp_session pointer
          */
         snmp_sess_perror("snmpget", &session);
         SOCK_CLEANUP;
@@ -225,7 +225,7 @@ main(int argc, char *argv[])
             exitval = 2;
 
             /*
-             * retry if the errored variable was successfully removed 
+             * retry if the errored variable was successfully removed
              */
             if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 					NETSNMP_DS_APP_DONT_FIX_PDUS)) {

@@ -1,5 +1,5 @@
 /*
- * scalar.h 
+ * scalar.h
  */
 #ifndef NETSNMP_SCALAR_GROUP_H
 #define NETSNMP_SCALAR_GROUP_H

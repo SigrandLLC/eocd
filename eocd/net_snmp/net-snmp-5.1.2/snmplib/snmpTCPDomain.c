@@ -49,7 +49,7 @@ static netsnmp_tdomain tcpDomain;
 
 /*
  * Return a string representing the address in data, or else the "far end"
- * address if data is NULL.  
+ * address if data is NULL.
  */
 
 static char *
@@ -71,7 +71,7 @@ netsnmp_tcp_fmtaddr(netsnmp_transport *t, void *data, int len)
         /*
          * Here we just print the IP address of the peer for compatibility
          * purposes.  It would be nice if we could include the port number and
-         * some indication of the domain (c.f. AAL5PVC).  
+         * some indication of the domain (c.f. AAL5PVC).
          */
 
         sprintf(tmp, "%s", inet_ntoa(to->sin_addr));
@@ -82,9 +82,9 @@ netsnmp_tcp_fmtaddr(netsnmp_transport *t, void *data, int len)
 
 
 /*
- * You can write something into opaque that will subsequently get passed back 
+ * You can write something into opaque that will subsequently get passed back
  * to your send function if you like.  For instance, you might want to
- * remember where a PDU came from, so that you can send a reply there...  
+ * remember where a PDU came from, so that you can send a reply there...
  */
 
 static int
@@ -176,7 +176,7 @@ netsnmp_tcp_accept(netsnmp_transport *t)
 
     if (farend == NULL) {
         /*
-         * Indicate that the acceptance of this socket failed.  
+         * Indicate that the acceptance of this socket failed.
          */
         DEBUGMSGTL(("netsnmp_tcp", "accept: malloc failed\n"));
         return -1;
@@ -203,7 +203,7 @@ netsnmp_tcp_accept(netsnmp_transport *t)
         free(string);
 
         /*
-         * Try to make the new socket blocking.  
+         * Try to make the new socket blocking.
          */
 
 #ifdef WIN32
@@ -226,8 +226,8 @@ netsnmp_tcp_accept(netsnmp_transport *t)
 
 /*
  * Open a TCP-based transport for SNMP.  Local is TRUE if addr is the local
- * address to bind to (i.e. this is a server-type session); otherwise addr is 
- * the remote address to send things to.  
+ * address to bind to (i.e. this is a server-type session); otherwise addr is
+ * the remote address to send things to.
  */
 
 netsnmp_transport *
@@ -271,9 +271,9 @@ netsnmp_tcp_transport(struct sockaddr_in *addr, int local)
         int sockflags = 0, opt = 1;
 
         /*
-         * This session is inteneded as a server, so we must bind to the given 
+         * This session is inteneded as a server, so we must bind to the given
          * IP address (which may include an interface address, or could be
-         * INADDR_ANY, but will always include a port number.  
+         * INADDR_ANY, but will always include a port number.
          */
 
         t->flags |= NETSNMP_TRANSPORT_FLAG_LISTEN;
@@ -289,7 +289,7 @@ netsnmp_tcp_transport(struct sockaddr_in *addr, int local)
         t->local_length = 6;
 
         /*
-         * We should set SO_REUSEADDR too.  
+         * We should set SO_REUSEADDR too.
          */
 
         setsockopt(t->sock, SOL_SOCKET, SO_REUSEADDR, (void *)&opt,
@@ -319,7 +319,7 @@ netsnmp_tcp_transport(struct sockaddr_in *addr, int local)
 #endif
 
         /*
-         * Now sit here and wait for connections to arrive.  
+         * Now sit here and wait for connections to arrive.
          */
 
         rc = listen(t->sock, NETSNMP_STREAM_QUEUE_LEN);
@@ -359,7 +359,7 @@ netsnmp_tcp_transport(struct sockaddr_in *addr, int local)
 
     /*
      * Message size is not limited by this transport (hence msgMaxSize
-     * is equal to the maximum legal size of an SNMP message).  
+     * is equal to the maximum legal size of an SNMP message).
      */
 
     t->msgMaxSize = 0x7fffffff;

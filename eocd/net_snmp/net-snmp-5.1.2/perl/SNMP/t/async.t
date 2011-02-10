@@ -34,9 +34,9 @@ sub cbDummy;
 $SNMP::verbose = 0;
 $SNMP::dump_packet = 0;
 
-my $sess = new SNMP::Session(DestHost => $agent_host, 
-			  Version => 1, 
-			  Community => $comm, 
+my $sess = new SNMP::Session(DestHost => $agent_host,
+			  Version => 1,
+			  Community => $comm,
 			  RemotePort => $agent_port);
 
 # try getting unregistered OID.

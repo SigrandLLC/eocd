@@ -1,7 +1,7 @@
 NOTE NOTE NOTE: this module depends on a modified version of the
 DBD::AnyData module.  Do not get the original version from Jeff
 Zucker.  He and I are working together to resolve the extra features I
-need, but we haven't quite merged yet.  
+need, but we haven't quite merged yet.
 
 *** This is currently alpha level code!!! ***
 

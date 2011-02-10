@@ -68,7 +68,7 @@
  *	 pplen		Length of passphrase.
  *	*Ku		Buffer to contain Ku.
  *	*kulen		Length of Ku buffer.
- *      
+ *
  * Returns:
  *	SNMPERR_SUCCESS			Success.
  *	SNMPERR_GENERR			All errors.
@@ -161,7 +161,7 @@ generate_Ku(const oid * hashtype, u_int hashtype_len,
 #ifdef USE_OPENSSL
     EVP_DigestFinal(ctx, (unsigned char *) Ku, (unsigned int *) kulen);
     /*
-     * what about free() 
+     * what about free()
      */
 #else
     if (MDupdate(&MD, buf, 0)) {
@@ -241,7 +241,7 @@ _KEYTOOLS_NOT_AVAILABLE
  *	 ku_len		Length of Ku in bytes.
  *	*Kul		Localized key for a given user at engineID.
  *	*kul_len	Length of Kul buffer (IN); Length of Kul key (OUT).
- *      
+ *
  * Returns:
  *	SNMPERR_SUCCESS			Success.
  *	SNMPERR_GENERR			All errors.
@@ -347,7 +347,7 @@ _KEYTOOLS_NOT_AVAILABLE
  *	 newkey_len	Length of new key in bytes.
  *	*kcstring	Buffer to contain the KeyChange TC string.
  *	*kcstring_len	Length of kcstring buffer.
- *      
+ *
  * Returns:
  *	SNMPERR_SUCCESS			Success.
  *	SNMPERR_GENERR			All errors.
@@ -364,7 +364,7 @@ _KEYTOOLS_NOT_AVAILABLE
  * 		output length (eg, using KeyChange for a DESPriv key when
  *		the user also uses SHA1Auth).  This also implies that the
  *		hash placed in the second 1/2 of the key change string
- *		will be truncated before the XOR'ing when the hash output is 
+ *		will be truncated before the XOR'ing when the hash output is
  *		larger than that 1/2 of the key change string.
  *
  *		*kcstring_len will be returned as exactly twice that same
@@ -477,7 +477,7 @@ _KEYTOOLS_NOT_AVAILABLE
  *	 kcstring_len	Length of kcstring in bytes.
  *	*newkey		Buffer to hold the extracted new key.
  *	*newkey_len	Length of newkey in bytes.
- *      
+ *
  * Returns:
  *	SNMPERR_SUCCESS			Success.
  *	SNMPERR_GENERR			All errors.
@@ -496,7 +496,7 @@ _KEYTOOLS_NOT_AVAILABLE
  *		key length.
  */
 /*
- * XXX:  if the newkey is not long enough, it should be freed and remalloced 
+ * XXX:  if the newkey is not long enough, it should be freed and remalloced
  */
 int
 decode_keychange(const oid * hashtype, u_int hashtype_len,

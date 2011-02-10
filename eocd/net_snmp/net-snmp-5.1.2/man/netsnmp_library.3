@@ -2,7 +2,7 @@
 .ad l
 .nh
 .SH NAME
-The Net-SNMP library \- 
+The Net-SNMP library \-
 .SS "Modules"
 
 .in +1c
@@ -432,7 +432,7 @@ The Net-SNMP library \-
 .br
 .in -1c
 .SH "Define Documentation"
-.PP 
+.PP
 .SS "#define DEBUGPRINTPDUTYPE(token, type)"
 .PP
 \fBValue:\fP.nf
@@ -480,7 +480,7 @@ Definition at line 375 of file snmp_api.c.
 .PP
 Definition at line 145 of file snmp_api.c.
 .SH "Function Documentation"
-.PP 
+.PP
 .SS "int init_agent (const char * app)"
 .PP
 Initialize the agent. Calls into init_agent_read_config to set tha app's configuration file in the appropriate default storage space, NETSNMP_DS_LIB_APPTYPE. Need to call init_agent before calling init_snmp.
@@ -497,7 +497,7 @@ Returns non-zero on failure and zero on success.
 .PP
 \fBSee also:\fP
 .RS 4
-\fBinit_snmp\fP 
+\fBinit_snmp\fP
 .RE
 .PP
 Definition at line 263 of file snmp_vars.c.
@@ -517,7 +517,7 @@ void
 .PP
 \fBSee also:\fP
 .RS 4
-\fBinit_agent\fP 
+\fBinit_agent\fP
 .RE
 .PP
 Definition at line 767 of file snmp_api.c.
@@ -525,22 +525,22 @@ Definition at line 767 of file snmp_api.c.
 References init_mib().
 .SS "int netsnmp_oid_equals (const oid * in_name1, size_t len1, const oid * in_name2, size_t len2)"
 .PP
-Compares 2 OIDs to determine if they are exactly equal. This should be faster than doing a snmp_oid_compare for different length OIDs, since the length is checked first and if != returns immediately. Might be very slighly faster if lengths are ==. 
+Compares 2 OIDs to determine if they are exactly equal. This should be faster than doing a snmp_oid_compare for different length OIDs, since the length is checked first and if != returns immediately. Might be very slighly faster if lengths are ==.
 .PP
 \fBParameters:\fP
 .RS 4
-\fIin_name1\fP A pointer to the first oid. 
+\fIin_name1\fP A pointer to the first oid.
 .br
-\fIlen1\fP length of the first OID (in segments, not bytes) 
+\fIlen1\fP length of the first OID (in segments, not bytes)
 .br
-\fIin_name2\fP A pointer to the second oid. 
+\fIin_name2\fP A pointer to the second oid.
 .br
-\fIlen2\fP length of the second OID (in segments, not bytes) 
+\fIlen2\fP length of the second OID (in segments, not bytes)
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-0 if they are equal, 1 if they are not. 
+0 if they are equal, 1 if they are not.
 .RE
 .PP
 Definition at line 6120 of file snmp_api.c.
@@ -550,18 +550,18 @@ Referenced by netsnmp_old_api_helper(), and unregister_mib_context().
 .PP
 Given two OIDs, determine the common prefix to them both. \fBParameters:\fP
 .RS 4
-\fIin_name1\fP A pointer to the first oid. 
+\fIin_name1\fP A pointer to the first oid.
 .br
-\fIlen1\fP Length of the first oid. 
+\fIlen1\fP Length of the first oid.
 .br
-\fIin_name2\fP A pointer to the second oid. 
+\fIin_name2\fP A pointer to the second oid.
 .br
-\fIlen2\fP Length of the second oid. 
+\fIlen2\fP Length of the second oid.
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-length of largest common index of commonality. 1 = first, 0 if none * or -1 on error. 
+length of largest common index of commonality. 1 = first, 0 if none * or -1 on error.
 .RE
 .PP
 Definition at line 6176 of file snmp_api.c.
@@ -571,22 +571,22 @@ References SNMP_MIN.
 Referenced by netsnmp_add_varbind_to_cache().
 .SS "int netsnmp_oid_is_subtree (const oid * in_name1, size_t len1, const oid * in_name2, size_t len2)"
 .PP
-Identical to netsnmp_oid_equals, except only the length up to len1 is compared. Functionally, this determines if in_name2 is equal or a subtree of in_name1 
+Identical to netsnmp_oid_equals, except only the length up to len1 is compared. Functionally, this determines if in_name2 is equal or a subtree of in_name1
 .PP
 \fBParameters:\fP
 .RS 4
-\fIin_name1\fP A pointer to the first oid. 
+\fIin_name1\fP A pointer to the first oid.
 .br
-\fIlen1\fP length of the first OID (in segments, not bytes) 
+\fIlen1\fP length of the first OID (in segments, not bytes)
 .br
-\fIin_name2\fP A pointer to the second oid. 
+\fIin_name2\fP A pointer to the second oid.
 .br
-\fIlen2\fP length of the second OID (in segments, not bytes) 
+\fIlen2\fP length of the second OID (in segments, not bytes)
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-0 if one is a common prefix of the other. 
+0 if one is a common prefix of the other.
 .RE
 .PP
 Definition at line 6156 of file snmp_api.c.
@@ -596,7 +596,7 @@ lexicographical compare two object identifiers. Caution: this method is called o
 .PP
 \fBReturns:\fP
 .RS 4
--1 if name1 < name2, 0 if name1 = name2, 1 if name1 > name2 
+-1 if name1 < name2, 0 if name1 = name2, 1 if name1 > name2
 .RE
 .PP
 Definition at line 6052 of file snmp_api.c.
@@ -606,18 +606,18 @@ Referenced by check_getnext_results(), netsnmp_check_getnext_reply(), netsnmp_in
 .PP
 Compares 2 OIDs to determine if they are equal up until the shortest length. \fBParameters:\fP
 .RS 4
-\fIin_name1\fP A pointer to the first oid. 
+\fIin_name1\fP A pointer to the first oid.
 .br
-\fIlen1\fP length of the first OID (in segments, not bytes) 
+\fIlen1\fP length of the first OID (in segments, not bytes)
 .br
-\fIin_name2\fP A pointer to the second oid. 
+\fIin_name2\fP A pointer to the second oid.
 .br
-\fIlen2\fP length of the second OID (in segments, not bytes) 
+\fIlen2\fP length of the second OID (in segments, not bytes)
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-0 if they are equal, 1 if in_name1 is > in_name2, or -1 if <. 
+0 if they are equal, 1 if in_name1 is > in_name2, or -1 if <.
 .RE
 .PP
 Definition at line 6101 of file snmp_api.c.
@@ -632,7 +632,7 @@ Shuts down the application, saving any needed persistent storage, and appropriat
 .PP
 \fBReturns:\fP
 .RS 4
-void 
+void
 .RE
 .PP
 Definition at line 835 of file snmp_api.c.

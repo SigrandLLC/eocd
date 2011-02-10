@@ -2,7 +2,7 @@
 .ad l
 .nh
 .SH NAME
-Trap generation routines for mib modules to use \- 
+Trap generation routines for mib modules to use \-
 .SS "Data Structures"
 
 .in +1c
@@ -188,7 +188,7 @@ Trap generation routines for mib modules to use \-
 .br
 .in -1c
 .SH "Function Documentation"
-.PP 
+.PP
 .SS "void send_easy_trap (int trap, int specific)"
 .PP
 Sends an SNMPv1 trap (or the SNMPv2 equivalent) to the list of configured trap destinations (or 'sinks'), using the provided values for the generic trap type and specific trap value. This function eventually calls send_enterprise_trap_vars. If the trap type is not set to SNMP_TRAP_ENTERPRISESPECIFIC the enterprise and enterprise_length paramater is set to the pre defined SYSTEM_MIB oid and length respectively. If the trap type is set to SNMP_TRAP_ENTERPRISESPECIFIC the enterprise and enterprise_length parameters are set to the pre-defined NOTIFICATION_MIB oid and length respectively.
@@ -207,9 +207,9 @@ void
 .PP
 \fBSee also:\fP
 .RS 4
-send_enterprise_trap_vars 
+send_enterprise_trap_vars
 .PP
-\fBsend_v2trap\fP 
+\fBsend_v2trap\fP
 .RE
 .PP
 Definition at line 858 of file agent_trap.c.
@@ -233,9 +233,9 @@ void
 .PP
 \fBSee also:\fP
 .RS 4
-\fBsend_easy_trap\fP 
+\fBsend_easy_trap\fP
 .PP
-send_enterprise_trap_vars 
+send_enterprise_trap_vars
 .RE
 .PP
 
@@ -284,14 +284,14 @@ void
 .PP
 \fBSee also:\fP
 .RS 4
-\fBsend_easy_trap\fP 
+\fBsend_easy_trap\fP
 .PP
-\fBsend_v2trap\fP 
+\fBsend_v2trap\fP
 .RE
 .PP
 Definition at line 328 of file agent_trap.c.
 .SH "Variable Documentation"
-.PP 
+.PP
 .SS "oid snmptrapenterprise_oid[]"
 .PP
 \fBInitial value:\fP.nf

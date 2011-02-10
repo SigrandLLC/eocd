@@ -65,7 +65,7 @@ SOFTWARE.
 #include <sys/stat.h>
 
 /*
- * Wow.  This is ugly.  -- Wes 
+ * Wow.  This is ugly.  -- Wes
  */
 #if HAVE_DIRENT_H
 # include <dirent.h>
@@ -153,7 +153,7 @@ struct objgroup {
 #define SYNTAX_MASK     0x80
 /*
  * types of tokens
- * Tokens wiht the SYNTAX_MASK bit set are syntax tokens 
+ * Tokens wiht the SYNTAX_MASK bit set are syntax tokens
  */
 #define CONTINUE    -1
 #define ENDOFFILE   0
@@ -186,7 +186,7 @@ struct objgroup {
 #define KW_OPTIONAL    24
 #define OBSOLETE    25
 /*
- * #define RECOMMENDED 26 
+ * #define RECOMMENDED 26
  */
 #define PUNCT       27
 #define EQUALS      28
@@ -225,7 +225,7 @@ struct objgroup {
 #define TRAPTYPE    61
 #define ENTERPRISE  62
 /*
- * #define DISPLAYSTR (63 | SYNTAX_MASK) 
+ * #define DISPLAYSTR (63 | SYNTAX_MASK)
  */
 #define BEGIN       64
 #define IMPORTS     65
@@ -269,7 +269,7 @@ struct objgroup {
 #define UNSIGNED32	(104 | SYNTAX_MASK)
 #define INTEGER32	(105 | SYNTAX_MASK)
 /*
- * Beware of reaching SYNTAX_MASK (0x80) 
+ * Beware of reaching SYNTAX_MASK (0x80)
  */
 
 struct tok {
@@ -475,15 +475,15 @@ static struct module_compatability module_map[] = {
     {"RFC1065-SMI", "RFC1155-SMI", NULL, 0},
     {"RFC1066-MIB", "RFC1156-MIB", NULL, 0},
     /*
-     * 'mib' -> 'mib-2' 
+     * 'mib' -> 'mib-2'
      */
     {"RFC1156-MIB", "RFC1158-MIB", NULL, 0},
     /*
-     * 'snmpEnableAuthTraps' -> 'snmpEnableAuthenTraps' 
+     * 'snmpEnableAuthTraps' -> 'snmpEnableAuthenTraps'
      */
     {"RFC1158-MIB", "RFC1213-MIB", NULL, 0},
     /*
-     * 'nullOID' -> 'zeroDotZero' 
+     * 'nullOID' -> 'zeroDotZero'
      */
     {"RFC1155-SMI", "SNMPv2-SMI", NULL, 0},
     {"RFC1213-MIB", "SNMPv2-SMI", "mib-2", 0},
@@ -507,7 +507,7 @@ static struct module_compatability module_map[] = {
 #define MODULE_LOADED_OK	1
 #define MODULE_ALREADY_LOADED	2
 /*
- * #define MODULE_LOAD_FAILED   3       
+ * #define MODULE_LOAD_FAILED   3
  */
 #define MODULE_LOAD_FAILED	MODULE_NOT_FOUND
 
@@ -604,7 +604,7 @@ snmp_mib_toggle_options_usage(const char *lead, FILE * outf)
 		   "" : "dis"));
 
     fprintf(outf, "%sd:  %ssave the DESCRIPTIONs of the MIB objects\n",
-            lead, ((netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID, 
+            lead, ((netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID,
 					   NETSNMP_DS_LIB_SAVE_MIB_DESCRS)) ?
 		   "do not " : ""));
 
@@ -651,18 +651,18 @@ snmp_mib_toggle_options(char *options)
                 break;
 
             case 'd':
-                netsnmp_ds_toggle_boolean(NETSNMP_DS_LIBRARY_ID, 
+                netsnmp_ds_toggle_boolean(NETSNMP_DS_LIBRARY_ID,
 					  NETSNMP_DS_LIB_SAVE_MIB_DESCRS);
                 break;
 
             case 'R':
-                netsnmp_ds_toggle_boolean(NETSNMP_DS_LIBRARY_ID, 
+                netsnmp_ds_toggle_boolean(NETSNMP_DS_LIBRARY_ID,
 					  NETSNMP_DS_LIB_MIB_REPLACE);
                 break;
 
             default:
                 /*
-                 * return at the unknown option 
+                 * return at the unknown option
                  */
                 return options;
             }
@@ -723,7 +723,7 @@ init_mib_internals(void)
     build_translation_table();
     init_tree_roots();          /* Set up initial roots */
     /*
-     * Relies on 'add_mibdir' having set up the modules 
+     * Relies on 'add_mibdir' having set up the modules
      */
 }
 
@@ -844,7 +844,7 @@ free_partial_tree(struct tree *tp, int keep_label)
         return;
 
     /*
-     * remove the data from this tree node 
+     * remove the data from this tree node
      */
     free_enums(&tp->enums);
     free_ranges(&tp->ranges);
@@ -1105,7 +1105,7 @@ init_tree_roots()
         base_modid = which_module("RFC1213-MIB");
 
     /*
-     * build root node 
+     * build root node
      */
     tp = (struct tree *) calloc(1, sizeof(struct tree));
     if (tp == NULL)
@@ -1125,7 +1125,7 @@ init_tree_roots()
     root_imports[0].modid = base_modid;
 
     /*
-     * build root node 
+     * build root node
      */
     tp = (struct tree *) calloc(1, sizeof(struct tree));
     if (tp == NULL)
@@ -1146,7 +1146,7 @@ init_tree_roots()
     root_imports[1].modid = base_modid;
 
     /*
-     * build root node 
+     * build root node
      */
     tp = (struct tree *) calloc(1, sizeof(struct tree));
     if (tp == NULL)
@@ -1222,13 +1222,13 @@ compute_match(const char *search_base, const char *key)
     regfree(&parsetree);
     if (rc == 0) {
         /*
-         * found 
+         * found
          */
         return pmatch.rm_so;
     }
 #else                           /* use our own wildcard matcher */
     /*
-     * first find the longest matching substring (ick) 
+     * first find the longest matching substring (ick)
      */
     char           *first = NULL, *result = NULL, *entry;
     const char     *position;
@@ -1257,7 +1257,7 @@ compute_match(const char *search_base, const char *key)
 #endif
 
     /*
-     * not found 
+     * not found
      */
     return MAX_BAD;
 }
@@ -1318,7 +1318,7 @@ find_best_tree_node(const char *pattrn, struct tree *tree_top,
 static void
 merge_anon_children(struct tree *tp1, struct tree *tp2)
                 /*
-                 * NB: tp1 is the 'anonymous' node 
+                 * NB: tp1 is the 'anonymous' node
                  */
 {
     struct tree    *child1, *child2, *previous;
@@ -1361,7 +1361,7 @@ merge_anon_children(struct tree *tp1, struct tree *tp2)
                         previous->parent = tp2;
                     goto next;
                 } else if (!label_compare(child1->label, child2->label)) {
-                    if (netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID, 
+                    if (netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID,
 					   NETSNMP_DS_LIB_MIB_WARNINGS)) {
                         snmp_log(LOG_WARNING,
                                  "Warning: %s.%ld is both %s and %s (%s)\n",
@@ -1438,7 +1438,7 @@ do_subtree(struct tree *root, struct node **nodes)
     for (np = *headp; np; np = np->next) {
         if (!label_compare(tp->label, np->parent)) {
             /*
-             * take this node out of the node list 
+             * take this node out of the node list
              */
             if (oldnp == NULL) {
                 *headp = np->next;      /* fix root of node list */
@@ -1468,7 +1468,7 @@ do_subtree(struct tree *root, struct node **nodes)
 
         if (np->subid == -1) {
             /*
-             * name ::= { parent } 
+             * name ::= { parent }
              */
             np->subid = xroot->subid;
             tp = xroot;
@@ -1486,7 +1486,7 @@ do_subtree(struct tree *root, struct node **nodes)
         if (tp) {
             if (!label_compare(tp->label, np->label)) {
                 /*
-                 * Update list of modules 
+                 * Update list of modules
                  */
                 int_p =
                     (int *) malloc((tp->number_modules + 1) * sizeof(int));
@@ -1500,15 +1500,15 @@ do_subtree(struct tree *root, struct node **nodes)
                 ++tp->number_modules;
                 tp->module_list = int_p;
 
-                if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID, 
+                if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID,
 					   NETSNMP_DS_LIB_MIB_REPLACE)) {
                     /*
-                     * Replace from node 
+                     * Replace from node
                      */
                     tree_from_node(tp, np);
                 }
                 /*
-                 * Handle children 
+                 * Handle children
                  */
                 do_subtree(tp, nodes);
                 continue;
@@ -1516,7 +1516,7 @@ do_subtree(struct tree *root, struct node **nodes)
             if (!strncmp(np->label, ANON, ANON_LEN) ||
                 !strncmp(tp->label, ANON, ANON_LEN)) {
                 anon_tp = tp;   /* Need to merge these two trees later */
-            } else if (netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID, 
+            } else if (netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID,
 					  NETSNMP_DS_LIB_MIB_WARNINGS)) {
                 snmp_log(LOG_WARNING,
                          "Warning: %s.%ld is both %s and %s (%s)\n",
@@ -1552,7 +1552,7 @@ do_subtree(struct tree *root, struct node **nodes)
                 merge_anon_children(tp, anon_tp);
 
                 /*
-                 * unlink and destroy tp 
+                 * unlink and destroy tp
                  */
                 unlink_tree(tp);
                 free_tree(tp);
@@ -1566,17 +1566,17 @@ do_subtree(struct tree *root, struct node **nodes)
                 merge_anon_children(anon_tp, tp);
 
                 /*
-                 * unlink anon_tp from the hash 
+                 * unlink anon_tp from the hash
                  */
                 unlink_tbucket(anon_tp);
 
                 /*
-                 * get rid of old contents of anon_tp 
+                 * get rid of old contents of anon_tp
                  */
                 free_partial_tree(anon_tp, FALSE);
 
                 /*
-                 * put in the current information 
+                 * put in the current information
                  */
                 anon_tp->label = tp->label;
                 anon_tp->child_list = tp->child_list;
@@ -1597,7 +1597,7 @@ do_subtree(struct tree *root, struct node **nodes)
                 set_function(anon_tp);
 
                 /*
-                 * update parent pointer in moved children 
+                 * update parent pointer in moved children
                  */
                 ntp = anon_tp->child_list;
                 while (ntp) {
@@ -1606,23 +1606,23 @@ do_subtree(struct tree *root, struct node **nodes)
                 }
 
                 /*
-                 * hash in anon_tp in its new place 
+                 * hash in anon_tp in its new place
                  */
                 hash = NBUCKET(name_hash(anon_tp->label));
                 anon_tp->next = tbuckets[hash];
                 tbuckets[hash] = anon_tp;
 
                 /*
-                 * unlink and destroy tp 
+                 * unlink and destroy tp
                  */
                 unlink_tbucket(tp);
                 unlink_tree(tp);
                 free(tp);
             } else {
                 /*
-                 * Uh?  One of these two should have been anonymous! 
+                 * Uh?  One of these two should have been anonymous!
                  */
-                if (netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID, 
+                if (netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID,
 				       NETSNMP_DS_LIB_MIB_WARNINGS)) {
                     snmp_log(LOG_WARNING,
                              "Warning: expected anonymous node (either %s or %s) in %s\n",
@@ -1633,7 +1633,7 @@ do_subtree(struct tree *root, struct node **nodes)
         }
     }
     /*
-     * free all nodes that were copied into tree 
+     * free all nodes that were copied into tree
      */
     oldnp = NULL;
     for (np = child_list; np; np = np->next) {
@@ -1700,7 +1700,7 @@ do_linkup(struct module *mp, struct node *np)
         return;
 
     /*
-     * quietly move all internal references to the orphan list 
+     * quietly move all internal references to the orphan list
      */
     oldp = orphan_nodes;
     do {
@@ -1752,7 +1752,7 @@ do_linkup(struct module *mp, struct node *np)
     } while (more);
 
     /*
-     * complain about left over nodes 
+     * complain about left over nodes
      */
     for (np = orphan_nodes; np && np->next; np = np->next);     /* find the end of the orphan list */
     for (i = 0; i < NHASHSIZE; i++)
@@ -1808,7 +1808,7 @@ getoid(FILE * fp, struct subid_s *id,   /* an array of subids */
             return count;
         if (type == LABEL) {
             /*
-             * this entry has a label 
+             * this entry has a label
              */
             id->label = strdup(token);
             type = get_token(fp, token, MAXTOKEN);
@@ -1831,7 +1831,7 @@ getoid(FILE * fp, struct subid_s *id,   /* an array of subids */
             }
         } else if (type == NUMBER) {
             /*
-             * this entry  has just an integer sub-identifier 
+             * this entry  has just an integer sub-identifier
              */
             id->subid = strtoul(token, NULL, 10);
         } else {
@@ -1919,10 +1919,10 @@ parse_objectid(FILE * fp, char *name)
     for (count = 0, op = loid, nop = loid + 1; count < (length - 1);
          count++, op++, nop++) {
         /*
-         * every node must have parent's name and child's name or number 
+         * every node must have parent's name and child's name or number
          */
         /*
-         * XX the next statement is always true -- does it matter ?? 
+         * XX the next statement is always true -- does it matter ??
          */
         if (op->label && (nop->label || (nop->subid != -1))) {
             np = alloc_node(nop->modid);
@@ -1934,7 +1934,7 @@ parse_objectid(FILE * fp, char *name)
             np->parent = strdup(op->label);
             if (count == (length - 2)) {
                 /*
-                 * The name for this node is the label for this entry 
+                 * The name for this node is the label for this entry
                  */
                 np->label = strdup(name);
             } else {
@@ -1953,7 +1953,7 @@ parse_objectid(FILE * fp, char *name)
                             np->label, CONTINUE);
 
             /*
-             * set up next entry 
+             * set up next entry
              */
             if (oldnp)
                 oldnp->next = np;
@@ -1962,7 +1962,7 @@ parse_objectid(FILE * fp, char *name)
     }
 
     /*
-     * free the loid array 
+     * free the loid array
      */
     for (count = 0, op = loid; count < length; count++, op++) {
         if (op->label)
@@ -2028,7 +2028,7 @@ get_tc_index(const char *descriptor, int modid)
         for (i = 0, mip = mp->imports; i < mp->no_imports; ++i, ++mip) {
             if (!label_compare(mip->label, descriptor)) {
                 /*
-                 * Found it - so amend the module ID 
+                 * Found it - so amend the module ID
                  */
                 modid = mip->modid;
                 break;
@@ -2082,14 +2082,14 @@ parse_enumlist(FILE * fp, struct enum_list **retp)
             break;
         if (type == LABEL) {
             /*
-             * this is an enumerated label 
+             * this is an enumerated label
              */
             *epp =
                 (struct enum_list *) calloc(1, sizeof(struct enum_list));
             if (*epp == NULL)
                 return (NULL);
             /*
-             * a reasonable approximation for the length 
+             * a reasonable approximation for the length
              */
             (*epp)->label = strdup(token);
             type = get_token(fp, token, MAXTOKEN);
@@ -2237,7 +2237,7 @@ parse_asntype(FILE * fp, char *name, int *ntype, char *ntoken)
                     return NULL;
                 }
                 /*
-                 * fall through 
+                 * fall through
                  */
             case INTEGER:
                 *ntype = get_token(fp, ntoken, MAXTOKEN);
@@ -2306,7 +2306,7 @@ parse_asntype(FILE * fp, char *name, int *ntype, char *ntoken)
         }
 
         /*
-         * textual convention 
+         * textual convention
          */
         for (i = 0; i < MAXTC; i++) {
             if (tclist[i].type == 0)
@@ -2335,7 +2335,7 @@ parse_asntype(FILE * fp, char *name, int *ntype, char *ntoken)
             *ntype = get_token(fp, ntoken, MAXTOKEN);
         } else if (*ntype == LEFTBRACKET) {
             /*
-             * if there is an enumeration list, parse it 
+             * if there is an enumeration list, parse it
              */
             tcp->enums = parse_enumlist(fp, &tcp->enums);
             *ntype = get_token(fp, ntoken, MAXTOKEN);
@@ -2382,7 +2382,7 @@ parse_objecttype(FILE * fp, char *name)
         tctype = get_tc(token, current_module, &tmp_index,
                         &np->enums, &np->ranges, &np->hint);
         if (tctype == LABEL &&
-            netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID, 
+            netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID,
 			       NETSNMP_DS_LIB_MIB_WARNINGS) > 1) {
             print_error("Warning: No known translation for type", token,
                         type);
@@ -2410,13 +2410,13 @@ parse_objecttype(FILE * fp, char *name)
     case LABEL:
         if (nexttype == LEFTBRACKET) {
             /*
-             * if there is an enumeration list, parse it 
+             * if there is an enumeration list, parse it
              */
             np->enums = parse_enumlist(fp, &np->enums);
             nexttype = get_token(fp, nexttoken, MAXTOKEN);
         } else if (nexttype == LEFTPAREN) {
             /*
-             * if there is a range list, parse it 
+             * if there is a range list, parse it
              */
             np->ranges = parse_ranges(fp, &np->ranges);
             nexttype = get_token(fp, nexttoken, MAXTOKEN);
@@ -2425,7 +2425,7 @@ parse_objecttype(FILE * fp, char *name)
     case OCTETSTR:
     case KW_OPAQUE:
         /*
-         * parse any SIZE specification 
+         * parse any SIZE specification
          */
         if (nexttype == LEFTPAREN) {
             nexttype = get_token(fp, nexttoken, MAXTOKEN);
@@ -2509,7 +2509,7 @@ parse_objecttype(FILE * fp, char *name)
                 free_node(np);
                 return NULL;
             }
-            if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID, 
+            if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID,
 				       NETSNMP_DS_LIB_SAVE_MIB_DESCRS)) {
                 np->description = strdup(quoted_string_buffer);
             }
@@ -2555,7 +2555,7 @@ parse_objecttype(FILE * fp, char *name)
             break;
         case DEFVAL:
             /*
-             * Mark's defVal section 
+             * Mark's defVal section
              */
             type = get_token(fp, quoted_string_buffer, MAXTOKEN);
             if (type != LEFTBRACKET) {
@@ -2704,7 +2704,7 @@ parse_objectgroup(FILE * fp, char *name, int what, struct objgroup **ol)
         free_node(np);
         return NULL;
     }
-    if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID, 
+    if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID,
 			       NETSNMP_DS_LIB_SAVE_MIB_DESCRS)) {
         np->description = strdup(quoted_string_buffer);
     }
@@ -2752,7 +2752,7 @@ parse_notificationDefinition(FILE * fp, char *name)
                 free_node(np);
                 return NULL;
             }
-            if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID, 
+            if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID,
 				       NETSNMP_DS_LIB_SAVE_MIB_DESCRS)) {
                 np->description = strdup(quoted_string_buffer);
             }
@@ -2767,7 +2767,7 @@ parse_notificationDefinition(FILE * fp, char *name)
             break;
         default:
             /*
-             * NOTHING 
+             * NOTHING
              */
             break;
         }
@@ -2801,7 +2801,7 @@ parse_trapDefinition(FILE * fp, char *name)
                 free_node(np);
                 return NULL;
             }
-            if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID, 
+            if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID,
 				       NETSNMP_DS_LIB_SAVE_MIB_DESCRS)) {
                 np->description = strdup(quoted_string_buffer);
             }
@@ -2817,7 +2817,7 @@ parse_trapDefinition(FILE * fp, char *name)
                 }
                 np->parent = strdup(token);
                 /*
-                 * Get right bracket 
+                 * Get right bracket
                  */
                 type = get_token(fp, token, MAXTOKEN);
             } else if (type == LABEL)
@@ -2833,7 +2833,7 @@ parse_trapDefinition(FILE * fp, char *name)
             break;
         default:
             /*
-             * NOTHING 
+             * NOTHING
              */
             break;
         }
@@ -2892,13 +2892,13 @@ eat_syntax(FILE * fp, char *token, int maxtoken)
     case LABEL:
         if (nexttype == LEFTBRACKET) {
             /*
-             * if there is an enumeration list, parse it 
+             * if there is an enumeration list, parse it
              */
             np->enums = parse_enumlist(fp, &np->enums);
             nexttype = get_token(fp, nexttoken, MAXTOKEN);
         } else if (nexttype == LEFTPAREN) {
             /*
-             * if there is a range list, parse it 
+             * if there is a range list, parse it
              */
             np->ranges = parse_ranges(fp, &np->ranges);
             nexttype = get_token(fp, nexttoken, MAXTOKEN);
@@ -2907,7 +2907,7 @@ eat_syntax(FILE * fp, char *token, int maxtoken)
     case OCTETSTR:
     case KW_OPAQUE:
         /*
-         * parse any SIZE specification 
+         * parse any SIZE specification
          */
         if (nexttype == LEFTPAREN) {
             nexttype = get_token(fp, nexttoken, MAXTOKEN);
@@ -2990,7 +2990,7 @@ parse_compliance(FILE * fp, char *name)
         print_error("Bad DESCRIPTION", quoted_string_buffer, type);
         goto skip;
     }
-    if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID, 
+    if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID,
 			       NETSNMP_DS_LIB_SAVE_MIB_DESCRS))
         np->description = strdup(quoted_string_buffer);
     type = get_token(fp, token, MAXTOKEN);
@@ -3142,7 +3142,7 @@ parse_capabilities(FILE * fp, char *name)
         print_error("Bad DESCRIPTION", token, type);
         goto skip;
     }
-    if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID, 
+    if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID,
 			       NETSNMP_DS_LIB_SAVE_MIB_DESCRS)) {
         np->description = strdup(token);
     }
@@ -3380,7 +3380,7 @@ parse_moduleIdentity(FILE * fp, char *name)
         print_error("Bad DESCRIPTION", quoted_string_buffer, type);
         goto skip;
     }
-    if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID, 
+    if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID,
 			       NETSNMP_DS_LIB_SAVE_MIB_DESCRS)) {
         np->description = strdup(quoted_string_buffer);
     }
@@ -3447,7 +3447,7 @@ parse_macro(FILE * fp, char *name)
     if (type != END)
         return NULL;
 
-    if (netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID, 
+    if (netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID,
 			   NETSNMP_DS_LIB_MIB_WARNINGS)) {
         snmp_log(LOG_WARNING,
                  "%s MACRO (lines %d..%d parsed and ignored).\n", name,
@@ -3526,7 +3526,7 @@ parse_imports(FILE * fp)
                 return;
             if (mp->imports && (mp->imports != root_imports)) {
                 /*
-                 * this can happen if all modules are in one source file. 
+                 * this can happen if all modules are in one source file.
                  */
                 for (i = 0; i < mp->no_imports; ++i) {
                     DEBUGMSGTL(("parse-mibs",
@@ -3646,7 +3646,7 @@ read_module_replacements(const char *name)
 
     for (mcp = module_map_head; mcp; mcp = mcp->next) {
         if (!label_compare(mcp->old_module, name)) {
-            if (netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID, 
+            if (netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID,
 				   NETSNMP_DS_LIB_MIB_WARNINGS)) {
                 snmp_log(LOG_WARNING,
                          "Loading replacement module %s for %s (%s)\n",
@@ -3676,13 +3676,13 @@ read_import_replacements(const char *old_module_name,
                     (mcp->tag == NULL ||
                      !label_compare(mcp->tag, identifier->label))) ||
                    /*
-                    * prefix match 
+                    * prefix match
                     */
                    (mcp->tag_len != 0 &&
                     !strncmp(mcp->tag, identifier->label, mcp->tag_len))
                 ) {
 
-                if (netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID, 
+                if (netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID,
 				       NETSNMP_DS_LIB_MIB_WARNINGS)) {
                     snmp_log(LOG_WARNING,
                              "Importing %s from replacement module %s instead of %s (%s)\n",
@@ -3831,7 +3831,7 @@ read_module(const char *name)
 }
 
 /*
- * Prototype definition 
+ * Prototype definition
  */
 void            unload_module_by_ID(int modID, struct tree *tree_top);
 
@@ -3864,7 +3864,7 @@ unload_module_by_ID(int modID, struct tree *tree_top)
             if (nmod != cnt) {  /* in this module */
                 /*
                  * if ( (nmod - cnt) > 1)
-                 * printf("Dup modid %d,  %d times, '%s'\n", tp->modid, (nmod-cnt), tp->label); fflush(stdout); ?* XXDEBUG 
+                 * printf("Dup modid %d,  %d times, '%s'\n", tp->modid, (nmod-cnt), tp->label); fflush(stdout); ?* XXDEBUG
                  */
                 tp->number_modules = cnt;
                 switch (cnt) {
@@ -3885,7 +3885,7 @@ unload_module_by_ID(int modID, struct tree *tree_top)
             }                   /* if tree node is in this module */
         }
         /*
-         * if tree node is in some module 
+         * if tree node is in some module
          */
         next = tp->next_peer;
 
@@ -3902,7 +3902,7 @@ unload_module_by_ID(int modID, struct tree *tree_top)
         if (tp->number_modules == 0) {
             /*
              * This node isn't needed any more (except perhaps
-             * for the sake of the children) 
+             * for the sake of the children)
              */
             if (tp->child_list == NULL) {
                 unlink_tree(tp);
@@ -3978,7 +3978,7 @@ unload_all_mibs()
     }
     unload_module_by_ID(-1, tree_head);
     /*
-     * tree nodes are cleared 
+     * tree nodes are cleared
      */
 
     for (i = 0, ptc = tclist; i < MAXTC; i++, ptc++) {
@@ -4015,10 +4015,10 @@ new_module(const char *name, const char *file)
         if (!label_compare(mp->name, name)) {
             DEBUGMSGTL(("parse-mibs", "Module %s already noted\n", name));
             /*
-             * Not the same file 
+             * Not the same file
              */
             if (label_compare(mp->file, file)) {
-                if (netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID, 
+                if (netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID,
 				       NETSNMP_DS_LIB_MIB_WARNINGS)) {
                     snmp_log(LOG_WARNING,
                              "Warning: Module %s was in %s now is %s\n",
@@ -4026,7 +4026,7 @@ new_module(const char *name, const char *file)
 		}
 
                 /*
-                 * Use the new one in preference 
+                 * Use the new one in preference
                  */
                 free(mp->file);
                 mp->file = strdup(file);
@@ -4035,7 +4035,7 @@ new_module(const char *name, const char *file)
         }
 
     /*
-     * Add this module to the list 
+     * Add this module to the list
      */
     DEBUGMSGTL(("parse-mibs", "  Module %d %s is in %s\n", max_module,
                 name, file));
@@ -4107,7 +4107,7 @@ parse(FILE * fp, struct node *root)
     np = root;
     if (np != NULL) {
         /*
-         * now find end of chain 
+         * now find end of chain
          */
         while (np->next)
             np = np->next;
@@ -4144,7 +4144,7 @@ parse(FILE * fp, struct node *root)
             }
             state = BETWEEN_MIBS;
 #ifdef TEST
-            if (netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID, 
+            if (netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID,
 				   NETSNMP_DS_LIB_MIB_WARNINGS)) {
                 xmalloc_stats(stderr);
 	    }
@@ -4348,14 +4348,14 @@ parse(FILE * fp, struct node *root)
 }
 
 /*
- * return zero if character is not a label character. 
+ * return zero if character is not a label character.
  */
 static int
 is_labelchar(int ich)
 {
     if ((isalnum(ich)) || (ich == '-'))
         return 1;
-    if (ich == '_' && netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID, 
+    if (ich == '_' && netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID,
 					     NETSNMP_DS_LIB_MIB_PARSE_LABEL)) {
         return 1;
     }
@@ -4378,7 +4378,7 @@ get_token(FILE * fp, char *token, int maxtlen)
     int             too_long = 0;
 
     /*
-     * skip all white space 
+     * skip all white space
      */
     do {
         ch = getc(fp);
@@ -4472,19 +4472,19 @@ get_token(FILE * fp, char *token, int maxtlen)
     case '-':
         ch_next = getc(fp);
         if (ch_next == '-') {
-            if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID, 
+            if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID,
 				       NETSNMP_DS_LIB_MIB_COMMENT_TERM)) {
                 /*
-                 * Treat the rest of this line as a comment. 
+                 * Treat the rest of this line as a comment.
                  */
                 while ((ch_next != EOF) && (ch_next != '\n'))
                     ch_next = getc(fp);
             } else {
                 /*
-                 * Treat the rest of the line or until another '--' as a comment 
+                 * Treat the rest of the line or until another '--' as a comment
                  */
                 /*
-                 * (this is the "technically" correct way to parse comments) 
+                 * (this is the "technically" correct way to parse comments)
                  */
                 ch = ' ';
                 ch_next = getc(fp);
@@ -4603,7 +4603,7 @@ add_mibdir(const char *dirname)
 			    ".index", count);
 			    break;
 		    }
-		   
+
 		    snprintf(tmpstr1, sizeof(tmpstr1), "%s/%s", dirname, tmpstr);
                     tmpstr1[ sizeof(tmpstr1)-1 ] = 0;
                     new_module(token, tmpstr1);
@@ -4625,19 +4625,19 @@ add_mibdir(const char *dirname)
         ip = fopen(tmpstr, "w");
         while ((file = readdir(dir))) {
             /*
-             * Only parse file names not beginning with a '.' 
+             * Only parse file names not beginning with a '.'
              */
             if (file->d_name != NULL && file->d_name[0] != '.') {
                 snprintf(tmpstr, sizeof(tmpstr), "%s/%s", dirname, file->d_name);
                 tmpstr[ sizeof(tmpstr)-1 ] = 0;
                 if ((dir2 = opendir(tmpstr))) {
                     /*
-                     * file is a directory, don't read it 
+                     * file is a directory, don't read it
                      */
                     closedir(dir2);
                 } else {
                     /*
-                     * which module is this 
+                     * which module is this
                      */
                     if ((fp = fopen(tmpstr, "r")) == NULL) {
                         snmp_log_perror(tmpstr);
@@ -4649,7 +4649,7 @@ add_mibdir(const char *dirname)
                     File = tmpstr;
                     get_token(fp, token, MAXTOKEN);
                     /*
-                     * simple test for this being a MIB 
+                     * simple test for this being a MIB
                      */
                     if (get_token(fp, token2, MAXTOKEN) == DEFINITIONS) {
                         new_module(token, tmpstr);
@@ -4750,10 +4750,10 @@ parseQuoteString(FILE * fp, char *token, int maxtlen)
             mibLine++;
         } else if (ch == '"') {
             *token = '\0';
-            if (too_long && netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID, 
+            if (too_long && netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID,
 					   NETSNMP_DS_LIB_MIB_WARNINGS) > 1) {
                 /*
-                 * show short form for brevity sake 
+                 * show short form for brevity sake
                  */
                 char            ch_save = *(token_start + 50);
                 *(token_start + 50) = '\0';
@@ -4765,7 +4765,7 @@ parseQuoteString(FILE * fp, char *token, int maxtlen)
         }
         /*
          * maximum description length check.  If greater, keep parsing
-         * but truncate the string 
+         * but truncate the string
          */
         if (++count < maxtlen)
             *token++ = ch;
@@ -5007,7 +5007,7 @@ find_node(const char *name, struct tree *subtree)
    Used by Perl modules		*/
 struct tree    *
 find_node2(const char *name, const char *module)
-{                               
+{
   int modid = -1;
   if (module) {
     modid = which_module(module);
@@ -5261,16 +5261,16 @@ merge_parse_objectid(struct node *np, FILE * fp, char *name)
 {
     struct node    *nnp;
     /*
-     * printf("merge defval --> %s\n",np->defaultValue); 
+     * printf("merge defval --> %s\n",np->defaultValue);
      */
     nnp = parse_objectid(fp, name);
     if (nnp) {
 
         /*
-         * apply last OID sub-identifier data to the information 
+         * apply last OID sub-identifier data to the information
          */
         /*
-         * already collected for this node. 
+         * already collected for this node.
          */
         struct node    *headp, *nextp;
         int             ncount = 0;

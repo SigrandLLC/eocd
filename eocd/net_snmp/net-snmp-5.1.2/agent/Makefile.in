@@ -64,7 +64,7 @@ INSTALLUCDHEADERS= \
 #
 USELIBS		= ../snmplib/libnetsnmp.$(LIB_EXTENSION)$(LIB_VERSION)
 HELPERLIB	= helpers/libnetsnmphelpers.$(LIB_EXTENSION)$(LIB_VERSION)
-LOCAL_LIBS	= 
+LOCAL_LIBS	=
 LIBS		= ../snmplib/libnetsnmp.$(LIB_EXTENSION)$(LIB_VERSION) @AGENTLIBS@
 OUR_AGENT_LIBS	= $(INSTALLLIBS) $(HELPERLIB) @WRAPLIBS@ $(LIBS) @DLLIBS@
 CPPFLAGS	= -I../include -I$(top_srcdir)/include \
@@ -96,7 +96,7 @@ LAGENTOBJS=snmpd.lo
 #
 # Define OBJS and LOBJS for clean target (just this directory)
 #
-OBJS		= $(LIBAGENTOBJS)  $(AGENTOBJS)  mib_modules.o  auto_nlist.o  
+OBJS		= $(LIBAGENTOBJS)  $(AGENTOBJS)  mib_modules.o  auto_nlist.o
 LOBJS		= $(LLIBAGENTOBJS) $(LAGENTOBJS) mib_modules.lo auto_nlist.lo
 
 
@@ -109,13 +109,13 @@ getkstat: getkstat.o
 	$(CC) $(CFLAGS) -o $@ $? $(LOCAL_LIBS) $(LIBS)
 
 getkstat.o: mibgroup/kernel_sunos5.c
-	$(CC) $(CFLAGS) -o $@ -D_GETKSTAT_TEST -DDODEBUG -c $? 
+	$(CC) $(CFLAGS) -o $@ -D_GETKSTAT_TEST -DDODEBUG -c $?
 
 getmibstat: getmibstat.o
 	$(CC) $(CFLAGS) -o $@ $? $(LOCAL_LIBS) $(LIBS)
 
 getmibstat.o: mibgroup/kernel_sunos5.c
-	$(CC) $(CFLAGS) -o $@ -D_GETMIBSTAT_TEST -DDODEBUG -c $? 
+	$(CC) $(CFLAGS) -o $@ -D_GETMIBSTAT_TEST -DDODEBUG -c $?
 
 snmpd$(EXEEXT):	${LAGENTOBJS} $(USELIBS) $(HELPERLIB) $(LIBTARG) ${INSTALLLIBS}
 	$(LINK) $(CFLAGS) -o $@ ${LAGENTOBJS} $(LOCAL_LIBS) ${LDFLAGS} ${OUR_AGENT_LIBS}

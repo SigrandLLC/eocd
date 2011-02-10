@@ -2,7 +2,7 @@
 #define WINSERVICE_H
 
     /*
-     * 
+     *
      * Windows Service related functions declaration
      * By Raju Krishanppa(raju_krishnappa@yahoo.com)
      *
@@ -40,12 +40,12 @@ extern "C"
 #define MAX_STR_SIZE  1024
 
   /*
-   * Delcare Global variables, which are visible to other modules 
+   * Delcare Global variables, which are visible to other modules
    */
   extern BOOL g_fRunningAsService;
 
   /*
-   * Input parameter structure to thread 
+   * Input parameter structure to thread
    */
   typedef struct _InputParams
   {
@@ -58,40 +58,40 @@ extern "C"
    */
 
   /*
-   * To register application as windows service with SCM 
+   * To register application as windows service with SCM
    */
   VOID RegisterService (LPCTSTR lpszServiceName,
 			LPCTSTR lpszServiceDisplayName,
 			LPCTSTR lpszServiceDescription, InputParams * StartUpArg);
 
   /*
-   * To unregister service 
+   * To unregister service
    */
   VOID UnregisterService (LPCSTR lpszServiceName);
 
   /*
-   * To parse command line for startup option 
+   * To parse command line for startup option
    */
   INT ParseCmdLineForServiceOption (INT argc, TCHAR * argv[]);
 
   /*
-   * To write to windows event log 
+   * To write to windows event log
    */
   VOID WriteToEventLog (WORD wType, LPCTSTR pszFormat, ...);
 
   /*
-   * To display generic windows error 
+   * To display generic windows error
    */
   VOID DisplayError (LPCTSTR pszTitle);
 
   /*
-   * To update windows service status to SCM 
+   * To update windows service status to SCM
    */
   static BOOL UpdateServiceStatus (DWORD dwStatus, DWORD dwErrorCode,
 				   DWORD dwWaitHint);
 
   /*
-   * To Report current service status to SCM 
+   * To Report current service status to SCM
    */
   static BOOL ReportCurrentServiceStatus (VOID);
 
@@ -102,48 +102,48 @@ extern "C"
   VOID WINAPI ServiceMain (DWORD argc, LPTSTR argv[]);
 
   /*
-   * To start Service 
+   * To start Service
    */
 
   BOOL RunAsService (INT (*ServiceFunction) (INT, LPTSTR *));
 
   /*
-   * Call back function to process SCM Requests 
+   * Call back function to process SCM Requests
    */
   VOID WINAPI ControlHandler (DWORD dwControl);
 
   /*
-   * To Stop the service 
+   * To Stop the service
    */
   VOID ProcessServiceStop (VOID);
 
   /*
-   * To Pause service 
+   * To Pause service
    */
   VOID ProcessServicePause (VOID);
 
   /*
-   * To Continue paused service 
+   * To Continue paused service
    */
   VOID ProcessServiceContinue (VOID);
 
   /*
-   * To send Current Service status to SCM when INTERROGATE command is sent 
+   * To send Current Service status to SCM when INTERROGATE command is sent
    */
   VOID ProcessServiceInterrogate (VOID);
 
   /*
-   * To allocate and Set security descriptor 
+   * To allocate and Set security descriptor
    */
   BOOL SetSimpleSecurityAttributes (SECURITY_ATTRIBUTES * pSecurityAttr);
 
   /*
-   * To free Security Descriptor 
+   * To free Security Descriptor
    */
   VOID FreeSecurityAttributes (SECURITY_ATTRIBUTES * pSecurityAttr);
 
   /*
-   * TheadFunction - To spawan as thread - Invokes registered service function 
+   * TheadFunction - To spawan as thread - Invokes registered service function
    */
   DWORD WINAPI ThreadFunction (LPVOID lpParam);
 

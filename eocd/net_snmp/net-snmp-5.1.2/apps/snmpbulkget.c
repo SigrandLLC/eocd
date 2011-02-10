@@ -7,13 +7,13 @@
 
                       All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the name of CMU not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 CMU DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -114,7 +114,7 @@ optProc(int argc, char *const *argv, int opt)
 
                 if (endptr == optarg) {
                     /*
-                     * No number given -- error.  
+                     * No number given -- error.
                      */
                     usage();
                     exit(1);
@@ -149,7 +149,7 @@ main(int argc, char *argv[])
     int             exitval = 0;
 
     /*
-     * get the common command line arguments 
+     * get the common command line arguments
      */
     switch (arg = snmp_parse_args(argc, argv, &session, "C:", optProc)) {
     case -2:
@@ -182,12 +182,12 @@ main(int argc, char *argv[])
     SOCK_STARTUP;
 
     /*
-     * open an SNMP session 
+     * open an SNMP session
      */
     ss = snmp_open(&session);
     if (ss == NULL) {
         /*
-         * diagnose snmp_open errors with the input netsnmp_session pointer 
+         * diagnose snmp_open errors with the input netsnmp_session pointer
          */
         snmp_sess_perror("snmpbulkget", &session);
         SOCK_CLEANUP;
@@ -195,7 +195,7 @@ main(int argc, char *argv[])
     }
 
     /*
-     * create PDU for GETBULK request and add object name to request 
+     * create PDU for GETBULK request and add object name to request
      */
     pdu = snmp_pdu_create(SNMP_MSG_GETBULK);
     pdu->non_repeaters = non_repeaters;
@@ -204,20 +204,20 @@ main(int argc, char *argv[])
         snmp_add_null_var(pdu, name[arg].name, name[arg].name_len);
 
     /*
-     * do the request 
+     * do the request
      */
     status = snmp_synch_response(ss, pdu, &response);
     if (status == STAT_SUCCESS) {
         if (response->errstat == SNMP_ERR_NOERROR) {
             /*
-             * check resulting variables 
+             * check resulting variables
              */
             for (vars = response->variables; vars;
                  vars = vars->next_variable)
                 print_variable(vars->name, vars->name_length, vars);
         } else {
             /*
-             * error in response, print it 
+             * error in response, print it
              */
             running = 0;
             if (response->errstat == SNMP_ERR_NOSUCHNAME) {

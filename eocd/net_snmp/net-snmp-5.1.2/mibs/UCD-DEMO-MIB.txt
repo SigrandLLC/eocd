@@ -49,7 +49,7 @@ ucdDemoPublicString OBJECT-TYPE
     MAX-ACCESS	read-write
     STATUS	current
     DESCRIPTION
-	"A publicly settable string that can be set for testing 
+	"A publicly settable string that can be set for testing
 	 snmpsets.  This value has no real usage other than
 	 testing purposes."
     ::= { ucdDemoPublic 2 }
@@ -67,7 +67,7 @@ ucdDemoPassphrase  OBJECT-TYPE
     MAX-ACCESS	read-only
     STATUS	current
     DESCRIPTION
-	"The demo passphrase that ucdDemoResetKeys changes each 
+	"The demo passphrase that ucdDemoResetKeys changes each
 	 users localized key to based on the P->Ku->Kul transformation."
     ::= { ucdDemoPublic 4 }
 

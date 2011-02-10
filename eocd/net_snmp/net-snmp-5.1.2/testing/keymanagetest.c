@@ -5,7 +5,7 @@
  *
  * Returns:
  *      Number of FAILUREs.
- * 
+ *
  *
  * FIX  Or how about passing a usmUser name and looking up the entry as
  *      a means of getting key material?  This means the userList is

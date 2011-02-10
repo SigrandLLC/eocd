@@ -4,7 +4,7 @@
  */
 
 /*
- * Don't include ourselves twice 
+ * Don't include ourselves twice
  */
 #ifndef _MIBGROUP_EXAMPLE_H
 #define _MIBGROUP_EXAMPLE_H

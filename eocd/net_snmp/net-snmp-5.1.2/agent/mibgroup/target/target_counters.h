@@ -1,5 +1,5 @@
 /*
- * testhandler.h 
+ * testhandler.h
  */
 
 void            init_target_counters(void);

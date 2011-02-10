@@ -40,8 +40,8 @@ my $vars = new SNMP::VarList (
     ok(defined($s2));
 ######################==  3 ==== ##########################################
 
-# Fire up a V3 session 
-my $s3 = new SNMP::Session (Version => 3 , RemotePort => $agent_port, 
+# Fire up a V3 session
+my $s3 = new SNMP::Session (Version => 3 , RemotePort => $agent_port,
 			    SecName => $sec_name );
 ok(defined($s3));
 #print STDERR "Error string1 = $s3->{ErrorStr}:$s3->{ErrorInd}\n";
@@ -61,9 +61,9 @@ ok(!defined($s5));
 ########################  6  ########################################
 #Test for v3 session creation success
 my $s6 = new SNMP::Session (Version => 3, RemotePort => $agent_port,
-			    SecLevel => 'authPriv', 
-			    SecName => $sec_name, 
-			    PrivPass => $priv_pass, 
+			    SecLevel => 'authPriv',
+			    SecName => $sec_name,
+			    PrivPass => $priv_pass,
 			    AuthPass => $auth_pass);
 ok(defined($s6));
 #print STDERR "Error string2 = $s6->{ErrorStr}:$s6->{ErrorInd}\n";

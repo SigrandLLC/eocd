@@ -74,7 +74,7 @@ static Enginetime etimelist[ETIMELIST_SIZE];
  *	 engineID_len
  *	*engineboot
  *	*engine_time
- *      
+ *
  * Returns:
  *	SNMPERR_SUCCESS		Success -- when a record for engineID is found.
  *	SNMPERR_GENERR		Otherwise.
@@ -168,7 +168,7 @@ get_enginetime(u_char * engineID,
  *	 engineID_len
  *	*engineboot
  *	*engine_time
- *      
+ *
  * Returns:
  *	SNMPERR_SUCCESS		Success -- when a record for engineID is found.
  *	SNMPERR_GENERR		Otherwise.
@@ -286,7 +286,7 @@ void free_enginetime(unsigned char *engineID, size_t engineID_len)
  *	 engineID_len
  *	 engineboot
  *	 engine_time
- *      
+ *
  * Returns:
  *	SNMPERR_SUCCESS		Success.
  *	SNMPERR_GENERR		Otherwise.
@@ -372,7 +372,7 @@ set_enginetime(u_char * engineID,
  * Parameters:
  *	*engineID
  *	 engineID_len
- *      
+ *
  * Returns:
  *	Pointer to a etimelist record with engineID <engineID>  -OR-
  *	NULL if no record exists.
@@ -429,13 +429,13 @@ search_enginetime_list(u_char * engineID, u_int engineID_len)
  * Parameters:
  *	*engineID
  *	 engineID_len
- *      
+ *
  * Returns:
  *	>0			etimelist index for this engineID.
  *	SNMPERR_GENERR		Error.
- *	
- * 
- * Use a cheap hash to build an index into the etimelist.  Method is 
+ *
+ *
+ * Use a cheap hash to build an index into the etimelist.  Method is
  * to hash the engineID, then split the hash into u_int's and add them up
  * and modulo the size of the list.
  *

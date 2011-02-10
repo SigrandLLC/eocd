@@ -20,7 +20,7 @@ EOC_scheduler::jump_Offline()
     wait_q->clear();
 }
 
-int 
+int
 EOC_scheduler::jump_Setup()
 {
     PDEBUG(DFULL,"");
@@ -37,11 +37,11 @@ EOC_scheduler::jump_Normal()
     statem->state = Normal;
 	// Maybe better delete this from wait queue
 	PDEBUG(DFULL,"DELETE DISCOVERY from wait queue:");
-    EDEBUG(DFULL,wait_q->print());    
+    EDEBUG(DFULL,wait_q->print());
 	wait_q->find_del(BCAST,stu_c,RESP_DISCOVERY,ts);
     PDEBUG(DFULL,"-----------------after del-------------");
-    EDEBUG(DFULL,wait_q->print());    
-    return 0;    
+    EDEBUG(DFULL,wait_q->print());
+    return 0;
 }
 
 int
@@ -51,7 +51,7 @@ EOC_scheduler::poll_unit(int ind)
   		return -1;
     int ret = 0;
     ret += send_q->add(stu_c,(unit)(ind+1),REQ_STATUS,ts);
-    return ret;    
+    return ret;
 }
 
 int
@@ -68,7 +68,7 @@ EOC_scheduler::response(EOC_msg *m)
 		}
 		return -1;
 	}
-	
+
     PDEBUG(DFULL,"-----------------response------------------");
     EDEBUG(DFULL,wait_q->print());
 
@@ -78,12 +78,12 @@ EOC_scheduler::response(EOC_msg *m)
 	}
 
     PDEBUG(DFULL,"-----------------after find_del-------------");
-    EDEBUG(DFULL,wait_q->print());    
+    EDEBUG(DFULL,wait_q->print());
     PDEBUG(DFULL,"-----------------end response---------------");
 
     PDEBUG(DFULL,"RESPONSE: src(%d),dst(%d),type(%d)",m->src(),m->dst(),m->type());
-    
-    switch( m->type() ){	
+
+    switch( m->type() ){
     case RESP_DISCOVERY:
 		if( statem->state != Setup ){
 			PDEBUG(DERR,"RESPONSE DROP (not Setup): src(%d),dst(%d),type(%d)",m->src(),m->dst(),m->type());
@@ -142,14 +142,14 @@ EOC_scheduler::response(EOC_msg *m)
 			if( !jump_Setup() )
 				break;
 			jump_Offline();
-		} 
+		}
 		break;
     case RESP_NSIDE_PERF:
     case RESP_CSIDE_PERF:
     case RESP_MAINT_STAT:
     case RESP_SENSOR_STATE:
 		// have no corresponding requests - responses to STATUS request
-        break;	
+        break;
     default:
         send_q->add(stu_c,m->src(),RESP2REQ(m->type()),ts+ts_offs);
         break;
@@ -163,7 +163,7 @@ EOC_scheduler::request(sched_elem &el)
 	int flag = 1;
 	while( flag ){
 		if( send_q->schedule(el,ts) ){
-			return -1;	
+			return -1;
 		}
 
 		PDEBUG(DFULL,"REQUEST: src(%d),dst(%d),type(%d)",el.src,el.dst,el.type);
@@ -172,7 +172,7 @@ EOC_scheduler::request(sched_elem &el)
 		unit swap = n.src;
 		n.src = n.dst;
 		n.dst = swap;
-		n.tstamp = ts;		
+		n.tstamp = ts;
 		sched_elem n1 = n;
 		switch( n.type ){
 		case REQ_SRST_BCKOFF:
@@ -218,7 +218,7 @@ EOC_scheduler::resched()
 			unit swap = el.src;
 			el.src = el.dst;
 			el.dst = swap;
-			el.type += RESP_OFFSET; 
+			el.type += RESP_OFFSET;
 			el.tstamp = ts;
 			send_q->add(el);
 		}

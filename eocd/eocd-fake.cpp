@@ -34,7 +34,7 @@ extern "C" {
 #define EXIT_FAILURE 1
 
 
-EOC_main *m;    
+EOC_main *m;
 
 #define REPEATERS 2
 dummy_channel CHANS[2][REPEATERS+1][2];
@@ -49,51 +49,51 @@ init_dev(char *name_1)
 
     if( !strcmp(name_1,"dsl2") ){
 	return Nx[0][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl1") ){
 	return Nx[1][0];
-    }	
-/*    
+    }
+/*
     if( !strcmp(name_1,"dsl2") ){
 	printf("Init!!!! dsl2\n");
 	return Nx[2][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl3") ){
 	return Nx[3][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl4") ){
 	return Nx[4][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl5") ){
 	return Nx[5][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl6") ){
 	return Nx[6][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl7") ){
 	return Nx[7][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl8") ){
 	return Nx[8][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl9") ){
 	return Nx[9][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl10") ){
 	return Nx[10][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl11") ){
 	return Nx[11][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl12") ){
 	return Nx[12][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl13") ){
 	return Nx[13][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl14") ){
 	return Nx[14][0];
-    }	
+    }
 */
     return NULL;
 }
@@ -106,11 +106,11 @@ static void child_handler(int signum)
     case SIGALRM:
 	printf("Fail to start eocd daemon\n");
 	exit(EXIT_FAILURE);
-    case SIGUSR1: 
-	printf("Daemon started successfully\n");    
+    case SIGUSR1:
+	printf("Daemon started successfully\n");
         exit(EXIT_SUCCESS);
     case SIGCHLD:
-	printf("Fail to start eocd daemon\n");    
+	printf("Fail to start eocd daemon\n");
 	exit(EXIT_FAILURE);
     }
 }
@@ -121,7 +121,7 @@ daemonize( )
     pid_t pid, sid, parent;
     int lfp = -1;
 
-    // already a daemon 
+    // already a daemon
     if ( getppid() == 1 )
 	return -1;
 
@@ -141,7 +141,7 @@ daemonize( )
     signal(SIGUSR1,child_handler);
     signal(SIGALRM,child_handler);
 
-    // Fork off the parent process 
+    // Fork off the parent process
     pid = fork();
     if (pid < 0) {
         syslog( LOG_ERR, "unable to fork daemon, code=%d (%s)",
@@ -284,7 +284,7 @@ int main( int argc, char *argv[] ) {
 
 
     /* Now we are a daemon -- do the work for which we were paid */
-    
+
     for(int i=0;i<2;i++){
 	Nx[i][0] = new EOC_dummy1("m-cs",&CHANS[i][0][0],&CHANS[i][0][1]);
 	Nx[i][1] = new EOC_dummy1("s-ns",&CHANS[i][REPEATERS][1],&CHANS[i][REPEATERS][0]);
@@ -298,7 +298,7 @@ int main( int argc, char *argv[] ) {
 
 
     m = new EOC_main(config_path,"/var/eocd/");
-    
+
     if( !m->get_valid() ){
 	delete m;
 	return -1;
@@ -328,4 +328,4 @@ int main( int argc, char *argv[] ) {
 }
 
 
-	
+

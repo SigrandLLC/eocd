@@ -10,7 +10,7 @@ typedef struct netsnmp_set_info_s {
     void           *stateRef;
 
     /*
-     * don't use yet: 
+     * don't use yet:
      */
     void          **oldData;
     int             setCleanupFlags;    /* XXX: client sets this to: */

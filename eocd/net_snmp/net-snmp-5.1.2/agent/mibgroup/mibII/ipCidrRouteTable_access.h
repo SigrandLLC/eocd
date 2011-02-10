@@ -6,7 +6,7 @@
 #define IPCIDRROUTETABLE_ACCESS_H
 
 /*
- * User-defined data access functions for data in table ipCidrRouteTable 
+ * User-defined data access functions for data in table ipCidrRouteTable
  */
 u_long         *get_ipCidrRouteDest(void *data_context, size_t * ret_len);
 u_long         *get_ipCidrRouteMask(void *data_context, size_t * ret_len);

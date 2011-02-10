@@ -34,7 +34,7 @@
  *  called in the order they were regestered in.  Callbacks regesterd
  *  with a mode of NETSNMP_MODE_END_ALL_MODES will be called for all
  *  modes.
- * 
+ *
  *  @ingroup utilities
  *  @{
  */
@@ -72,7 +72,7 @@ netsnmp_mode_end_call_add_mode_callback(netsnmp_mode_handler_list *endlist,
     ptr = SNMP_MALLOC_TYPEDEF(netsnmp_mode_handler_list);
     if (!ptr)
         return NULL;
-    
+
     ptr->mode = mode;
     ptr->callback_handler = callbackh;
     ptr->next = NULL;
@@ -86,7 +86,7 @@ netsnmp_mode_end_call_add_mode_callback(netsnmp_mode_handler_list *endlist,
     ptr2->next = ptr;
     return endlist;
 }
-    
+
 /** @internal Implements the mode_end_call handler */
 int
 netsnmp_mode_end_call_helper(netsnmp_mib_handler *handler,
@@ -113,6 +113,6 @@ netsnmp_mode_end_call_helper(netsnmp_mib_handler *handler,
                 ret = ret2;
         }
     }
-    
+
     return ret2;
 }

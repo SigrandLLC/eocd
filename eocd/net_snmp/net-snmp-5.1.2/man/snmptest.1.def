@@ -3,17 +3,17 @@
 .\" that may apply:
 .\" /***********************************************************
 .\" 	Copyright 1988, 1989 by Carnegie Mellon University
-.\" 
+.\"
 .\"                       All Rights Reserved
-.\" 
-.\" Permission to use, copy, modify, and distribute this software and its 
-.\" documentation for any purpose and without fee is hereby granted, 
+.\"
+.\" Permission to use, copy, modify, and distribute this software and its
+.\" documentation for any purpose and without fee is hereby granted,
 .\" provided that the above copyright notice appear in all copies and that
-.\" both that copyright notice and this permission notice appear in 
+.\" both that copyright notice and this permission notice appear in
 .\" supporting documentation, and that the name of CMU not be
 .\" used in advertising or publicity pertaining to distribution of the
-.\" software without specific, written prior permission.  
-.\" 
+.\" software without specific, written prior permission.
+.\"
 .\" CMU DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 .\" ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
 .\" CMU BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
@@ -59,7 +59,7 @@ At this point you can enter one or more variable names, one per line.
 A blank line ends the parameter input and will send the request
 (variables entered) in a single packet, to the remote entity.
 Each variable name is given
-in the format specified in 
+in the format specified in
 .IR variables(5) .
 For example:
 .PP
@@ -67,7 +67,7 @@ snmptest -c public -v 1 zeus
 .br
 .BR Variable: " system.sysDescr.0"
 .br
-.BR Variable: 
+.BR Variable:
 .PP
 will return some information about the request and reply packets, as
 well as the information:
@@ -169,7 +169,7 @@ the _agent_ specified on the snmptest command should correspond
 to the target snmptrapd agent.
 .SH OPTIONS
 .B snmptest
-takes the common options described in the 
+takes the common options described in the
 .I snmpcmd(1)
 manual page.
 .SH EXAMPLES

@@ -1,5 +1,5 @@
 /*
- * callback.c: A generic callback mechanism 
+ * callback.c: A generic callback mechanism
  */
 
 #ifndef CALLBACK_H
@@ -13,13 +13,13 @@ extern          "C" {
 #define MAX_CALLBACK_SUBIDS 16
 
     /*
-     * Callback Major Types 
+     * Callback Major Types
      */
 #define SNMP_CALLBACK_LIBRARY     0
 #define SNMP_CALLBACK_APPLICATION 1
 
     /*
-     * SNMP_CALLBACK_LIBRARY minor types 
+     * SNMP_CALLBACK_LIBRARY minor types
      */
 #define SNMP_CALLBACK_POST_READ_CONFIG	        0
 #define SNMP_CALLBACK_STORE_DATA	        1
@@ -39,7 +39,7 @@ extern          "C" {
     };
 
     /*
-     * function prototypes 
+     * function prototypes
      */
     void            init_callbacks(void);
 

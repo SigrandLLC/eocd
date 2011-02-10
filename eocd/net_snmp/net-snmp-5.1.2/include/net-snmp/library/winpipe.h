@@ -13,8 +13,8 @@
      notice, this list of conditions and the following disclaimer in the
      documentation and/or other materials provided with the distribution.
 
-  *  The name of Fabasoft R&D Software GmbH & Co KG or any of its subsidiaries, 
-     brand or product names may not be used to endorse or promote products 
+  *  The name of Fabasoft R&D Software GmbH & Co KG or any of its subsidiaries,
+     brand or product names may not be used to endorse or promote products
      derived from this software without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER ``AS IS'' AND ANY

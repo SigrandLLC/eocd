@@ -13,8 +13,8 @@
 
                       All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies.
 
 I DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
@@ -116,7 +116,7 @@ optProc(int argc, char *const *argv, int opt)
     switch (opt) {
     case 'C':
         /*
-         * Handle new '-C' command-specific meta-options 
+         * Handle new '-C' command-specific meta-options
          */
         while (*optarg) {
             switch (*optarg++) {
@@ -126,7 +126,7 @@ optProc(int argc, char *const *argv, int opt)
 			max_width = atoi(argv[optind]);
 			if (max_width == 0) {
 			    usage();
-			    fprintf(stderr, "Bad -Cw option: %s\n", 
+			    fprintf(stderr, "Bad -Cw option: %s\n",
 				    argv[optind]);
 			    exit(1);
 			}
@@ -144,7 +144,7 @@ optProc(int argc, char *const *argv, int opt)
 			column_width = atoi(argv[optind]);
 			if (column_width <= 2) {
 			    usage();
-			    fprintf(stderr, "Bad -Cc option: %s\n", 
+			    fprintf(stderr, "Bad -Cc option: %s\n",
 				    argv[optind]);
 			    exit(1);
 			}
@@ -192,7 +192,7 @@ optProc(int argc, char *const *argv, int opt)
 			max_getbulk = atoi(argv[optind]);
 			if (max_getbulk == 0) {
 			    usage();
-			    fprintf(stderr, "Bad -Cc option: %s\n", 
+			    fprintf(stderr, "Bad -Cc option: %s\n",
 				    argv[optind]);
 			    exit(1);
 			}
@@ -256,11 +256,11 @@ main(int argc, char *argv[])
     int            total_entries = 0;
 
     setvbuf(stdout, NULL, _IOLBF, 1024);
-    netsnmp_ds_set_boolean(NETSNMP_DS_LIBRARY_ID, 
+    netsnmp_ds_set_boolean(NETSNMP_DS_LIBRARY_ID,
                            NETSNMP_DS_LIB_QUICK_PRINT, 1);
 
     /*
-     * get the common command line arguments 
+     * get the common command line arguments
      */
     switch (snmp_parse_args(argc, argv, &session, "C:", optProc)) {
     case -2:
@@ -273,10 +273,10 @@ main(int argc, char *argv[])
     }
 
     /*
-     * get the initial object and subtree 
+     * get the initial object and subtree
      */
     /*
-     * specified on the command line 
+     * specified on the command line
      */
     if (optind + 1 != argc) {
         fprintf(stderr, "Must have exactly one table name\n");
@@ -289,20 +289,20 @@ main(int argc, char *argv[])
         snmp_perror(argv[optind]);
         exit(1);
     }
-    localdebug = netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID, 
+    localdebug = netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID,
                                         NETSNMP_DS_LIB_DUMP_PACKET);
 
     get_field_names();
     reverse_fields();
 
     /*
-     * open an SNMP session 
+     * open an SNMP session
      */
     SOCK_STARTUP;
     ss = snmp_open(&session);
     if (ss == NULL) {
         /*
-         * diagnose snmp_open errors with the input netsnmp_session pointer 
+         * diagnose snmp_open errors with the input netsnmp_session pointer
          */
         snmp_sess_perror("snmptable", &session);
         SOCK_CLEANUP;
@@ -605,7 +605,7 @@ get_table_entries(netsnmp_session * ss)
     while (running &&
            ((max_width && !column_width) || (entries < max_getbulk))) {
         /*
-         * create PDU for GETNEXT request and add object name to request 
+         * create PDU for GETNEXT request and add object name to request
          */
         pdu = snmp_pdu_create(SNMP_MSG_GETNEXT);
         for (i = 1; i <= fields; i++) {
@@ -614,13 +614,13 @@ get_table_entries(netsnmp_session * ss)
         }
 
         /*
-         * do the request 
+         * do the request
          */
         status = snmp_synch_response(ss, pdu, &response);
         if (status == STAT_SUCCESS) {
             if (response->errstat == SNMP_ERR_NOERROR) {
                 /*
-                 * check resulting variables 
+                 * check resulting variables
                  */
                 vars = response->variables;
                 entries++;
@@ -667,7 +667,7 @@ get_table_entries(netsnmp_session * ss)
                                name_length * sizeof(oid)) != 0
                         || vars->type == SNMP_ENDOFMIBVIEW) {
                         /*
-                         * not part of this subtree 
+                         * not part of this subtree
                          */
                         if (localdebug) {
                             fprint_variable(stderr, vars->name,
@@ -678,7 +678,7 @@ get_table_entries(netsnmp_session * ss)
                     }
 
                     /*
-                     * save index off 
+                     * save index off
                      */
                     if (!have_current_index) {
                         end_of_table = 0;
@@ -694,7 +694,7 @@ get_table_entries(netsnmp_session * ss)
                         }
                         i = vars->name_length - rootlen + 1;
                         if (localdebug || show_index) {
-                            if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID, 
+                            if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID,
                                               NETSNMP_DS_LIB_EXTENDED_INDEX)) {
                                 name_p = strchr(buf, '[');
                             } else {
@@ -757,7 +757,7 @@ get_table_entries(netsnmp_session * ss)
                 if (end_of_table) {
                     --entries;
                     /*
-                     * not part of this subtree 
+                     * not part of this subtree
                      */
                     if (localdebug) {
                         printf("End of table: %s\n",
@@ -768,7 +768,7 @@ get_table_entries(netsnmp_session * ss)
                 }
             } else {
                 /*
-                 * error in response, print it 
+                 * error in response, print it
                  */
                 running = 0;
                 if (response->errstat == SNMP_ERR_NOSUCHNAME) {
@@ -825,7 +825,7 @@ getbulk_table_entries(netsnmp_session * ss)
 
     while (running) {
         /*
-         * create PDU for GETBULK request and add object name to request 
+         * create PDU for GETBULK request and add object name to request
          */
         pdu = snmp_pdu_create(SNMP_MSG_GETBULK);
         pdu->non_repeaters = 0;
@@ -833,13 +833,13 @@ getbulk_table_entries(netsnmp_session * ss)
         snmp_add_null_var(pdu, name, name_length);
 
         /*
-         * do the request 
+         * do the request
          */
         status = snmp_synch_response(ss, pdu, &response);
         if (status == STAT_SUCCESS) {
             if (response->errstat == SNMP_ERR_NOERROR) {
                 /*
-                 * check resulting variables 
+                 * check resulting variables
                  */
                 vars = response->variables;
                 last_var = NULL;
@@ -861,7 +861,7 @@ getbulk_table_entries(netsnmp_session * ss)
                         printf("%s => taken\n",
                                buf ? (char *) buf : "[NIL]");
                     }
-                    if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID, 
+                    if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID,
                                               NETSNMP_DS_LIB_EXTENDED_INDEX)) {
                         name_p = strchr(buf, '[');
                     } else {
@@ -953,7 +953,7 @@ getbulk_table_entries(netsnmp_session * ss)
                 }
             } else {
                 /*
-                 * error in response, print it 
+                 * error in response, print it
                  */
                 running = 0;
                 if (response->errstat == SNMP_ERR_NOSUCHNAME) {

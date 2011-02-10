@@ -30,7 +30,7 @@ struct myproc {
 };
 
 /*
- * struct mibinfo 
+ * struct mibinfo
  * {
  * int numid;
  * unsigned long mibid[10];

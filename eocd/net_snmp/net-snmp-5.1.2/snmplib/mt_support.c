@@ -1,5 +1,5 @@
 /*
- * mt_support.c - multi-thread resource locking support 
+ * mt_support.c - multi-thread resource locking support
  */
 /*
  * Author: Markku Laukkanen
@@ -94,7 +94,7 @@ snmp_res_lock(int groupID, int resourceID)
 {
     int rc = 0;
     mutex_type *mutex = _mt_res(groupID, resourceID);
-    
+
     if (!mutex) {
 	return EFAULT;
     }
@@ -131,7 +131,7 @@ snmp_res_unlock(int groupID, int resourceID)
 #ifdef WIN32
 
 /*
- * Provide "do nothing" targets for Release (.DLL) builds. 
+ * Provide "do nothing" targets for Release (.DLL) builds.
  */
 
 int

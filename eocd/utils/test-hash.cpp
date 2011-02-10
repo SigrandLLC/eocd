@@ -13,13 +13,13 @@ public:
         val = 0;
     }
 };
-		    
+
 int main()
 {
     hash_table t(32);
     char name[200];
 	hash_el *a;
-    
+
 	a = new hash_el();
 	a->name = strdup("default");
 	a->nsize = strlen("default");
@@ -56,20 +56,20 @@ int main()
 	a->nsize = strlen("zpan#1");
 	t.add(a);
 
-	
+
 	a = new hash_el();
 	a->name = strdup("span#3");
 	a->nsize = strlen("span#1");
 	t.add(a);
 
-	
+
     printf("\n------------- Before ----------------------\n");
     hash_el *el = (hash_el*)t.first();
     while( el ){
 		printf("%s: %d\n",el->name,el->val);
 		el = (hash_el*)t.next(el->name,el->nsize);
-    } 
-	
+    }
+
 	t.sort();
 
     printf("\n------------- After ----------------------\n");
@@ -77,8 +77,8 @@ int main()
     while( el ){
 		printf("%s: %d\n",el->name,el->val);
 		el = (hash_el*)t.next(el->name,el->nsize);
-    } 
-	
+    }
+
 	return 0;
 }
 
@@ -93,7 +93,7 @@ int main()
     int tmp;
     int len = 10;
     char name[200];
-    
+
     // fill table
     for(i=len-1; i>=0;i--){
 	sprintf(name,"item%d",i);
@@ -128,7 +128,7 @@ a->name = strdup(name);
 a->nsize = strlen(name);
 t.add(a);
 
-    //print all items	
+    //print all items
     printf("Table content rewerse:\n");
     for(i=len-1; i>=0;i--){
 	sprintf(name,"item%d",i);
@@ -142,7 +142,7 @@ t.add(a);
 	printf("%d ",tmp);
 
 	sprintf(name,"fedcba");
-	tmp = ((hash_el*)t.find(name,strlen(name)))->val;	
+	tmp = ((hash_el*)t.find(name,strlen(name)))->val;
 	printf("%d ",tmp);
 	sprintf(name,"bacdef");
 	tmp = ((hash_el*)t.find(name,strlen(name)))->val;
@@ -151,7 +151,7 @@ t.add(a);
 	sprintf(name,"badcef");
 	tmp = ((hash_el*)t.find(name,strlen(name)))->val;
 	printf("%d ",tmp);
-    
+
     printf("\n");
 
 
@@ -161,14 +161,14 @@ t.add(a);
 	tmp = ((hash_el*)t->find(name))->val;
 	printf("%s: %d\n",name,tmp);
     }
-    
+
     printf("\n!!!!!!!!!!!!!!!!!!!!! Try sequential !!!!!!!!!!!!!!!!!!!!\n");
     hash_el *el = (hash_el*) t.first();
     while( el ){
 	printf("%s: %d\n",el->name,el->val);
 	el = (hash_el*)t.next(el->name,el->nsize);
-    } 
-    
+    }
+
     t.del("item5",5);
     t.del("item4",5);
     t.del("item0",5);
@@ -178,7 +178,7 @@ t.add(a);
     while( el ){
 	printf("%s: %d\n",el->name,el->val);
 	el = (hash_el*)t.next(el->name,el->nsize);
-    } 
+    }
 
     t.del("item9",5);
     t.del("item8",5);
@@ -193,7 +193,7 @@ t.add(a);
     while( el ){
 	printf("%s: %d\n",el->name,el->val);
 	el = (hash_el*)t.next(el->name,el->nsize);
-    } 
+    }
 
     t.del("abcdef",6);
     t.del("fedcba",6);
@@ -205,7 +205,7 @@ t.add(a);
     while( el ){
 	printf("%s: %d\n",el->name,el->val);
 	el = (hash_el*)t.next(el->name,el->nsize);
-    } 
+    }
 }
 
 

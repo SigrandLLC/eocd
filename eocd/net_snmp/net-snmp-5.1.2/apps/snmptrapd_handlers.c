@@ -415,7 +415,7 @@ netsnmp_add_traphandler(Netsnmp_Trap_Handler handler,
 netsnmp_trapd_handler *
 netsnmp_get_traphandler( oid *trapOid, int trapOidLen ) {
     netsnmp_trapd_handler *traph;
-    
+
     if (!trapOid || !trapOidLen)
         return NULL;
 
@@ -640,7 +640,7 @@ send_handler_data(FILE * file, struct hostent *host,
     if (pdu->command == SNMP_MSG_TRAP) {
         /*
          * convert a v1 trap to a v2 variable binding list:
-         * The uptime and trapOID go first in the list. 
+         * The uptime and trapOID go first in the list.
          */
         tmpvar.val.integer = (long *) &pdu->time;
         tmpvar.val_len = sizeof(pdu->time);
@@ -664,7 +664,7 @@ send_handler_data(FILE * file, struct hostent *host,
                         sizeof(snmptrapoid) / sizeof(oid), &tmpvar);
     }
     /*
-     * do the variables in the pdu 
+     * do the variables in the pdu
      */
     for (vars = pdu->variables; vars; vars = vars->next_variable) {
         fprint_variable(file, vars->name, vars->name_length, vars);
@@ -672,7 +672,7 @@ send_handler_data(FILE * file, struct hostent *host,
     if (pdu->command == SNMP_MSG_TRAP) {
         /*
          * convert a v1 trap to a v2 variable binding list:
-         * The enterprise goes last. 
+         * The enterprise goes last.
          */
         tmpvar.val.string = pdu->agent_addr;
         tmpvar.val_len = 4;
@@ -712,7 +712,7 @@ do_external(char *cmd, struct hostent *host,
         }
         if ((pid = fork()) == 0) {
             /*
-             * child 
+             * child
              */
             close(0);
             if (dup(fd[0]) != 0) {

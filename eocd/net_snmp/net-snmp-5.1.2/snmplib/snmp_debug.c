@@ -42,7 +42,7 @@ static int      debug_print_everything = 0;
 netsnmp_token_descr dbg_tokens[MAX_DEBUG_TOKENS];
 
 /*
- * indent debugging:  provide a space padded section to return an indent for 
+ * indent debugging:  provide a space padded section to return an indent for
  */
 static int      debugindent = 0;
 #define INDENTMAX 80
@@ -50,7 +50,7 @@ static char     debugindentchars[] =
     "                                                                                ";
 
 /*
- * Prototype definitions 
+ * Prototype definitions
  */
 void            debug_config_register_tokens(const char *configtoken,
                                              char *tokens);
@@ -135,16 +135,16 @@ debug_register_tokens(char *tokens)
 }
 
 
-/* 
+/*
  * Print all registered tokens along with their current status
  */
-void 
+void
 debug_print_registered_tokens(void) {
     int i;
 
     snmp_log(LOG_INFO, "%d tokens registered :\n", debug_num_tokens);
     for (i=0; i<debug_num_tokens; i++) {
-        snmp_log( LOG_INFO, "%d) %s : %d\n", 
+        snmp_log( LOG_INFO, "%d) %s : %d\n",
                  i, dbg_tokens [i].token_name, dbg_tokens [i].enabled);
     }
 }
@@ -167,7 +167,7 @@ debug_enable_token_logs (const char *token) {
     } else {
         for(i=0; i < debug_num_tokens; i++) {
             if (dbg_tokens[i].token_name &&
-                strncmp(dbg_tokens[i].token_name, token, 
+                strncmp(dbg_tokens[i].token_name, token,
                         strlen(dbg_tokens[i].token_name)) == 0) {
                 dbg_tokens[i].enabled = 1;
                 return SNMPERR_SUCCESS;
@@ -193,7 +193,7 @@ debug_disable_token_logs (const char *token) {
         return SNMPERR_SUCCESS;
     } else {
         for(i=0; i < debug_num_tokens; i++) {
-            if (strncmp(dbg_tokens[i].token_name, token, 
+            if (strncmp(dbg_tokens[i].token_name, token,
                   strlen(dbg_tokens[i].token_name)) == 0) {
                 dbg_tokens[i].enabled = 0;
                 return SNMPERR_SUCCESS;
@@ -206,10 +206,10 @@ debug_disable_token_logs (const char *token) {
 
 /*
  * debug_is_token_registered(char *TOKEN):
- * 
+ *
  * returns SNMPERR_SUCCESS
  * or SNMPERR_GENERR
- * 
+ *
  * if TOKEN has been registered and debugging support is turned on.
  */
 int
@@ -218,14 +218,14 @@ debug_is_token_registered(const char *token)
     int             i;
 
     /*
-     * debugging flag is on or off 
+     * debugging flag is on or off
      */
     if (!dodebug)
         return SNMPERR_GENERR;
 
     if (debug_num_tokens == 0 || debug_print_everything) {
         /*
-         * no tokens specified, print everything 
+         * no tokens specified, print everything
          */
         return SNMPERR_SUCCESS;
     } else {
@@ -411,7 +411,7 @@ debugmsg_hextli(const char *token, u_char * thedata, size_t len)
     sprintf(token2, "dumpx_%s", token);
 
     /*
-     * XX tracing lines removed from this function DEBUGTRACE; 
+     * XX tracing lines removed from this function DEBUGTRACE;
      */
     DEBUGIF(token2) {
         for (incr = 16; len > 0; len -= incr, thedata += incr) {
@@ -466,7 +466,7 @@ debugmsgtoken(va_alist)
 }
 
 /*
- * for speed, these shouldn't be in default_storage space 
+ * for speed, these shouldn't be in default_storage space
  */
 void
 snmp_set_do_debugging(int val)

@@ -132,7 +132,7 @@ the ChangeLog file for a more detailed listing of changes/bug fixes.
  Ports:
     - Update libtool to version 1.4.3, for the benefit of Darwin
     - diskio support for Darwin
-    - Updates for OpenBSD 3. 
+    - Updates for OpenBSD 3.
     - Updates to solaris README
 
  Fixes:
@@ -206,7 +206,7 @@ the ChangeLog file for a more detailed listing of changes/bug fixes.
 
    During the testing for release 5.0.4, a release candidate was uploaded
    to Sourceforge and marked as hidden. For variouse reasons, the release
-   was delayed and further changes and fixes were made.  However, the 
+   was delayed and further changes and fixes were made.  However, the
    release candidate files still appeared on the public FTP server and our
    mirrors. To avoid the confusion that could occur to users who may have
    downloaded this release candidate, we are bumping the revision number
@@ -334,7 +334,7 @@ the ChangeLog file for a more detailed listing of changes/bug fixes.
       consistent coding style.  See the CodingStyle file for details.
 
  Perl:
-    
+
     - The SNMP perl module now calls init_snmp() like real net-snmp
       applications, which means it will read snmp.conf configuration
       files, etc.
@@ -358,7 +358,7 @@ UCD-SNMP NEWS:
     - Fixes to the Tunnel mib.
     - Deprecated the non-raw objects in the system stats MIB portion.
     - Testing harness fixes.
-    - Network file system improvements fro the hrStorageTable. 
+    - Network file system improvements fro the hrStorageTable.
     - fixed snmptable.
     - fixed the memory table (again) locking to 2^31 in value.
     - Misc documentation fixes and clean-ups.
@@ -402,7 +402,7 @@ UCD-SNMP NEWS:
     - The ifTable on Linux no longer reports duplicate interfaces.
     - perl scripts print better error messages if needed modules
       aren't available.
-    - trap sinks aren't duplicated after a SIGHUP. 
+    - trap sinks aren't duplicated after a SIGHUP.
     - misc other fixes.
 
  Ports:
@@ -414,7 +414,7 @@ UCD-SNMP NEWS:
     - A few security bugs have been found and fixed. No known exploits
       have been released to date. However, users are encouraged to
       upgrade to the 4.2.2 release as soon as possible.
- 
+
  Bug fixes:
     - many misc bug fixes.
     - misc documentation corrections.
@@ -596,7 +596,7 @@ UCD-SNMP NEWS:
 
  API Changes:
     - A small change to the write functions in mib modules.
-      (data passed in has already be BER-decoded and is a pointer to a 
+      (data passed in has already be BER-decoded and is a pointer to a
       variable of the correct type).
     - The config_load_mib mib-module .h file directive is now
       obsolete.  Use REGISTER_MIB inside your init function instead.
@@ -647,7 +647,7 @@ UCD-SNMP NEWS:
     - The recommended mib module API has changed slightly, but is
       backwards compatible as well.  See the AGENT.txt file for new
       documentation on how to write mib modules for the agent.
-    
+
   Fixes:
     - many misc bug fixes, as always.
 
@@ -738,7 +738,7 @@ UCD-SNMP NEWS:
     - compilation on many architectures (sunos for example).
     - snmptrapd doesn't exit if v2party files don't exist.
     - host resources works a bit better (ie, it compiles) under solaris.
-    
+
 
 *3.3*
 
@@ -749,7 +749,7 @@ UCD-SNMP NEWS:
       /usr/local/sbin (set differently using --sbindir).
 
   New:
-    - basic SNMPV2c support.  
+    - basic SNMPV2c support.
       - Not fully tested (feedback please!), and not RFC compliant.
       - all apps require '-v 2c' for v2c and '-v 2p' for the older party code.
     - basic host-resources mib support for linux, and hpux.
@@ -811,7 +811,7 @@ UCD-SNMP NEWS:
       - SNMPCONFPATH enviornment variable.
       - command line options:  -c FILE and -C.
     - Agent can send coldstart and authentication traps.
-    - All requests/patches/questions should go to 
+    - All requests/patches/questions should go to
         ucd-snmp-coders@ece.ucdavis.edu
     - snmp variables mib implemented.
     - more udp, ip, ipNetToMedia tables implemented.
@@ -905,7 +905,7 @@ UCD-SNMP NEWS:
     - Two new ./configure options:
       --enable-debugging:  includes nlist and other warnings in log-file output.
       --with-defaults:     Assumes you want the defaults for all user prompts.
-    
+
   Bug fixes:
     - make clean in man/ works.
     - Fixed the mib.txt capitalization problem.
@@ -953,7 +953,7 @@ UCD-SNMP NEWS:
     - fixed another 32/64 bit problem:  returned exit codes on alphas
       were incorrect.
     - many system errors (e.g., no mem) were causing the agent to
-      return error flags when it really was clueless.  
+      return error flags when it really was clueless.
     - found a memory leak in the CMU routing table implementation.
     - More configure cleanups, mostly for Solaris.
     - snmp_open calls getservbyname only once now, at the request of Gary
@@ -995,7 +995,7 @@ UCD-SNMP NEWS:
 
 *3.0.1*
 
-  (agent/snmpd) 
+  (agent/snmpd)
     2 Command line options added:
     -l LOGFILE       Outputs stderr/out to LOGFILE (overrides config.h def)
     -L               Do NOT write to a log file (overrides config.h)

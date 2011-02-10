@@ -124,7 +124,7 @@ DO("CREATE TABLE authhost (
   PRIMARY KEY (id)
 )");
 
-# insert the standard ucd-snmp expressions 
+# insert the standard ucd-snmp expressions
 DO("insert into errorexpressions(tablename, expression, returnfield)
                 values('prTable', 'prErrorFlag > 0', 'prErrMessage')");
 DO("insert into errorexpressions(tablename, expression, returnfield)

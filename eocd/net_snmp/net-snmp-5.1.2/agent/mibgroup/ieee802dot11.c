@@ -341,14 +341,14 @@ void shutdown_ieee802dot11 ( void )
 *                                                                           *
 ****************************************************************************/
 unsigned char *
-var_ieee802dot11 ( struct variable *vp, 
-                    oid     *name, 
-                    size_t  *length, 
-                    int     exact, 
-                    size_t  *var_len, 
+var_ieee802dot11 ( struct variable *vp,
+                    oid     *name,
+                    size_t  *length,
+                    int     exact,
+                    size_t  *var_len,
                     WriteMethod **write_method)
 {
-  loadTables();                                               
+  loadTables();
 
   if ( header_generic ( vp, name, length, exact,var_len,write_method )
                                   == MATCH_FAILED )
@@ -391,11 +391,11 @@ var_dot11StationConfigTable ( struct variable *vp,
   for ( np = LIST_FIRST ( &scList ); np != NULL; np = LIST_NEXT ( np, nodes )) {
     sc = ( struct scTbl_data * ) np->data;
     rName[vp->namelen] = sc->ifIndex;
-    if ((  exact && ( snmp_oid_compare ( rName, vp->namelen + 1, name, *length ) == 0 )) || 
+    if ((  exact && ( snmp_oid_compare ( rName, vp->namelen + 1, name, *length ) == 0 )) ||
         ( !exact && ( snmp_oid_compare ( rName, vp->namelen + 1, name, *length ) >  0 ))) {
 
       switch ( vp->magic ) {      // found requested OID, now check for requested variable
-        case DOT11STATIONID: 
+        case DOT11STATIONID:
           if ( sc->haveStationID                     ) found = TRUE; break;
         case DOT11MEDIUMOCCUPANCYLIMIT:
           if ( sc->haveMediumOccupancyLimit          ) found = TRUE; break;
@@ -417,7 +417,7 @@ var_dot11StationConfigTable ( struct variable *vp,
           if ( sc->haveDesiredBSSType                ) found = TRUE; break;
         case DOT11OPERATIONALRATESET:
           if ( sc->haveOperationalRateSet            ) found = TRUE; break;
-        case DOT11BEACONPERIOD: 
+        case DOT11BEACONPERIOD:
           if ( sc->haveBeaconPeriod                  ) found = TRUE; break;
         case DOT11DTIMPERIOD:
           if ( sc->haveDTIMPeriod                    ) found = TRUE; break;
@@ -441,7 +441,7 @@ var_dot11StationConfigTable ( struct variable *vp,
       break;
   }
 
-  if ( !found ) 
+  if ( !found )
     return NULL;
 
   memcpy (( char * ) name, ( char * ) rName, ( vp->namelen + 1 ) * sizeof ( oid ));
@@ -451,7 +451,7 @@ var_dot11StationConfigTable ( struct variable *vp,
 
   switch ( vp->magic ) {
 
-    case DOT11STATIONID: 
+    case DOT11STATIONID:
 //    *write_method = write_dot11StationID;
       MACWork[ 0] = sc->stationID [ 0];
       MACWork[ 1] = sc->stationID [ 1];
@@ -510,7 +510,7 @@ var_dot11StationConfigTable ( struct variable *vp,
       *var_len = strlen ( sc->operationalRateSet );
       return ( UCHAR * ) sc->operationalRateSet;
 
-    case DOT11BEACONPERIOD: 
+    case DOT11BEACONPERIOD:
 //    *write_method = write_dot11BeaconPeriod;
       return ( UCHAR * ) &sc->beaconPeriod;
 
@@ -624,7 +624,7 @@ var_dot11AuthenticationAlgorithmsTable (  struct variable *vp,
       break;
   }
 
-  if ( !found ) 
+  if ( !found )
     return NULL;
 
   memcpy (( char * ) name, ( char * ) rName, ( vp->namelen + 2 ) * sizeof ( oid ));
@@ -636,7 +636,7 @@ var_dot11AuthenticationAlgorithmsTable (  struct variable *vp,
 
     case DOT11AUTHENTICATIONALGORITHM:
       return ( UCHAR * ) &aa->authenticationAlgorithm;
-        
+
     case DOT11AUTHENTICATIONALGORITHMSENABLE:
 //    *write_method = write_dot11AuthenticationAlgorithmsEnable;
       return ( UCHAR * ) &aa->authenticationAlgorithmsEnable;
@@ -675,13 +675,13 @@ var_dot11WEPDefaultKeysTable ( struct variable *vp,
       switch ( vp->magic ) {
         case DOT11WEPDEFAULTKEYVALUE:
           if ( df->haveWEPDefaultKeyValue ) found = TRUE; break;
-      }          
-    }          
+      }
+    }
     if ( found )
       break;
   }
 
-  if ( !found ) 
+  if ( !found )
     return NULL;
 
   memcpy (( char * ) name, ( char * ) rName, ( vp->namelen + 2 ) * sizeof ( oid ));
@@ -736,14 +736,14 @@ var_dot11WEPKeyMappingsTable ( struct variable *vp,
         case DOT11WEPKEYMAPPINGVALUE:
           if ( km->haveWEPKeyMappingValue   ) found = TRUE; break;
         case DOT11WEPKEYMAPPINGSTATUS:
-          if ( km->haveWEPKeyMappingStatus  ) found = TRUE; break; 
+          if ( km->haveWEPKeyMappingStatus  ) found = TRUE; break;
       }
     }
     if ( found )
       break;
   }
 
-  if ( !found ) 
+  if ( !found )
     return NULL;
 
   memcpy (( char * ) name, ( char * ) rName, ( vp->namelen + 2 ) * sizeof ( oid ));
@@ -826,13 +826,13 @@ var_dot11PrivacyTable ( struct variable *vp,
           if ( pr->haveWEPICVErrorCount    ) found = TRUE; break;
         case DOT11WEPEXCLUDEDCOUNT:
           if ( pr->haveWEPExcludedCount    ) found = TRUE; break;
-      }      
+      }
     }
     if ( found )
       break;
   }
 
-  if ( !found ) 
+  if ( !found )
     return NULL;
 
   memcpy (( char * ) name, ( char * ) rName, ( vp->namelen + 1 ) * sizeof ( oid ));
@@ -860,10 +860,10 @@ var_dot11PrivacyTable ( struct variable *vp,
 
     case DOT11WEPICVERRORCOUNT:
       return ( UCHAR * ) &pr->WEPICVErrorCount;
-        
+
     case DOT11WEPEXCLUDEDCOUNT:
       return ( UCHAR * ) &pr->WEPExcludedCount;
-        
+
     default:
       ERROR_MSG ( "" );
   }
@@ -897,17 +897,17 @@ var_dot11OperationTable ( struct variable *vp,
         ( !exact && ( snmp_oid_compare ( rName, vp->namelen + 1, name, *length ) >  0 ))) {
 
       switch ( vp->magic ) {      // found requested OID, now check for requested variable
-        case DOT11MACADDRESS:             
+        case DOT11MACADDRESS:
           if ( op->haveMACAddress              ) found = TRUE; break;
-        case DOT11RTSTHRESHOLD:           
+        case DOT11RTSTHRESHOLD:
           if ( op->haveRTSThreshold            ) found = TRUE; break;
-        case DOT11SHORTRETRYLIMIT: 
+        case DOT11SHORTRETRYLIMIT:
           if ( op->haveShortRetryLimit         ) found = TRUE; break;
         case DOT11LONGRETRYLIMIT:
           if ( op->haveLongRetryLimit          ) found = TRUE; break;
-        case DOT11FRAGMENTATIONTHRESHOLD: 
+        case DOT11FRAGMENTATIONTHRESHOLD:
           if ( op->haveFragmentationThreshold  ) found = TRUE; break;
-        case DOT11MAXTRANSMITMSDULIFETIME: 
+        case DOT11MAXTRANSMITMSDULIFETIME:
           if ( op->haveMaxTransmitMSDULifetime ) found = TRUE; break;
         case DOT11MAXRECEIVELIFETIME:
           if ( op->haveMaxReceiveLifetime      ) found = TRUE; break;
@@ -917,7 +917,7 @@ var_dot11OperationTable ( struct variable *vp,
           if ( op->haveProductID               ) found = TRUE; break;
       }
     }
-    if ( found ) 
+    if ( found )
       break;
   }
 
@@ -947,7 +947,7 @@ var_dot11OperationTable ( struct variable *vp,
       MACWork[12] = '\0';
       *var_len = 6;
       return ( UCHAR * ) htob ( MACWork );
-        
+
     case DOT11RTSTHRESHOLD:
 //    *write_method = write_dot11RTSThreshold;
       return ( UCHAR * ) &op->RTSThreshold;
@@ -979,7 +979,7 @@ var_dot11OperationTable ( struct variable *vp,
     case DOT11PRODUCTID:
       *var_len = strlen ( op->productID );
       return ( UCHAR * ) op->productID;
-        
+
     default:
       ERROR_MSG ( "" );
   }
@@ -1045,7 +1045,7 @@ var_dot11CountersTable(struct variable *vp,
       break;
   }
 
-  if ( !found ) 
+  if ( !found )
     return NULL;
 
   memcpy (( char * ) name, ( char * ) rName, ( vp->namelen + 1 ) * sizeof ( oid ));
@@ -1069,7 +1069,7 @@ var_dot11CountersTable(struct variable *vp,
     case DOT11FCSERRORCOUNT:                  return ( UCHAR * ) &co->FCSErrorCount;
     case DOT11TRANSMITTEDFRAMECOUNT:          return ( UCHAR * ) &co->transmittedFrameCount;
     case DOT11WEPUNDECRYPTABLECOUNT:          return ( UCHAR * ) &co->WEPUndecryptableCount;
-        
+
     default:
       ERROR_MSG ( "" );
   }
@@ -1113,7 +1113,7 @@ var_dot11GroupAddressesTable(struct variable *vp,
       break;
   }
 
-  if ( !found ) 
+  if ( !found )
     return NULL;
 
   memcpy (( char * ) name, ( char * ) rName, ( vp->namelen + 2 ) * sizeof ( oid ));
@@ -1189,7 +1189,7 @@ var_dot11ResourceInfoTable ( struct variable *vp,
       break;
   }
 
-  if ( !found ) 
+  if ( !found )
     return NULL;
 
   memcpy (( char * ) name, ( char * ) rName, ( vp->namelen + 1 ) * sizeof ( oid ));
@@ -1202,20 +1202,20 @@ var_dot11ResourceInfoTable ( struct variable *vp,
     case DOT11MANUFACTUREROUI:
       *var_len = strlen ( ri->manufacturerOUI );
       return ( UCHAR * ) ri->manufacturerOUI;
-        
+
     case DOT11MANUFACTURERNAME:
       *var_len = strlen ( ri->manufacturerName );
       return ( UCHAR * ) ri->manufacturerName;
-        
+
     case DOT11MANUFACTURERPRODUCTNAME:
       *var_len = strlen ( ri->manufacturerProductName );
       return ( UCHAR * ) ri->manufacturerProductName;
-        
+
     case DOT11MANUFACTURERPRODUCTVERSION:
       *var_len = strlen ( ri->manufacturerProductVersion );
       return ( UCHAR * ) ri->manufacturerProductVersion;
-        
-    default: 
+
+    default:
       ERROR_MSG ( "" );
   }
 
@@ -1258,7 +1258,7 @@ var_dot11PhyOperationTable ( struct variable *vp,
       break;
   }
 
-  if ( !found ) 
+  if ( !found )
     return NULL;
 
   memcpy (( char * ) name, ( char * ) rName, ( vp->namelen + 1 ) * sizeof ( oid ));
@@ -1270,14 +1270,14 @@ var_dot11PhyOperationTable ( struct variable *vp,
 
     case DOT11PHYTYPE:
       return ( UCHAR * ) &po->PHYType;
-        
+
     case DOT11CURRENTREGDOMAIN:
 //    *write_method = write_dot11CurrentRegDomain;
       return ( UCHAR * ) &po->currentRegDomain;
 
     case DOT11TEMPTYPE:
       return ( UCHAR * ) &po->tempType;
-        
+
     default:
       ERROR_MSG ( "" );
   }
@@ -1321,7 +1321,7 @@ var_dot11PhyAntennaTable ( struct variable *vp,
       break;
   }
 
-  if ( !found ) 
+  if ( !found )
     return NULL;
 
   memcpy (( char * ) name, ( char * ) rName, ( vp->namelen + 1 ) * sizeof ( oid ));
@@ -1337,7 +1337,7 @@ var_dot11PhyAntennaTable ( struct variable *vp,
 
     case DOT11DIVERSITYSUPPORT:
       return ( UCHAR * ) &pa->diversitySupport;
-        
+
     case DOT11CURRENTRXANTENNA:
 //    *write_method = write_dot11CurrentRxAntenna;
       return ( UCHAR * ) &pa->currentRxAntenna;
@@ -1398,7 +1398,7 @@ var_dot11PhyTxPowerTable ( struct variable *vp,
       break;
   }
 
-  if ( !found ) 
+  if ( !found )
     return NULL;
 
   memcpy (( char * ) name, ( char * ) rName, ( vp->namelen + 1 ) * sizeof ( oid ));
@@ -1408,7 +1408,7 @@ var_dot11PhyTxPowerTable ( struct variable *vp,
 
   switch ( vp->magic ) {
 
-    case DOT11NUMBERSUPPORTEDPOWERLEVELS: 
+    case DOT11NUMBERSUPPORTEDPOWERLEVELS:
       return ( UCHAR * ) &pt->numberSupportedPowerLevels;
 
     case DOT11TXPOWERLEVEL1: return ( UCHAR * ) &pt->TxPowerLevel1;
@@ -1419,7 +1419,7 @@ var_dot11PhyTxPowerTable ( struct variable *vp,
     case DOT11TXPOWERLEVEL6: return ( UCHAR * ) &pt->TxPowerLevel6;
     case DOT11TXPOWERLEVEL7: return ( UCHAR * ) &pt->TxPowerLevel7;
     case DOT11TXPOWERLEVEL8: return ( UCHAR * ) &pt->TxPowerLevel8;
-        
+
     case DOT11CURRENTTXPOWERLEVEL:
 //    *write_method = write_dot11CurrentTxPowerLevel;
       return ( UCHAR * ) &pt->currentTxPowerLevel;
@@ -1475,7 +1475,7 @@ var_dot11PhyFHSSTable ( struct variable *vp,
       break;
   }
 
-  if ( !found ) 
+  if ( !found )
     return NULL;
 
   memcpy (( char * ) name, ( char * ) rName, ( vp->namelen + 1 ) * sizeof ( oid ));
@@ -1487,14 +1487,14 @@ var_dot11PhyFHSSTable ( struct variable *vp,
 
     case DOT11HOPTIME:
       return ( UCHAR * ) &pf->hopTime;
-        
+
     case DOT11CURRENTCHANNELNUMBER:
 //    *write_method = write_dot11CurrentChannelNumber;
       return ( UCHAR * ) &pf->currentChannelNumber;
 
     case DOT11MAXDWELLTIME:
       return ( UCHAR * ) &pf->maxDwellTime;
-        
+
     case DOT11CURRENTDWELLTIME:
 //    *write_method = write_dot11CurrentDwellTime;
       return ( UCHAR * ) &pf->currentDwellTime;
@@ -1556,7 +1556,7 @@ var_dot11PhyDSSSTable ( struct variable *vp,
       break;
   }
 
-  if ( !found ) 
+  if ( !found )
     return NULL;
 
   memcpy (( char * ) name, ( char * ) rName, ( vp->namelen + 1 ) * sizeof ( oid ));
@@ -1572,7 +1572,7 @@ var_dot11PhyDSSSTable ( struct variable *vp,
 
     case DOT11CCAMODESUPPORTED:
       return ( UCHAR * ) &pd->CCAModeSupported;
-        
+
     case DOT11CURRENTCCAMODE:
 //    *write_method = write_dot11CurrentCCAMode;
       return ( UCHAR * ) &pd->currentCCAMode;
@@ -1627,7 +1627,7 @@ var_dot11PhyIRTable ( struct variable *vp,
       break;
   }
 
-  if ( !found ) 
+  if ( !found )
     return NULL;
 
   memcpy (( char * ) name, ( char * ) rName, ( vp->namelen + 1 ) * sizeof ( oid ));
@@ -1693,7 +1693,7 @@ var_dot11RegDomainsSupportedTable ( struct variable *vp,
       break;
   }
 
-  if ( !found ) 
+  if ( !found )
     return NULL;
 
   memcpy (( char * ) name, ( char * ) rName, ( vp->namelen + 2 ) * sizeof ( oid ));
@@ -1705,7 +1705,7 @@ var_dot11RegDomainsSupportedTable ( struct variable *vp,
 
     case DOT11REGDOMAINSSUPPORTVALUE:
       return ( UCHAR * ) &rd->regDomainsSupportValue;
-        
+
     default:
       ERROR_MSG ( "" );
   }
@@ -1750,7 +1750,7 @@ var_dot11AntennasListTable(struct variable *vp,
       break;
   }
 
-  if ( !found ) 
+  if ( !found )
     return NULL;
 
   memcpy (( char * ) name, ( char * ) rName, ( vp->namelen + 2 ) * sizeof ( oid ));
@@ -1812,7 +1812,7 @@ var_dot11SupportedDataRatesTxTable ( struct variable *vp,
       break;
   }
 
-  if ( !found ) 
+  if ( !found )
     return NULL;
 
   memcpy (( char * ) name, ( char * ) rName, ( vp->namelen + 2 ) * sizeof ( oid ));
@@ -1824,7 +1824,7 @@ var_dot11SupportedDataRatesTxTable ( struct variable *vp,
 
     case DOT11SUPPORTEDDATARATESTXVALUE:
       return ( UCHAR * ) &rt->supportedDataRatesTxValue;
-        
+
     default:
       ERROR_MSG ( "" );
   }
@@ -1865,7 +1865,7 @@ var_dot11SupportedDataRatesRxTable ( struct variable *vp,
       break;
   }
 
-  if ( !found ) 
+  if ( !found )
     return NULL;
 
   memcpy (( char * ) name, ( char * ) rName, ( vp->namelen + 2 ) * sizeof ( oid ));
@@ -1877,7 +1877,7 @@ var_dot11SupportedDataRatesRxTable ( struct variable *vp,
 
     case DOT11SUPPORTEDDATARATESRXVALUE:
       return ( UCHAR * ) &rr->supportedDataRatesRxValue;
-        
+
     default:
       ERROR_MSG ( "" );
   }
@@ -3959,7 +3959,7 @@ static void loadTables()
 *              load80211Structs() - load the 802.11 structures              *
 *                                                                           *
 ****************************************************************************/
-static void 
+static void
 load80211Structs ( int skfd, char *ifName, struct wireless_info *wi )
 {
   int rc, ifIndex = 0;
@@ -3970,9 +3970,9 @@ load80211Structs ( int skfd, char *ifName, struct wireless_info *wi )
   rc = ioctl ( skfd, SIOCGIFHWADDR, &ifr );
   if ( rc >= 0 ) {
 
-    sprintf ( MACAddress, "%02X:%02X:%02X:%02X:%02X:%02X\0", 
-                 ( UCHAR ) ifr.ifr_hwaddr.sa_data[0], ( UCHAR ) ifr.ifr_hwaddr.sa_data[1], 
-                 ( UCHAR ) ifr.ifr_hwaddr.sa_data[2], ( UCHAR ) ifr.ifr_hwaddr.sa_data[3], 
+    sprintf ( MACAddress, "%02X:%02X:%02X:%02X:%02X:%02X\0",
+                 ( UCHAR ) ifr.ifr_hwaddr.sa_data[0], ( UCHAR ) ifr.ifr_hwaddr.sa_data[1],
+                 ( UCHAR ) ifr.ifr_hwaddr.sa_data[2], ( UCHAR ) ifr.ifr_hwaddr.sa_data[3],
                  ( UCHAR ) ifr.ifr_hwaddr.sa_data[4], ( UCHAR ) ifr.ifr_hwaddr.sa_data[5] );
 
     nSc.haveStationID = TRUE;
@@ -3980,11 +3980,11 @@ load80211Structs ( int skfd, char *ifName, struct wireless_info *wi )
     nOp.haveMACAddress = TRUE;
     strcpy  ( nOp.MACAddress, MACAddress );
     nRi.haveManufacturerOUI = TRUE;
-    strncpy ( nRi.manufacturerOUI, MACAddress, MAN_OUI_LEN ); 
+    strncpy ( nRi.manufacturerOUI, MACAddress, MAN_OUI_LEN );
 
     ifIndex = if_nametoindex ( ifName );
     if ( !ifIndex ) {
-      syslog ( LOG_ERR, "SNMP %s - %s %s\n", 
+      syslog ( LOG_ERR, "SNMP %s - %s %s\n",
         "ieee802dot11.load80211Structs()", ifName, "has no ifIndex" );
       return;
     }
@@ -4069,7 +4069,7 @@ load80211Structs ( int skfd, char *ifName, struct wireless_info *wi )
     }
   }
 
-//printf ( "%s - ifIndex: %d ifName: %s UID: %s\n", 
+//printf ( "%s - ifIndex: %d ifName: %s UID: %s\n",
 //         "load80211Structs() - HASCHANGED", ifIndex, ifName, nSc.UID );
 }
 
@@ -4114,7 +4114,7 @@ static void initStructs()
 * loadWiExtTo80211Structs() - load wireless extensions to 802.11 structures *
 *                                                                           *
 ****************************************************************************/
-static void 
+static void
 loadWiExtTo80211Structs ( int ifIndex, char *ifName, struct wireless_info *wi )
 {
   int i, j = 0;
@@ -4127,19 +4127,19 @@ loadWiExtTo80211Structs ( int ifIndex, char *ifName, struct wireless_info *wi )
   if ( wi->has_power ) {
     nSc.havePowerManagementMode = TRUE;
     nSc.powerManagementMode = 1;              // assume power is active
-    if ( !wi->power.disabled && 
+    if ( !wi->power.disabled &&
           wi->power.flags & IW_POWER_MIN )
       nSc.powerManagementMode = 2;            // power save mode
   }
 
   if ( wi->has_essid && strlen ( wi->essid )) {
     nSc.haveDesiredSSID = TRUE;
-    strcpy ( nSc.desiredSSID, wi->essid ); 
+    strcpy ( nSc.desiredSSID, wi->essid );
   }
 
   if ( wi->has_mode ) {
     nSc.haveDesiredBSSType = TRUE;
-    if ( wi->mode == IW_MODE_ADHOC ) 
+    if ( wi->mode == IW_MODE_ADHOC )
       nSc.desiredBSSType = 2;         // independent
     else if ( wi->has_ap_addr )
       nSc.desiredBSSType = 1;         // infrastructure
@@ -4155,7 +4155,7 @@ loadWiExtTo80211Structs ( int ifIndex, char *ifName, struct wireless_info *wi )
   }
 
   // dot11AuthenticationAlgorithmsTable
-  nAa.haveAuthenticationAlgorithm = TRUE;           // it's a rule to always have 
+  nAa.haveAuthenticationAlgorithm = TRUE;           // it's a rule to always have
   nAa.haveAuthenticationAlgorithmsEnable = TRUE;    //    'open' supported
   nAa.ifIndex = ifIndex;
   nAa.authenticationAlgorithmsIndex = 1;            // index number one
@@ -4229,7 +4229,7 @@ loadWiExtTo80211Structs ( int ifIndex, char *ifName, struct wireless_info *wi )
   // dot11PhyOperationTable
   if ( strstr ( wi->name, "IEEE 802.11-FS"      )) nPo.PHYType = 1;   // So what if I
   if ( strstr ( wi->name, "IEEE 802.11-DS"      )) nPo.PHYType = 2;   // made up a couple?
-  if ( strstr ( wi->name, "IEEE 802.11-IR"      )) nPo.PHYType = 3;   
+  if ( strstr ( wi->name, "IEEE 802.11-IR"      )) nPo.PHYType = 3;
   if ( strstr ( wi->name, "IEEE 802.11-OFDM"    )) nPo.PHYType = 4;   // 802.11a
   if ( strstr ( wi->name, "IEEE 802.11-OFDM/DS" )) nPo.PHYType = 5;   // 802.11g
   if ( strstr ( wi->name, "IEEE 802.11-TURBO"   )) nPo.PHYType = 6;   // Atheros TURBO mode
@@ -4240,7 +4240,7 @@ loadWiExtTo80211Structs ( int ifIndex, char *ifName, struct wireless_info *wi )
     for ( i = 0; i < wi->range.num_frequency; i++ ) {
       if ((( double ) ( wi->range.freq[i].e * 10 ) * ( double ) wi->range.freq[i].m ) == wi->freq ) {
         nPd.haveCurrentChannel = TRUE;
-        nPd.currentChannel = wi->range.freq[i].i; 
+        nPd.currentChannel = wi->range.freq[i].i;
       }
     }
   }
@@ -4271,7 +4271,7 @@ loadWiExtTo80211Structs ( int ifIndex, char *ifName, struct wireless_info *wi )
     }
   }
 
-//printf ( "%s max_encoding_tokens: %d\n", 
+//printf ( "%s max_encoding_tokens: %d\n",
 //          "loadWiExtTo80211Structs() - ", wi->range.max_encoding_tokens );
 }
 
@@ -4415,7 +4415,7 @@ static void loadWiExt ( int skfd, char *ifname, struct wireless_info *wi )
   }
 
   /* Get retry limit/lifetime */                      // #if WIRELESS_EXT > 10
-  if ( ioctl ( skfd, SIOCGIWRETRY, &wrq ) >= 0 ) {    
+  if ( ioctl ( skfd, SIOCGIWRETRY, &wrq ) >= 0 ) {
     wi->has_retry = 1;
     memcpy ( &wi->retry, &wrq.u.retry, sizeof ( iwparam ));
   }
@@ -4438,7 +4438,7 @@ static void loadWiExt ( int skfd, char *ifname, struct wireless_info *wi )
           s = bfr;
           s = strchr ( s, ':' ); s++;             /* Skip ethX:   */
           s = strtok ( s, " " );                  /* ' ' => '\0'  */
-          sscanf ( s, "%X", &wi->stats.status ); // status 
+          sscanf ( s, "%X", &wi->stats.status ); // status
 
           s = strtok ( NULL, " " );               // link quality
           if ( strchr ( s, '.' ) != NULL )
@@ -4495,7 +4495,7 @@ static void displayWiExt ( struct wireless_info info )
   else
     printf ( "%s %s\n", "SIOCGIWNICKN", " ===> no info.nickname support" );
 
-  if ( info.has_essid ) 
+  if ( info.has_essid )
     printf ( "%s essid_on: %d essid: %s\n", "SIOCGIWESSID", info.essid_on, info.essid );
   else
     printf ( "%s %s\n", "SIOCGIWESSID", " ===> no info.essid support" );
@@ -4506,7 +4506,7 @@ static void displayWiExt ( struct wireless_info info )
     printf ( "%s max_nwid: %d\n",             "SIOCGIWRANGE", info.range.max_nwid  );
     printf ( "%s sensitivity: %d\n",          "SIOCGIWRANGE", info.range.sensitivity );
     printf ( "%s num_bitrates: %d\n",         "SIOCGIWRANGE", info.range.num_bitrates );
-    for ( i = 0; i < info.range.num_bitrates; i++ ) 
+    for ( i = 0; i < info.range.num_bitrates; i++ )
       printf ( "%s bitrate[%d]: %d\n",        "SIOCGIWRANGE", i, info.range.bitrate[i]  );
     printf ( "%s min_rts: %d\n",              "SIOCGIWRANGE", info.range.min_rts );
     printf ( "%s max_rts: %d\n",              "SIOCGIWRANGE", info.range.max_rts );
@@ -4520,13 +4520,13 @@ static void displayWiExt ( struct wireless_info info )
     printf ( "%s pmt_flags: %d\n",            "SIOCGIWRANGE", info.range.pmt_flags );
     printf ( "%s pm_capa: %d\n",              "SIOCGIWRANGE", info.range.pm_capa );
     printf ( "%s num_encoding_sizes: %d\n",   "SIOCGIWRANGE", info.range.num_encoding_sizes );
-    for ( i = 0; i < info.range.num_encoding_sizes; i++ ) 
+    for ( i = 0; i < info.range.num_encoding_sizes; i++ )
       printf ( "%s encoding_size[%d]: %d\n",  "SIOCGIWRANGE", i, info.range.encoding_size[i]  );
     printf ( "%s max_encoding_tokens: %d\n",  "SIOCGIWRANGE", info.range.max_encoding_tokens );
 //  printf ( "%s encoding_login_index: %d\n", "SIOCGIWRANGE", info.range.encoding_login_index );
     printf ( "%s txpower_capa: %d\n",         "SIOCGIWRANGE", info.range.txpower_capa );
     printf ( "%s num_txpower: %d dBm\n",      "SIOCGIWRANGE", info.range.num_txpower );
-    for ( i = 0; i < info.range.num_txpower; i++ ) 
+    for ( i = 0; i < info.range.num_txpower; i++ )
       printf ( "%s txpower[%d]: %d\n",        "SIOCGIWRANGE", i, info.range.txpower[i]  );
     printf ( "%s we_version_compiled: %d\n",  "SIOCGIWRANGE", info.range.we_version_compiled );
     printf ( "%s we_version_source: %d\n",    "SIOCGIWRANGE", info.range.we_version_source );
@@ -4539,14 +4539,14 @@ static void displayWiExt ( struct wireless_info info )
     printf ( "%s max_r_time: %d\n",           "SIOCGIWRANGE", info.range.max_r_time );
     printf ( "%s num_channels: %d\n",         "SIOCGIWRANGE", info.range.num_channels );
     printf ( "%s num_frequency: %d\n",        "SIOCGIWRANGE", info.range.num_frequency );
-    for ( i = 0; i < info.range.num_frequency; i++ ) 
-      printf ( "%s freq[%d].i: %d freq[%d].e: %d freq[%d].m: %d\n", "SIOCGIWRANGE", 
+    for ( i = 0; i < info.range.num_frequency; i++ )
+      printf ( "%s freq[%d].i: %d freq[%d].e: %d freq[%d].m: %d\n", "SIOCGIWRANGE",
                 i, info.range.freq[i].i, i, info.range.freq[i].e, i, info.range.freq[i].m );
   }
   else
     printf ( "%s %s\n", "SIOCGIWRANGE", " ===> no info.range support" );
 
-  if ( info.has_nwid ) 
+  if ( info.has_nwid )
     printf ( "%s nwid - disabled: %d value: %X\n", "SIOCGIWNWID", info.nwid.disabled, info.nwid.value );
   else
     printf ( "%s %s\n", "SIOCGIWNWID", " ===> no info.nwid support" );
@@ -4564,7 +4564,7 @@ static void displayWiExt ( struct wireless_info info )
     printf ( "%s %s\n", "SIOCGIWSENS", " ===> no info.sens support" );
 
   if ( info.has_key ) {
-    printf ( "%s key_size: %d key_flags: %d wepCurrentKey: %d\n", 
+    printf ( "%s key_size: %d key_flags: %d wepCurrentKey: %d\n",
               "SIOCGIWENCODE", info.key_size, info.key_flags, wepCurrentKey );
     printf ( "%s MODE: %d DISABLED: %d INDEX: %d OPEN: %d RESTRICTED: %d NOKEY: %d TEMP: %d\n",
               "SIOCGIWENCODE",                           info.key_flags & IW_ENCODE_MODE,
@@ -4577,22 +4577,22 @@ static void displayWiExt ( struct wireless_info info )
 
   for ( i = 0; i < MAX_WEP_KEYS; i++ ) {
     if ( wep[i].haveKey )
-      printf ( "%s wep[%d].len: %d wep[%d].key: %s\n", 
+      printf ( "%s wep[%d].len: %d wep[%d].key: %s\n",
                 "SIOCGIWENCODE", i, wep[i].len, i, wep[i].key );
   }
 
   if ( info.has_ap_addr )
-    printf ( "%s ap_addr.sa_data: %02X:%02X:%02X:%02X:%02X:%02X ap_addr.sa_family: %d\n", 
-              "SIOCGIWAP",  ( UCHAR ) info.ap_addr.sa_data[0], ( UCHAR ) info.ap_addr.sa_data[1], 
-                            ( UCHAR ) info.ap_addr.sa_data[2], ( UCHAR ) info.ap_addr.sa_data[3], 
-                            ( UCHAR ) info.ap_addr.sa_data[4], ( UCHAR ) info.ap_addr.sa_data[5], 
+    printf ( "%s ap_addr.sa_data: %02X:%02X:%02X:%02X:%02X:%02X ap_addr.sa_family: %d\n",
+              "SIOCGIWAP",  ( UCHAR ) info.ap_addr.sa_data[0], ( UCHAR ) info.ap_addr.sa_data[1],
+                            ( UCHAR ) info.ap_addr.sa_data[2], ( UCHAR ) info.ap_addr.sa_data[3],
+                            ( UCHAR ) info.ap_addr.sa_data[4], ( UCHAR ) info.ap_addr.sa_data[5],
                                       info.ap_addr.sa_family );
   else
     printf ( "%s %s\n", "SIOCGIWAP", " ===> no ap_addr information" );
 
   if ( info.has_bitrate )
-    printf ( "%s bitrate: %d value: %d fixed: %d disabled: %d flags: %d\n", 
-              "SIOCGIWRATE", info.bitrate, info.bitrate.value, info.bitrate.fixed, 
+    printf ( "%s bitrate: %d value: %d fixed: %d disabled: %d flags: %d\n",
+              "SIOCGIWRATE", info.bitrate, info.bitrate.value, info.bitrate.fixed,
                              info.bitrate.disabled, info.bitrate.flags );
   else
     printf ( "%s %s\n", "SIOCGIWRATE", " ===> no info.bitrate support" );
@@ -4607,7 +4607,7 @@ static void displayWiExt ( struct wireless_info info )
   else
     printf ( "%s %s\n", "SIOCGIWFRAG", " ===> no info.frag support" );
 
-  if ( info.has_mode ) 
+  if ( info.has_mode )
     printf ( "%s mode: %d\n", "SIOCGIWMODE", info.mode );
   else
     printf ( "%s %s\n", "SIOCGIWMODE", " ===> no info.mode support" );
@@ -4616,18 +4616,18 @@ static void displayWiExt ( struct wireless_info info )
     printf ( "%s power: %d\n", "SIOCGIWPOWER", info.power );
     printf ( "%s disabled: %d MIN: %d MAX: %d TIMEOUT: %d RELATIVE: %d\n",
               "SIOCGIWPOWER",
-              info.power.disabled                  ? 1:0, 
-              info.power.flags & IW_POWER_MIN      ? 1:0, 
-              info.power.flags & IW_POWER_MAX      ? 1:0, 
-              info.power.flags & IW_POWER_TIMEOUT  ? 1:0, 
-              info.power.flags & IW_POWER_RELATIVE ? 1:0 ); 
+              info.power.disabled                  ? 1:0,
+              info.power.flags & IW_POWER_MIN      ? 1:0,
+              info.power.flags & IW_POWER_MAX      ? 1:0,
+              info.power.flags & IW_POWER_TIMEOUT  ? 1:0,
+              info.power.flags & IW_POWER_RELATIVE ? 1:0 );
     printf ( "%s UNICAST: %d MULTICAST: %d ALL: %d FORCE: %d REPEATER: %d\n",
               "SIOCGIWPOWER",
-              info.power.flags & IW_POWER_UNICAST_R   ? 1:0, 
-              info.power.flags & IW_POWER_MULTICAST_R ? 1:0, 
-              info.power.flags & IW_POWER_ALL_R       ? 1:0, 
-              info.power.flags & IW_POWER_FORCE_S     ? 1:0, 
-              info.power.flags & IW_POWER_REPEATER    ? 1:0 ); 
+              info.power.flags & IW_POWER_UNICAST_R   ? 1:0,
+              info.power.flags & IW_POWER_MULTICAST_R ? 1:0,
+              info.power.flags & IW_POWER_ALL_R       ? 1:0,
+              info.power.flags & IW_POWER_FORCE_S     ? 1:0,
+              info.power.flags & IW_POWER_REPEATER    ? 1:0 );
   }
   else
     printf ( "%s %s\n", "SIOCGIWPOWER", " ===> no info.power support" );
@@ -4654,12 +4654,12 @@ static void displayWiExt ( struct wireless_info info )
     printf ( "%s %s\n", "SIOCGIWSTATS", " ===> no info.stats support" );
 
   if ( info.txpower.flags & IW_TXPOW_MWATT )
-    printf ( "%s txpower1: %d dBm disabled: %d fixed: %d flags: %d\n", "SIOCGIWRANGE", 
+    printf ( "%s txpower1: %d dBm disabled: %d fixed: %d flags: %d\n", "SIOCGIWRANGE",
       mWatt2dbm ( info.txpower.value ), info.txpower.disabled, info.txpower.fixed, info.txpower.flags);
   else
     printf ( "%s txpower2: %d dBm disabled: %d fixed: %d flags: %d\n", "SIOCGIWRANGE", info.txpower.value, info.txpower.disabled, info.txpower.fixed, info.txpower.flags );
 
-  if ( info.has_range ) 
+  if ( info.has_range )
     if ( info.sens.value < 0 )
       printf ( "%s sens: %d dBm\n", "SIOCGIWRANGE", info.sens.value );
     else
@@ -4693,16 +4693,16 @@ static void displayWiExt ( struct wireless_info info )
 *                addList() - add an entry to a linked list                  *
 *                                                                           *
 ****************************************************************************/
-static void 
+static void
 addList ( char *l, char *data, int len  )
 {
   char uid[256];
-  LIST_HEAD ( , avNode ) *list;       
+  LIST_HEAD ( , avNode ) *list;
 
-  // NOTE: this assumes the UID is at the begining of the 
+  // NOTE: this assumes the UID is at the begining of the
   //       data structure and that UIDs are strings
-  
-  list = ( LIST_HEAD ( , avNode ) * ) l;            // NOTE: don't know how to get 
+
+  list = ( LIST_HEAD ( , avNode ) * ) l;            // NOTE: don't know how to get
   strcpy ( uid, data );                             //  rid of compiler warning on
                                                     //  LISTHEAD typecast
   // create a new node and the data that goes in it
@@ -4785,8 +4785,8 @@ static void flushLists()
 static void flushList ( char *l )
 {
   LIST_HEAD ( , avNode ) *list;
-  
-  list = ( LIST_HEAD ( , avNode ) * ) l;    // NOTE: don't know how to get 
+
+  list = ( LIST_HEAD ( , avNode ) * ) l;    // NOTE: don't know how to get
   while ( !LIST_EMPTY ( list )) {           //  rid of compiler warning on
     np = LIST_FIRST ( list );               //  LISTHEAD typecast
     if ( np->data )

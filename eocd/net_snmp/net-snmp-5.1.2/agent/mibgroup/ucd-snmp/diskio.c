@@ -12,7 +12,7 @@
 #include <net-snmp/net-snmp-config.h>
 
 /*
- * needed by util_funcs.h 
+ * needed by util_funcs.h
  */
 #if TIME_WITH_SYS_TIME
 # include <sys/time.h>
@@ -29,12 +29,12 @@
 #include <net-snmp/agent/net-snmp-agent-includes.h>
 
 /*
- * header_generic() comes from here 
+ * header_generic() comes from here
  */
 #include "util_funcs.h"
 
 /*
- * include our .h file 
+ * include our .h file
  */
 #include "diskio.h"
 
@@ -108,19 +108,19 @@ FILE           *file;
 /*
  * this is an optional function called at the time the agent starts up
  * to do any initilizations you might require.  You don't have to
- * create it, as it is optional. 
+ * create it, as it is optional.
  */
 
 /*
  * IMPORTANT: If you add or remove this function, you *must* re-run
- * the configure script as it checks for its existance. 
+ * the configure script as it checks for its existance.
  */
 
 void
 init_diskio(void)
 {
     /*
-     * Define a 'variable' structure that is a representation of our mib. 
+     * Define a 'variable' structure that is a representation of our mib.
      */
 
     /*
@@ -128,7 +128,7 @@ init_diskio(void)
      * the var_struct.h file in the agent subdirectory.  I'm picking the
      * variable2 structure since the longest sub-component of the oid I
      * want to load is .2.1 and .2.2 so I need at most 2 spaces in the
-     * last entry. 
+     * last entry.
      */
 
     struct variable2 diskio_variables[] = {
@@ -142,21 +142,21 @@ init_diskio(void)
 
     /*
      * Define the OID pointer to the top of the mib tree that we're
-     * registering underneath. 
+     * registering underneath.
      */
     oid             diskio_variables_oid[] =
         { 1, 3, 6, 1, 4, 1, 2021, 13, 15, 1, 1 };
 
     /*
      * register ourselves with the agent to handle our mib tree
-     * 
+     *
      * This is a macro defined in ../../snmp_vars.h.  The arguments are:
-     * 
+     *
      * descr:   A short description of the mib group being loaded.
      * var:     The variable structure to load.
      * vartype: The variable structure used to define it (variable2, variable4, ...)
      * theoid:  A *initialized* *exact length* oid pointer.
-     * (sizeof(theoid) *must* return the number of elements!)  
+     * (sizeof(theoid) *must* return the number of elements!)
      */
     REGISTER_MIB("diskio", diskio_variables, variable2,
                  diskio_variables_oid);
@@ -212,7 +212,7 @@ get_disk(int disknr)
     /*
      * could be optimiced by checking if cache_disknr<=disknr
      * if so, just reread the data - not going through the whole chain
-     * from kc->kc_chain 
+     * from kc->kc_chain
      */
 
     for (tksp = kc->kc_chain; tksp != NULL; tksp = tksp->ks_next) {
@@ -241,7 +241,7 @@ var_diskio(struct variable * vp,
            int exact, size_t * var_len, WriteMethod ** write_method)
 {
     /*
-     * define any variables we might return as static! 
+     * define any variables we might return as static!
      */
     static long     long_ret;
 
@@ -255,7 +255,7 @@ var_diskio(struct variable * vp,
 
 
     /*
-     * We can now simply test on vp's magic number, defined in diskio.h 
+     * We can now simply test on vp's magic number, defined in diskio.h
      */
     switch (vp->magic) {
     case DISKIO_INDEX:
@@ -281,7 +281,7 @@ var_diskio(struct variable * vp,
         ERROR_MSG("diskio.c: don't know how to handle this request.");
     }
     /*
-     * if we fall to here, fail by returning NULL 
+     * if we fall to here, fail by returning NULL
      */
     return NULL;
 }

@@ -11,7 +11,7 @@ config_require(examples/netSnmpHostsTable_checkfns)
 config_add_mib(NET-SNMP-EXAMPLES-MIB)
 
     /*
-     * function declarations 
+     * function declarations
      */
      void            init_netSnmpHostsTable(void);
      void            initialize_table_netSnmpHostsTable(void);
@@ -19,12 +19,12 @@ config_add_mib(NET-SNMP-EXAMPLES-MIB)
 
 
 /*
- * column number definitions for table netSnmpHostsTable 
+ * column number definitions for table netSnmpHostsTable
  */
 #include "netSnmpHostsTable_columns.h"
 
 /*
- * enum definions 
+ * enum definions
  */
 #include "netSnmpHostsTable_enums.h"
 

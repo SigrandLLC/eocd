@@ -2,7 +2,7 @@
 #define NSCACHE_H
 
 /*
- * function declarations 
+ * function declarations
  */
 void            init_nsCache(void);
 

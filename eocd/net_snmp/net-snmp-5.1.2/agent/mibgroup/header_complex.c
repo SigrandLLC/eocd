@@ -1,5 +1,5 @@
 /*
- * header complex:  More complex storage and data sorting for mib modules 
+ * header complex:  More complex storage and data sorting for mib modules
  */
 
 #include <net-snmp/net-snmp-config.h>
@@ -28,7 +28,7 @@ header_complex_generate_varoid(netsnmp_variable_list * var)
 
     if (var->name == NULL) {
         /*
-         * assume cached value is correct 
+         * assume cached value is correct
          */
         switch (var->type) {
         case ASN_INTEGER:
@@ -105,8 +105,8 @@ header_complex_generate_varoid(netsnmp_variable_list * var)
  * header_complex_parse_oid(): parses an index to the usmTable to
  * break it down into a engineID component and a name component.
  * The results are stored in the data pointer, as a varbindlist:
- * 
- * 
+ *
+ *
  * returns 1 if an error is encountered, or 0 if successful.
  */
 int
@@ -179,7 +179,7 @@ header_complex_parse_oid(oid * oidIndex, size_t oidLen,
                 break;          /* zero length strings shouldn't malloc */
 
             /*
-             * malloc by size+1 to allow a null to be appended. 
+             * malloc by size+1 to allow a null to be appended.
              */
             var->val_len = itmp;
             var->val.string = (u_char *) calloc(1, itmp + 1);
@@ -242,7 +242,7 @@ header_complex_generate_oid(oid * name, /* out */
 }
 
 /*
- * finds the data in "datalist" stored at "index" 
+ * finds the data in "datalist" stored at "index"
  */
 void           *
 header_complex_get(struct header_complex_index *datalist,
@@ -285,7 +285,7 @@ header_complex(struct header_complex_index *datalist,
     int             result;
 
     /*
-     * set up some nice defaults for the user 
+     * set up some nice defaults for the user
      */
     if (write_method)
         *write_method = NULL;
@@ -314,7 +314,7 @@ header_complex(struct header_complex_index *datalist,
         } else {
             if (result == 0) {
                 /*
-                 * found an exact match.  Need the next one for !exact 
+                 * found an exact match.  Need the next one for !exact
                  */
                 if (nptr->next)
                     found = nptr->next;
@@ -354,7 +354,7 @@ header_complex_add_data(struct header_complex_index **thedata,
     ret =
         header_complex_add_data_by_oid(thedata, newoid, newoid_len, data);
     /*
-     * free the variable list, but not the enclosed data!  it's not ours! 
+     * free the variable list, but not the enclosed data!  it's not ours!
      */
     snmp_free_varbind(var);
     return (ret);
@@ -372,7 +372,7 @@ header_complex_add_data_by_oid(struct header_complex_index **thedata,
     for (hciptrn = *thedata, hciptrp = NULL;
          hciptrn != NULL; hciptrp = hciptrn, hciptrn = hciptrn->next)
         /*
-         * XXX: check for == and error (overlapping table entries) 
+         * XXX: check for == and error (overlapping table entries)
          */
         if (snmp_oid_compare
             (hciptrn->name, hciptrn->namelen, newoid, newoid_len)
@@ -381,17 +381,17 @@ header_complex_add_data_by_oid(struct header_complex_index **thedata,
 
     /*
      * nptr should now point to the spot that we need to add ourselves
-     * in front of, and pptr should be our new 'prev'. 
+     * in front of, and pptr should be our new 'prev'.
      */
 
     /*
-     * create ourselves 
+     * create ourselves
      */
     ourself = (struct header_complex_index *)
         SNMP_MALLOC_STRUCT(header_complex_index);
 
     /*
-     * change our pointers 
+     * change our pointers
      */
     ourself->prev = hciptrp;
     ourself->next = hciptrn;
@@ -408,7 +408,7 @@ header_complex_add_data_by_oid(struct header_complex_index **thedata,
 
     /*
      * rewind to the head of the list and return it (since the new head
-     * could be us, we need to notify the above routine who the head now is. 
+     * could be us, we need to notify the above routine who the head now is.
      */
     for (hciptrp = ourself; hciptrp->prev != NULL;
          hciptrp = hciptrp->prev);
@@ -422,7 +422,7 @@ header_complex_add_data_by_oid(struct header_complex_index **thedata,
 /*
  * extracts an entry from the storage space (removing it from future
  * accesses) and returns the data stored there
- * 
+ *
  * Modifies "thetop" pointer as needed (and if present) if were
  * extracting the first node.
  */
@@ -459,7 +459,7 @@ header_complex_extract_entry(struct header_complex_index **thetop,
 }
 
 /*
- * wipe out a single entry 
+ * wipe out a single entry
  */
 void
 header_complex_free_entry(struct header_complex_index *theentry,
@@ -471,7 +471,7 @@ header_complex_free_entry(struct header_complex_index *theentry,
 }
 
 /*
- * completely wipe out all entries in our data store 
+ * completely wipe out all entries in our data store
  */
 void
 header_complex_free_all(struct header_complex_index *thestuff,

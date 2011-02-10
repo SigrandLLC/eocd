@@ -27,13 +27,13 @@ class app_frame{
 		time_t tstamp;
 		u8 act_sec;
     }app_frame_hdr;
-    
+
     app_frame_hdr *hdr;
     enum {FRAME_HEADER_SZ = sizeof(app_frame_hdr) };
     char *buf;
     u32 buf_size;
     int size_by_id(app_ids id,app_types type,u32 &psize,u32 &csize);
-    
+
  public:
     app_frame(app_ids id,app_types type,roles role,u8 act_sec,char *dname = "\0");
     app_frame(char *b,int size);
@@ -58,7 +58,7 @@ class app_frame{
 		}
 		return ((cur-hdr->tstamp)<hdr->act_sec) ? 1 : 0;
     }
-	
+
 };
 
 #endif

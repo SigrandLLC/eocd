@@ -2,7 +2,7 @@
 .ad l
 .nh
 .SH NAME
-table_data: Helps you implement a table with datamatted storage. \- This helper helps you implement a table where all the indexes are expected to be stored within the agent itself and not in some external storage location.  
+table_data: Helps you implement a table with datamatted storage. \- This helper helps you implement a table where all the indexes are expected to be stored within the agent itself and not in some external storage location.
 
 .PP
 .SS "Modules"
@@ -95,10 +95,10 @@ table_data: Helps you implement a table with datamatted storage. \- This helper 
 .br
 .in -1c
 .SH "Detailed Description"
-.PP 
-This helper helps you implement a table where all the indexes are expected to be stored within the agent itself and not in some external storage location. It can be used to store a list of rows, where a row consists of the indexes to the table and a generic data pointer. You can then implement a subhandler which is passed the exact row definition and data it must return data for or accept data for. Complex GETNEXT handling is greatly simplified in this case. 
+.PP
+This helper helps you implement a table where all the indexes are expected to be stored within the agent itself and not in some external storage location. It can be used to store a list of rows, where a row consists of the indexes to the table and a generic data pointer. You can then implement a subhandler which is passed the exact row definition and data it must return data for or accept data for. Complex GETNEXT handling is greatly simplified in this case.
 .SH "Function Documentation"
-.PP 
+.PP
 .SS "netsnmp_table_data* netsnmp_create_table_data (const char * name)"
 .PP
 creates and returns a pointer to table data set Definition at line 529 of file table_data.c.
@@ -108,7 +108,7 @@ References SNMP_MALLOC_TYPEDEF.
 Referenced by netsnmp_create_table_data_set().
 .SS "netsnmp_table_row* netsnmp_create_table_data_row (void)"
 .PP
-creates and returns a pointer to table data set 
+creates and returns a pointer to table data set
 .PP
 \fBExamples: \fP
 .in +1c

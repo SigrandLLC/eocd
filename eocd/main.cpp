@@ -58,13 +58,13 @@ int main()
         l.full_status(&perf);
 	sleep(2);
     }
-    l.print_15m();    
-    
+    l.print_15m();
+
     return 0;
 }
 */
 
-/* MAIN TEST */  
+/* MAIN TEST */
 
 
 EOC_dummy1 *Nx[15][2];
@@ -75,49 +75,49 @@ init_dev(char *name_1)
 
     if( !strcmp(name_1,"dsl0") ){
 	return Nx[0][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl1") ){
 	return Nx[1][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl2") ){
 	return Nx[2][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl3") ){
 	return Nx[3][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl4") ){
 	return Nx[4][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl5") ){
 	return Nx[5][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl6") ){
 	return Nx[6][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl7") ){
 	return Nx[7][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl8") ){
 	return Nx[8][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl9") ){
 	return Nx[9][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl10") ){
 	return Nx[10][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl11") ){
 	return Nx[11][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl12") ){
 	return Nx[12][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl13") ){
 	return Nx[13][0];
-    }	
+    }
     if( !strcmp(name_1,"dsl14") ){
 	return Nx[14][0];
-    }	
+    }
 
     return NULL;
 }
@@ -131,19 +131,19 @@ int main()
     char type;
 
     printf("Hi!!!\n");
-    
+
     dummy_channel mr1_1,mr1_2,r1s_1,r1s_2;
-    dummy_channel tmp1_1,tmp1_2;    
-    dummy_channel tmp2_1,tmp2_2;    
-    dummy_channel tmp3_1,tmp3_2;    
-    dummy_channel tmp4_1,tmp4_2;    
-    dummy_channel tmp5_1,tmp5_2;    
-    dummy_channel tmp6_1,tmp6_2;    
-    dummy_channel tmp7_1,tmp7_2;    
-    dummy_channel tmp8_1,tmp8_2;    
-    
-    
-    
+    dummy_channel tmp1_1,tmp1_2;
+    dummy_channel tmp2_1,tmp2_2;
+    dummy_channel tmp3_1,tmp3_2;
+    dummy_channel tmp4_1,tmp4_2;
+    dummy_channel tmp5_1,tmp5_2;
+    dummy_channel tmp6_1,tmp6_2;
+    dummy_channel tmp7_1,tmp7_2;
+    dummy_channel tmp8_1,tmp8_2;
+
+
+
     n1 = new EOC_dummy1("m-ns",&mr1_1,&mr1_2);
     n21 = new EOC_dummy1("r1-cs",&mr1_2,&mr1_1);
     n22 = new EOC_dummy1("r1-ns",&r1s_1,&r1s_2);
@@ -160,11 +160,11 @@ int main()
 
 
 
-    EOC_main m("eocd.cfg");    
-    EOC_engine *e2 = new EOC_engine(n22,n21); 
+    EOC_main m("eocd.cfg");
+    EOC_engine *e2 = new EOC_engine(n22,n21);
 
     printf("All successfull,starting\n");
-    
+
     int k=0;
     side_perf S;
     while(k<200){
@@ -227,22 +227,22 @@ int main()
 
 
 
-/* ENGINE SHORT TEST   
+/* ENGINE SHORT TEST
 int main()
 {
     unit s,d;
     char type;
     dummy_channel mr1_1,mr1_2,r1s_1,r1s_2;
     EOC_dummy1 *n1 = new EOC_dummy1("m-ns",&mr1_1,&mr1_2);
-    
+
     EOC_dummy1 *n21 = new EOC_dummy1("r1-cs",&mr1_2,&mr1_1);
     EOC_dummy1 *n22 = new EOC_dummy1("r1-ns",&r1s_1,&r1s_2);
-    
+
     EOC_dummy1 *n3 = new EOC_dummy1("s-cs",&r1s_2,&r1s_1);
-    
+
     EOC_engine *e1 = new EOC_engine_act(n1,3);
-    EOC_engine *e2 = new EOC_engine(n22,n21);    
-    EOC_engine *e3 = new EOC_engine(n3);    
+    EOC_engine *e2 = new EOC_engine(n22,n21);
+    EOC_engine *e3 = new EOC_engine(n3);
 
 int k=0;
     side_perf S;
@@ -284,14 +284,14 @@ int main()
 {
     unit s,d;
     char type;
-    
-// ------------------ Channel2 ------------------------------------------------------    
+
+// ------------------ Channel2 ------------------------------------------------------
 #define REPEATERS 2
     dummy_channel CHANS[15][REPEATERS+1][2];
     EOC_dummy1 *Nxx[15][REPEATERS][2];
     EOC_engine *Ex[15][REPEATERS];
     EOC_engine *E[15];
-    
+
     for(int i=0;i<15;i++){
 	Nx[i][0] = new EOC_dummy1("m-cs",&CHANS[i][0][0],&CHANS[i][0][1]);
 	Nx[i][1] = new EOC_dummy1("s-ns",&CHANS[i][REPEATERS][1],&CHANS[i][REPEATERS][0]);
@@ -302,10 +302,10 @@ int main()
 	    Ex[i][kk] = new EOC_engine(Nxx[i][kk][0],Nxx[i][kk][1]);
 	}
     }
-	
-    
-    
-    EOC_main m("eocd.conf","/home/artpol/");    
+
+
+
+    EOC_main m("eocd.conf","/home/artpol/");
 
 //----------------------------------------------------------------
 
@@ -323,7 +323,7 @@ int main()
 	        Ex[i][kk]->schedule();
 	}
 	k++;
-/*	
+/*
 	if( !(k%40) ){
 		S = Nxx[0][1]->get_current_stat();
 		S.ses++;
@@ -351,7 +351,7 @@ int main()
 
 
 
-/* container test 
+/* container test
 
 
 class A{
@@ -379,14 +379,14 @@ int main()
 	    printf("%d-i k = %d\n",i,k);
 	}else{
 	    printf("%d-i k missing\n",i);
-	}	
+	}
     }
 
 }
 
 */
 
-/* DB test 
+/* DB test
 int main()
 {
     sched_queue a;
@@ -408,9 +408,9 @@ int main()
     EOC_msg *m;
     char a[256];
     int len;
-    
+
     dummy_channel d1,d2;
-    
+
     EOC_dummy1 *n1 = new EOC_dummy1(&d1,&d2);
     EOC_dummy1 *n2 = new EOC_dummy1(&d2,&d1);
 
@@ -485,14 +485,14 @@ int main()
     for(int i=(int)sru1;i<(int)sru4;i++){
 	m->src((unit)i);
 	sch->response(m);
-	sch->print();	
+	sch->print();
     }
     m->src(stu_r);
     sch->response(m);
     sch->print();
     while( 1 ){
 	while( !sch->request(el) ){
-    	    sch->print();	
+    	    sch->print();
 	    m->type(el.type+128);
 	    m->dst(el.src);
 	    m->src(el.dst);
@@ -501,6 +501,6 @@ int main()
 	}
 	//sleep(1);
 	sch->tick();
-    }        
+    }
 }
 */

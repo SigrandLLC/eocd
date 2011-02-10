@@ -1,6 +1,6 @@
 #!/bin/ksh
 #
-# automatic build (configure/make/package) script 
+# automatic build (configure/make/package) script
 # for NET-SNMP on Solaris
 #
 # request for contribution
@@ -74,7 +74,7 @@ echo "Configuring for $prefix"
         --with-default-snmp-version=1 \
         --with-perl-modules \
 	--enable-embedded-perl \
-|| exit 
+|| exit
 #        --with-ldflags="-R $prefix/lib" \
 # for production (or not?):
 #        --with-libwrap \
@@ -171,11 +171,11 @@ pkgtrans . $PKG-$version-$ARCH-$os$rel-pkgadd $PKG || exit $?
 echo "build was successfull"
 exit 0
 
-# here are the attached files and patches 
+# here are the attached files and patches
 # they are extracted somehwere around the start of this script
 
-# when configure finds the rpm libraries and headers, it automatically 
-# assumes that the native package manager is RPM and tries to build it into 
+# when configure finds the rpm libraries and headers, it automatically
+# assumes that the native package manager is RPM and tries to build it into
 # the HOST-RESOURCES-MIB part of the agent
 # this is not intended on Solaris ...
 # the only way to get around this, is to preload config.cache
@@ -260,7 +260,7 @@ ___PATCHES___
 # patch sedscript.in and man/snmpcmd.1.def
 # environment var name was replaced by path in the manpages
 # https://sourceforge.net/tracker/?func=detail&atid=112694&aid=635022&group_id=12694
-# 
+#
 *** ./sedscript.in.orig Sat Oct  5 21:42:14 2002
 --- ./sedscript.in      Thu Nov  7 15:52:04 2002
 ***************

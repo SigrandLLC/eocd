@@ -15,10 +15,10 @@ extern          "C" {
 #define SE_MAX_SUBIDS 32        /* needs to be a multiple of 8 */
 
     /*
-     * begin storage definitions 
+     * begin storage definitions
      */
     /*
-     * These definitions correspond with the "storid" argument to the API 
+     * These definitions correspond with the "storid" argument to the API
      */
 #define SE_LIBRARY_ID     0
 #define SE_MIB_ID         1
@@ -26,11 +26,11 @@ extern          "C" {
 #define SE_ASSIGNED_ID    3
 
     /*
-     * library specific enum locations 
+     * library specific enum locations
      */
 
     /*
-     * error codes 
+     * error codes
      */
 #define SE_OK            0
 #define SE_NOMEM         1
@@ -50,10 +50,10 @@ extern          "C" {
                                 char *label, int value);
 
     /*
-     * finds a list of enums in a list of enum structs associated by a name. 
+     * finds a list of enums in a list of enum structs associated by a name.
      */
     /*
-     * not as fast as the above routines, since two lists must be traversed. 
+     * not as fast as the above routines, since two lists must be traversed.
      */
     char           *se_find_label_in_slist(const char *listname,
                                            int value);
@@ -63,7 +63,7 @@ extern          "C" {
                                          int value);
 
     /*
-     * operates directly on a possibly external list 
+     * operates directly on a possibly external list
      */
     char           *se_find_label_in_list(struct snmp_enum_list *list,
                                           int value);

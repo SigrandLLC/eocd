@@ -61,7 +61,7 @@ netsnmp_table_data_add_row(netsnmp_table_data *table,
 
     /*
      * we don't store the index info as it
-     * takes up memory. 
+     * takes up memory.
      */
     if (!table->store_indexes) {
         snmp_free_varbind(row->indexes);
@@ -76,7 +76,7 @@ netsnmp_table_data_add_row(netsnmp_table_data *table,
     }
 
     /*
-     * insert it into the table in the proper oid-lexographical order 
+     * insert it into the table in the proper oid-lexographical order
      */
     for (nextrow = table->first_row, prevrow = NULL;
          nextrow != NULL; prevrow = nextrow, nextrow = nextrow->next) {
@@ -88,7 +88,7 @@ netsnmp_table_data_add_row(netsnmp_table_data *table,
             snmp_oid_compare(nextrow->index_oid, nextrow->index_oid_len,
                              row->index_oid, row->index_oid_len) == 0) {
             /*
-             * exact match.  Duplicate entries illegal 
+             * exact match.  Duplicate entries illegal
              */
             snmp_log(LOG_WARNING,
                      "duplicate table data attempted to be entered\n");
@@ -98,10 +98,10 @@ netsnmp_table_data_add_row(netsnmp_table_data *table,
 
 
     /*
-     * ok, we have the location of where it should go 
+     * ok, we have the location of where it should go
      */
     /*
-     * (after prevrow, and before nextrow) 
+     * (after prevrow, and before nextrow)
      */
     row->next = nextrow;
     row->prev = prevrow;
@@ -155,7 +155,7 @@ netsnmp_table_data_delete_row(netsnmp_table_row *row)
         return NULL;
 
     /*
-     * free the memory we can 
+     * free the memory we can
      */
     if (row->indexes)
         snmp_free_varbind(row->indexes);
@@ -164,7 +164,7 @@ netsnmp_table_data_delete_row(netsnmp_table_row *row)
     free(row);
 
     /*
-     * return the void * pointer 
+     * return the void * pointer
      */
     return data;
 }
@@ -183,7 +183,7 @@ netsnmp_table_data_remove_and_delete_row(netsnmp_table_data *table,
         return NULL;
 
     /*
-     * remove it from the list 
+     * remove it from the list
      */
     netsnmp_table_data_remove_row(table, row);
     return netsnmp_table_data_delete_row(row);
@@ -307,7 +307,7 @@ netsnmp_table_data_helper_handler(netsnmp_mib_handler *handler,
             continue;           /* ack */
 
         /*
-         * find the row in question 
+         * find the row in question
          */
         switch (reqinfo->mode) {
         case MODE_GETNEXT:
@@ -315,7 +315,7 @@ netsnmp_table_data_helper_handler(netsnmp_mib_handler *handler,
             if (request->requestvb->type != ASN_NULL)
                 continue;
             /*
-             * loop through data till we find the next row 
+             * loop through data till we find the next row
              */
             result = snmp_oid_compare(request->requestvb->name,
                                       request->requestvb->name_length,
@@ -333,7 +333,7 @@ netsnmp_table_data_helper_handler(netsnmp_mib_handler *handler,
 
             if (result < 0 || 0 == result) {
                 /*
-                 * before us entirely, return the first 
+                 * before us entirely, return the first
                  */
                 row = table->first_row;
                 table_info->colnum = table_reg_info->min_column;
@@ -342,7 +342,7 @@ netsnmp_table_data_helper_handler(netsnmp_mib_handler *handler,
                        /* entry node must be 1, but any column is ok */
                        request->requestvb->name[reginfo->rootoid_len] == 1) {
                 /*
-                 * exactly to the entry 
+                 * exactly to the entry
                  */
                 row = table->first_row;
                 table_info->colnum = table_reg_info->min_column;
@@ -351,17 +351,17 @@ netsnmp_table_data_helper_handler(netsnmp_mib_handler *handler,
                        /* entry node must be 1, but any column is ok */
                        request->requestvb->name[reginfo->rootoid_len] == 1) {
                 /*
-                 * exactly to the column 
+                 * exactly to the column
                  */
                 row = table->first_row;
             } else {
                 /*
                  * loop through all rows looking for the first one
-                 * that is equal to the request or greater than it 
+                 * that is equal to the request or greater than it
                  */
                 for (row = table->first_row; row; row = row->next) {
                     /*
-                     * compare the index of the request to the row 
+                     * compare the index of the request to the row
                      */
                     result =
                         snmp_oid_compare(row->index_oid,
@@ -372,7 +372,7 @@ netsnmp_table_data_helper_handler(netsnmp_mib_handler *handler,
                                          2 - reginfo->rootoid_len);
                     if (result == 0) {
                         /*
-                         * equal match, return the next row 
+                         * equal match, return the next row
                          */
                         if (row) {
                             row = row->next;
@@ -381,7 +381,7 @@ netsnmp_table_data_helper_handler(netsnmp_mib_handler *handler,
                     } else if (result > 0) {
                         /*
                          * the current row is greater than the
-                         * request, use it 
+                         * request, use it
                          */
                         break;
                     }
@@ -416,11 +416,11 @@ netsnmp_table_data_helper_handler(netsnmp_mib_handler *handler,
             if (request->requestvb->type != ASN_NULL)
                 continue;
             /*
-             * find the row in question 
+             * find the row in question
              */
             if (request->requestvb->name_length < (reginfo->rootoid_len + 3)) { /* table.entry.column... */
                 /*
-                 * request too short 
+                 * request too short
                  */
                 netsnmp_set_request_error(reqinfo, request,
                                           SNMP_NOSUCHINSTANCE);
@@ -439,7 +439,7 @@ netsnmp_table_data_helper_handler(netsnmp_mib_handler *handler,
                                                         rootoid_len -
                                                         2))) {
                 /*
-                 * no such row 
+                 * no such row
                  */
                 netsnmp_set_request_error(reqinfo, request,
                                           SNMP_NOSUCHINSTANCE);
@@ -581,7 +581,7 @@ netsnmp_table_data_build_result(netsnmp_handler_registration *reginfo,
 
     if (reqinfo->mode == MODE_GETNEXT || reqinfo->mode == MODE_GETBULK) {
         /*
-         * only need to do this for getnext type cases where oid is changing 
+         * only need to do this for getnext type cases where oid is changing
          */
         memcpy(build_space, reginfo->rootoid,   /* registered oid */
                reginfo->rootoid_len * sizeof(oid));
@@ -641,5 +641,5 @@ netsnmp_table_data_num_rows(netsnmp_table_data *table)
 }
 
 /*
- * @} 
+ * @}
  */

@@ -36,12 +36,12 @@
 #include "sysORTable.h"
 
 #ifdef hpux11
-#define	TCPTABLE_ENTRY_TYPE	mib_tcpConnEnt 
-#define	TCPTABLE_STATE		State 
-#define	TCPTABLE_LOCALADDRESS	LocalAddress 
-#define	TCPTABLE_LOCALPORT	LocalPort 
-#define	TCPTABLE_REMOTEADDRESS	RemAddress 
-#define	TCPTABLE_REMOTEPORT	RemPort 
+#define	TCPTABLE_ENTRY_TYPE	mib_tcpConnEnt
+#define	TCPTABLE_STATE		State
+#define	TCPTABLE_LOCALADDRESS	LocalAddress
+#define	TCPTABLE_LOCALPORT	LocalPort
+#define	TCPTABLE_REMOTEADDRESS	RemAddress
+#define	TCPTABLE_REMOTEPORT	RemPort
 #define	TCPTABLE_IS_TABLE
 #else
 
@@ -52,31 +52,31 @@ struct netsnmp_tcpConnEntry_s {
     netsnmp_tcpConnEntry *inp_next;
 };
 #define	TCPTABLE_ENTRY_TYPE	netsnmp_tcpConnEntry
-#define	TCPTABLE_STATE		entry.tcpConnState 
-#define	TCPTABLE_LOCALADDRESS	entry.tcpConnLocalAddress 
-#define	TCPTABLE_LOCALPORT	entry.tcpConnLocalPort 
-#define	TCPTABLE_REMOTEADDRESS	entry.tcpConnRemAddress 
-#define	TCPTABLE_REMOTEPORT	entry.tcpConnRemPort 
+#define	TCPTABLE_STATE		entry.tcpConnState
+#define	TCPTABLE_LOCALADDRESS	entry.tcpConnLocalAddress
+#define	TCPTABLE_LOCALPORT	entry.tcpConnLocalPort
+#define	TCPTABLE_REMOTEADDRESS	entry.tcpConnRemAddress
+#define	TCPTABLE_REMOTEPORT	entry.tcpConnRemPort
 #define	TCPTABLE_IS_LINKED_LIST
 #else
 
 #ifdef WIN32
 #include <iphlpapi.h>
 #define	TCPTABLE_ENTRY_TYPE	MIB_TCPROW
-#define	TCPTABLE_STATE		dwState 
+#define	TCPTABLE_STATE		dwState
 #define	TCPTABLE_LOCALADDRESS	dwLocalAddr
-#define	TCPTABLE_LOCALPORT	dwLocalPort 
-#define	TCPTABLE_REMOTEADDRESS	dwRemoteAddr 
-#define	TCPTABLE_REMOTEPORT	dwRemotePort 
+#define	TCPTABLE_LOCALPORT	dwLocalPort
+#define	TCPTABLE_REMOTEADDRESS	dwRemoteAddr
+#define	TCPTABLE_REMOTEPORT	dwRemotePort
 #define	TCPTABLE_IS_TABLE
 #else
 
 #ifdef linux
-#define	TCPTABLE_ENTRY_TYPE	struct inpcb 
-#define	TCPTABLE_STATE		inp_state 
-#define	TCPTABLE_LOCALADDRESS	inp_laddr.s_addr 
+#define	TCPTABLE_ENTRY_TYPE	struct inpcb
+#define	TCPTABLE_STATE		inp_state
+#define	TCPTABLE_LOCALADDRESS	inp_laddr.s_addr
 #define	TCPTABLE_LOCALPORT	inp_lport
-#define	TCPTABLE_REMOTEADDRESS	inp_faddr.s_addr 
+#define	TCPTABLE_REMOTEADDRESS	inp_faddr.s_addr
 #define	TCPTABLE_REMOTEPORT	inp_fport
 #define	TCPTABLE_IS_LINKED_LIST
 
@@ -88,11 +88,11 @@ struct netsnmp_inpcb_s {
     int             state;
     netsnmp_inpcb  *inp_next;
 };
-#define	TCPTABLE_ENTRY_TYPE	netsnmp_inpcb 
-#define	TCPTABLE_STATE		state 
-#define	TCPTABLE_LOCALADDRESS	pcb.inp_laddr.s_addr 
+#define	TCPTABLE_ENTRY_TYPE	netsnmp_inpcb
+#define	TCPTABLE_STATE		state
+#define	TCPTABLE_LOCALADDRESS	pcb.inp_laddr.s_addr
 #define	TCPTABLE_LOCALPORT	pcb.inp_lport
-#define	TCPTABLE_REMOTEADDRESS	pcb.inp_faddr.s_addr 
+#define	TCPTABLE_REMOTEADDRESS	pcb.inp_faddr.s_addr
 #define	TCPTABLE_REMOTEPORT	pcb.inp_fport
 #define	TCPTABLE_IS_LINKED_LIST
 
@@ -548,7 +548,7 @@ tcpTable_load(netsnmp_cache *cache, void *vmagic)
     }
 
     /*
-     * scan proc-file and build up a linked list 
+     * scan proc-file and build up a linked list
      * This will actually be built up in reverse,
      *   but since the entries are unsorted, that doesn't matter.
      */
@@ -654,14 +654,14 @@ tcpTable_load(netsnmp_cache *cache, void *vmagic)
     DWORD         status = NO_ERROR;
 
     /*
-     * query for the buffer size needed 
+     * query for the buffer size needed
      */
     status = GetTcpTable(pTcpTable, &dwActualSize, TRUE);
     if (status == ERROR_INSUFFICIENT_BUFFER) {
         pTcpTable = (PMIB_TCPTABLE) malloc(dwActualSize);
         if (pTcpTable != NULL) {
             /*
-             * Get the sorted TCP table 
+             * Get the sorted TCP table
              */
             status = GetTcpTable(pTcpTable, &dwActualSize, TRUE);
         }
@@ -781,7 +781,7 @@ tcpTable_load(netsnmp_cache *cache, void *vmagic)
      */
     entry  = table.inpt_queue.cqh_first;
     while (entry) {
-   
+
         nnew = SNMP_MALLOC_TYPEDEF(netsnmp_inpcb);
         if (!nnew)
             break;
@@ -835,7 +835,7 @@ tcpTable_load(netsnmp_cache *cache, void *vmagic)
      */
     entry  = tcp_inpcb.INP_NEXT_SYMBOL;
     while (entry) {
-   
+
         nnew = SNMP_MALLOC_TYPEDEF(netsnmp_inpcb);
         if (!nnew)
             break;

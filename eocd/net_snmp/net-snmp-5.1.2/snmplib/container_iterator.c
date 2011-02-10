@@ -32,7 +32,7 @@
  * Typedefs the iterator_info_s struct into iterator_info */
 
 /** @struct iterator_info_s
-    
+
 * Holds iterator information containing functions which should be
 called by the iterator_handler to loop over your data set and
 sort it in a SNMP specific manner.
@@ -51,23 +51,23 @@ typedef struct iterator_info_s {
     */
    Netsnmp_Iterator_Loop_Key *get_first;
    Netsnmp_Iterator_Loop_Key *get_next;
-   
+
    Netsnmp_Iterator_Loop_Data *get_data;
 
    Netsnmp_Iterator_Data *free_user_ctx;
-   
+
    Netsnmp_Iterator_Ctx *init_loop_ctx;
    Netsnmp_Iterator_Ctx *cleanup_loop_ctx;
    Netsnmp_Iterator_Ctx_Dup *save_pos;
-   
+
    Netsnmp_Iterator_Data * release_data;
    Netsnmp_Iterator_Data * insert_data;
    Netsnmp_Iterator_Data * remove_data;
 
    Netsnmp_Iterator_Op * get_size;
-   
+
    int             sorted;
-   
+
    /** This can be used by client handlers to store any
        information they need */
    void           *user_ctx;
@@ -87,10 +87,10 @@ _iterator_get(iterator_info *ii, const void *key)
     netsnmp_ref_void loop_ctx = { NULL };
 
     DEBUGMSGT(("container_iterator",">%s\n", "_iterator_get"));
-    
+
     if(ii->init_loop_ctx)
         ii->init_loop_ctx(ii->user_ctx, &loop_ctx);
-    
+
     rc = ii->get_first(ii->user_ctx, &loop_ctx, &tmp);
     if(SNMP_ERR_NOERROR != rc) {
         if(SNMP_ENDOFMIBVIEW != rc)
@@ -100,7 +100,7 @@ _iterator_get(iterator_info *ii, const void *key)
         for( ;
              (NULL != tmp.val) && (SNMP_ERR_NOERROR == rc);
              rc = ii->get_next(ii->user_ctx, &loop_ctx, &tmp) ) {
-            
+
             /*
              * if keys are equal, we are done.
              */
@@ -110,7 +110,7 @@ _iterator_get(iterator_info *ii, const void *key)
                 if(ii->get_data)
                     ii->get_data(ii->user_ctx, &loop_ctx, &best);
             }
-            
+
             /*
              * if data is sorted and if key is greater,
              * we are done (not found)
@@ -119,7 +119,7 @@ _iterator_get(iterator_info *ii, const void *key)
                 break;
         } /* end for */
     }
-    
+
     if(ii->cleanup_loop_ctx)
         ii->cleanup_loop_ctx(ii->user_ctx,&loop_ctx);
 
@@ -143,13 +143,13 @@ _iterator_get_next(iterator_info *ii, const void *key)
     netsnmp_ref_void loop_ctx = { NULL };
 
     DEBUGMSGT(("container_iterator",">%s\n", "_iterator_get_next"));
-    
+
     /*
      * initialize loop context
      */
     if(ii->init_loop_ctx)
         ii->init_loop_ctx(ii->user_ctx, &loop_ctx);
-    
+
     /*
      * get first item
      */
@@ -176,7 +176,7 @@ _iterator_get_next(iterator_info *ii, const void *key)
         for( ;
              (NULL != tmp.val) && (rc == SNMP_ERR_NOERROR);
              rc = ii->get_next(ii->user_ctx, &loop_ctx, &tmp) ) {
-            
+
             /*
              * if we have a key, this is a get-next, and we need to compare
              * the key to the tmp value to see if the tmp value is greater
@@ -235,7 +235,7 @@ _iterator_get_next(iterator_info *ii, const void *key)
                     rc = SNMPERR_GENERR; /* not found */
                 break;
             }
-            
+
         } /* end for */
     }
 
@@ -244,7 +244,7 @@ _iterator_get_next(iterator_info *ii, const void *key)
      */
     if(SNMP_ENDOFMIBVIEW == rc)
         rc = SNMP_ERR_NOERROR;
-            
+
     /*
      * get data, iff necessary
      * clear return value iff errors
@@ -289,13 +289,13 @@ static void
 _iterator_free(iterator_info *ii)
 {
     DEBUGMSGT(("container_iterator",">%s\n", "_iterator_free"));
-    
+
     if(NULL == ii)
         return;
-    
+
     if(ii->user_ctx)
         ii->free_user_ctx(ii->user_ctx,ii->user_ctx);
-    
+
     free(ii);
 }
 
@@ -303,7 +303,7 @@ static void *
 _iterator_find(iterator_info *ii, const void *data)
 {
     DEBUGMSGT(("container_iterator",">%s\n", "_iterator_find"));
-    
+
     if((NULL == ii) || (NULL == data))
         return NULL;
 
@@ -314,7 +314,7 @@ static void *
 _iterator_find_next(iterator_info *ii, const void *data)
 {
     DEBUGMSGT(("container_iterator",">%s\n", "_iterator_find_next"));
-    
+
     if(NULL == ii)
         return NULL;
 
@@ -325,7 +325,7 @@ static int
 _iterator_insert(iterator_info *ii, const void *data)
 {
     DEBUGMSGT(("container_iterator",">%s\n", "_iterator_insert"));
-    
+
     if(NULL == ii)
         return -1;
 
@@ -339,7 +339,7 @@ static int
 _iterator_remove(iterator_info *ii, const void *data)
 {
     DEBUGMSGT(("container_iterator",">%s\n", "_iterator_remove"));
-    
+
     if(NULL == ii)
         return -1;
 
@@ -353,7 +353,7 @@ static int
 _iterator_release(iterator_info *ii, const void *data)
 {
     DEBUGMSGT(("container_iterator",">%s\n", "_iterator_release"));
-    
+
     if(NULL == ii)
         return -1;
 
@@ -372,7 +372,7 @@ _iterator_size(iterator_info *ii)
     netsnmp_ref_void tmp = { NULL };
 
     DEBUGMSGT(("container_iterator",">%s\n", "_iterator_size"));
-    
+
     if(NULL == ii)
         return -1;
 
@@ -384,7 +384,7 @@ _iterator_size(iterator_info *ii)
      */
     if(ii->init_loop_ctx)
         ii->init_loop_ctx(ii->user_ctx, &loop_ctx);
-    
+
     for( rc = ii->get_first(ii->user_ctx, &loop_ctx, &tmp);
          NULL != tmp.val;
          rc = ii->get_next(ii->user_ctx, &loop_ctx, &tmp) )
@@ -405,13 +405,13 @@ _iterator_for_each(iterator_info *ii, netsnmp_container_obj_func *f,
     netsnmp_ref_void tmp = { NULL };
 
     DEBUGMSGT(("container_iterator",">%s\n", "_iterator_foreach"));
-    
+
     if(NULL == ii)
         return;
 
     if(ii->init_loop_ctx)
         ii->init_loop_ctx(ii->user_ctx, &loop_ctx);
-    
+
     for( rc = ii->get_first(ii->user_ctx, &loop_ctx, &tmp);
          NULL != tmp.val;
          rc = ii->get_next(ii->user_ctx, &loop_ctx, &tmp) )
@@ -497,7 +497,7 @@ netsnmp_container_iterator_set_data_cb(netsnmp_container *c,
     iterator_info *ii = (iterator_info *)c;
     if(NULL == ii)
         return;
-    
+
     ii->insert_data = insert_data;
     ii->remove_data = remove_data;
     ii->get_size = get_size;

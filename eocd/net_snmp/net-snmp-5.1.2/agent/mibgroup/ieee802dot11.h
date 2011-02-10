@@ -33,7 +33,7 @@
 /****************************************************************************
 *                             Linked List Defines                           *
 ****************************************************************************/
-// here are some Linked List MACROS I wanted to use, 
+// here are some Linked List MACROS I wanted to use,
 // but curiously were not in /usr/includes/sys/queue.h
 
 #ifndef LIST_EMPTY
@@ -103,8 +103,8 @@
 /****************************************************************************
 *                           Linked List Structure                           *
 ****************************************************************************/
-static struct avNode {  
-  LIST_ENTRY ( avNode ) nodes; 
+static struct avNode {
+  LIST_ENTRY ( avNode ) nodes;
   char *data;                                 // pointer to data
 };
 

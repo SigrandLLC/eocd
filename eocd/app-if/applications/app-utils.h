@@ -51,7 +51,7 @@ typedef struct {
 
 typedef struct {
 	int size,used;
-	confprof_info_t *cinfos; 
+	confprof_info_t *cinfos;
 } profiles_info_t;
 
 // Convertions between strings and vars

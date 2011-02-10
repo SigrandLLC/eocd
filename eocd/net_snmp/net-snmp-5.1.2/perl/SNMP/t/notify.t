@@ -89,7 +89,7 @@ if (defined($s3)) {
     $res = $s3->inform(uptime=>111, trapoid=>'coldStart', [[sysContact, 0, 'root@localhost'], [sysLocation, 0, 'here']] );
     print "res = $res\n";
 }
-  
+
 ok($res =~ /^0 but true/);
 
 snmptest_cleanup();

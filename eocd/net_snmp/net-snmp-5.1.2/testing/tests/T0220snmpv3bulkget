@@ -8,7 +8,7 @@ HEADER SNMPv3 bulkget of system
 # Begin test
 #
 
-# standard V3 configuration: 
+# standard V3 configuration:
 . ./Sv3config
 
 STARTAGENT

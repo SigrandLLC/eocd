@@ -6,7 +6,7 @@ extern          "C" {
 #endif
     /*
      * snmp-tc.h: Provide some standard #defines for Textual Convention
-     * related value information 
+     * related value information
      */
 
     int
@@ -22,13 +22,13 @@ extern          "C" {
     time_t          ctime_to_timet(char *);
 
     /*
-     * TrueValue 
+     * TrueValue
      */
 #define TV_TRUE 1
 #define TV_FALSE 2
 
     /*
-     * RowStatus 
+     * RowStatus
      */
 #define RS_NONEXISTENT    0
 #define RS_ACTIVE	        1
@@ -43,7 +43,7 @@ extern          "C" {
 #define RS_IS_NOT_ACTIVE( x ) ( ! RS_IS_GOING_ACTIVE(x) )
 
     /*
-     * StorageType 
+     * StorageType
      */
 #define ST_NONE 0
 #define ST_OTHER	1

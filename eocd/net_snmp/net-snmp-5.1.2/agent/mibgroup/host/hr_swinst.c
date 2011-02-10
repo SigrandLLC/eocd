@@ -191,7 +191,7 @@ init_hr_swinst(void)
 
     /*
      * Read settings from config file,
-     * or take system-specific defaults 
+     * or take system-specific defaults
      */
 
 #ifdef HAVE_LIBRPM
@@ -199,7 +199,7 @@ init_hr_swinst(void)
         char            path[SNMP_MAXPATH];
 
         /*
-         * XXX distinguish between rpm-2.5.x and rpm-2.9x 
+         * XXX distinguish between rpm-2.5.x and rpm-2.9x
          */
 #ifdef HAVE_RPMGETPATH
         rpmReadConfigFiles(NULL, NULL);
@@ -224,7 +224,7 @@ init_hr_swinst(void)
     strcpy(swi->swi_name, "[installed name]");  /* default name */
 #  else
     /*
-     * XXX SunOS4 package directory is ?? -MJS 
+     * XXX SunOS4 package directory is ?? -MJS
      */
     return;                     /* packages not known - don't register */
 #  endif
@@ -239,7 +239,7 @@ init_hr_swinst(void)
  * Arguments:
  * vp     IN      - pointer to variable entry that points here
  * name    IN/OUT  - IN/name requested, OUT/name found
- * length  IN/OUT  - length of IN/OUT oid's 
+ * length  IN/OUT  - length of IN/OUT oid's
  * exact   IN      - TRUE if an exact match was requested
  * var_len OUT     - length of variable or 0 if function returned
  * write_method
@@ -291,7 +291,7 @@ header_hrswInstEntry(struct variable *vp,
 
     memcpy((char *) newname, (char *) vp->name, vp->namelen * sizeof(oid));
     /*
-     * Find "next" installed software entry 
+     * Find "next" installed software entry
      */
 
     Init_HR_SWInst();
@@ -382,7 +382,7 @@ var_hrswinst(struct variable * vp,
         if (*string && (stat(string, &stat_buf) != -1)) {
             if (stat_buf.st_mtime > starttime.tv_sec)
                 /*
-                 * changed 'recently' - i.e. since this agent started 
+                 * changed 'recently' - i.e. since this agent started
                  */
                 long_return = (stat_buf.st_mtime - starttime.tv_sec) * 100;
             else
@@ -405,7 +405,7 @@ var_hrswinst(struct variable * vp,
             strncpy(string, swi->swi_name, sizeof(string) - 1);
             /*
              * This will be unchanged from the initial "null"
-             * value, if swi->swi_name is not defined 
+             * value, if swi->swi_name is not defined
              */
             string[sizeof(string) - 1] = '\0';
             *var_len = strlen(string);
@@ -420,7 +420,7 @@ var_hrswinst(struct variable * vp,
         {
 #ifdef HAVE_PKGINFO
             /*
-             * at least on solaris2 this works 
+             * at least on solaris2 this works
              */
             char           *catg = pkgparam(swi->swi_name, "CATEGORY");
 
@@ -496,7 +496,7 @@ Check_HRSW_cache(void *xxx)
     SWI_t          *swi = (SWI_t *) xxx;
 
     /*
-     * Make sure cache is up-to-date 
+     * Make sure cache is up-to-date
      */
     if (swi->swi_recs != NULL) {
         struct stat     sb;
@@ -507,7 +507,7 @@ Check_HRSW_cache(void *xxx)
     }
 
     /*
-     * Get header offsets 
+     * Get header offsets
      */
     {
         int             ix = 0;
@@ -581,7 +581,7 @@ Get_Next_HR_SWInst(void)
 
 #ifdef HAVE_LIBRPM
     /*
-     * XXX Watchout: index starts with 1 
+     * XXX Watchout: index starts with 1
      */
     if (0 <= swi->swi_index && swi->swi_index < swi->swi_nrec)
         return ++swi->swi_index;
@@ -592,7 +592,7 @@ Get_Next_HR_SWInst(void)
                 continue;
 
             /*
-             * Ought to check for "properly-formed" entry 
+             * Ought to check for "properly-formed" entry
              */
 
             return ++swi->swi_index;
@@ -610,7 +610,7 @@ Save_HR_SW_info(int ix)
 
 #ifdef HAVE_LIBRPM
     /*
-     * XXX Watchout: ix starts with 1 
+     * XXX Watchout: ix starts with 1
      */
     if (1 <= ix && ix <= swi->swi_nrec && ix != swi->swi_prevx) {
         int             offset;

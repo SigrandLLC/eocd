@@ -79,7 +79,7 @@ class EOC_config{
 	}
 
     u16 repeaters(){ return rep_num; }
-    int repeaters(u16 rnum){ 
+    int repeaters(u16 rnum){
 		if( rnum <= MAX_REPEATERS ){
 			rep_num = rnum;
 			return 0;
@@ -99,7 +99,7 @@ class EOC_config{
     s8 snr_tresh(){ return 0;}
     s8 loop_tresh(){ return 0; }
     int can_apply(){ return app_cfg; }
-    int can_apply(u8 _app){ 
+    int can_apply(u8 _app){
 		app_cfg = _app;
 	}
 

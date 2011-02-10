@@ -133,7 +133,7 @@ netsnmp_parse_override(const char *token, char *line)
     case ASN_BIT_STR:
         if (buf[0] == '0' && buf[1] == 'x') {
             /*
-             * hex 
+             * hex
              */
             thedata->value_len =
                 hex_to_binary2(buf + 2, strlen(buf) - 2,

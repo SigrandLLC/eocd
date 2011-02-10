@@ -9,7 +9,7 @@
 
 HEADER a short description of your test
 
-#------------------------------------ -o- 
+#------------------------------------ -o-
 # Test.
 #
 
@@ -22,7 +22,7 @@ CHECKEXACT "<string_to_look_for_an_exact_match_of_in_the_CAPTUREd_file_output>"
 [ $? -eq 1 ]
 FAILED $? "<diagnostic_label>"
 
-#------------------------------------ -o- 
+#------------------------------------ -o-
 # Cleanup, exit.
 #
 

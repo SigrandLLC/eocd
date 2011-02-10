@@ -1,5 +1,5 @@
 /*
- * watcher.h 
+ * watcher.h
  */
 #ifndef NETSNMP_WATCHER_H
 #define NETSNMP_WATCHER_H

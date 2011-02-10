@@ -196,7 +196,7 @@ not_there:
 }
 
 
-MODULE = NetSNMP::agent::default_store		PACKAGE = NetSNMP::agent::default_store		
+MODULE = NetSNMP::agent::default_store		PACKAGE = NetSNMP::agent::default_store
 
 
 double

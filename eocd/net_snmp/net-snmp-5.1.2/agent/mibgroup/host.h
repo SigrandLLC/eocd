@@ -24,7 +24,7 @@ config_add_mib(HOST-RESOURCES-TYPES)
  *
  *   A few words about the design of the Host Resources
  *     implementation - particularly as regards the hrDevice
- *     group and hrDeviceIndex.  This (and hrStorageIndex) make 
+ *     group and hrDeviceIndex.  This (and hrStorageIndex) make
  *     use of the non-consecutive nature of SNMP instance identifiers.
  *
  *   hrDeviceIndex is structured in a 'major/minor' form,
@@ -35,14 +35,14 @@ config_add_mib(HOST-RESOURCES-TYPES)
  *   The implementation of walking through the available devices
  *     uses a pair of arrays of functions - indexed by hrDeviceType
  *     These are used to perform any initialisation needed for that
- *     type of device, and to step through the instances of that type. 
+ *     type of device, and to step through the instances of that type.
  *   This latter 'get_next' routing returns the hrDeviceIndex (including
  *     the hrDeviceType major number), or -1 if there are no further
  *     instances of that type.
  *   When all devices of a particular type have been processed, the
  *     initialisation function for the next device type is called,
  *     and so on until all devices have been proceesed.
- *   
+ *
  *   Similar arrays are used to provide type-specific functions to
  *     return the "common" device information (description, ID, status
  *     and error count), and to save any internal structures needed
@@ -76,10 +76,10 @@ config_add_mib(HOST-RESOURCES-TYPES)
  *     disk device discovery code, which is gross in the extreme,
  *     and should never have seen the light of day!
  *   Hopefully this can be ripped out and given a quiet burial as
- *     soon as is decently possible.  
+ *     soon as is decently possible.
  *
  *   Now it's up to the rest of you to hammer this into some sort of
  *     sensible shape.
  *                                Dave Shield
- *   
+ *
  *********************************************/

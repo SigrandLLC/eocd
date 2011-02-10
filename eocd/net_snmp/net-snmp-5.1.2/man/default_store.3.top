@@ -62,23 +62,23 @@ Currently, three data types are supported: booleans, integers, and
 strings. Each of these data types have separate storage
 spaces. In addition, the storage space for each data type is divided
 further by the application level.   Currently, there are two storage
-spaces. The first is reserved for the SNMP library itself. The second 
+spaces. The first is reserved for the SNMP library itself. The second
 is intended for use in applications and is not modified or checked by
 the library, and, therefore, this is the space usable by you.
 .PP
 You can think of these storage spaces as being 3 arrays, something
 like bool_storage[storeid][which], int_storage[storeid][which], and
-string_storage[storeid][which].  The data is then accessed through the 
-functions defined below.  For data you wish to store, you should use a 
+string_storage[storeid][which].  The data is then accessed through the
+functions defined below.  For data you wish to store, you should use a
 .I store
 parameter of
 .BR NETSNMP_DS_APPLICATION_ID .
 .PP
-The storage space used by the library (for which the 
+The storage space used by the library (for which the
 .I store
 parameter is
 .BR NETSNMP_DS_LIBRARY_ID )
-is defined in the default_store.h file, which currently contains the 
-following defines: 
+is defined in the default_store.h file, which currently contains the
+following defines:
 .PP
 .nf

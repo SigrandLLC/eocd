@@ -49,7 +49,7 @@ to register your callback to be called
 .I seconds
 from now.  The
 .I flags
-field should either be 
+field should either be
 .I SA_REPEAT
 or
 .I NULL.
@@ -70,7 +70,7 @@ parameter in the registration function is used only by
 the client function and is stored and passed back directly to them on
 every call to the system.
 .PP
-The 
+The
 .B snmp_alarm_register()
 function returns a unique
 .I "unsigned int"
@@ -108,9 +108,9 @@ See, however, the notes below.
 .SH INITIALIZATION
 The
 .B init_snmp()
-function initialises the snmp_alarm subsystem by calling 
+function initialises the snmp_alarm subsystem by calling
 .B init_snmp_alarm()
-and then 
+and then
 .B init_alarm_post_config()
 to set up the first timer to initialise the callback function.  These
 two functions should not be used directly by applications.
@@ -130,7 +130,7 @@ use the
 .I SIGALRM
 functionality, the snmp_alarm subsystem will not work correctly).
 .PP
-If your application runs a 
+If your application runs a
 .BR select (2)-based
 event loop, however, there is no need to use
 .I SIGALRM
@@ -138,13 +138,13 @@ for the snmp_alarm subsystem, leaving it available for other parts of
 the application.  This is done by making the following call:
 .PP
 .nf
-netsnmp_ds_set_boolean(NETSNMP_DS_LIBRARY_ID, 
+netsnmp_ds_set_boolean(NETSNMP_DS_LIBRARY_ID,
                        NETSNMP_DS_LIB_ALARM_DONT_USE_SIG, 1);
 .fi
 .PP
 before calling
 .BR "init_snmp()".
-Then, 
+Then,
 .BR snmp_select_info()
 takes alarms into account when calculating the timeout value to be
 used for

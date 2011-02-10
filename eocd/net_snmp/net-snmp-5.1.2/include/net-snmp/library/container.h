@@ -91,7 +91,7 @@ extern "C" {
      *
      *************************************************************************/
     typedef struct netsnmp_container_s {
-       
+
        /*
         * pointer for container implementation
         */
@@ -101,7 +101,7 @@ extern "C" {
         * returns the number of items in a container
         */
        netsnmp_container_size  *get_size;
-       
+
        /*
         * initialize a container
         */
@@ -278,7 +278,7 @@ extern "C" {
     int CONTAINER_INSERT(netsnmp_container *x, const void *k)
     {
         int rc2, rc = 0;
-        
+
         /** start at first container */
         while(x->prev)
             x = x->prev;
@@ -292,7 +292,7 @@ extern "C" {
         }
         return rc;
     }
-    
+
     /*------------------------------------------------------------------
      * These functions should EXACTLY match the function version in
      * container.c. If you change one, change them both.
@@ -301,7 +301,7 @@ extern "C" {
     int CONTAINER_REMOVE(netsnmp_container *x, const void *k)
     {
         int rc2, rc = 0;
-        
+
         /** start at last container */
         while(x->next)
             x = x->next;
@@ -312,11 +312,11 @@ extern "C" {
                 rc = rc2;
             }
             x = x->prev;
-            
+
         }
         return rc;
     }
-    
+
     /*------------------------------------------------------------------
      * These functions should EXACTLY match the function version in
      * container.c. If you change one, change them both.
@@ -325,7 +325,7 @@ extern "C" {
     int CONTAINER_FREE(netsnmp_container *x)
     {
 	int  rc2, rc = 0;
-        
+
         /** start at last container */
         while(x->next)
             x = x->next;
@@ -391,9 +391,9 @@ extern "C" {
      *
      *************************************************************************/
     typedef struct netsnmp_sorted_container_s {
-       
+
        netsnmp_container                bc;
-       
+
        /*
         * methods to manipulate container
         */
@@ -401,18 +401,18 @@ extern "C" {
        netsnmp_container_rtn            *first;
        netsnmp_container_rtn            *next;
        netsnmp_container_set            *subset;
-       
+
     } netsnmp_sorted_container;
-    
+
 
     void
     netsnmp_init_sorted_container(netsnmp_sorted_container  *sc,
                                   netsnmp_container_rtn     *first,
                                   netsnmp_container_rtn     *next,
                                   netsnmp_container_set     *subset);
-    
-    
-    
+
+
+
 #ifdef  __cplusplus
 };
 #endif

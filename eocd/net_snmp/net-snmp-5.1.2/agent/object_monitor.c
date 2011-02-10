@@ -84,7 +84,7 @@ typedef struct callback_placeholder_s {
 
 /**************************************************************************
  *
- * 
+ *
  *
  **************************************************************************/
 
@@ -113,7 +113,7 @@ static void     move_pending_to_ready(void);
  **************************************************************************/
 
 /*
- * 
+ *
  */
 void
 netsnmp_monitor_init(void)
@@ -129,7 +129,7 @@ netsnmp_monitor_init(void)
         need_init = 0;
     monitored_objects->compare = netsnmp_compare_netsnmp_index;
     monitored_objects->ncompare = netsnmp_ncompare_netsnmp_index;
-    
+
     return;
 }
 

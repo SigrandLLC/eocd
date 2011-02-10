@@ -21,7 +21,7 @@ typedef struct{
     u16 noNeighborPresent:1;
     u16 loopbackActive:1;
 } shdsl_status_t;
- 
+
 
 typedef struct{
 	u32 mon_sec;

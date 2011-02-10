@@ -36,7 +36,7 @@ SOFTWARE.
 
 /** @defgroup snmp_client various PDU processing routines
  *  @ingroup library
- * 
+ *
  *  @{
  */
 #include <net-snmp/net-snmp-config.h>
@@ -114,7 +114,7 @@ typedef long    fd_mask;
 #endif
 
 /*
- * Prototype definitions 
+ * Prototype definitions
  */
 static int      snmp_synch_input(int op, netsnmp_session * session,
                                  int reqid, netsnmp_pdu *pdu, void *magic);
@@ -182,7 +182,7 @@ snmp_synch_input(int op,
             SET_SNMP_ERROR(rpt_type);
         } else if (pdu->command == SNMP_MSG_RESPONSE) {
             /*
-             * clone the pdu to return to snmp_synch_response 
+             * clone the pdu to return to snmp_synch_response
              */
             state->pdu = snmp_clone_pdu(pdu);
             state->status = STAT_SUCCESS;
@@ -235,7 +235,7 @@ snmp_clone_var(netsnmp_variable_list * var, netsnmp_variable_list * newvar)
         return 1;
 
     /*
-     * need a pointer and a length to copy a string value. 
+     * need a pointer and a length to copy a string value.
      */
     if (var->val.string && var->val_len) {
         if (var->val.string != &var->buf[0]) {
@@ -328,7 +328,7 @@ _clone_pdu_header(netsnmp_pdu *pdu)
     memmove(newpdu, pdu, sizeof(netsnmp_pdu));
 
     /*
-     * reset copied pointers if copy fails 
+     * reset copied pointers if copy fails
      */
     newpdu->variables = 0;
     newpdu->enterprise = 0;
@@ -340,7 +340,7 @@ _clone_pdu_header(netsnmp_pdu *pdu)
     newpdu->transport_data = 0;
 
     /*
-     * copy buffers individually. If any copy fails, all are freed. 
+     * copy buffers individually. If any copy fails, all are freed.
      */
     if (snmp_clone_mem((void **) &newpdu->enterprise, pdu->enterprise,
                        sizeof(oid) * pdu->enterprise_length) ||
@@ -363,7 +363,7 @@ _clone_pdu_header(netsnmp_pdu *pdu)
     if ((sptr = find_sec_mod(newpdu->securityModel)) != NULL &&
         sptr->pdu_clone != NULL) {
         /*
-         * call security model if it needs to know about this 
+         * call security model if it needs to know about this
          */
         (*sptr->pdu_clone) (pdu, newpdu);
     }
@@ -385,7 +385,7 @@ _copy_varlist(netsnmp_variable_list * var,      /* source varList */
 
     while (var && (copy_count-- > 0)) {
         /*
-         * Drop the specified variable (if applicable) 
+         * Drop the specified variable (if applicable)
          */
         if (++ii == errindex) {
             var = var->next_variable;
@@ -393,7 +393,7 @@ _copy_varlist(netsnmp_variable_list * var,      /* source varList */
         }
 
         /*
-         * clone the next variable. Cleanup if alloc fails 
+         * clone the next variable. Cleanup if alloc fails
          */
         newvar = (netsnmp_variable_list *)
             malloc(sizeof(netsnmp_variable_list));
@@ -405,7 +405,7 @@ _copy_varlist(netsnmp_variable_list * var,      /* source varList */
         }
 
         /*
-         * add cloned variable to new list  
+         * add cloned variable to new list
          */
         if (0 == newhead)
             newhead = newvar;
@@ -472,13 +472,13 @@ _copy_pdu_vars(netsnmp_pdu *pdu,        /* source PDU */
 
 #if ALSO_TEMPORARILY_DISABLED
     /*
-     * Error if bad errindex or if target PDU has no variables copied 
+     * Error if bad errindex or if target PDU has no variables copied
      */
     if ((drop_err && (ii < pdu->errindex))
 #if TEMPORARILY_DISABLED
         /*
          * SNMPv3 engineID probes are allowed to be empty.
-         * See the comment in snmp_api.c for further details 
+         * See the comment in snmp_api.c for further details
          */
         || copied == 0
 #endif
@@ -629,13 +629,13 @@ snmp_set_var_objid(netsnmp_variable_list * vp,
         vp->name_length > (sizeof(vp->name_loc) / sizeof(oid))) {
         /*
          * Probably previously-allocated "big storage".  Better free it
-         * else memory leaks possible.  
+         * else memory leaks possible.
          */
         free(vp->name);
     }
 
     /*
-     * use built-in storage for smaller values 
+     * use built-in storage for smaller values
      */
     if (len <= sizeof(vp->name_loc)) {
         vp->name = vp->name_loc;
@@ -659,9 +659,9 @@ snmp_set_var_objid(netsnmp_variable_list * vp,
  *                 val_str, and val_len.
  * @param type     is the asn data type to be copied
  * @param val_str  is a buffer containing the value to be copied into the
- *                 newvar structure. 
+ *                 newvar structure.
  * @param val_len  the length of val_str
- * 
+ *
  * @return returns 0 on success and 1 on a malloc error
  */
 
@@ -727,7 +727,7 @@ snmp_set_var_value(netsnmp_variable_list * newvar,
     newvar->val_len = 0;
 
     /*
-     * need a pointer and a length to copy a string value. 
+     * need a pointer and a length to copy a string value.
      */
     if (val_str && val_len) {
         if (val_len <= sizeof(newvar->buf))
@@ -741,7 +741,7 @@ snmp_set_var_value(netsnmp_variable_list * newvar,
         newvar->val_len = val_len;
     } else if (val_str) {
         /*
-         * NULL STRING != NULL ptr 
+         * NULL STRING != NULL ptr
          */
         newvar->val.string = newvar->buf;
         newvar->val.string[0] = '\0';
@@ -829,7 +829,7 @@ snmp_synch_response_cb(netsnmp_session * ss,
                     snmp_set_detail(strerror(errno));
                 }
                 /*
-                 * FALLTHRU 
+                 * FALLTHRU
                  */
             default:
                 state->status = STAT_ERROR;
@@ -908,7 +908,7 @@ snmp_sess_synch_response(void *sessp,
                     snmp_set_detail(strerror(errno));
                 }
                 /*
-                 * FALLTHRU 
+                 * FALLTHRU
                  */
             default:
                 state->status = STAT_ERROR;

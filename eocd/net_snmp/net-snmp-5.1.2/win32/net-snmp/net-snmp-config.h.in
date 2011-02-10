@@ -1488,7 +1488,7 @@
 #   define NETSNMP_USE_INLINE 1
 #else
 #   undef  NETSNMP_INLINE
-#   define NETSNMP_INLINE 
+#   define NETSNMP_INLINE
 #   undef  NETSNMP_STATIC_INLINE
 #   define NETSNMP_STATIC_INLINE static
 #endif

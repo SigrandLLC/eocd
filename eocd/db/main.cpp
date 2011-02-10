@@ -23,5 +23,5 @@ int main()
 	if( k == 30 )
 	    break;
     }
-    
+
 }

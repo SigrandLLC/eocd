@@ -29,7 +29,7 @@ dnl changequote([, ])
 dnl @synopsis AC_PROMPT_USER(VARIABLENAME,QUESTION,[DEFAULT],QUOTED)
 dnl
 dnl Asks a QUESTION and puts the results in VARIABLENAME with an optional
-dnl DEFAULT value if the user merely hits return.  Also calls 
+dnl DEFAULT value if the user merely hits return.  Also calls
 dnl AC_DEFINE_UNQUOTED() on the VARIABLENAME for VARIABLENAMEs that should
 dnl be entered into the config.h file as well.  If QUOTED is "quoted" then
 dnl the result will be defined within quotes.
@@ -84,7 +84,7 @@ fi
 AC_TRY_COMPILE([
 $1
 ],[
-struct $2 testit; 
+struct $2 testit;
 testit.$3 $defineit;
 ], eval "${ac_safe_all}=yes", eval "${ac_safe_all}=no" )
 ])

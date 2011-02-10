@@ -4,17 +4,17 @@
 #include <eoc_debug.h>
 
 int EOC_dev_terminal::
-check_ctrl_files(char *d,char **opts,int opts_num) 
+check_ctrl_files(char *d,char **opts,int opts_num)
 {
     DIR *dir;
     int ocnt = 0;
     struct dirent *ent;
-    
+
     if( !(dir = opendir(d)) ){
 	PDEBUG(DERR,"Cannot open dir: %s",d);
 	return -1;
     }
-    
+
     for(int i=0;i<opts_num;i++){
 	rewinddir(dir);
 	while( ent = readdir(dir) ){
@@ -28,5 +28,5 @@ check_ctrl_files(char *d,char **opts,int opts_num)
     }
     closedir(dir);
     PDEBUG(DFULL,"ocnt = %d, opts_num = %d",ocnt,opts_num);
-    return (ocnt == opts_num ) ? 0 : -1;	
+    return (ocnt == opts_num ) ? 0 : -1;
 }

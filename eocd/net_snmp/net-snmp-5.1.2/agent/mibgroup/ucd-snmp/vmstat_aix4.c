@@ -17,18 +17,18 @@
  */
 
 /*
- * To make lint skip the debug code and stop complaining 
+ * To make lint skip the debug code and stop complaining
  */
 #ifdef __lint
 #define SNMP_NO_DEBUGGING 1
 #endif
 
 /*
- * Includes start here 
+ * Includes start here
  */
 
 /*
- * Standard includes 
+ * Standard includes
  */
 #include <stdlib.h>
 #include <unistd.h>
@@ -37,7 +37,7 @@
 #include <string.h>
 
 /*
- * libperfstat structs 
+ * libperfstat structs
  */
 #include <libperfstat.h>
 
@@ -49,18 +49,18 @@
 #include "util_funcs.h"
 
 /*
- * Header file for this module 
+ * Header file for this module
  */
 #include "vmstat.h"
 #include "vmstat_aix4.h"
 
 /*
- * Includes end here 
+ * Includes end here
  */
 
 
 /*
- * Global structures start here 
+ * Global structures start here
  */
 
 /*
@@ -79,17 +79,17 @@ struct cpu_stat_snapshot {
 };
 
 /*
- * Global structures end here 
+ * Global structures end here
  */
 
 
 /*
- * Global variables start here 
+ * Global variables start here
  */
 
 /*
- * Variables for the calculated values, filled in update_stats	
- * Need to be global since we need them in more than one function 
+ * Variables for the calculated values, filled in update_stats
+ * Need to be global since we need them in more than one function
  */
 static ulong	swapin;
 static ulong	swapout;
@@ -99,48 +99,48 @@ static ulong	interrupts;
 static ulong	context_sw;
 
 /*
- * Since MIB wants CPU_SYSTEM, which is CPU_KERNEL + CPU_WAIT 
+ * Since MIB wants CPU_SYSTEM, which is CPU_KERNEL + CPU_WAIT
  */
 static long	 cpu_perc[CPU_STATES];
 
 /*
- * How many snapshots we have already taken, needed for the first 
- * POLL_INTERVAL * POLL_VALUES seconds of agent running 
+ * How many snapshots we have already taken, needed for the first
+ * POLL_INTERVAL * POLL_VALUES seconds of agent running
  */
 static unsigned int number_of_snapshots;
 
 /*
- * The place to store the snapshots of system data in 
+ * The place to store the snapshots of system data in
  */
 static struct cpu_stat_snapshot snapshot[POLL_VALUES + 1];
 
 /*
- * And one for the raw counters, which we fill when the raw values are 
- * requested, as opposed to the absolute values, which are taken every 
- * POLL_INTERVAL seconds and calculated over POLL_INTERVAL * POLL_VALUES time 
+ * And one for the raw counters, which we fill when the raw values are
+ * requested, as opposed to the absolute values, which are taken every
+ * POLL_INTERVAL seconds and calculated over POLL_INTERVAL * POLL_VALUES time
  */
 static struct cpu_stat_snapshot raw_values;
 
 /*
- * Global variables end here 
+ * Global variables end here
  */
 
 
 /*
- * Functions start here 
+ * Functions start here
  */
 
 /*
- * Function prototype 
+ * Function prototype
  */
 static void	update_stats(unsigned int registrationNumber, void *clientarg);
 static int	take_snapshot(struct cpu_stat_snapshot *css);
 
 /*
- * init_vmstat_aix4 starts here 
- * Init function for this module, from prototype 
- * Defines variables handled by this module, defines root OID for 
- * this module and registers it with the agent 
+ * init_vmstat_aix4 starts here
+ * Init function for this module, from prototype
+ * Defines variables handled by this module, defines root OID for
+ * this module and registers it with the agent
  */
 
 FindVarMethod var_extensible_vmstat;
@@ -150,7 +150,7 @@ init_vmstat_aix4(void)
 {
 
 	/*
-	 * Which variables do we service ? 
+	 * Which variables do we service ?
 	 */
 	struct variable2 extensible_vmstat_variables[] = {
 		{MIBINDEX, ASN_INTEGER, RONLY, var_extensible_vmstat, 1,
@@ -189,41 +189,41 @@ init_vmstat_aix4(void)
 		{SYSRAWCONTEXT, ASN_COUNTER, RONLY, var_extensible_vmstat, 1,
 		 {SYSRAWCONTEXT}},
 		/*
-		 * Future use: 
+		 * Future use:
 		 * {ERRORFLAG, ASN_INTEGER, RONLY, var_extensible_vmstat, 1, {ERRORFLAG }},
 		 * {ERRORMSG, ASN_OCTET_STR, RONLY, var_extensible_vmstat, 1, {ERRORMSG }}
 		 */
 	};
 
 	/*
-	 * Define the OID pointer to the top of the mib tree that we're 
-	 * registering underneath 
+	 * Define the OID pointer to the top of the mib tree that we're
+	 * registering underneath
 	 */
 	oid			 vmstat_variables_oid[] = { UCDAVIS_MIB, 11 };
 
 	/*
-	 * register ourselves with the agent to handle our mib tree 
-	 * LINTED Trust me, I know what I'm doing 
+	 * register ourselves with the agent to handle our mib tree
+	 * LINTED Trust me, I know what I'm doing
 	 */
 	REGISTER_MIB("ucd-snmp/vmstat", extensible_vmstat_variables, variable2,
 				 vmstat_variables_oid);
 
 	/*
-	 * Start with some useful data 
+	 * Start with some useful data
 	 */
 	update_stats(0, NULL);
 
 	/*
-	 * update_stats is run every POLL_INTERVAL seconds using this routine 
-	 * (see 'man snmp_alarm') 
-	 * This is only executed once to get some useful data in the beginning 
+	 * update_stats is run every POLL_INTERVAL seconds using this routine
+	 * (see 'man snmp_alarm')
+	 * This is only executed once to get some useful data in the beginning
 	 */
 	if (snmp_alarm_register(5, NULL, update_stats, NULL) == 0) {
 		snmp_log(LOG_WARNING,
 				 "vmstat_aix4 (init): snmp_alarm_register failed.\n");
 	}
 	/*
-	 * This is the one that runs update_stats every POLL_INTERVAL seconds 
+	 * This is the one that runs update_stats every POLL_INTERVAL seconds
 	 */
 	if (snmp_alarm_register(POLL_INTERVAL, SA_REPEAT, update_stats, NULL)
 		== 0) {
@@ -234,64 +234,64 @@ init_vmstat_aix4(void)
 }	/* init_vmstat_aix4 ends here */
 
 /*
- * Data collection function take_snapshot starts here 
- * Get data from kernel and save into the snapshot strutcs 
- * Argument is the snapshot struct to save to. Global anyway, but looks nicer 
+ * Data collection function take_snapshot starts here
+ * Get data from kernel and save into the snapshot strutcs
+ * Argument is the snapshot struct to save to. Global anyway, but looks nicer
  */
 static int
 take_snapshot(struct cpu_stat_snapshot *css)
 {
 	/*
-	 * Variables start here 
+	 * Variables start here
 	 */
 
 	/*
-	 * High resolution time counter 
+	 * High resolution time counter
 	 */
 	struct timeval		tp;
 	unsigned long long	current_time;
 
 	/*
-	 * see libperfstat.h, holds CPU/memory data 
+	 * see libperfstat.h, holds CPU/memory data
 	 */
 	perfstat_cpu_total_t	cs;
 	perfstat_memory_total_t	ms;
 
 	/*
-	 * The usual stuff to count on, err, by 
+	 * The usual stuff to count on, err, by
 	 */
 	int			i;
 
 	/*
-	 * Variables end here 
+	 * Variables end here
 	 */
 
 	/*
-	 * Function starts here 
+	 * Function starts here
 	 */
 
 	/*
-	 * Get time 
+	 * Get time
 	 */
 	gettimeofday(&tp, (struct timezone *)NULL);
 	current_time = tp.tv_sec * (unsigned long long)1000000 + tp.tv_usec;
 
 	/*
-	 * If we have just gotten the data, return the values from last run (skip if-clause) 
-	 * This happens on a snmpwalk request.  No need to read the perfstat again 
-	 * if we just did it less than 2 seconds ago 
-	 * Jumps into if-clause either when snapshot is empty or when too old 
+	 * If we have just gotten the data, return the values from last run (skip if-clause)
+	 * This happens on a snmpwalk request.  No need to read the perfstat again
+	 * if we just did it less than 2 seconds ago
+	 * Jumps into if-clause either when snapshot is empty or when too old
 	 */
 
 	if ((css->css_time == 0)
 		|| (current_time > css->css_time + 2000000)) {
 		/*
-		 * Make sure we clean up before we put new data into snapshot 
+		 * Make sure we clean up before we put new data into snapshot
 		 */
 		memset(css, 0, sizeof *css);
 
 		/*
-		 * Update timer 
+		 * Update timer
 		 */
 		css->css_time = current_time;
 
@@ -312,7 +312,7 @@ take_snapshot(struct cpu_stat_snapshot *css)
 	}
 
 	/*
-	 * All engines running at warp speed, no problems (if there are any engines, that is) 
+	 * All engines running at warp speed, no problems (if there are any engines, that is)
 	 */
 	return (cs.ncpus > 0 ? 0 : -1);
 }	/* take_snapshot ends here */
@@ -320,35 +320,35 @@ take_snapshot(struct cpu_stat_snapshot *css)
 /*
  * This gets called every POLL_INTERVAL seconds to update the snapshots.
  * It takes a new snapshot and drops the oldest one.  This way we move
- * the time window so we always take the values over 
+ * the time window so we always take the values over
  * POLL_INTERVAL * POLL_VALUES seconds and update the data used every
- * POLL_INTERVAL seconds 
- * The alarm timer is in the init function of this module (snmp_alarm_register) 
+ * POLL_INTERVAL seconds
+ * The alarm timer is in the init function of this module (snmp_alarm_register)
  */
 /*
- * ARGSUSED0 
+ * ARGSUSED0
  */
 static void
 update_stats(unsigned int registrationNumber, void *clientarg)
 {
 	/*
-	 * The time between the samples we compare 
+	 * The time between the samples we compare
 	 */
 	unsigned long long time_diff;
 
 	/*
-	 * Easier to use these than the snapshots, short hand pointers 
+	 * Easier to use these than the snapshots, short hand pointers
 	 */
 	struct cpu_stat_snapshot *css_old, *css_new;
 
 	/*
-	 * The usual stuff to count on, err, by 
+	 * The usual stuff to count on, err, by
 	 */
 	int			 i;
 
 	/*
-	 * The sum of the CPU ticks that have passed on the different CPU states, so we can calculate 
-	 * the percentages of each state 
+	 * The sum of the CPU ticks that have passed on the different CPU states, so we can calculate
+	 * the percentages of each state
 	 */
 	unsigned long long cpu_sum = 0;
 
@@ -356,7 +356,7 @@ update_stats(unsigned int registrationNumber, void *clientarg)
 				"updating stats\n"));
 
 	/*
-	 * Take the current snapshot 
+	 * Take the current snapshot
 	 */
 	if (take_snapshot(&snapshot[0]) == -1) {
 		snmp_log(LOG_WARNING,
@@ -365,12 +365,12 @@ update_stats(unsigned int registrationNumber, void *clientarg)
 	}
 
 	/*
-	 * Do we have some data we can use ?  An issue right after the start of the agent 
+	 * Do we have some data we can use ?  An issue right after the start of the agent
 	 */
 	if (number_of_snapshots > 0) {
 		/*
-		 * Huh, the number of CPUs changed during run time.  That is indeed s.th. worth noting, we 
-		 * output a humorous (more or less) syslog message and need to retake the snapshots 
+		 * Huh, the number of CPUs changed during run time.  That is indeed s.th. worth noting, we
+		 * output a humorous (more or less) syslog message and need to retake the snapshots
 		 */
 		if (snapshot[0].css_cpus != snapshot[1].css_cpus) {
 			if (snapshot[0].css_cpus > snapshot[1].css_cpus) {
@@ -381,19 +381,19 @@ update_stats(unsigned int registrationNumber, void *clientarg)
 						 "vmstat_aix4 (update_stats): Lost at least one CPU, RIP.\n");
 			}
 			/*
-			 * Make all snapshots but the current one invalid 
+			 * Make all snapshots but the current one invalid
 			 */
 			number_of_snapshots = 1;
 			/*
-			 * Move the current one in the "first" [1] slot 
+			 * Move the current one in the "first" [1] slot
 			 */
 			memmove(&snapshot[1], &snapshot[0], sizeof snapshot[0]);
 			/*
-			 * Erase the current one 
+			 * Erase the current one
 			 */
 			memset(&snapshot[0], 0, sizeof snapshot[0]);
 			/*
-			 * Try to get a new snapshot in five seconds so we can return s.th. useful 
+			 * Try to get a new snapshot in five seconds so we can return s.th. useful
 			 */
 			if (snmp_alarm_register(5, NULL, update_stats, NULL) == 0) {
 				snmp_log(LOG_WARNING,
@@ -403,13 +403,13 @@ update_stats(unsigned int registrationNumber, void *clientarg)
 		}
 
 		/*
-		 * Short hand pointers 
+		 * Short hand pointers
 		 */
 		css_new = &snapshot[0];
 		css_old = &snapshot[number_of_snapshots];
 
 		/*
-		 * How much time has passed between the snapshots we get the values from ? 
+		 * How much time has passed between the snapshots we get the values from ?
 		 */
 		time_diff =
 			(snapshot[0].css_time -
@@ -419,65 +419,65 @@ update_stats(unsigned int registrationNumber, void *clientarg)
 					"time_diff: %lld\n", time_diff));
 
 		/*
-		 * swapin and swapout are in pages, MIB wants kB/s,so we just need to get kB and seconds 
-		 * For the others we need to get value per second 
-		 * getpagesize() returns pagesize in bytes 
+		 * swapin and swapout are in pages, MIB wants kB/s,so we just need to get kB and seconds
+		 * For the others we need to get value per second
+		 * getpagesize() returns pagesize in bytes
 		 */
 		/*
-		 * LINTED cast needed, really 
+		 * LINTED cast needed, really
 		 */
 		swapin =
 			(uint_t) ((css_new->css_swapin - css_old->css_swapin) *
 					  getpagesize() / 1024 / time_diff);
 		/*
-		 * LINTED cast needed, really 
+		 * LINTED cast needed, really
 		 */
 		swapout =
 			(uint_t) ((css_new->css_swapout - css_old->css_swapout) *
 					  getpagesize() / 1024 / time_diff);
 		/*
-		 * LINTED cast needed, really 
+		 * LINTED cast needed, really
 		 */
 		blocks_read =
 			(uint_t) ((css_new->css_blocks_read - css_old->css_blocks_read) /
 					  time_diff);
 		/*
-		 * LINTED cast needed, really 
+		 * LINTED cast needed, really
 		 */
 		blocks_write =
 			(uint_t) ((css_new->css_blocks_write - css_old->css_blocks_write) /
 					  time_diff);
 		/*
-		 * LINTED cast needed, really 
+		 * LINTED cast needed, really
 		 */
 		interrupts =
 			(uint_t) ((css_new->css_interrupts - css_old->css_interrupts) /
 					  time_diff);
 		/*
-		 * LINTED cast needed, really 
+		 * LINTED cast needed, really
 		 */
 		context_sw =
 			(uint_t) ((css_new->css_context_sw - css_old->css_context_sw) /
 					  time_diff);
 
 		/*
-		 * Loop thru all the CPU_STATES and get the differences 
+		 * Loop thru all the CPU_STATES and get the differences
 		 */
 		for (i = 0; i < CPU_STATES; i++) {
 			cpu_sum += (css_new->css_cpu[i] - css_old->css_cpu[i]);
 		}
 
 		/*
-		 * Now calculate the absolute percentage values 
-		 * Looks somewhat complicated sometimes but tries to get around using floats to increase speed 
+		 * Now calculate the absolute percentage values
+		 * Looks somewhat complicated sometimes but tries to get around using floats to increase speed
 		 */
 		for (i = 0; i < CPU_STATES; i++) {
 			/*
-			 * Since we don't return fractions we use + 0.5 to get between 99 and 101 percent adding the values 
-			 * together, otherwise we would get less than 100 most of the time 
+			 * Since we don't return fractions we use + 0.5 to get between 99 and 101 percent adding the values
+			 * together, otherwise we would get less than 100 most of the time
 			 */
 			/*
-			 * LINTED has to be 'long' 
+			 * LINTED has to be 'long'
 			 */
 			cpu_perc[i] =
 				(long) (((css_new->css_cpu[i] - css_old->css_cpu[i]) * 100 +
@@ -488,19 +488,19 @@ update_stats(unsigned int registrationNumber, void *clientarg)
 	}
 
 	/*
-	 * Make the current one the first one and move the whole thing one place down 
+	 * Make the current one the first one and move the whole thing one place down
 	 */
 	memmove(&snapshot[1], &snapshot[0],
 			(size_t) (((char *) &snapshot[POLL_VALUES]) -
 					  ((char *) &snapshot[0])));
 
 	/*
-	 * Erase the current one 
+	 * Erase the current one
 	 */
 	memset(&snapshot[0], 0, sizeof snapshot[0]);
 
 	/*
-	 * Only important on start up, we keep track of how many snapshots we have taken so far 
+	 * Only important on start up, we keep track of how many snapshots we have taken so far
 	 */
 	if (number_of_snapshots < POLL_VALUES) {
 		number_of_snapshots++;
@@ -508,8 +508,8 @@ update_stats(unsigned int registrationNumber, void *clientarg)
 }							   /* update_stats ends here */
 
 /*
- * *var_extensible_vmstat starts here 
- * The guts of the module, this routine gets called to service a request 
+ * *var_extensible_vmstat starts here
+ * The guts of the module, this routine gets called to service a request
  */
 unsigned char *
 var_extensible_vmstat(struct variable *vp,
@@ -519,21 +519,21 @@ var_extensible_vmstat(struct variable *vp,
 					  size_t * var_len, WriteMethod ** write_method)
 {
 	/*
-	 * Needed for returning the values 
+	 * Needed for returning the values
 	 */
 	static long	 long_ret;
 	static char	 errmsg[300];
 
 	/*
-	 * set to 0 as default 
+	 * set to 0 as default
 	 */
 	long_ret = 0;
 
 	/*
-	 * generic check whether the options passed make sense and whether the 
+	 * generic check whether the options passed make sense and whether the
 	 */
 	/*
-	 * right variable is requested 
+	 * right variable is requested
 	 */
 	if (header_generic(vp, name, length, exact, var_len, write_method) !=
 		MATCH_SUCCEEDED) {
@@ -541,7 +541,7 @@ var_extensible_vmstat(struct variable *vp,
 	}
 
 	/*
-	 * The function that actually returns s.th. 
+	 * The function that actually returns s.th.
 	 */
 	switch (vp->magic) {
 	case MIBINDEX:
@@ -572,21 +572,21 @@ var_extensible_vmstat(struct variable *vp,
 	case CPURAWUSER:
 		take_snapshot(&raw_values);
 		/*
-		 * LINTED has to be 'long' 
+		 * LINTED has to be 'long'
 		 */
 		long_ret =
 			(long) (raw_values.css_cpu[CPU_USER] / raw_values.css_cpus);
 		return ((u_char *) (&long_ret));
 		/*
-		 * We are missing CPURAWNICE, AIX does not account for this in the kernel so this OID can not 
-		 * be returned.  Also, these values will roll over sooner or later and then return inaccurate data 
-		 * but the MIB wants Integer32 so we cannot put a counter here 
-		 * (Has been changed to Counter32 in the latest MIB version!) 
+		 * We are missing CPURAWNICE, AIX does not account for this in the kernel so this OID can not
+		 * be returned.  Also, these values will roll over sooner or later and then return inaccurate data
+		 * but the MIB wants Integer32 so we cannot put a counter here
+		 * (Has been changed to Counter32 in the latest MIB version!)
 		 */
 	case CPURAWSYSTEM:
 		take_snapshot(&raw_values);
 		/*
-		 * LINTED has to be 'long' 
+		 * LINTED has to be 'long'
 		 */
 		long_ret =
 			(long) ((raw_values.css_cpu[CPU_SYSTEM] +
@@ -595,7 +595,7 @@ var_extensible_vmstat(struct variable *vp,
 	case CPURAWIDLE:
 		take_snapshot(&raw_values);
 		/*
-		 * LINTED has to be 'long' 
+		 * LINTED has to be 'long'
 		 */
 		long_ret =
 			(long) (raw_values.css_cpu[CPU_IDLE] / raw_values.css_cpus);
@@ -603,7 +603,7 @@ var_extensible_vmstat(struct variable *vp,
 	case CPURAWWAIT:
 		take_snapshot(&raw_values);
 		/*
-		 * LINTED has to be 'long' 
+		 * LINTED has to be 'long'
 		 */
 		long_ret =
 			(long) (raw_values.css_cpu[CPU_WAIT] / raw_values.css_cpus);
@@ -611,7 +611,7 @@ var_extensible_vmstat(struct variable *vp,
 	case CPURAWKERNEL:
 		take_snapshot(&raw_values);
 		/*
-		 * LINTED has to be 'long' 
+		 * LINTED has to be 'long'
 		 */
 		long_ret =
 			(long) (raw_values.css_cpu[CPU_SYSTEM] / raw_values.css_cpus);
@@ -630,7 +630,7 @@ var_extensible_vmstat(struct variable *vp,
 		return ((u_char *) (&long_ret));
 
 		/*
-		 * reserved for future use 
+		 * reserved for future use
 		 */
 		/*
 		 * case ERRORFLAG:
@@ -646,9 +646,9 @@ var_extensible_vmstat(struct variable *vp,
 }							   /* *var_extensible_vmstat ends here */
 
 /*
- * Functions end here 
+ * Functions end here
  */
 
 /*
- * Program ends here 
+ * Program ends here
  */

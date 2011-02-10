@@ -12,9 +12,9 @@ CFLAGS		= -I$(UCDTOPDIR) -I$(UCDTOPDIR)/snmplib -I$(UCDTOPDIR)/agent -I$(UCDTOPD
 #LD		= ld
 #LDFLAGS		= -G -o
 LD		= gcc -shared -o
-LDFLAGS		= 
+LDFLAGS		=
 INSTALL		= install
-LIBS		= 
+LIBS		=
 
 all: $(TARG)
 

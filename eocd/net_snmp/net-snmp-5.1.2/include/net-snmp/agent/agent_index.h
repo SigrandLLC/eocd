@@ -9,7 +9,7 @@ extern          "C" {
 #define ALLOCATE_ANY_INDEX		0x1
 #define ALLOCATE_NEW_INDEX		0x3
         /*
-         * N.B: it's deliberate that NEW_INDEX & ANY_INDEX == ANY_INDEX 
+         * N.B: it's deliberate that NEW_INDEX & ANY_INDEX == ANY_INDEX
          */
 
 #define ANY_INTEGER_INDEX		-1

@@ -1,5 +1,5 @@
 /*
- * mt_support.h - multi-thread resource locking support declarations 
+ * mt_support.h - multi-thread resource locking support declarations
  */
 /*
  * Author: Markku Laukkanen
@@ -15,9 +15,9 @@
 #ifdef __cplusplus
 extern          "C" {
 #endif
-  
+
 /*
- * Lock group identifiers 
+ * Lock group identifiers
  */
 
 #define MT_LIBRARY_ID      0
@@ -29,7 +29,7 @@ extern          "C" {
 
 
 /*
- * Lock resource identifiers for library resources 
+ * Lock resource identifiers for library resources
  */
 
 #define MT_LIB_NONE        0

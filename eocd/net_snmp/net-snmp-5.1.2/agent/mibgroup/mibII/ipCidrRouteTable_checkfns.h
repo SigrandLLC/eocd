@@ -6,8 +6,8 @@
 #define IPCIDRROUTETABLE_CHECKFNS_H
 
 /*
- * these functions are designed to check incoming values for 
- * columns in the ipCidrRouteTable table for legality with respect to 
+ * these functions are designed to check incoming values for
+ * columns in the ipCidrRouteTable table for legality with respect to
  * datatype and value.
  */
 

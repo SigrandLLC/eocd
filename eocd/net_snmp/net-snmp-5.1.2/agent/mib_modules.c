@@ -1,5 +1,5 @@
 /*
- * wrapper to call all the mib module initialization functions 
+ * wrapper to call all the mib module initialization functions
  */
 
 #include <net-snmp/agent/mib_module_config.h>
@@ -93,7 +93,7 @@ should_init(const char *module_name)
     struct module_init_list *listp;
 
     /*
-     * a definitive list takes priority 
+     * a definitive list takes priority
      */
     if (initlist) {
         listp = initlist;
@@ -110,7 +110,7 @@ should_init(const char *module_name)
     }
 
     /*
-     * initialize it only if not on the bad list (bad module, no bone) 
+     * initialize it only if not on the bad list (bad module, no bone)
      */
     if (noinitlist) {
         listp = noinitlist;
@@ -126,7 +126,7 @@ should_init(const char *module_name)
     DEBUGMSGTL(("mib_init", "initializing: %s\n", module_name));
 
     /*
-     * initialize it 
+     * initialize it
      */
     return DO_INITIALIZE;
 }

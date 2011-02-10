@@ -15,7 +15,7 @@ xs_init(void)
     char            myfile[] = __FILE__;
     char            modulename[] = "DynaLoader::boot_DynaLoader";
     /*
-     * DynaLoader is a special case 
+     * DynaLoader is a special case
      */
     newXS(modulename, boot_DynaLoader, myfile);
 }
@@ -59,7 +59,7 @@ maybe_source_perl_startup(void)
 
   bail_out:
     snmp_log(LOG_ERR, "embedded perl support failed to initalize\n");
-    netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID, 
+    netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID,
 			   NETSNMP_DS_AGENT_DISABLE_PERL, 1);
     return;
 }
@@ -67,12 +67,12 @@ maybe_source_perl_startup(void)
 void
 do_something_perlish(char *something)
 {
-    if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+    if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 			       NETSNMP_DS_AGENT_DISABLE_PERL)) {
         return;
     }
     maybe_source_perl_startup();
-    if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+    if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 			       NETSNMP_DS_AGENT_DISABLE_PERL)) {
         return;
     }
@@ -98,7 +98,7 @@ perl_config_handler(const char *token, char *line)
 void
 init_perl(void)
 {
-    const char     *appid = netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID, 
+    const char     *appid = netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID,
 						  NETSNMP_DS_LIB_APPTYPE);
     const char     *defaultid = "snmpd";
 
@@ -107,20 +107,20 @@ init_perl(void)
     }
 
     /*
-     * register config handlers 
+     * register config handlers
      */
     snmpd_register_config_handler("perl", perl_config_handler, NULL,
                                   "PERLCODE");
 
     /*
-     * define the perlInitFile token to point to an init file 
+     * define the perlInitFile token to point to an init file
      */
     netsnmp_ds_register_premib(ASN_OCTET_STR, appid, "perlInitFile",
-			       NETSNMP_DS_APPLICATION_ID, 
+			       NETSNMP_DS_APPLICATION_ID,
 			       NETSNMP_DS_AGENT_PERL_INIT_FILE);
 
     /*
-     * define the perlInitFile token to point to an init file 
+     * define the perlInitFile token to point to an init file
      */
     netsnmp_ds_register_premib(ASN_BOOLEAN, appid, "disablePerl",
 			       NETSNMP_DS_APPLICATION_ID,
@@ -130,7 +130,7 @@ init_perl(void)
 void
 shutdown_perl(void)
 {
-    if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+    if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 			       NETSNMP_DS_AGENT_DISABLE_PERL)) {
         return;
     }

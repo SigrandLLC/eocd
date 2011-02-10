@@ -3,13 +3,13 @@
 
                       All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the name of CMU not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 CMU DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -239,7 +239,7 @@ routepr(void)
         flags = name;
         *flags++ = 'U';         /* route is in use */
         /*
-         * this !toloopback shouldnt be necessary 
+         * this !toloopback shouldnt be necessary
          */
         if (!toloopback && rp->type == MIB_IPROUTETYPE_REMOTE)
             *flags++ = 'G';

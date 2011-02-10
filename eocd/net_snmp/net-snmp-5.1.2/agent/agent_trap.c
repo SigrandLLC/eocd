@@ -121,7 +121,7 @@ int             snmp_enableauthentrapsset = 0;
 char           *snmp_trapcommunity = NULL;
 
 /*
- * Prototypes 
+ * Prototypes
  */
  /*
   * static int create_v1_trap_session (const char *, u_short, const char *);
@@ -166,7 +166,7 @@ add_trap_session(netsnmp_session * ss, int pdutype, int confirm,
                                 SNMPD_CALLBACK_REGISTER_NOTIFICATIONS) ==
         SNMPERR_SUCCESS) {
         /*
-         * something else wants to handle notification registrations 
+         * something else wants to handle notification registrations
          */
         struct agent_add_trap_args args;
         DEBUGMSGTL(("trap", "adding callback trap sink\n"));
@@ -177,7 +177,7 @@ add_trap_session(netsnmp_session * ss, int pdutype, int confirm,
                             (void *) &args);
     } else {
         /*
-         * no other support exists, handle it ourselves. 
+         * no other support exists, handle it ourselves.
          */
         struct trap_sink *new_sink;
 
@@ -212,10 +212,10 @@ remove_trap_session(netsnmp_session * ss)
              * it may still be in use for other purposes.  In particular this
              * is awkward for AgentX, since we want to call this function
              * from the session's callback.  Let's just free the trapsink
-             * data structure.  [jbpn]  
+             * data structure.  [jbpn]
              */
             /*
-             * free_trap_session(sp);  
+             * free_trap_session(sp);
              */
             free(sp);
             return 1;
@@ -256,7 +256,7 @@ create_trap_session(char *sink, u_short sinkport,
     }
 
     /*
-     * diagnose snmp_open errors with the input netsnmp_session pointer 
+     * diagnose snmp_open errors with the input netsnmp_session pointer
      */
     snmp_sess_perror("snmpd: create_trap_session", &session);
     return 0;
@@ -285,11 +285,11 @@ create_v2_inform_session(char *sink, u_short sinkport, char *com)
 
 
 /**
- * This function allows you to make a distinction between generic 
- * traps from different classes of equipment. For example, you may want 
- * to handle a SNMP_TRAP_LINKDOWN trap for a particular device in a 
+ * This function allows you to make a distinction between generic
+ * traps from different classes of equipment. For example, you may want
+ * to handle a SNMP_TRAP_LINKDOWN trap for a particular device in a
  * different manner to a generic system SNMP_TRAP_LINKDOWN trap.
- *   
+ *
  *
  *  @param trap is the generic trap type.  The trap types are:
  *		- SNMP_TRAP_COLDSTART:
@@ -306,16 +306,16 @@ create_v2_inform_session(char *sink, u_short sinkport, char *com)
  *			egp neighbor loss
  *		- SNMP_TRAP_ENTERPRISESPECIFIC:
  *			enterprise specific
- *			
+ *
  *  @param specific is the specific trap value.
  *
- *  @param enterprise is an enterprise oid in which you want to send specifc 
- *	traps from. 
+ *  @param enterprise is an enterprise oid in which you want to send specifc
+ *	traps from.
  *
  *  @param enterprise_length is the length of the enterprise oid, use macro,
  *	OID_LENGTH, to compute length.
  *
- *  @param vars is used to supply list of variable bindings to form an SNMPv2 
+ *  @param vars is used to supply list of variable bindings to form an SNMPv2
  *	trap.
  *
  *  @return void
@@ -392,7 +392,7 @@ convert_v2pdu_to_v1( netsnmp_pdu* template_v2pdu )
     }
     template_v1pdu->time = *vblist->val.integer;
     vblist = vblist->next_variable;
-            
+
     /*
      * The second varbind should be the snmpTrapOID.
      */
@@ -463,7 +463,7 @@ convert_v2pdu_to_v1( netsnmp_pdu* template_v2pdu )
     template_v1pdu->variables = vblist->next_variable;
     vblist->next_variable = NULL;
     snmp_free_varbind( first_vb );
-            
+
     return template_v1pdu;
 }
 
@@ -527,7 +527,7 @@ convert_v1pdu_to_v2( netsnmp_pdu* template_v1pdu )
     if (!snmp_varlist_add_variable( &var,
              sysuptime_oid, sysuptime_oid_len,
              ASN_TIMETICKS,
-             (u_char*)&(template_v1pdu->time), 
+             (u_char*)&(template_v1pdu->time),
              sizeof(template_v1pdu->time))) {
         snmp_log(LOG_WARNING,
                  "send_trap: failed to insert copied sysUptime varbind\n");
@@ -552,7 +552,7 @@ convert_v1pdu_to_v2( netsnmp_pdu* template_v1pdu )
         if (!snmp_varlist_add_variable( &(template_v2pdu->variables),
                  agentaddr_oid, agentaddr_oid_len,
                  ASN_IPADDRESS,
-                 (u_char*)&(template_v1pdu->agent_addr), 
+                 (u_char*)&(template_v1pdu->agent_addr),
                  sizeof(template_v1pdu->agent_addr)))
             snmp_log(LOG_WARNING,
                  "send_trap: failed to append snmpTrapAddr varbind\n");
@@ -563,7 +563,7 @@ convert_v1pdu_to_v2( netsnmp_pdu* template_v1pdu )
         if (!snmp_varlist_add_variable( &(template_v2pdu->variables),
                  community_oid, community_oid_len,
                  ASN_OCTET_STR,
-                 template_v1pdu->community, 
+                 template_v1pdu->community,
                  template_v1pdu->community_len))
             snmp_log(LOG_WARNING,
                  "send_trap: failed to append snmpTrapCommunity varbind\n");
@@ -571,12 +571,12 @@ convert_v1pdu_to_v2( netsnmp_pdu* template_v1pdu )
     var = find_varbind_in_list( template_v2pdu->variables,
                                 snmptrapenterprise_oid,
                                 snmptrapenterprise_oid_len);
-    if (!var && 
+    if (!var &&
         template_v1pdu->trap_type != SNMP_TRAP_ENTERPRISESPECIFIC) {
         if (!snmp_varlist_add_variable( &(template_v2pdu->variables),
                  snmptrapenterprise_oid, snmptrapenterprise_oid_len,
                  ASN_OBJECT_ID,
-                 (u_char*)template_v1pdu->enterprise, 
+                 (u_char*)template_v1pdu->enterprise,
                  template_v1pdu->enterprise_length*sizeof(oid)))
             snmp_log(LOG_WARNING,
                  "send_trap: failed to append snmpEnterprise varbind\n");
@@ -685,7 +685,7 @@ netsnmp_send_traps(int trap, int specific,
                 return -1;
             }
         }
-            
+
 
         /*
          * If everything's OK, convert the v2 template into an SNMPv1 trap PDU.
@@ -780,7 +780,7 @@ send_enterprise_trap_vars(int trap,
 
 /*
  * send_trap_to_sess: sends a trap to a session but assumes that the
- * pdu is constructed correctly for the session type. 
+ * pdu is constructed correctly for the session type.
  */
 void
 send_trap_to_sess(netsnmp_session * sess, netsnmp_pdu *template_pdu)
@@ -832,16 +832,16 @@ send_trap_vars(int trap, int specific, netsnmp_variable_list * vars)
 }
 
 /**
- * Sends an SNMPv1 trap (or the SNMPv2 equivalent) to the list of  
- * configured trap destinations (or "sinks"), using the provided 
+ * Sends an SNMPv1 trap (or the SNMPv2 equivalent) to the list of
+ * configured trap destinations (or "sinks"), using the provided
  * values for the generic trap type and specific trap value.
  *
  * This function eventually calls send_enterprise_trap_vars.  If the
- * trap type is not set to SNMP_TRAP_ENTERPRISESPECIFIC the enterprise 
- * and enterprise_length paramater is set to the pre defined SYSTEM_MIB 
- * oid and length respectively.  If the trap type is set to 
- * SNMP_TRAP_ENTERPRISESPECIFIC the enterprise and enterprise_length 
- * parameters are set to the pre-defined NOTIFICATION_MIB oid and length 
+ * trap type is not set to SNMP_TRAP_ENTERPRISESPECIFIC the enterprise
+ * and enterprise_length paramater is set to the pre defined SYSTEM_MIB
+ * oid and length respectively.  If the trap type is set to
+ * SNMP_TRAP_ENTERPRISESPECIFIC the enterprise and enterprise_length
+ * parameters are set to the pre-defined NOTIFICATION_MIB oid and length
  * respectively.
  *
  * @param trap is the generic trap type.
@@ -853,7 +853,7 @@ send_trap_vars(int trap, int specific, netsnmp_variable_list * vars)
  * @see send_enterprise_trap_vars
  * @see send_v2trap
  */
-       	
+
 void
 send_easy_trap(int trap, int specific)
 {
@@ -861,20 +861,20 @@ send_easy_trap(int trap, int specific)
 }
 
 /**
- * Uses the supplied list of variable bindings to form an SNMPv2 trap, 
- * which is sent to SNMPv2-capable sinks  on  the  configured  list.  
- * An equivalent INFORM is sent to the configured list of inform sinks.  
+ * Uses the supplied list of variable bindings to form an SNMPv2 trap,
+ * which is sent to SNMPv2-capable sinks  on  the  configured  list.
+ * An equivalent INFORM is sent to the configured list of inform sinks.
  * Sinks that can only handle SNMPv1 traps are skipped.
  *
  * This function eventually calls send_enterprise_trap_vars.  If the
- * trap type is not set to SNMP_TRAP_ENTERPRISESPECIFIC the enterprise 
- * and enterprise_length paramater is set to the pre defined SYSTEM_MIB 
- * oid and length respectively.  If the trap type is set to 
- * SNMP_TRAP_ENTERPRISESPECIFIC the enterprise and enterprise_length 
- * parameters are set to the pre-defined NOTIFICATION_MIB oid and length 
+ * trap type is not set to SNMP_TRAP_ENTERPRISESPECIFIC the enterprise
+ * and enterprise_length paramater is set to the pre defined SYSTEM_MIB
+ * oid and length respectively.  If the trap type is set to
+ * SNMP_TRAP_ENTERPRISESPECIFIC the enterprise and enterprise_length
+ * parameters are set to the pre-defined NOTIFICATION_MIB oid and length
  * respectively.
  *
- * @param vars is used to supply list of variable bindings to form an SNMPv2 
+ * @param vars is used to supply list of variable bindings to form an SNMPv2
  *	trap.
  *
  * @return void
@@ -924,7 +924,7 @@ snmpd_parse_config_authtrap(const char *token, char *cptr)
                 /*
                  * This is bogus (and shouldn't happen anyway) -- the value
                  * of snmpEnableAuthenTraps.0 is already configured
-                 * read-only.  
+                 * read-only.
                  */
                 snmp_log(LOG_WARNING,
                          "ignoring attempted override of read-only snmpEnableAuthenTraps.0\n");
@@ -937,12 +937,12 @@ snmpd_parse_config_authtrap(const char *token, char *cptr)
                 /*
                  * This is bogus (and shouldn't happen anyway) -- we already
                  * read a persistent value of snmpEnableAuthenTraps.0, which
-                 * we should ignore in favour of this one.  
+                 * we should ignore in favour of this one.
                  */
                 snmp_log(LOG_WARNING,
                          "ignoring attempted override of read-only snmpEnableAuthenTraps.0\n");
                 /*
-                 * Fall through and copy in this value.  
+                 * Fall through and copy in this value.
                  */
             }
             snmp_enableauthentrapsset = -1;
@@ -1043,7 +1043,7 @@ snmpd_parse_config_informsink(const char *word, char *cptr)
 }
 
 /*
- * this must be standardized somewhere, right? 
+ * this must be standardized somewhere, right?
  */
 #define MAX_ARGS 128
 
@@ -1077,12 +1077,12 @@ snmpd_parse_config_trapsess(const char *word, char *cptr)
     netsnmp_session session, *ss;
 
     /*
-     * inform or trap?  default to trap 
+     * inform or trap?  default to trap
      */
     traptype = SNMP_MSG_TRAP2;
 
     /*
-     * create the argv[] like array 
+     * create the argv[] like array
      */
     argv[0] = strdup("snmpd-trapsess"); /* bogus entry for getopt() */
     for (argn = 1; cp && argn < MAX_ARGS; argn++) {

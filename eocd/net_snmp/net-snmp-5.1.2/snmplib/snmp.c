@@ -7,13 +7,13 @@
 
                       All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the name of CMU not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 CMU DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -76,7 +76,7 @@ SOFTWARE.
 
 /** @mainpage Net-SNMP Coding Documentation
  * @section Introduction
-  
+
    This is the Net-SNMP coding and API reference documentation.  It is
    incomplete, but when combined with the manual page set and
    tutorials forms a pretty comprehensive starting point.
@@ -135,12 +135,12 @@ xdump(const u_char * cp, size_t length, const char *prefix)
 /*
  * u_char * snmp_parse_var_op(
  * u_char *data              IN - pointer to the start of object
- * oid *var_name             OUT - object id of variable 
- * int *var_name_len         IN/OUT - length of variable name 
- * u_char *var_val_type      OUT - type of variable (int or octet string) (one byte) 
- * int *var_val_len          OUT - length of variable 
- * u_char **var_val          OUT - pointer to ASN1 encoded value of variable 
- * int *listlength          IN/OUT - number of valid bytes left in var_op_list 
+ * oid *var_name             OUT - object id of variable
+ * int *var_name_len         IN/OUT - length of variable name
+ * u_char *var_val_type      OUT - type of variable (int or octet string) (one byte)
+ * int *var_val_len          OUT - length of variable
+ * u_char **var_val          OUT - pointer to ASN1 encoded value of variable
+ * int *listlength          IN/OUT - number of valid bytes left in var_op_list
  */
 
 u_char         *
@@ -159,7 +159,7 @@ snmp_parse_var_op(u_char * data,
                               (ASN_SEQUENCE | ASN_CONSTRUCTOR), "var_op");
     if (data == NULL) {
         /*
-         * msg detail is set 
+         * msg detail is set
          */
         return NULL;
     }
@@ -177,7 +177,7 @@ snmp_parse_var_op(u_char * data,
         return NULL;
     *var_val = data;            /* save pointer to this object */
     /*
-     * find out what type of object this is 
+     * find out what type of object this is
      */
     data = asn_parse_header(data, &var_op_len, var_val_type);
     if (data == NULL) {
@@ -185,7 +185,7 @@ snmp_parse_var_op(u_char * data,
         return NULL;
     }
     /*
-     * XXX no check for type! 
+     * XXX no check for type!
      */
     *var_val_len = var_op_len;
     data += var_op_len;
@@ -196,13 +196,13 @@ snmp_parse_var_op(u_char * data,
 /*
  * u_char * snmp_build_var_op(
  * u_char *data      IN - pointer to the beginning of the output buffer
- * oid *var_name        IN - object id of variable 
- * int *var_name_len    IN - length of object id 
- * u_char var_val_type  IN - type of variable 
- * int    var_val_len   IN - length of variable 
- * u_char *var_val      IN - value of variable 
+ * oid *var_name        IN - object id of variable
+ * int *var_name_len    IN - length of object id
+ * u_char var_val_type  IN - type of variable
+ * int    var_val_len   IN - length of variable
+ * u_char *var_val      IN - value of variable
  * int *listlength      IN/OUT - number of valid bytes left in
- * output buffer 
+ * output buffer
  */
 
 u_char         *
@@ -336,7 +336,7 @@ snmp_realloc_rbuild_var_op(u_char ** pkt, size_t * pkt_len,
     int             rc = 0;
 
     /*
-     * Encode the value.  
+     * Encode the value.
      */
     DEBUGDUMPHEADER("send", "Value");
 
@@ -436,7 +436,7 @@ snmp_realloc_rbuild_var_op(u_char ** pkt, size_t * pkt_len,
     }
 
     /*
-     * Build the OID.  
+     * Build the OID.
      */
 
     DEBUGDUMPHEADER("send", "Name");
@@ -451,7 +451,7 @@ snmp_realloc_rbuild_var_op(u_char ** pkt, size_t * pkt_len,
     }
 
     /*
-     * Build the sequence header.  
+     * Build the sequence header.
      */
 
     rc = asn_realloc_rbuild_sequence(pkt, pkt_len, offset, allow_realloc,

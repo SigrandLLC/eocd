@@ -42,7 +42,7 @@ for an example.
 .B -f
 Force overwriting existing files in the current directory without
 prompting the user if this is a desired thing to do.
-.TP 
+.TP
 .B -i
 When finished, install the files into the location where the global
 system commands expect to find them.
@@ -53,7 +53,7 @@ subdirectory (where the applications will also search for
 configuration files).
 .TP
 .BI -I " DIRECTORY"
-When finished, install the files into the directory 
+When finished, install the files into the directory
 .IR DIRECTORY .
 .TP
 .B -a
@@ -104,12 +104,12 @@ don't recommend this option since it only removes information from the
 output that is designed to help you.
 .TP
 .B -d
-Turn on 
+Turn on
 .B lots
 of debugging output.
 .TP
 .B -D
-Add 
+Add
 .B even more
 debugging output in the form of Perl variable dumps.
 .IP

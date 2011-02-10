@@ -53,8 +53,8 @@ public:
 		head = 0;
 		mas[head] = new T;
 	}
-	
-	
+
+
 	~EOC_ring_container<T> ()
 	{
 		for(int i = 0;i<len;i++)

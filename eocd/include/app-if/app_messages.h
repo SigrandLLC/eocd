@@ -266,7 +266,7 @@ typedef struct{
     u32 index;
     int cnt;
     struct sens_event ev[MSG_SENS_EVENTS];
-    
+
 } sensor_full_payload;
 #define SENSOR_FULL_PAY_SZ sizeof(sensor_full_payload)
 #define SENSOR_FULL_CH_SZ 0

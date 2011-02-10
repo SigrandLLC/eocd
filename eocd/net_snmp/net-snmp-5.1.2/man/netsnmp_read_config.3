@@ -2,7 +2,7 @@
 .ad l
 .nh
 .SH NAME
-parsing various configuration files at run time \- The read_config related functions are a fairly extensible system of parsing various configuration files at the run time.  
+parsing various configuration files at run time \- The read_config related functions are a fairly extensible system of parsing various configuration files at the run time.
 
 .PP
 .SS "Defines"
@@ -185,7 +185,7 @@ parsing various configuration files at run time \- The read_config related funct
 .br
 .in -1c
 .SH "Detailed Description"
-.PP 
+.PP
 The read_config related functions are a fairly extensible system of parsing various configuration files at the run time. The idea is that the calling application is able to register handlers for certain tokens specified in certain types of files. The read_configs function can then be called to look for all the files that it has registrations for, find the first word on each line, and pass the remainder to the appropriately registered handler.
 .PP
 For persistent configuration storage you will need to use the read_config_read_data, read_config_store, and read_config_store_data APIs in conjunction with first registering a callback so when the agent shutsdown for whatever reason data is written to your configuration files. The following explains in more detail the sequence to make this happen.
@@ -204,9 +204,9 @@ Finally storing is done using read_config_store(type, buffer); type is the appli
 .PP
 netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID, NETSNMP_DS_LIB_APPTYPE);
 .PP
-Now, reading back the data: This is done by registering a config handler for your token using the register_config_handler function. Your handler will be invoked and you can parse in the data using the read_config_read APIs. 
+Now, reading back the data: This is done by registering a config handler for your token using the register_config_handler function. Your handler will be invoked and you can parse in the data using the read_config_read APIs.
 .SH "Function Documentation"
-.PP 
+.PP
 .SS "char* read_config_read_data (int type, char * readfrom, void * dataptr, size_t * len)"
 .PP
 read_config_read_data reads data of a given type from a token(s) on a configuration line. The supported types are:
@@ -238,7 +238,7 @@ ASN_OBJECT_ID
 .PP
 \fBReturns:\fP
 .RS 4
-the next token in the configuration line. NULL if none left or if an unknown type. 
+the next token in the configuration line. NULL if none left or if an unknown type.
 .RE
 .PP
 Definition at line 1665 of file read_config.c.
@@ -250,14 +250,14 @@ read_config_store intended for use by applications to store permenant configurat
 .PP
 \fBParameters:\fP
 .RS 4
-\fItype\fP is the application name 
+\fItype\fP is the application name
 .br
 \fIline\fP is the configuration line written to the application name's configuration file
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-void 
+void
 .RE
 .PP
 Definition at line 1137 of file read_config.c.
@@ -296,7 +296,7 @@ ASN_OBJECT_ID
 .PP
 \fBReturns:\fP
 .RS 4
-character pointer to the end of the line. NULL if an unknown type. 
+character pointer to the end of the line. NULL if an unknown type.
 .RE
 .PP
 Definition at line 1792 of file read_config.c.
@@ -319,7 +319,7 @@ register_config_handler registers handlers for certain tokens specified in certa
 .PP
 \fBReturns:\fP
 .RS 4
-Pointer to a new config line entry or NULL on error. 
+Pointer to a new config line entry or NULL on error.
 .RE
 .PP
 Definition at line 196 of file read_config.c.
@@ -336,7 +336,7 @@ uregister_config_handler un-registers handlers given a specific type_param and t
 .PP
 \fBReturns:\fP
 .RS 4
-void 
+void
 .RE
 .PP
 Definition at line 283 of file read_config.c.

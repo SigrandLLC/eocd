@@ -14,7 +14,7 @@ app_comm_cli::
 app_comm_cli(char *sock_name,int quiet):app_comm(sock_name)
 {
     struct sockaddr_un saun;
-    struct stat sbuf;    
+    struct stat sbuf;
     int s;
     int ret=0,len;
 	int dlev = debug_lev - 1;
@@ -22,17 +22,17 @@ app_comm_cli(char *sock_name,int quiet):app_comm(sock_name)
 	if( quiet ){
 		dlev = debug_lev + 1;
 	}
-		
+
 
     // Check path exist
     if( (ret = stat(sname,&sbuf)) ){
         PDEBUG(dlev,"Problem with socket (%s)",sname);
         error_init = 1;
         return;
-    }  
+    }
     if( !S_ISSOCK(sbuf.st_mode) ){
 		PDEBUG(dlev,"Not a socket (%s)",sname);
-        error_init = 1;	
+        error_init = 1;
 		return;
     }
 
@@ -40,12 +40,12 @@ app_comm_cli(char *sock_name,int quiet):app_comm(sock_name)
     if ( (s = socket(AF_UNIX, SOCK_STREAM, 0) ) < 0) {
     	PDEBUG(dlev,"Cannot create socket (%s)",sname);
         error_init = 1;
-		return;    
+		return;
     }
 
     saun.sun_family = AF_UNIX;
     strcpy(saun.sun_path,sname);
-	
+
     len = sizeof(saun.sun_family) + strlen(saun.sun_path);
     if (connect(s,(struct sockaddr*)&saun, len) < 0) {
 		PDEBUG(dlev,"Cannot connect to (%s)",sname);

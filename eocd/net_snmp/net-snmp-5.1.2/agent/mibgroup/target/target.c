@@ -41,7 +41,7 @@ get_target_sessions(char *taglist, TargetFilterFunction * filterfunct,
          targaddrs = targaddrs->next) {
 
         /*
-         * legal row? 
+         * legal row?
          */
         if (targaddrs->tDomain == NULL ||
             targaddrs->tAddress == NULL ||
@@ -58,18 +58,18 @@ get_target_sessions(char *taglist, TargetFilterFunction * filterfunct,
         }
 
         /*
-         * check tag list to see if we match 
+         * check tag list to see if we match
          */
         if (targaddrs->tagList) {
             /*
-             * loop through tag list looking for requested tags 
+             * loop through tag list looking for requested tags
              */
             for (cp = targaddrs->tagList; cp;) {
                 cp = copy_nword(cp, buf, sizeof(buf));
                 for (i = 0; i < numtags; i++) {
                     if (strcmp(buf, tags[i]) == 0) {
                         /*
-                         * found a valid target table entry 
+                         * found a valid target table entry
                          */
                         DEBUGMSGTL(("target_sessions", "found one: %s\n",
                                     tags[i]));
@@ -79,20 +79,20 @@ get_target_sessions(char *taglist, TargetFilterFunction * filterfunct,
                             if (!param
                                 || param->rowStatus != SNMP_ROW_ACTIVE) {
                                 /*
-                                 * parameter entry must exist and be active 
+                                 * parameter entry must exist and be active
                                  */
                                 continue;
                             }
                         } else {
                             /*
-                             * parameter entry must be specified 
+                             * parameter entry must be specified
                              */
                             continue;
                         }
 
                         /*
                          * last chance for caller to opt-out.  Call
-                         * filtering function 
+                         * filtering function
                          */
                         if (filterfunct &&
                             (*(filterfunct)) (targaddrs, param,
@@ -105,19 +105,19 @@ get_target_sessions(char *taglist, TargetFilterFunction * filterfunct,
                             param->updateTime >=
                             targaddrs->sessionCreationTime) {
                             /*
-                             * parameters have changed, nuke the old session 
+                             * parameters have changed, nuke the old session
                              */
                             snmp_close(targaddrs->sess);
                             targaddrs->sess = NULL;
                         }
 
                         /*
-                         * target session already exists? 
+                         * target session already exists?
                          */
                         if (targaddrs->sess == NULL) {
                             /*
                              * create an appropriate snmp session and add
-                             * it to our return list 
+                             * it to our return list
                              */
                             netsnmp_transport *t = NULL;
 
@@ -165,7 +165,7 @@ get_target_sessions(char *taglist, TargetFilterFunction * filterfunct,
                                          "unsupported model/secmodel combo for target %s\n",
                                          targaddrs->name);
                                 /*
-                                 * XXX: memleak 
+                                 * XXX: memleak
                                  */
                                 netsnmp_transport_free(t);
                                 continue;

@@ -2,7 +2,7 @@
 .ad l
 .nh
 .SH NAME
-various PDU processing routines \- 
+various PDU processing routines \-
 .SS "Defines"
 
 .in +1c
@@ -111,25 +111,25 @@ various PDU processing routines \-
 .br
 .in -1c
 .SH "Function Documentation"
-.PP 
+.PP
 .SS "int snmp_set_var_typed_value (\fBnetsnmp_variable_list\fP * newvar, u_char type, const u_char * val_str, size_t val_len)"
 .PP
 snmp_set_var_typed_value is used to set data into the netsnmp_variable_list structure. Used to return data to the snmp request via the netsnmp_request_info structure's requestvb pointer.
 .PP
 \fBParameters:\fP
 .RS 4
-\fInewvar\fP the structure gets populated with the given data, type, val_str, and val_len. 
+\fInewvar\fP the structure gets populated with the given data, type, val_str, and val_len.
 .br
-\fItype\fP is the asn data type to be copied 
+\fItype\fP is the asn data type to be copied
 .br
-\fIval_str\fP is a buffer containing the value to be copied into the newvar structure. 
+\fIval_str\fP is a buffer containing the value to be copied into the newvar structure.
 .br
 \fIval_len\fP the length of val_str
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-returns 0 on success and 1 on a malloc error 
+returns 0 on success and 1 on a malloc error
 .RE
 .PP
 
@@ -144,7 +144,7 @@ References variable_list::type.
 .PP
 Referenced by check_getnext_results(), handle_pdu(), netsnmp_check_getnext_reply(), netsnmp_old_api_helper(), netsnmp_table_build_result(), and netsnmp_table_data_build_result().
 .SH "Variable Documentation"
-.PP 
+.PP
 .SS "const char* error_string[19]"
 .PP
 \fBInitial value:\fP.nf

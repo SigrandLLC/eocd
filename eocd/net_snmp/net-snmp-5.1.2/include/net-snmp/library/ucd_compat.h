@@ -11,7 +11,7 @@ extern          "C" {
 #endif
 
         /*
-         * from snmp_api.h 
+         * from snmp_api.h
          */
 void            snmp_set_dump_packet(int);
 int             snmp_get_dump_packet(void);
@@ -25,7 +25,7 @@ void            snmp_set_random_access(int);
 int             snmp_get_random_access(void);
 
         /*
-         * from parse.h 
+         * from parse.h
          */
 void            snmp_set_mib_warnings(int);
 void            snmp_set_mib_errors(int);

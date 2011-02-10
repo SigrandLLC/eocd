@@ -18,13 +18,13 @@ extern          "C" {
 
                       All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the name of CMU not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 CMU DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -41,7 +41,7 @@ SOFTWARE.
 #define COMMUNITY_MAX_LEN	256
 
     /*
-     * Space for character representation of an object identifier 
+     * Space for character representation of an object identifier
      */
 #define SPRINT_MAX_LEN		2560
 
@@ -70,7 +70,7 @@ SOFTWARE.
 #define FINISHED_FAILURE	10
 
     /*
-     * Access control statements for the agent 
+     * Access control statements for the agent
      */
 #define RONLY	0x1             /* read access only */
 #define RWRITE	0x2             /* read and write access (must have 0x2 bit set) */
@@ -78,7 +78,7 @@ SOFTWARE.
 #define NOACCESS 0x0000         /* no access for anybody */
 
     /*
-     * defined types (from the SMI, RFC 1157) 
+     * defined types (from the SMI, RFC 1157)
      */
 #define ASN_IPADDRESS   (ASN_APPLICATION | 0)
 #define ASN_COUNTER	(ASN_APPLICATION | 1)
@@ -88,7 +88,7 @@ SOFTWARE.
 #define ASN_OPAQUE	(ASN_APPLICATION | 4)   /* changed so no conflict with other includes */
 
     /*
-     * defined types (from the SMI, RFC 1442) 
+     * defined types (from the SMI, RFC 1442)
      */
 #define ASN_NSAP	(ASN_APPLICATION | 5)   /* historic - don't use */
 #define ASN_COUNTER64   (ASN_APPLICATION | 6)
@@ -96,7 +96,7 @@ SOFTWARE.
 
 #ifdef OPAQUE_SPECIAL_TYPES
     /*
-     * defined types from draft-perkins-opaque-01.txt 
+     * defined types from draft-perkins-opaque-01.txt
      */
 #define ASN_FLOAT	    (ASN_APPLICATION | 8)
 #define ASN_DOUBLE	    (ASN_APPLICATION | 9)
@@ -105,14 +105,14 @@ SOFTWARE.
 #endif                          /* OPAQUE_SPECIAL_TYPES */
 
     /*
-     * changed to ERROR_MSG to eliminate conflict with other includes 
+     * changed to ERROR_MSG to eliminate conflict with other includes
      */
 #ifndef ERROR_MSG
 #define ERROR_MSG(string)	snmp_set_detail(string)
 #endif
 
     /*
-     * from snmp.c 
+     * from snmp.c
      */
     extern u_char   sid[];      /* size SID_MAX_LEN */
     extern int      snmp_errno;

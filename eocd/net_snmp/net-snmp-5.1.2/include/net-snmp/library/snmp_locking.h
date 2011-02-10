@@ -1,6 +1,6 @@
 
 /*
- * snmp_locking.h - multi-thread resource locking support declarations 
+ * snmp_locking.h - multi-thread resource locking support declarations
  */
 /*
  * Author: Markku Laukkanen

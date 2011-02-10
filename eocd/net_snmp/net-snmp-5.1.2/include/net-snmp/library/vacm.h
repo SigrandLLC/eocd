@@ -118,7 +118,7 @@ extern          "C" {
      *   VACM_SUCCESS          The OID is included in the view.
      *   VACM_NOTINVIEW        If no entry in the view list includes the
      *                         provided OID, or the OID is explicitly excluded
-     *                         from the view. 
+     *                         from the view.
      *   VACM_SUBTREE_UNKNOWN  The entire subtree has both allowed and
      *                         disallowed portions.
      */

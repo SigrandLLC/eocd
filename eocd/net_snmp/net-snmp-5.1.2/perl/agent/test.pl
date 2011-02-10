@@ -54,10 +54,10 @@ print it(ref($regitem) eq "netsnmp_handler_registrationPtr", 5);
 exit;
 
 while(1) {
-    print netsnmp_ds_get_string(NETSNMP_DS_APPLICATION_ID, 
+    print netsnmp_ds_get_string(NETSNMP_DS_APPLICATION_ID,
 				NETSNMP_DS_AGENT_PORTS), "\n";
     $agent->agent_check_and_process(1);
-    print netsnmp_ds_get_string(NETSNMP_DS_APPLICATION_ID, 
+    print netsnmp_ds_get_string(NETSNMP_DS_APPLICATION_ID,
 				NETSNMP_DS_AGENT_PORTS), "\n";
     print "got something\n";
 }

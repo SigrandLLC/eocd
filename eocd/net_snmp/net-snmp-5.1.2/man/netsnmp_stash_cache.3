@@ -2,7 +2,7 @@
 .ad l
 .nh
 .SH NAME
-stash_cache: automatically caches data for certain handlers. \- This handler caches data in an optimized way which may aleviate the need for the lower level handlers to perform as much optimization.  
+stash_cache: automatically caches data for certain handlers. \- This handler caches data in an optimized way which may aleviate the need for the lower level handlers to perform as much optimization.
 
 .PP
 .SS "Functions"
@@ -32,10 +32,10 @@ stash_cache: automatically caches data for certain handlers. \- This handler cac
 .RI "\fIinitializes the stash_cache helper which then registers a stash_cache handler as a run-time injectable handler for configuration file use. \fP"
 .in -1c
 .SH "Detailed Description"
-.PP 
-This handler caches data in an optimized way which may aleviate the need for the lower level handlers to perform as much optimization. Specifically, somewhere in the lower level handlers must be a handler that supports the MODE_GET_STASH operation. Note that the table_iterator helper supports this. 
+.PP
+This handler caches data in an optimized way which may aleviate the need for the lower level handlers to perform as much optimization. Specifically, somewhere in the lower level handlers must be a handler that supports the MODE_GET_STASH operation. Note that the table_iterator helper supports this.
 .SH "Function Documentation"
-.PP 
+.PP
 .SS "netsnmp_oid_stash_node** netsnmp_extract_stash_cache (\fBnetsnmp_agent_request_info\fP * reqinfo)"
 .PP
 extracts a pointer to the stash_cache info from the reqinfo structure. Definition at line 64 of file stash_cache.c.

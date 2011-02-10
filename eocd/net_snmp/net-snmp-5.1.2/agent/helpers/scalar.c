@@ -36,7 +36,7 @@
 
 /**
  * Creates a scalar handler calling netsnmp_create_handler with a
- * handler name defaulted to "scalar" and access method, 
+ * handler name defaulted to "scalar" and access method,
  * netsnmp_scalar_helper_handler.
  *
  * @param void
@@ -55,13 +55,13 @@ netsnmp_get_scalar_handler(void)
 }
 
 /**
- * This function registers a scalar helper handler.  The registered OID, 
- * reginfo->rootoid, space is extended for the instance subid using 
+ * This function registers a scalar helper handler.  The registered OID,
+ * reginfo->rootoid, space is extended for the instance subid using
  * realloc() but the reginfo->rootoid_len length is not extended just yet.
  * .This function subsequently injects the instance, scalar, and serialize
  * helper handlers before actually registering reginfo.
  *
- * Each handler is injected/pushed to the top of the handler chain list 
+ * Each handler is injected/pushed to the top of the handler chain list
  * and will be processed last in first out, LIFO.
  *
  * @param reginfo a handler registration structure which could get created
@@ -93,7 +93,7 @@ netsnmp_register_scalar(netsnmp_handler_registration *reginfo)
 
 
 /**
- * This function registers a read only scalar helper handler. This 
+ * This function registers a read only scalar helper handler. This
  * function is very similar to netsnmp_register_scalar the only addition
  * is that the "read_only" handler is injected into the handler chain
  * prior to injecting the serialize handler and registering reginfo.
@@ -109,7 +109,7 @@ netsnmp_register_scalar(netsnmp_handler_registration *reginfo)
  * @see netsnmp_get_scalar_handler
  *
  */
- 
+
 int
 netsnmp_register_read_only_scalar(netsnmp_handler_registration *reginfo)
 {
@@ -192,11 +192,11 @@ netsnmp_scalar_helper_handler(netsnmp_mib_handler *handler,
         return ret;
     }
     /*
-     * got here only if illegal mode found 
+     * got here only if illegal mode found
      */
     return SNMP_ERR_GENERR;
 }
 
 /*
- * @} 
+ * @}
  */

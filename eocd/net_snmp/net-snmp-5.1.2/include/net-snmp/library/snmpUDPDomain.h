@@ -21,7 +21,7 @@ netsnmp_transport *netsnmp_udp_transport(struct sockaddr_in *addr, int local);
 /*
  * Convert a "traditional" peername into a sockaddr_in structure which is
  * written to *addr.  Returns 1 if the conversion was successful, or 0 if it
- * failed.  
+ * failed.
  */
 
 int             netsnmp_sockaddr_in(struct sockaddr_in *addr,
@@ -29,7 +29,7 @@ int             netsnmp_sockaddr_in(struct sockaddr_in *addr,
 
 
 /*
- * Register any configuration tokens specific to the agent.  
+ * Register any configuration tokens specific to the agent.
  */
 
 void            netsnmp_udp_agent_config_tokens_register(void);
@@ -42,7 +42,7 @@ int             netsnmp_udp_getSecName(void *opaque, int olength,
                                        char **secname);
 
 /*
- * "Constructor" for transport domain object.  
+ * "Constructor" for transport domain object.
  */
 
 void            netsnmp_udp_ctor(void);

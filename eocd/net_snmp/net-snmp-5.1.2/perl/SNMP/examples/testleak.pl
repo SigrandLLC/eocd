@@ -11,7 +11,7 @@ $obj = new SNMP::Session DestHost, $host;
 while (){
 print $obj->get(["ifNumber",0]);
   open(COM,"ps -u$$|") || die;
-  @bar = <COM>; 
+  @bar = <COM>;
   $siz = (split(' ',$bar[1]))[4];
   $rss = (split(' ',$bar[1]))[5];
   close(COM);

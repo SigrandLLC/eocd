@@ -7,13 +7,13 @@
 
                       All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the name of CMU not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 CMU DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -110,7 +110,7 @@ optProc(int argc, char *const *argv, int opt)
         while (*optarg) {
             switch (*optarg++) {
             case 'f':
-                netsnmp_ds_toggle_boolean(NETSNMP_DS_APPLICATION_ID, 
+                netsnmp_ds_toggle_boolean(NETSNMP_DS_APPLICATION_ID,
 					  NETSNMP_DS_APP_DONT_FIX_PDUS);
                 break;
             default:
@@ -156,7 +156,7 @@ main(int argc, char *argv[])
     int             exitval = 0;
 
     /*
-     * get the common command line arguments 
+     * get the common command line arguments
      */
     switch (snmp_parse_args(argc, argv, &session, "C:", &optProc)) {
     case -2:
@@ -171,12 +171,12 @@ main(int argc, char *argv[])
     SOCK_STARTUP;
 
     /*
-     * open an SNMP session 
+     * open an SNMP session
      */
     ss = snmp_open(&session);
     if (ss == NULL) {
         /*
-         * diagnose snmp_open errors with the input netsnmp_session pointer 
+         * diagnose snmp_open errors with the input netsnmp_session pointer
          */
         snmp_sess_perror("snmpstatus", &session);
         SOCK_CLEANUP;
@@ -184,7 +184,7 @@ main(int argc, char *argv[])
     }
 
     /*
-     * create PDU for GET request and add object names to request 
+     * create PDU for GET request and add object names to request
      */
     pdu = snmp_pdu_create(SNMP_MSG_GET);
     snmp_add_null_var(pdu, objid_sysDescr, length_sysDescr);
@@ -193,7 +193,7 @@ main(int argc, char *argv[])
     snmp_add_null_var(pdu, objid_ipOutRequests, length_ipOutRequests);
 
     /*
-     * do the request 
+     * do the request
      */
   retry:
     status = snmp_synch_response(ss, pdu, &response);
@@ -238,9 +238,9 @@ main(int argc, char *argv[])
             }
 
             /*
-             * retry if the errored variable was successfully removed 
+             * retry if the errored variable was successfully removed
              */
-            if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+            if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 					NETSNMP_DS_APP_DONT_FIX_PDUS)) {
                 pdu = snmp_fix_pdu(response, SNMP_MSG_GET);
                 snmp_free_pdu(response);
@@ -277,7 +277,7 @@ main(int argc, char *argv[])
         snmp_free_pdu(response);
 
     /*
-     * create PDU for GET request and add object names to request 
+     * create PDU for GET request and add object names to request
      */
     pdu = snmp_pdu_create(SNMP_MSG_GETNEXT);
     snmp_add_null_var(pdu, objid_ifOperStatus, length_ifOperStatus);
@@ -287,7 +287,7 @@ main(int argc, char *argv[])
     snmp_add_null_var(pdu, objid_ifOutNUCastPkts, length_ifOutNUCastPkts);
 
     /*
-     * ?? note: this code is not quite complete 
+     * ?? note: this code is not quite complete
      */
     good_var = 5;
     interfaces = 0;

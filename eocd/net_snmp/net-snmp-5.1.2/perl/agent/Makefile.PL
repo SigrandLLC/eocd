@@ -14,7 +14,7 @@ sub InitMakeParams {
 		  'NAME'		=> 'NetSNMP::agent',
 		  'VERSION_FROM'	=> 'agent.pm', # finds $VERSION
 		  'XSPROTOARG'          => '-prototypes',
-		  'PM'                => { 
+		  'PM'                => {
 		      'agent.pm' => '$(INST_LIBDIR)/agent.pm',
 		      'netsnmp_request_infoPtr.pm' =>
 			  '$(INST_LIBDIR)/agent/netsnmp_request_infoPtr.pm'
@@ -25,10 +25,10 @@ sub InitMakeParams {
     if ($ENV{'OSTYPE'} eq 'msys') {
       $Params{'DEFINE'} = "-DMINGW_PERL";
     }
-                                   
+
     my ($snmp_lib, $snmp_llib, $sep);
     if (($Config{'osname'} eq 'MSWin32' && $ENV{'OSTYPE'} ne 'msys')) {
-      $opts = NetSNMPGetOpts();	
+      $opts = NetSNMPGetOpts();
       $Params{'DEFINE'} = "-DMSVC_PERL";
       $sep = '\\';
       $snmp_lib_file = 'netsnmp.lib';
@@ -43,7 +43,7 @@ sub InitMakeParams {
       else {
         $lib_dir = 'lib\\release';
       }
-    
+
       if (lc($opts->{'insource'}) eq "true") {
 	$Params{'LIBS'} = "-L$basedir\\win32\\$lib_dir\\ -l$snmp_link_lib -l$agent_link_lib -l$helpers_link_lib " .
                 "-l$mibs_link_lib";
@@ -60,7 +60,7 @@ sub InitMakeParams {
 	  if ($LibDir ne '') {
 	    $noLibDir = 0;
             # Put quotes around LibDir to allow spaces in paths
-            $LibDir = '"' . $LibDir . '"';          
+            $LibDir = '"' . $LibDir . '"';
 	  }
 	  else
 	  {
@@ -102,12 +102,12 @@ sub NetSNMPGetOpts {
     my $rootpath = shift;
     $rootpath = "../" if (!$rootpath);
     $rootpath .= '/' if ($rootpath !~ /\/$/);
-    
+
     if (($Config{'osname'} eq 'MSWin32' && $ENV{'OSTYPE'} ne 'msys')) {
 
       # Grab command line options first.  Only used if environment variables are not set
       GetOptions("NET-SNMP-IN-SOURCE=s" => \$ret{'insource'},
-        "NET-SNMP-PATH=s"      => \$ret{'prefix'},          
+        "NET-SNMP-PATH=s"      => \$ret{'prefix'},
         "NET-SNMP-DEBUG=s"     => \$ret{'debug'});
 
       if ($ENV{'NET-SNMP-IN-SOURCE'})
@@ -128,8 +128,8 @@ sub NetSNMPGetOpts {
       # Update environment variables in case they are needed
       $ENV{'NET-SNMP-IN-SOURCE'}    = $ret{'insource'};
       $ENV{'NET-SNMP-PATH'}         = $ret{'prefix'};
-      $ENV{'NET-SNMP-DEBUG'}        = $ret{'debug'};        
-     
+      $ENV{'NET-SNMP-DEBUG'}        = $ret{'debug'};
+
       $basedir = `%COMSPEC% /c cd`;
       chomp $basedir;
       $basedir =~ /(.*?)\\perl.*/;
@@ -139,7 +139,7 @@ sub NetSNMPGetOpts {
     }
     else
     {
-      if ($ENV{'NET-SNMP-CONFIG'} && 
+      if ($ENV{'NET-SNMP-CONFIG'} &&
         $ENV{'NET-SNMP-IN-SOURCE'}) {
 	# have env vars, pull from there
 	$ret{'nsconfig'} = $ENV{'NET-SNMP-CONFIG'};
@@ -158,8 +158,8 @@ sub NetSNMPGetOpts {
 	$ENV{'NET-SNMP-CONFIG'}    = $ret{'nsconfig'};
 	$ENV{'NET-SNMP-IN-SOURCE'} = $ret{'insource'};
       }
-    }	
-    
+    }
+
     $ret{'nsconfig'} =~ s/ROOTPATH/$rootpath/;
 
     $ret{'rootpath'} = $rootpath;

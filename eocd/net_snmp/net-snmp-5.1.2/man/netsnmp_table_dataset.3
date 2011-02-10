@@ -2,7 +2,7 @@
 .ad l
 .nh
 .SH NAME
-table_dataset: Helps you implement a table with automatted storage. \- This handler helps you implement a table where all the data is expected to be stored within the agent itself and not in some external storage location.  
+table_dataset: Helps you implement a table with automatted storage. \- This handler helps you implement a table where all the data is expected to be stored within the agent itself and not in some external storage location.
 
 .PP
 .SS "Functions"
@@ -117,15 +117,15 @@ table_dataset: Helps you implement a table with automatted storage. \- This hand
 .br
 .in -1c
 .SH "Detailed Description"
-.PP 
+.PP
 This handler helps you implement a table where all the data is expected to be stored within the agent itself and not in some external storage location. It handles all MIB requests including GETs, GETNEXTs and SETs. It's possible to simply create a table without actually ever defining a handler to be called when SNMP requests come in. To use the data, you can either attach a sub-handler that merely uses/manipulates the data further when requests come in, or you can loop through it externally when it's actually needed. This handler is most useful in cases where a table is holding configuration data for something which gets triggered via another event.
 .PP
-NOTE NOTE NOTE: This helper isn't complete and is likely to change somewhat over time. Specifically, the way it stores data internally may change drastically. 
+NOTE NOTE NOTE: This helper isn't complete and is likely to change somewhat over time. Specifically, the way it stores data internally may change drastically.
 .SH "Function Documentation"
-.PP 
+.PP
 .SS "netsnmp_table_data_set* netsnmp_create_table_data_set (const char * table_name)"
 .PP
-Create a netsnmp_table_data_set structure given a table_data definition. 
+Create a netsnmp_table_data_set structure given a table_data definition.
 .PP
 \fBExamples: \fP
 .in +1c
@@ -153,7 +153,7 @@ References netsnmp_mib_handler_s::myvoid, netsnmp_create_handler(), netsnmp_mib_
 Referenced by netsnmp_register_table_data_set().
 .SS "int netsnmp_mark_row_column_writable (netsnmp_table_row * row, int column, int writable)"
 .PP
-marks a given column in a row as writable or not. 
+marks a given column in a row as writable or not.
 .PP
 \fBExamples: \fP
 .in +1c
@@ -170,7 +170,7 @@ registers a table_dataset so that the 'add_row' snmpd.conf token can be used to 
 .PP
 \fBTodo\fP
 .RS 4
-create a properly free'ing registeration pointer for the datalist, and get the datalist freed at shutdown. 
+create a properly free'ing registeration pointer for the datalist, and get the datalist freed at shutdown.
 .RE
 .PP
 
@@ -184,7 +184,7 @@ Definition at line 752 of file table_dataset.c.
 References netsnmp_add_list_data(), netsnmp_create_data_list(), and SNMP_MALLOC_TYPEDEF.
 .SS "int netsnmp_register_table_data_set (\fBnetsnmp_handler_registration\fP * reginfo, netsnmp_table_data_set * data_set, \fBnetsnmp_table_registration_info\fP * table_info)"
 .PP
-register a given data_set at a given oid (specified in the netsnmp_handler_registration pointer). The reginfo->handler->access_method *may* be null if the call doesn't ever want to be called for SNMP operations. 
+register a given data_set at a given oid (specified in the netsnmp_handler_registration pointer). The reginfo->handler->access_method *may* be null if the call doesn't ever want to be called for SNMP operations.
 .PP
 \fBExamples: \fP
 .in +1c
@@ -195,7 +195,7 @@ Definition at line 112 of file table_dataset.c.
 References netsnmp_table_registration_info_s::indexes, netsnmp_table_registration_info_s::max_column, netsnmp_table_registration_info_s::min_column, netsnmp_get_table_data_set_handler(), netsnmp_handler_registration, netsnmp_inject_handler(), netsnmp_register_table_data(), SNMP_MALLOC_TYPEDEF, SNMP_MAX, and SNMP_MIN.
 .SS "int netsnmp_set_row_column (netsnmp_table_row * row, unsigned int column, int type, const char * value, size_t value_len)"
 .PP
-sets a given column in a row with data given a type, value, and length. Data is memdup'ed by the function. 
+sets a given column in a row with data given a type, value, and length. Data is memdup'ed by the function.
 .PP
 \fBExamples: \fP
 .in +1c
@@ -230,7 +230,7 @@ implements the table data helper. This is the routine that takes care of all SNM
 References netsnmp_mib_handler_s::access_method, netsnmp_table_request_info_s::colnum, netsnmp_agent_request_info_s::mode, netsnmp_mib_handler_s::myvoid, netsnmp_call_next_handler(), netsnmp_create_data_list(), netsnmp_extract_table_info(), netsnmp_extract_table_row(), netsnmp_handler_registration, netsnmp_mib_handler, netsnmp_oid_stash_add_data(), netsnmp_oid_stash_get_data(), netsnmp_request_add_list_data(), netsnmp_set_request_error(), netsnmp_strdup_and_null(), netsnmp_table_data_build_result(), netsnmp_table_data_set_clone_row(), netsnmp_table_data_set_find_column(), netsnmp_table_dataset_add_row(), netsnmp_table_dataset_delete_row(), netsnmp_table_dataset_remove_and_delete_row(), netsnmp_table_dataset_replace_row(), netsnmp_mib_handler_s::next, netsnmp_request_info_s::next, netsnmp_request_info_s::processed, netsnmp_request_info_s::requestvb, netsnmp_handler_registration_s::rootoid_len, SNMP_FREE, SNMP_MALLOC_TYPEDEF, variable_list::type, variable_list::val, and variable_list::val_len.
 .SS "NETSNMP_INLINE void netsnmp_table_dataset_add_index (netsnmp_table_data_set * table, u_char type)"
 .PP
-adds an index to the table. Call this repeatly for each index. 
+adds an index to the table. Call this repeatly for each index.
 .PP
 \fBExamples: \fP
 .in +1c
@@ -241,7 +241,7 @@ Definition at line 938 of file table_dataset.c.
 Referenced by netsnmp_table_set_add_indexes().
 .SS "NETSNMP_INLINE void netsnmp_table_dataset_add_row (netsnmp_table_data_set * table, netsnmp_table_row * row)"
 .PP
-adds a new row to a dataset table 
+adds a new row to a dataset table
 .PP
 \fBExamples: \fP
 .in +1c

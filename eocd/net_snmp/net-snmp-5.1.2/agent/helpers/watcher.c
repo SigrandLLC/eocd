@@ -100,7 +100,7 @@ netsnmp_watcher_helper_handler(netsnmp_mib_handler *handler,
 
     switch (reqinfo->mode) {
         /*
-         * data requests 
+         * data requests
          */
     case MODE_GET:
         snmp_set_var_typed_value(requests->requestvb,
@@ -110,7 +110,7 @@ netsnmp_watcher_helper_handler(netsnmp_mib_handler *handler,
         break;
 
         /*
-         * SET requests.  Should only get here if registered RWRITE 
+         * SET requests.  Should only get here if registered RWRITE
          */
     case MODE_SET_RESERVE1:
         if (requests->requestvb->type != winfo->type)
@@ -127,7 +127,7 @@ netsnmp_watcher_helper_handler(netsnmp_mib_handler *handler,
 
     case MODE_SET_RESERVE2:
         /*
-         * store old info for undo later 
+         * store old info for undo later
          */
         memdup(&old_data, (u_char *) winfo->data, winfo->data_size);
         if (old_data == NULL) {
@@ -142,13 +142,13 @@ netsnmp_watcher_helper_handler(netsnmp_mib_handler *handler,
 
     case MODE_SET_FREE:
         /*
-         * nothing to do 
+         * nothing to do
          */
         break;
 
     case MODE_SET_ACTION:
         /*
-         * update current 
+         * update current
          */
         memcpy(winfo->data, (void *)requests->requestvb->val.string,
                                     requests->requestvb->val_len);
@@ -224,7 +224,7 @@ netsnmp_watched_timestamp_handler(netsnmp_mib_handler *handler,
 
     switch (reqinfo->mode) {
         /*
-         * data requests 
+         * data requests
          */
     case MODE_GET:
         uptime = netsnmp_marker_uptime( timestamp );

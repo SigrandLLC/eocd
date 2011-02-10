@@ -21,12 +21,12 @@ initialize_table_mteEventNotificationTable(void)
         OID_LENGTH(mteEventNotificationTable_oid);
 
     /*
-     * create the table structure itself 
+     * create the table structure itself
      */
     mteEventNotif_table_set = netsnmp_create_table_data_set("mteEventNotificationTable");
 
     /*
-     * comment this out or delete if you don't support creation of new rows 
+     * comment this out or delete if you don't support creation of new rows
      */
     mteEventNotif_table_set->allow_creation = 1;
 
@@ -55,11 +55,11 @@ initialize_table_mteEventNotificationTable(void)
     /* keep index values around for comparisons later */
     mteEventNotif_table_set->table->store_indexes = 1;
     /*
-     * registering the table with the master agent 
+     * registering the table with the master agent
      */
     /*
      * note: if you don't need a subhandler to deal with any aspects
-     * of the request, change mteEventNotificationTable_handler to "NULL" 
+     * of the request, change mteEventNotificationTable_handler to "NULL"
      */
     netsnmp_register_table_data_set(netsnmp_create_handler_registration
                                     ("mteEventNotificationTable",
@@ -75,7 +75,7 @@ init_mteEventNotificationTable(void)
 {
 
     /*
-     * here we initialize all the tables we're planning on supporting 
+     * here we initialize all the tables we're planning on supporting
      */
     initialize_table_mteEventNotificationTable();
 }
@@ -91,7 +91,7 @@ mteEventNotificationTable_handler(netsnmp_mib_handler *handler,
      * perform anything here that you need to do.  The requests have
      * already been processed by the master table_dataset handler, but
      * this gives you chance to act on the request in some other way
-     * if need be. 
+     * if need be.
      */
     return SNMP_ERR_NOERROR;
 }

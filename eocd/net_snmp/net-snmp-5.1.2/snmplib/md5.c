@@ -37,11 +37,11 @@
  */
 
 /*
- * code uses WORDS_BIGENDIAN defined by configure now  -- WH 9/27/95 
+ * code uses WORDS_BIGENDIAN defined by configure now  -- WH 9/27/95
  */
 
 /*
- * Compile-time includes 
+ * Compile-time includes
  */
 
 #include <net-snmp/net-snmp-config.h>
@@ -136,7 +136,7 @@ MDprint(MDptr MDp)
 
 /*
  * MDbegin(MDp)
- * ** Initialize message digest buffer MDp. 
+ * ** Initialize message digest buffer MDp.
  * ** This is a user-callable routine.
  */
 void
@@ -188,7 +188,7 @@ MDreverse(unsigned int *X)
  * ** Update message digest buffer MDp->buffer using 16-word data block X.
  * ** Assumes all 16 words of X are full of data.
  * ** Does not update MDp->count.
- * ** This routine is not user-callable. 
+ * ** This routine is not user-callable.
  */
 static void
 MDblock(MDptr MDp, unsigned int *X)
@@ -203,7 +203,7 @@ MDblock(MDptr MDp, unsigned int *X)
     D = MDp->buffer[3];
 
     /*
-     * Update the message digest buffer 
+     * Update the message digest buffer
      */
     ff(A, B, C, D, 0, fs1, Uns(3614090360));    /* Round 1 */
     ff(D, A, B, C, 1, fs2, Uns(3905402710));
@@ -309,7 +309,7 @@ MDupdate(MDptr MDp, unsigned char *X, unsigned int count)
     if (count == 0 && MDp->done)
         return 0;
     /*
-     * check to see if MD is already done and report error 
+     * check to see if MD is already done and report error
      */
     if (MDp->done) {
         return -1;
@@ -318,7 +318,7 @@ MDupdate(MDptr MDp, unsigned char *X, unsigned int count)
      * if (MDp->done) { fprintf(stderr,"\nError: MDupdate MD already done."); return; }
      */
     /*
-     * Add count to MDp->count 
+     * Add count to MDp->count
      */
     tmp = count;
     p = MDp->count;
@@ -328,7 +328,7 @@ MDupdate(MDptr MDp, unsigned char *X, unsigned int count)
         tmp = tmp >> 8;
     }
     /*
-     * Process data 
+     * Process data
      */
     if (count == 512) {         /* Full block of data to handle */
         MDblock(MDp, (unsigned int *) X);
@@ -341,7 +341,7 @@ MDupdate(MDptr MDp, unsigned char *X, unsigned int count)
      */
     else {                      /* partial block -- must be last block so finish up */
         /*
-         * Find out how many bytes and residual bits there are 
+         * Find out how many bytes and residual bits there are
          */
         int             copycount;
         byte = count >> 3;
@@ -350,18 +350,18 @@ MDupdate(MDptr MDp, unsigned char *X, unsigned int count)
         if (bit)
             copycount++;
         /*
-         * Copy X into XX since we need to modify it 
+         * Copy X into XX since we need to modify it
          */
         memset(XX, 0, sizeof(XX));
         memcpy(XX, X, copycount);
 
         /*
-         * Add padding '1' bit and low-order zeros in last byte 
+         * Add padding '1' bit and low-order zeros in last byte
          */
         mask = ((unsigned long) 1) << (7 - bit);
         XX[byte] = (XX[byte] | mask) & ~(mask - 1);
         /*
-         * If room for bit count, finish up with this block 
+         * If room for bit count, finish up with this block
          */
         if (byte <= 55) {
             for (i = 0; i < 8; i++)
@@ -376,7 +376,7 @@ MDupdate(MDptr MDp, unsigned char *X, unsigned int count)
             MDblock(MDp, (unsigned int *) XX);
         }
         /*
-         * Set flag saying we're done with MD computation 
+         * Set flag saying we're done with MD computation
          */
         MDp->done = 1;
     }
@@ -384,7 +384,7 @@ MDupdate(MDptr MDp, unsigned char *X, unsigned int count)
 }
 
 /*
- * MDchecksum(data, len, MD5): do a checksum on an arbirtrary amount of data 
+ * MDchecksum(data, len, MD5): do a checksum on an arbirtrary amount of data
  */
 int
 MDchecksum(u_char * data, size_t len, u_char * mac, size_t maclen)
@@ -406,7 +406,7 @@ MDchecksum(u_char * data, size_t len, u_char * mac, size_t maclen)
         goto check_end;
 
     /*
-     * copy the checksum to the outgoing data (all of it that is requested). 
+     * copy the checksum to the outgoing data (all of it that is requested).
      */
     MDget(MD, mac, maclen);
 
@@ -418,7 +418,7 @@ MDchecksum(u_char * data, size_t len, u_char * mac, size_t maclen)
 
 /*
  * MDsign(data, len, MD5): do a checksum on an arbirtrary amount
- * of data, and prepended with a secret in the standard fashion 
+ * of data, and prepended with a secret in the standard fashion
  */
 int
 MDsign(u_char * data, size_t len, u_char * mac, size_t maclen,
@@ -445,7 +445,7 @@ MDsign(u_char * data, size_t len, u_char * mac, size_t maclen,
     if (secretlen != 16 || secret == NULL || mac == NULL || data == NULL ||
         len <= 0 || maclen <= 0) {
         /*
-         * DEBUGMSGTL(("md5","MD5 signing not properly initialized")); 
+         * DEBUGMSGTL(("md5","MD5 signing not properly initialized"));
          */
         return -1;
     }
@@ -466,7 +466,7 @@ MDsign(u_char * data, size_t len, u_char * mac, size_t maclen,
     if (((unsigned int) data) % sizeof(long) != 0) {
         /*
          * this relies on the ability to use integer math and thus we
-         * must rely on data that aligns on 32-bit-word-boundries 
+         * must rely on data that aligns on 32-bit-word-boundries
          */
         memdup(&newdata, data, len);
         cp = newdata;
@@ -498,7 +498,7 @@ MDsign(u_char * data, size_t len, u_char * mac, size_t maclen,
         goto update_end;
 
     /*
-     * copy the sign checksum to the outgoing pointer 
+     * copy the sign checksum to the outgoing pointer
      */
     MDget(&MD, mac, maclen);
 
@@ -520,7 +520,7 @@ MDget(MDstruct * MD, u_char * buf, size_t buflen)
     int             i, j;
 
     /*
-     * copy the checksum to the outgoing data (all of it that is requested). 
+     * copy the checksum to the outgoing data (all of it that is requested).
      */
     for (i = 0; i < 4 && i * 4 < (int) buflen; i++)
         for (j = 0; j < 4 && i * 4 + j < (int) buflen; j++)

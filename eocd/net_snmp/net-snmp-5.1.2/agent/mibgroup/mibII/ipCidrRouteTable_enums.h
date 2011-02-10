@@ -6,7 +6,7 @@
 #define IPCIDRROUTETABLE_ENUMS_H
 
 /*
- * enums for column ipCidrRouteType 
+ * enums for column ipCidrRouteType
  */
 #define IPCIDRROUTETYPE_OTHER		1
 #define IPCIDRROUTETYPE_REJECT		2
@@ -14,7 +14,7 @@
 #define IPCIDRROUTETYPE_REMOTE		4
 
 /*
- * enums for column ipCidrRouteProto 
+ * enums for column ipCidrRouteProto
  */
 #define IPCIDRROUTEPROTO_OTHER		1
 #define IPCIDRROUTEPROTO_LOCAL		2
@@ -34,7 +34,7 @@
 #define IPCIDRROUTEPROTO_CISCOEIGRP		16
 
 /*
- * enums for column ipCidrRouteStatus 
+ * enums for column ipCidrRouteStatus
  */
 #define IPCIDRROUTESTATUS_ACTIVE		1
 #define IPCIDRROUTESTATUS_NOTINSERVICE		2

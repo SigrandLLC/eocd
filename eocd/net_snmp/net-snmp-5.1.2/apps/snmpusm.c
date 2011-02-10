@@ -120,7 +120,7 @@ usage(void)
 }
 
 /*
- * setup_oid appends to the oid the index for the engineid/user 
+ * setup_oid appends to the oid the index for the engineid/user
  */
 void
 setup_oid(oid * it, size_t * len, u_char * id, size_t idlen,
@@ -141,13 +141,13 @@ setup_oid(oid * it, size_t * len, u_char * id, size_t idlen,
     }
 
     /*
-     * fprintf(stdout, "setup_oid: ");  
+     * fprintf(stdout, "setup_oid: ");
      */
     /*
-     * fprint_objid(stdout, it, *len);  
+     * fprint_objid(stdout, it, *len);
      */
     /*
-     * fprintf(stdout, "\n");  
+     * fprintf(stdout, "\n");
      */
 }
 
@@ -224,7 +224,7 @@ main(int argc, char *argv[])
     privKeyChange = privKeyOid;
 
     /*
-     * get the common command line arguments 
+     * get the common command line arguments
      */
     switch (arg = snmp_parse_args(argc, argv, &session, "C:", optProc)) {
     case -2:
@@ -239,22 +239,22 @@ main(int argc, char *argv[])
     SOCK_STARTUP;
 
     /*
-     * open an SNMP session 
+     * open an SNMP session
      */
     /*
-     * Note:  this wil obtain the engineID needed below 
+     * Note:  this wil obtain the engineID needed below
      */
     ss = snmp_open(&session);
     if (ss == NULL) {
         /*
-         * diagnose snmp_open errors with the input netsnmp_session pointer 
+         * diagnose snmp_open errors with the input netsnmp_session pointer
          */
         snmp_sess_perror("snmpusm", &session);
         exit(1);
     }
 
     /*
-     * create PDU for SET request and add object names and values to request 
+     * create PDU for SET request and add object names and values to request
      */
     pdu = snmp_pdu_create(SNMP_MSG_SET);
 
@@ -294,20 +294,20 @@ main(int argc, char *argv[])
         }
 
         /*
-         * do we have a securityName?  If not, copy the default 
+         * do we have a securityName?  If not, copy the default
          */
         if (session.securityName == NULL) {
-            session.securityName = 
-	      strdup(netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID, 
+            session.securityName =
+	      strdup(netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID,
 					   NETSNMP_DS_LIB_SECNAME));
         }
 
         /*
-         * the old Ku is in the session, but we need the new one 
+         * the old Ku is in the session, but we need the new one
          */
         if (session.securityAuthProto == NULL) {
             /*
-             * get .conf set default 
+             * get .conf set default
              */
             const oid      *def =
                 get_default_authtype(&session.securityAuthProtoLen);
@@ -316,7 +316,7 @@ main(int argc, char *argv[])
         }
         if (session.securityAuthProto == NULL) {
             /*
-             * assume MD5 
+             * assume MD5
              */
             session.securityAuthProtoLen =
                 sizeof(usmHMACMD5AuthProtocol) / sizeof(oid);
@@ -336,7 +336,7 @@ main(int argc, char *argv[])
         }
 
         /*
-         * the old Ku is in the session, but we need the new one 
+         * the old Ku is in the session, but we need the new one
          */
         rval = generate_Ku(session.securityAuthProto,
                            session.securityAuthProtoLen,
@@ -350,7 +350,7 @@ main(int argc, char *argv[])
         }
 
         /*
-         * generate the two Kul's 
+         * generate the two Kul's
          */
         rval = generate_kul(session.securityAuthProto,
                             session.securityAuthProtoLen,
@@ -375,7 +375,7 @@ main(int argc, char *argv[])
         }
 
         /*
-         * create the keychange string 
+         * create the keychange string
          */
         rval = encode_keychange(session.securityAuthProto,
                                 session.securityAuthProtoLen,
@@ -391,7 +391,7 @@ main(int argc, char *argv[])
         }
 
         /*
-         * add the keychange string to the outgoing packet 
+         * add the keychange string to the outgoing packet
          */
         if (doauthkey) {
             setup_oid(authKeyChange, &name_length,
@@ -520,7 +520,7 @@ main(int argc, char *argv[])
 
 
     /*
-     * do the request 
+     * do the request
      */
     status = snmp_synch_response(ss, pdu, &response);
     if (status == STAT_SUCCESS) {

@@ -41,7 +41,7 @@
 
 #ifndef SUN_LEN
 /*
- * Evaluate to actual length of the `sockaddr_un' structure.  
+ * Evaluate to actual length of the `sockaddr_un' structure.
  */
 #define SUN_LEN(ptr) ((size_t) (((struct sockaddr_un *) 0)->sun_path)         \
                       + strlen ((ptr)->sun_path))
@@ -52,7 +52,7 @@ static netsnmp_tdomain unixDomain;
 
 
 /*
- * This is the structure we use to hold transport-specific data.  
+ * This is the structure we use to hold transport-specific data.
  */
 
 typedef struct _sockaddr_un_pair {
@@ -64,7 +64,7 @@ typedef struct _sockaddr_un_pair {
 
 /*
  * Return a string representing the address in data, or else the "far end"
- * address if data is NULL.  
+ * address if data is NULL.
  */
 
 static char *
@@ -103,9 +103,9 @@ netsnmp_unix_fmtaddr(netsnmp_transport *t, void *data, int len)
 
 
 /*
- * You can write something into opaque that will subsequently get passed back 
+ * You can write something into opaque that will subsequently get passed back
  * to your send function if you like.  For instance, you might want to
- * remember where a PDU came from, so that you can send a reply there...  
+ * remember where a PDU came from, so that you can send a reply there...
  */
 
 static int
@@ -213,7 +213,7 @@ netsnmp_unix_accept(netsnmp_transport *t)
 
     if (farend == NULL) {
         /*
-         * Indicate that the acceptance of this socket failed.  
+         * Indicate that the acceptance of this socket failed.
          */
         DEBUGMSGTL(("netsnmp_unix", "accept: malloc failed\n"));
         return -1;
@@ -248,10 +248,10 @@ netsnmp_unix_accept(netsnmp_transport *t)
 
 
 /*
- * Open a Unix-domain transport for SNMP.  Local is TRUE if addr is the local 
- * address to bind to (i.e. this is a server-type session); otherwise addr is 
+ * Open a Unix-domain transport for SNMP.  Local is TRUE if addr is the local
+ * address to bind to (i.e. this is a server-type session); otherwise addr is
  * the remote address to send things to (and we make up a temporary name for
- * the local end of the connection).  
+ * the local end of the connection).
  */
 
 netsnmp_transport *
@@ -271,7 +271,7 @@ netsnmp_unix_transport(struct sockaddr_un *addr, int local)
         return NULL;
     }
 
-    string = netsnmp_unix_fmtaddr(NULL, (void *)addr, 
+    string = netsnmp_unix_fmtaddr(NULL, (void *)addr,
 				  sizeof(struct sockaddr_un));
     DEBUGMSGTL(("netsnmp_unix", "open %s %s\n", local ? "local" : "remote",
                 string));
@@ -311,7 +311,7 @@ netsnmp_unix_transport(struct sockaddr_un *addr, int local)
 
         /*
          * This session is inteneded as a server, so we must bind to the given
-         * path (unlinking it first, to avoid errors).  
+         * path (unlinking it first, to avoid errors).
          */
 
         t->flags |= NETSNMP_TRANSPORT_FLAG_LISTEN;
@@ -337,7 +337,7 @@ netsnmp_unix_transport(struct sockaddr_un *addr, int local)
         sup->local = 1;
 
         /*
-         * Now sit here and listen for connections to arrive.  
+         * Now sit here and listen for connections to arrive.
          */
 
         rc = listen(t->sock, NETSNMP_STREAM_QUEUE_LEN);
@@ -371,7 +371,7 @@ netsnmp_unix_transport(struct sockaddr_un *addr, int local)
 
         /*
          * Save the remote address in the transport-specific data pointer for
-         * later use by netsnmp_unix_send.  
+         * later use by netsnmp_unix_send.
          */
 
         sup->server.sun_family = AF_UNIX;
@@ -381,7 +381,7 @@ netsnmp_unix_transport(struct sockaddr_un *addr, int local)
 
     /*
      * Message size is not limited by this transport (hence msgMaxSize
-     * is equal to the maximum legal size of an SNMP message).  
+     * is equal to the maximum legal size of an SNMP message).
      */
 
     t->msgMaxSize = 0x7fffffff;
@@ -473,7 +473,7 @@ netsnmp_unix_getSecName(void *opaque, int olength,
 
     /*
      * Special case if there are NO entries (as opposed to no MATCHING
-     * entries).  
+     * entries).
      */
 
     if (com2SecUnixList == NULL) {
@@ -486,9 +486,9 @@ netsnmp_unix_getSecName(void *opaque, int olength,
 
     /*
      * If there is no unix socket path, then there can be no valid security
-     * name.  
+     * name.
      */
-	
+
     if (opaque == NULL || olength != sizeof(struct sockaddr_un) ||
         to->sun_family != AF_UNIX) {
         DEBUGMSGTL(("netsnmp_unix_getSecName",
@@ -518,7 +518,7 @@ netsnmp_unix_getSecName(void *opaque, int olength,
 	    (memcmp(community, c->community, community_len) == 0) &&
             /* compare sockpath, if pathlen == 0, always match */
             (strlen(to->sun_path) == c->pathlen || c->pathlen == 0) &&
-            (memcmp(to->sun_path, c->sockpath, c->pathlen) == 0)	
+            (memcmp(to->sun_path, c->sockpath, c->pathlen) == 0)
             ) {
             DEBUGMSG(("netsnmp_unix_getSecName", "... SUCCESS\n"));
             if (secName != NULL) {
@@ -563,7 +563,7 @@ netsnmp_unix_parse_security(const char *token, char *param)
 	if(strcmp(sockpath, "default") == 0){
 			sockpath[0] = 0;
 	}
-	
+
 	param = copy_nword(param, community, VACMSTRINGLEN);
     if (community[0] == '\0') {
         config_perror("missing COMMUNITY parameter\n");

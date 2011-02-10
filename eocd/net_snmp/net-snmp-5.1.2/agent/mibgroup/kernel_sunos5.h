@@ -67,7 +67,7 @@ typedef enum {
  */
 
 /*
- * MIB-II cache. Simple buffering scheme - last read block is in the cache 
+ * MIB-II cache. Simple buffering scheme - last read block is in the cache
  */
 
 typedef struct mibcache {
@@ -84,7 +84,7 @@ typedef struct mibcache {
 } mibcache;
 
 /*
- * Mapping between mibgroup_t, mibtable_t and mib2.h defines 
+ * Mapping between mibgroup_t, mibtable_t and mib2.h defines
  */
 
 typedef struct mibmap {
@@ -93,7 +93,7 @@ typedef struct mibmap {
 } mibmap;
 
 /*
- * Structures, missing in <inet/mib2.h> 
+ * Structures, missing in <inet/mib2.h>
  */
 typedef unsigned long TimeTicks;
 

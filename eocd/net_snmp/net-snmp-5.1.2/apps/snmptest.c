@@ -99,7 +99,7 @@ main(int argc, char *argv[])
     int             varcount, nonRepeaters = -1, maxRepetitions;
 
     /*
-     * get the common command line arguments 
+     * get the common command line arguments
      */
     switch (snmp_parse_args(argc, argv, &session, NULL, NULL)) {
     case -2:
@@ -114,12 +114,12 @@ main(int argc, char *argv[])
     SOCK_STARTUP;
 
     /*
-     * open an SNMP session 
+     * open an SNMP session
      */
     ss = snmp_open(&session);
     if (ss == NULL) {
         /*
-         * diagnose snmp_open errors with the input netsnmp_session pointer 
+         * diagnose snmp_open errors with the input netsnmp_session pointer
          */
         snmp_sess_perror("snmptest", &session);
         SOCK_CLEANUP;
@@ -138,11 +138,11 @@ main(int argc, char *argv[])
             if (ret == 1) {
                 varcount++;
                 /*
-                 * add it to the list 
+                 * add it to the list
                  */
                 if (vars == NULL) {
                     /*
-                     * if first variable 
+                     * if first variable
                      */
                     pdu = snmp_pdu_create(command);
                     pdu->variables = vp;
@@ -152,7 +152,7 @@ main(int argc, char *argv[])
                 vars = vp;
             } else {
                 /*
-                 * free the last (unused) variable 
+                 * free the last (unused) variable
                  */
                 if (vp->name)
                     free((char *) vp->name);
@@ -188,7 +188,7 @@ main(int argc, char *argv[])
         copy = snmp_clone_pdu(pdu);
         if (command == SNMP_MSG_TRAP2) {
             /*
-             * No response needed 
+             * No response needed
              */
             if (!snmp_send(ss, pdu)) {
                 snmp_free_pdu(pdu);
@@ -445,7 +445,7 @@ input_variable(netsnmp_variable_list * vp)
                 vp->val_len = val_len;
             } else if (ch == 's') {
                 /*
-                 * -1 to omit trailing newline  
+                 * -1 to omit trailing newline
                  */
                 vp->val.string = (u_char *) malloc(strlen(buf) - 1);
                 if (vp->val.string == NULL) {

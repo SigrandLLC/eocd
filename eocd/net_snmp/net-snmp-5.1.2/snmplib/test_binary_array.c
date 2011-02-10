@@ -49,7 +49,7 @@ test_int(void)
     int i;
 
     c->compare = netsnmp_compare_netsnmp_index;
-    
+
     i1.oids = &o1;
     i2.oids = &o2;
     i3.oids = &o3;
@@ -121,13 +121,13 @@ test_string()
     const char *ox = "dev";
     const char *oy = "aa";
     const char * ip;
-    
+
     const char *a[TEST_SIZE] = { o1, o2, o3, ox, o4, o5, oy };
     netsnmp_container *c = netsnmp_container_get_binary_array();
     int i;
 
     c->compare = my_strcmp;
-    
+
     printf("Creating container...\n");
 
     printf("Inserting data...\n");

@@ -61,7 +61,7 @@ extern          "C" {
      * Holds iterator information containing functions which should be
        called by the iterator_handler to loop over your data set and
        sort it in a SNMP specific manner.
-       
+
        The netsnmp_iterator_info typedef can be used instead of directly calling this struct if you would prefer.
      */
     typedef struct netsnmp_iterator_info_s {
@@ -118,7 +118,7 @@ extern          "C" {
 
     netsnmp_mib_handler
         *netsnmp_get_table_iterator_handler(netsnmp_iterator_info *iinfo);
-    int            
+    int
         netsnmp_register_table_iterator(netsnmp_handler_registration
                                         *reginfo,
                                         netsnmp_iterator_info *iinfo);

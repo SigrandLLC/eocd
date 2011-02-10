@@ -91,7 +91,7 @@ config_require(util_funcs)
          u_long          if_oerrors;    /* output errors on interface */
          u_long          if_collisions; /* collisions on csma interfaces */
          /*
-          * end statistics 
+          * end statistics
           */
          struct ifnet   *if_next;
      };

@@ -51,8 +51,8 @@
 
 static unsigned char rule[IPFWRULELEN]; /*Buffer for reading a line from
                                          * /proc/net/ip_acct. Care has been taken
-                                         * not to read beyond the end of this 
-                                         * buffer, even if rules are in an 
+                                         * not to read beyond the end of this
+                                         * buffer, even if rules are in an
                                          * unexpected format
                                          */
 
@@ -98,7 +98,7 @@ static unsigned long ret_val;   /* Used by var_ipfwacc to return ulongs */
  * * the rule buffer to an unsigned long. The result is stored in the ret_val
  * * variable. The parameter indicates the position where the address starts. It
  * * only works with uppercase letters and assumes input is correct. Had to use
- * * this because stol returns a signed long. 
+ * * this because stol returns a signed long.
  */
 
 static inline void
@@ -119,7 +119,7 @@ atoip(int pos)
 }
 
 /*
- * This function parses the flags field from the line in the buffer 
+ * This function parses the flags field from the line in the buffer
  */
 
 static unsigned long int
@@ -129,12 +129,12 @@ getflags(void)
     int             i = 37;     /* position in the rule */
 
     /*
-     * skipping via name 
+     * skipping via name
      */
     while (rule[i] != ' ' && i < IPFWRULELEN - 12)
         i++;
     /*
-     * skipping via address 
+     * skipping via address
      */
     i += 10;
     for (flags = 0; rule[i] != ' ' && i < IPFWRULELEN - 1; i++) {
@@ -157,18 +157,18 @@ getnumeric(int skip)
     int             i = 37;     /* position in the rule */
 
     /*
-     * skipping via name 
+     * skipping via name
      */
     while (rule[i] != ' ' && i < IPFWRULELEN - 12)
         i++;
     /*
-     * skipping via address 
+     * skipping via address
      */
     i += 10;
     while (skip > 0) {
         skip--;
         /*
-         * skipping field, than subsequent spaces 
+         * skipping field, than subsequent spaces
          */
         while (rule[i] != ' ' && i < IPFWRULELEN - 2)
             i++;
@@ -180,8 +180,8 @@ getnumeric(int skip)
 }
 
 /*
- * this variable defines function callbacks and type return information 
- * for the ipfwaccounting mib 
+ * this variable defines function callbacks and type return information
+ * for the ipfwaccounting mib
  */
 
 struct variable2 ipfwacc_variables[] = {
@@ -247,7 +247,7 @@ var_ipfwacc(struct variable *vp,
 
     if (readrule(name[*length - 1])) {
         /*
-         * this is where we do the value assignments for the mib results. 
+         * this is where we do the value assignments for the mib results.
          */
         switch (vp->magic) {
         case IPFWACCINDEX:

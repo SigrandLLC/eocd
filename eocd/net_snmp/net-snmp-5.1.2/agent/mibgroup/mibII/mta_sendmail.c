@@ -112,7 +112,7 @@
  /**/
 /** "macros and variables for registering the OID tree" */
     /*
-     * prefix for all OIDs 
+     * prefix for all OIDs
      */
 
 static FindVarMethod var_mtaEntry;
@@ -121,14 +121,14 @@ static FindVarMethod var_mtaGroupEntry;
 static oid      mta_variables_oid[] = { 1, 3, 6, 1, 2, 1, 28 };
 
 /*
- * bits that indicate what's needed to compute the value 
+ * bits that indicate what's needed to compute the value
  */
 #define   NEEDS_STATS   (1 << 6)
 #define   NEEDS_DIR     (1 << 7)
 #define   NEEDS         (NEEDS_STATS | NEEDS_DIR)
 
 /*
- * symbolic names for the magic values 
+ * symbolic names for the magic values
  */
 enum {
     MTARECEIVEDMESSAGES = 3 | NEEDS_STATS,
@@ -149,7 +149,7 @@ enum {
 };
 
 /*
- * structure that tells the agent, which function returns what values 
+ * structure that tells the agent, which function returns what values
  */
 static struct variable3 mta_variables[] = {
     {MTARECEIVEDMESSAGES, ASN_COUNTER, RONLY, var_mtaEntry, 3, {1, 1, 1}},
@@ -181,7 +181,7 @@ static struct variable3 mta_variables[] = {
  /**/
 /** "other macros and structures" */
     /*
-     * for boolean values 
+     * for boolean values
      */
 #ifndef FALSE
 #define FALSE 0
@@ -193,7 +193,7 @@ static struct variable3 mta_variables[] = {
 #define BOOL  short
 #endif
     /*
-     * important constants 
+     * important constants
      */
 #define FILENAMELEN     200     /* maximum length for filenames */
 #define MAXMAILERS       25     /* maximum number of mailers (copied from the sendmail sources) */
@@ -204,7 +204,7 @@ static struct variable3 mta_variables[] = {
 #define STAT_VERSION_8_12_QUAR 4     /* version of sendmail V8.12.x statistics files using -D_FFR_QUARANTINE (commercial and edge-living opensource*/
 #define STAT_MAGIC  0x1B1DE     /* magic value to identify statistics files from sendmail V8.9.x or higher (copied from the sendmail sources) */
     /*
-     * structure of sendmail.st file from sendmail V8.10.x (copied from the sendmail sources) 
+     * structure of sendmail.st file from sendmail V8.10.x (copied from the sendmail sources)
      */
 
 struct statisticsV8_12_QUAR {
@@ -242,7 +242,7 @@ struct statisticsV8_12_QUAR {
 };
 
 /*
- * structure of sendmail.st file from sendmail V8.9.x (copied from the sendmail sources) 
+ * structure of sendmail.st file from sendmail V8.9.x (copied from the sendmail sources)
  */
 struct statisticsV8_9 {
     int             stat_magic; /* magic number */
@@ -258,7 +258,7 @@ struct statisticsV8_9 {
 };
 
 /*
- * structure of sendmail.st file from sendmail V8.8.x (copied from the sendmail sources) 
+ * structure of sendmail.st file from sendmail V8.8.x (copied from the sendmail sources)
  */
 struct statisticsV8_8 {
     time_t          stat_itime; /* file initialization time */
@@ -270,7 +270,7 @@ struct statisticsV8_8 {
 };
  /**/
     /*
-     * queue groups (strictly a sendmail 8.12+ thing 
+     * queue groups (strictly a sendmail 8.12+ thing
      */
     struct QDir {
     char            dir[FILENAMELEN + 1];
@@ -290,7 +290,7 @@ struct QGrp {
 /** "static variables" */
 
 /*
- * a list of all the queue groups, NULL terminated 
+ * a list of all the queue groups, NULL terminated
  */
 static struct QGrp qgrps[MAXQUEUEGROUPS];
 static int      nqgrps = 0;
@@ -409,7 +409,7 @@ open_sendmailst(BOOL config)
     if (sendmailst_fh != -1) {
         while (close(sendmailst_fh) == -1 && errno == EINTR) {
             /*
-             * do nothing 
+             * do nothing
              */
         }
     }
@@ -482,7 +482,7 @@ open_sendmailst(BOOL config)
                         sendmailst_fn);
             while (close(sendmailst_fh) == -1 && errno == EINTR) {
                 /*
-                 * do nothing 
+                 * do nothing
                  */
             }
             sendmailst_fh = -1;
@@ -508,7 +508,7 @@ open_sendmailst(BOOL config)
                         sendmailst_fn);
             while (close(sendmailst_fh) == -1 && errno == EINTR) {
                 /*
-                 * do nothing 
+                 * do nothing
                  */
             }
             sendmailst_fh = -1;
@@ -588,14 +588,14 @@ add_queuegroup(const char *name, char *path)
 
     if (nqgrps == MAXQUEUEGROUPS) {
         /*
-         * xxx error 
+         * xxx error
          */
         return;
     }
 
     if (strlen(path) > FILENAMELEN - 10) {
         /*
-         * xxx error 
+         * xxx error
          */
         return;
     }
@@ -603,13 +603,13 @@ add_queuegroup(const char *name, char *path)
     p = path + strlen(path) - 1;
     if (*p == '*') {            /* multiple queue dirs */
         /*
-         * remove * 
+         * remove *
          */
         *p = '\0';
 
         strcpy(parentdir, path);
         /*
-         * remove last directory component from parentdir 
+         * remove last directory component from parentdir
          */
         for (p = parentdir + strlen(parentdir) - 1; p >= parentdir; p--) {
             if (*p == '/') {
@@ -620,22 +620,22 @@ add_queuegroup(const char *name, char *path)
 
         if (p < parentdir) {
             /*
-             * no trailing / ?!? 
+             * no trailing / ?!?
              */
 
             /*
-             * xxx error 
+             * xxx error
              */
             return;
         }
         p++;
 
         /*
-         * p is now the prefix we need to match 
+         * p is now the prefix we need to match
          */
         if ((dp = opendir(parentdir)) == NULL) {
             /*
-             * xxx can't open parentdir 
+             * xxx can't open parentdir
              */
             return;
         }
@@ -644,11 +644,11 @@ add_queuegroup(const char *name, char *path)
             if (!strncmp(dirp->d_name, p, strlen(p)) &&
                 dirp->d_name[0] != '.') {
                 /*
-                 * match, add it to the list 
+                 * match, add it to the list
                  */
 
                 /*
-                 * single queue directory 
+                 * single queue directory
                  */
                 subdir = (struct QDir *) malloc(sizeof(struct QDir));
                 snprintf(subdir->dir, FILENAMELEN - 5, "%s/%s", parentdir,
@@ -661,7 +661,7 @@ add_queuegroup(const char *name, char *path)
         closedir(dp);
     } else {
         /*
-         * single queue directory 
+         * single queue directory
          */
         new = (struct QDir *) malloc(sizeof(struct QDir));
         strcpy(new->dir, path);
@@ -669,7 +669,7 @@ add_queuegroup(const char *name, char *path)
     }
 
     /*
-     * check 'new' for /qf directories 
+     * check 'new' for /qf directories
      */
     for (subdir = new; subdir != NULL; subdir = subdir->next) {
         char            qf[FILENAMELEN + 1];
@@ -677,7 +677,7 @@ add_queuegroup(const char *name, char *path)
         snprintf(qf, FILENAMELEN, "%s/qf", subdir->dir);
         if ((dp = opendir(qf)) != NULL) {
             /*
-             * it exists ! 
+             * it exists !
              */
             strcpy(subdir->dir, qf);
             closedir(dp);
@@ -686,7 +686,7 @@ add_queuegroup(const char *name, char *path)
 
     /*
      * we now have the list of directories in 'new'; create the queuegroup
-     * object 
+     * object
      */
     qgrps[nqgrps].name = strdup(name);
     qgrps[nqgrps].last = 0;
@@ -738,7 +738,7 @@ read_sendmailcf(BOOL config)
     }
 
     /*
-     * initializes the standard mailers, which aren't necessarily mentioned in the sendmail.cf file 
+     * initializes the standard mailers, which aren't necessarily mentioned in the sendmail.cf file
      */
     strcpy(mailernames[0], "prog");
     strcpy(mailernames[1], "*file*");
@@ -746,7 +746,7 @@ read_sendmailcf(BOOL config)
     mailers = 3;
 
     /*
-     * reset queuegroups 
+     * reset queuegroups
      */
 
     linenr = 1;
@@ -760,7 +760,7 @@ read_sendmailcf(BOOL config)
                         linenr, sendmailcf_fn);
             while (fgets(line, sizeof line, sendmailcf_fp) != NULL && line[strlen(line) - 1] != '\n') { /* skip rest of the line */
                 /*
-                 * nothing to do 
+                 * nothing to do
                  */
             }
             linenr++;
@@ -790,7 +790,7 @@ read_sendmailcf(BOOL config)
                      && strcmp(mailernames[mailers], mailernames[i]) != 0;
                      i++) {
                     /*
-                     * nothing to do 
+                     * nothing to do
                      */
                 }
 
@@ -822,7 +822,7 @@ read_sendmailcf(BOOL config)
             switch (line[1]) {
             case ' ':
                 /*
-                 * long option 
+                 * long option
                  */
                 if (strncasecmp(line + 2, "StatusFile", 10) == 0) {
                     filename = line + 12;
@@ -831,25 +831,25 @@ read_sendmailcf(BOOL config)
                     filename = line + 16;
                 } else {
                     /*
-                     * not an option we care about 
+                     * not an option we care about
                      */
                     break;
                 }
 
                 /*
-                 * make sure it's the end of the option 
+                 * make sure it's the end of the option
                  */
                 if (*filename != ' ' && *filename != '=')
                     break;
 
                 /*
-                 * skip WS 
+                 * skip WS
                  */
                 while (*filename == ' ')
                     filename++;
 
                 /*
-                 * must be O <option> = <file> 
+                 * must be O <option> = <file>
                  */
                 if (*filename++ != '=') {
                     print_error(LOG_WARNING, config, FALSE,
@@ -860,7 +860,7 @@ read_sendmailcf(BOOL config)
                 }
 
                 /*
-                 * skip WS 
+                 * skip WS
                  */
                 while (*filename == ' ')
                     filename++;
@@ -922,7 +922,7 @@ read_sendmailcf(BOOL config)
 
         case 'Q':
             /*
-             * found a queue group 
+             * found a queue group
              */
             p = qgname = line + 1;
             while (*p && *p != ',') {
@@ -937,13 +937,13 @@ read_sendmailcf(BOOL config)
             }
 
             /*
-             * look for the directory 
+             * look for the directory
              */
             filename = NULL;
             *p++ = '\0';
             while (*p != '\0') {
                 /*
-                 * skip WS 
+                 * skip WS
                  */
                 while (*p && *p == ' ')
                     p++;
@@ -961,7 +961,7 @@ read_sendmailcf(BOOL config)
                     filename = p;
 
                     /*
-                     * find next ',', turn into \0 
+                     * find next ',', turn into \0
                      */
                     while (*p && *p != ',')
                         p++;
@@ -969,7 +969,7 @@ read_sendmailcf(BOOL config)
                 }
 
                 /*
-                 * skip to next , 
+                 * skip to next ,
                  */
                 while (*p && *p != ',') {
                     p++;
@@ -977,7 +977,7 @@ read_sendmailcf(BOOL config)
             }
 
             /*
-             * we found a directory 
+             * we found a directory
              */
             if (filename) {
                 add_queuegroup(qgname, filename);
@@ -996,7 +996,7 @@ read_sendmailcf(BOOL config)
 
     for (i = 0; i < 10 && fclose(sendmailcf_fp) != 0; i++) {
         /*
-         * nothing to do 
+         * nothing to do
          */
     }
 
@@ -1269,7 +1269,7 @@ var_mtaEntry(struct variable *vp,
         global_count = 0;
         global_size = 0;
         /*
-         * count all queue group messages 
+         * count all queue group messages
          */
         for (i = 0; i < nqgrps; i++) {
             count_queuegroup(&qgrps[i]);
@@ -1378,30 +1378,30 @@ var_mtaGroupEntry(struct variable *vp,
 
         if (result > 0) {
             /*
-             * OID prefix too large 
+             * OID prefix too large
              */
             return NULL;
         }
 
         if (result == 0) {
             /*
-             * OID prefix matches exactly,... 
+             * OID prefix matches exactly,...
              */
             if (*length > vp->namelen && name[vp->namelen] > applindex) {
                 /*
-                 * ... but ApplIndex too large 
+                 * ... but ApplIndex too large
                  */
                 return NULL;
             }
             if (*length > vp->namelen && name[vp->namelen] == applindex) {
                 /*
-                 * ... ApplIndex ok,... 
+                 * ... ApplIndex ok,...
                  */
                 if (*length > vp->namelen + 1
                     && name[vp->namelen + 1] >= 1) {
                     if (name[vp->namelen + 1] >= mailers + nqgrps) {
                         /*
-                         * ... but mailernr too large 
+                         * ... but mailernr too large
                          */
                         return NULL;
                     } else {
@@ -1453,8 +1453,8 @@ var_mtaGroupEntry(struct variable *vp,
     row = name[*length - 1] - 1;
 
     /*
-     * if this is a mailer but we're asking for queue-group only info, 
-     * bump there 
+     * if this is a mailer but we're asking for queue-group only info,
+     * bump there
      */
     if (!exact && row < mailers && (vp->magic == MTAGROUPSTOREDMESSAGES ||
                                     vp->magic == MTAGROUPSTOREDVOLUME)) {
@@ -1502,7 +1502,7 @@ var_mtaGroupEntry(struct variable *vp,
         }
     } else {
         /*
-         * this is the queue group part of the table 
+         * this is the queue group part of the table
          */
         row -= mailers;
         switch (vp->magic) {

@@ -114,7 +114,7 @@ cmu_snmp_parse(netsnmp_session * session,
 #endif                          /* NO_INTERNAL_VAR_LIST */
 
     /*
-     * Add a null to meet the caller's expectations. 
+     * Add a null to meet the caller's expectations.
      */
 
     bufp = (u_char *) malloc(1 + pdu->community_len);

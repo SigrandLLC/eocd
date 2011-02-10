@@ -36,9 +36,9 @@ extern          "C" {
  *      Simply check to make sure the value is type ASN_NULL before
  *      you answer a request.
  */
-	
+
 /**
- * used as an index to parent_data lookups 
+ * used as an index to parent_data lookups
  */
 #define TABLE_HANDLER_NAME "table"
 
@@ -106,7 +106,7 @@ extern          "C" {
         unsigned int    number_indexes;
 	/** contents freed by helper upon exit */
         netsnmp_variable_list *indexes;
-	
+
         oid             index_oid[MAX_OID_LEN];
         size_t          index_oid_len;
         netsnmp_table_registration_info *reg_info;
@@ -124,7 +124,7 @@ extern          "C" {
                                             netsnmp_request_info *reqinfo,
                                             netsnmp_table_request_info
                                             *table_info);
-    int            
+    int
         netsnmp_table_build_oid_from_index(netsnmp_handler_registration
                                            *reginfo,
                                            netsnmp_request_info *reqinfo,
@@ -138,10 +138,10 @@ extern          "C" {
                                                *table_info, u_char type,
                                                u_char * result,
                                                size_t result_len);
-    int            
+    int
         netsnmp_update_variable_list_from_index(netsnmp_table_request_info
                                                 *);
-    int            
+    int
         netsnmp_update_indexes_from_variable_list
         (netsnmp_table_request_info *tri);
     netsnmp_table_registration_info
@@ -159,7 +159,7 @@ extern          "C" {
 #define netsnmp_table_helper_add_index(tinfo, type) snmp_varlist_add_variable(&tinfo->indexes, NULL, 0, (u_char)type, NULL, 0);
 
 #if HAVE_STDARG_H
-    void           
+    void
         netsnmp_table_helper_add_indexes(netsnmp_table_registration_info
                                          *tinfo, ...);
 #else

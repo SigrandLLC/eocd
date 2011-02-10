@@ -94,7 +94,7 @@ if ((param('displaygraph') || param('dograph')) && param('table')) {
 	$r->send_http_header();
 	print "Unauthorized access to that group ($group)\n";
 	return Exit($dbh, $group);
-    }    
+    }
     my $table = param('table');
     my @columns;
 
@@ -183,7 +183,7 @@ if ((param('displaygraph') || param('dograph')) && param('table')) {
     push (@args, '-max', param('max_y')) if (param('max_y') && param('max_y') =~ /^[-.\d]+$/);
     push (@args, '-min', param('min_y')) if (param('min_y') && param('min_y') =~ /^[-.\d]+$/);
 
-    my $ret = 
+    my $ret =
     displaygraph($dbh, $table,
 #		 '-xcol', "date_format(updated,'%m-%d-%y %h:%i')",
 		 '-xcol', "unix_timestamp(updated)",
@@ -281,9 +281,9 @@ if (!defined($group)) {
 	print "<li>Click on a red status light below to list the problems found.\n";
 	print "</ul>\n";
     }
-	
+
     if ($#groups > 0) {
-	displaytable($dbh, 'usergroups', 
+	displaytable($dbh, 'usergroups',
 		     '-clauses', "where (user = '$remuser')",
 		     '-select', 'distinct groupname',
 		     '-notitle', 1,
@@ -294,8 +294,8 @@ if (!defined($group)) {
 					return if ($key ne "groupname");
 					return addtoken($q,"group=$h");
 				    },
-		     '-beginhook', 
-		     sub { 
+		     '-beginhook',
+		     sub {
 			 my $q = self_url();
 			 my($dbh, $junk, $data) = @_;
 			 if (!defined($data)) {
@@ -305,7 +305,7 @@ if (!defined($group)) {
 			 my ($cur, $row);
 			 $cur = getcursor($dbh, "select host from hostgroups where groupname = '$data->{groupname}'");
 			 while (  $row = $cur->fetchrow_hashref ) {
-			     if (checkhost($dbh, $data->{'groupname'}, 
+			     if (checkhost($dbh, $data->{'groupname'},
 					   $row->{'host'})) {
 				 print "<td><a href=\"" . addtoken($q,"group=$data->{groupname}&summarizegroup=1") . "\"><img border=0 src=$NetSNMP::manager::redimage></a></td>\n";
 				 return;
@@ -331,7 +331,7 @@ if (!defined($group)) {
 if (!isuser($dbh, $remuser, $group)) {
     print "Unauthorized access to that group ($group)\n";
     return Exit($dbh, $group);
-}    
+}
 
 #===========================================================================
 # add a new host to a group
@@ -362,7 +362,7 @@ if (defined(param('setupgroup'))) {
 #===========================================================================
 # save configuration information submitted about a group
 #===========================================================================
-if (defined(param('setupgroupsubmit')) && 
+if (defined(param('setupgroupsubmit')) &&
     isadmin($dbh, $remuser, $group)) {
     setupgroupsubmit($dbh, $group);
     delete_all();
@@ -382,7 +382,7 @@ if (defined(param('userprefs'))) {
 #===========================================================================
 # save submitted user preferences
 #===========================================================================
-if (defined(param('setupuserprefssubmit')) && 
+if (defined(param('setupuserprefssubmit')) &&
     isadmin($dbh, $remuser, $group)) {
     setupusersubmit($dbh, $remuser, $group);
     delete_all();
@@ -428,7 +428,7 @@ if (!defined($host)) {
 	print "<li>Click on a red status light below to list the problems found in with a particular host.\n";
 	print "</ul>\n";
     }
-    displaytable($dbh, 'hostgroups', 
+    displaytable($dbh, 'hostgroups',
 		 '-notitle',0,
 		 '-clauses', "where (groupname = '$group')",
 		 '-select', 'distinct host, sysObjectId, sysDescr, sysUpTime, versionTag',
@@ -438,8 +438,8 @@ if (!defined($host)) {
 				    return if ($key ne "host");
 				    return addtoken($q,"host=$h");
 				},
-		 '-beginhook', 
-		 sub { 
+		 '-beginhook',
+		 sub {
 		     my $q = self_url();
 		     my($dbh, $junk, $data) = @_;
 		     if (!defined($data)) {
@@ -497,7 +497,7 @@ if (param('displayhistory')) {
         print "Unauthorized access to that group ($group)\n";
         return Exit($dbh, $group);
     }
-    displaytable($dbh, param('table'), 
+    displaytable($dbh, param('table'),
     '-clauses', "where (host = '$host')",
     '-dolink', \&linktodisplayinfo,
     '-dontdisplaycol', "select * from userprefs where user = '$remuser' and groupname = '$group' and tablename = ? and columnname = ? and displayit = 'N'"
@@ -515,7 +515,7 @@ if (isadmin($dbh, $remuser, $group)) {
     	my $x = param('newtables');
     	$x =~ s/,/ /g;
     	if (/[^\w\s]/) {
-    	    print "<br>Illegal table names in addition list: $x<br>\n" 
+    	    print "<br>Illegal table names in addition list: $x<br>\n"
     	} else {
 	    my @x = split(/\s+/,$x);
 	    foreach my $i (@x) {
@@ -574,13 +574,13 @@ sub summarizeerrors {
 
     my $tabletop = "<br><table $NetSNMP::manager::tableparms><tr $NetSNMP::manager::headerparms><th><b>Host</b></th><th><b>Table</b></th><th><b>Description</b></th></tr>\n";
     my $donetop = 0;
-    my $cursor = 
+    my $cursor =
 	getcursor($dbh, "SELECT * FROM hosttables $clause");
 
     while (my $row = $cursor->fetchrow_hashref ) {
 
 	my $exprs = getcursor($dbh, "SELECT * FROM errorexpressions where (tablename = '$row->{tablename}')");
-	
+
 	while (my  $expr = $exprs->fetchrow_hashref ) {
 	    my $errors = getcursor($dbh, "select * from $row->{tablename} where $expr->{expression} and host = '$row->{host}'");
 	    while (my  $error = $errors->fetchrow_hashref ) {
@@ -682,7 +682,7 @@ sub showhost {
 
     my $errlist = getcursor($dbh, "SELECT * FROM hosterrors where (host = '$host')");
     if ( $dbh->do("SELECT * FROM hosterrors where (host = '$host')") ne "0E0") {
-	displaytable($dbh, 'hosterrors', 
+	displaytable($dbh, 'hosterrors',
 		     '-clauses', "where (host = '$host')",
 		     '-dontdisplaycol', "select * from userprefs where user = '$remuser' and groupname = '$group' and tablename = ? and columnname = ? and displayit = 'N'",
 		     '-beginhook', sub {
@@ -887,7 +887,7 @@ sub displayconfigarray {
 	    print "<td><input type=checkbox $checked value=y name=" . $config{prefix} . $ni . $nj . "></td>\n";
 	}
 	print "</tr>\n";
-    }	
+    }
     print "</tr>";
     print "</table>";
 }
@@ -898,7 +898,7 @@ sub adddefaulttables {
     # add in known expression tables.
     my $handle = getcursor($dbh, "SELECT * FROM errorexpressions");
 
-    expr: 
+    expr:
     while($row = $handle->fetchrow_hashref) {
 	foreach $i (@$names) {
 	    if ($i->[0] eq $row->{tablename}) {
@@ -915,13 +915,13 @@ sub adddefaulttables {
 sub setupgroup {
     my $dbh = shift;
     my $group = shift;
-    
+
     my ($hosts, $names) = gethostandgroups($dbh, $group);
     adddefaulttables($dbh, $names);
 
     print "<form method=\"post\" action=\"" . self_url() . "\">\n";
     print "<input type=hidden text=\"setupgroupsubmit\" value=\"y\">";
-    displayconfigarray($dbh, $hosts, $names, 
+    displayconfigarray($dbh, $hosts, $names,
 		       -arrayrefs, 1,
 		       -check, "select * from hosttables where (host = ? and tablename = ? and groupname = '$group')");
     print "<input type=hidden name=group value=\"$group\">\n";
@@ -936,7 +936,7 @@ sub getarrays {
     my %config = @_;
     my $selectwhat = $config{'-select'} || "*";
     my $handle;
-    
+
     $handle = getcursor($dbh, "SELECT $selectwhat FROM $table $config{-clauses}");
     return $handle->fetchall_arrayref;
 }
@@ -949,21 +949,21 @@ sub gethostandgroups {
     my $group = shift;
     my ($tbnms);
 
-    my $names = getarrays($dbh, 'hosttables', 
+    my $names = getarrays($dbh, 'hosttables',
 			  "-select", 'distinct tablename',
 			  "-clauses", "where groupname = '$group'");
 
-    my $hosts = getarrays($dbh, 'hostgroups', 
+    my $hosts = getarrays($dbh, 'hostgroups',
 			  "-select", 'distinct host',
 			  "-clauses", "where groupname = '$group'");
-    
+
     return ($hosts, $names);
 }
 
 sub setupgroupsubmit {
     my $dbh = shift;
     my $group = shift;
-    
+
     my ($hosts, $names) = gethostandgroups($dbh, $group);
     adddefaulttables($dbh, $names);
 
@@ -980,7 +980,7 @@ sub setupgroupsubmit {
             }
 	}
     }
-    
+
 }
 
 #
@@ -988,10 +988,10 @@ sub setupgroupsubmit {
 #
 sub setupusersubmit {
     my ($dbh, $remuser, $group) = @_;
-    my $tables = getarrays($dbh, 'hosttables', 
+    my $tables = getarrays($dbh, 'hosttables',
 			   "-select", 'distinct tablename',
 			   "-clauses", "where groupname = '$group'");
-    
+
     $dbh->do("delete from userprefs where user = '$remuser' and groupname = '$group'");
     my $rep = $dbh->prepare("insert into userprefs(user, groupname, tablename, columnname, displayit) values('$remuser', '$group', ?, ?, 'N')");
 
@@ -1031,7 +1031,7 @@ sub Exit {
 #
 sub setupuserpreferences {
     my ($dbh, $remuser, $group) = @_;
-    my $tables = getarrays($dbh, 'hosttables', 
+    my $tables = getarrays($dbh, 'hosttables',
 			   "-select", 'distinct tablename',
 			   "-clauses", "where groupname = '$group'");
 

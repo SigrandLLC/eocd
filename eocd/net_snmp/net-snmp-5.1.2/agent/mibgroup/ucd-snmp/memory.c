@@ -220,12 +220,12 @@ init_memory(void)
 
         /*
          * Define the OID pointer to the top of the mib tree that we're
-         * registering underneath 
+         * registering underneath
          */
         oid             mem_variables_oid[] = { UCDAVIS_MIB, MEMMIBNUM };
 
         /*
-         * register ourselves with the agent to handle our mib tree 
+         * register ourselves with the agent to handle our mib tree
          */
         REGISTER_MIB("ucd-snmp/memory", extensible_mem_variables,
                      variable2, mem_variables_oid);
@@ -251,8 +251,8 @@ memory_free_config(void)
 #define MEMINFO_FILE "/proc/meminfo"
 
 void
-getmem(unsigned long *memtotal, unsigned long *memfree, unsigned long *memshared, 
-       unsigned long *buffers, unsigned long *cached, unsigned long *swaptotal, 
+getmem(unsigned long *memtotal, unsigned long *memfree, unsigned long *memshared,
+       unsigned long *buffers, unsigned long *cached, unsigned long *swaptotal,
        unsigned long *swapfree)
 {
     int         statfd;
@@ -273,14 +273,14 @@ getmem(unsigned long *memtotal, unsigned long *memfree, unsigned long *memshared
         }
         close(statfd);
         b = strstr(buff, "MemTotal: ");
-        if (b) 
+        if (b)
             sscanf(b, "MemTotal: %lu", memtotal);
         else {
             snmp_log(LOG_ERR, "No MemTotal line in /proc/meminfo\n");
             *memtotal = 0;
         }
         b = strstr(buff, "MemFree: ");
-        if (b) 
+        if (b)
             sscanf(b, "MemFree: %lu", memfree);
         else {
             snmp_log(LOG_ERR, "No MemFree line in /proc/meminfo\n");
@@ -326,14 +326,14 @@ getmem(unsigned long *memtotal, unsigned long *memfree, unsigned long *memshared
     }
 }
 
-enum memory_index { memtotal, memfree, memshared, buffers, cached, swaptotal, 
+enum memory_index { memtotal, memfree, memshared, buffers, cached, swaptotal,
     swapfree
 };
 
 unsigned
 memory(int iindex)
 {
-    unsigned long   mem_total[2], mem_free[2], mem_shared[2], mem_buffers[2], 
+    unsigned long   mem_total[2], mem_free[2], mem_shared[2], mem_buffers[2],
                     mem_cached[2],  swap_total[2], swap_free[2];
 
     getmem(mem_total, mem_free, mem_shared, mem_buffers, mem_cached, swap_total,
@@ -385,7 +385,7 @@ getswap(int rettype)
     struct pst_swapinfo pst_buf;
     int ndx = 0;
     long pgs, pgs_free;
-  
+
     while (pstat_getswap(&pst_buf, sizeof(struct pst_swapinfo), 1, ndx) > 0) {
         if (pst_buf.pss_flags & SW_BLOCK) {
             pgs = pst_buf.pss_nblksenabled;
@@ -474,14 +474,14 @@ getswap(int rettype)
                         "  fswdevt[i].fsw_reserve:   %d\n",
                         fswdevt[i].fsw_reserve));
             /*
-             * 37 = calculated value I know it makes no sense, nor is it accurate 
+             * 37 = calculated value I know it makes no sense, nor is it accurate
              */
         }
     }
     /*
      * this is a real hack.  I need to get the hold info from swapinfo, but
      * I can't figure out how to read it out of the kernel directly
-     * -- Wes 
+     * -- Wes
      */
     strcpy(ex.command, "/etc/swapinfo -h");
     if ((fd = get_exec_output(&ex)) != -1) {
@@ -543,7 +543,7 @@ var_extensible_mem(struct variable *vp,
         return NULL;
 #elif defined(USE_SYSCTL_VM)
     /*
-     * sum memory statistics 
+     * sum memory statistics
      */
     {
         size_t          size = sizeof(total);

@@ -18,7 +18,7 @@ netsnmpmibs_clean : netsnmpmibssdk_clean_
 !ELSE
 snmpd : snmpd_
 snmpd_clean : snmpd_clean_
-netsnmpmibs : netsnmpmibs_	
+netsnmpmibs : netsnmpmibs_
 netsnmpmibs_clean : netsnmpmibs_clean_
 !ENDIF
 
@@ -30,7 +30,7 @@ libsnmp : libsnmp_dll_
 libsnmp_clean : libsnmp_dll_clean_
 !ENDIF
 
-libs : libagent libhelpers libsnmp libnetsnmptrapd netsnmpmibs 
+libs : libagent libhelpers libsnmp libnetsnmptrapd netsnmpmibs
 libs_clean : libagent_clean libhelpers_clean libsnmp_clean libnetsnmptrapd_clean netsnmpmibs_clean
 
 apps : snmpdf snmpset snmpusm snmptest snmptrap snmpvacm snmpwalk snmpdelta snmptable snmpstatus snmpbulkget snmpget snmpgetnext snmpbulkwalk snmptranslate encode_keychange snmpnetstat
@@ -63,7 +63,7 @@ perl :
 	-@echo Building Perl modules using dynamic (DLL) SNMPLIB library.
 	-@echo .
 	-@echo Net-SNMP is NOT a thread safe program, which is a requirement
-	-@echo for any application using a dynamic link library (DLL). 
+	-@echo for any application using a dynamic link library (DLL).
 	-@echo Running multiple programs (including multiple Perl scripts)
 	-@echo that use NETSNMP.DLL can result in unpredictable results.
 	-@echo ===============================================================
@@ -112,27 +112,27 @@ perl_clean :
 ##############
 #
 # Build
-# 
+#
 libagent ::
 	cd libagent
 	$(NMAKE) all
 	cd ..
-       
+
 libhelpers ::
 	cd libhelpers
 	$(NMAKE) all
 	cd ..
-	
+
 libsnmp_ ::
 	cd libsnmp
 	$(NMAKE) all
 	cd ..
-	
+
 libsnmp_dll_ ::
 	cd libsnmp_dll
 	$(NMAKE) all
 	cd ..
-	
+
 libnetsnmptrapd ::
 	cd libnetsnmptrapd
 	$(NMAKE) all
@@ -266,17 +266,17 @@ traptoemail ::
 ##############
 #
 # Clean
-# 
+#
 libagent_clean ::
 	cd libagent
 	$(NMAKE) clean
 	cd ..
-       
+
 libhelpers_clean ::
 	cd libhelpers
 	$(NMAKE) clean
 	cd ..
-	
+
 libsnmp_clean_ ::
 	cd libsnmp
 	$(NMAKE) clean

@@ -81,7 +81,7 @@ optProc(int argc, char *const *argv, int opt)
         while (*optarg) {
             switch (*optarg++) {
             case 'f':
-                netsnmp_ds_toggle_boolean(NETSNMP_DS_APPLICATION_ID, 
+                netsnmp_ds_toggle_boolean(NETSNMP_DS_APPLICATION_ID,
 					  NETSNMP_DS_APP_DONT_FIX_PDUS);
                 break;
             default:
@@ -124,7 +124,7 @@ main(int argc, char *argv[])
     int             exitval = 0;
 
     /*
-     * get the common command line arguments 
+     * get the common command line arguments
      */
     switch (arg = snmp_parse_args(argc, argv, &session, "C:", &optProc)) {
     case -2:
@@ -149,7 +149,7 @@ main(int argc, char *argv[])
     }
 
     /*
-     * get the object names 
+     * get the object names
      */
     for (; arg < argc; arg++)
         names[current_name++] = argv[arg];
@@ -157,12 +157,12 @@ main(int argc, char *argv[])
     SOCK_STARTUP;
 
     /*
-     * open an SNMP session 
+     * open an SNMP session
      */
     ss = snmp_open(&session);
     if (ss == NULL) {
         /*
-         * diagnose snmp_open errors with the input netsnmp_session pointer 
+         * diagnose snmp_open errors with the input netsnmp_session pointer
          */
         snmp_sess_perror("snmpgetnext", &session);
         SOCK_CLEANUP;
@@ -170,7 +170,7 @@ main(int argc, char *argv[])
     }
 
     /*
-     * create PDU for GET request and add object names to request 
+     * create PDU for GET request and add object names to request
      */
     pdu = snmp_pdu_create(SNMP_MSG_GETNEXT);
 
@@ -188,7 +188,7 @@ main(int argc, char *argv[])
     }
 
     /*
-     * do the request 
+     * do the request
      */
   retry:
     status = snmp_synch_response(ss, pdu, &response);
@@ -212,9 +212,9 @@ main(int argc, char *argv[])
             }
 
             /*
-             * retry if the errored variable was successfully removed 
+             * retry if the errored variable was successfully removed
              */
-            if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+            if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 					NETSNMP_DS_APP_DONT_FIX_PDUS)) {
                 pdu = snmp_fix_pdu(response, SNMP_MSG_GETNEXT);
                 snmp_free_pdu(response);

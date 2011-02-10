@@ -3,17 +3,17 @@
 .\" that may apply:
 .\" /***********************************************************
 .\" 	Copyright 1988, 1989 by Carnegie Mellon University
-.\" 
+.\"
 .\"                       All Rights Reserved
-.\" 
-.\" Permission to use, copy, modify, and distribute this software and its 
-.\" documentation for any purpose and without fee is hereby granted, 
+.\"
+.\" Permission to use, copy, modify, and distribute this software and its
+.\" documentation for any purpose and without fee is hereby granted,
 .\" provided that the above copyright notice appear in all copies and that
-.\" both that copyright notice and this permission notice appear in 
+.\" both that copyright notice and this permission notice appear in
 .\" supporting documentation, and that the name of CMU not be
 .\" used in advertising or publicity pertaining to distribution of the
-.\" software without specific, written prior permission.  
-.\" 
+.\" software without specific, written prior permission.
+.\"
 .\" CMU DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 .\" ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
 .\" CMU BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
@@ -45,7 +45,7 @@ specification will consist of a hostname or an IPv4 address.
 n this situation, the command will attempt communication with
 the agent, using UDP/IPv4 to port 161 of the given target host.
 .PP
-See the 
+See the
 .I snmpcmd(1)
 manual page for a full list of the possible formats for AGENT.
 .PP

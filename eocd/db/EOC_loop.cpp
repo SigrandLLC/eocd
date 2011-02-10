@@ -100,7 +100,7 @@ EOC_loop() : _15min_ints(EOC_15MIN_INTS) , _1day_ints(EOC_1DAY_INTS) {
   memset(&state,0,sizeof(state));
   state.loop_attn = -127;
   state.snr_marg = -127;
-    
+
 	is_first_msg = 1;
   memset(&last_msg,0,sizeof(last_msg));
   time(&t);

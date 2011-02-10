@@ -227,13 +227,13 @@ __libraries_init(char *appname)
 
         snmp_set_quick_print(1);
         init_snmp(appname);
-    
+
         netsnmp_ds_set_boolean(NETSNMP_DS_LIBRARY_ID, NETSNMP_DS_LIB_DONT_BREAKDOWN_OIDS, 1);
         netsnmp_ds_set_int(NETSNMP_DS_LIBRARY_ID, NETSNMP_DS_LIB_PRINT_SUFFIX_ONLY, 1);
 	netsnmp_ds_set_int(NETSNMP_DS_LIBRARY_ID, NETSNMP_DS_LIB_OID_OUTPUT_FORMAT,
                                               NETSNMP_OID_OUTPUT_SUFFIX);
         SOCK_STARTUP;
-    
+
     }
 
 static void
@@ -807,13 +807,13 @@ const char *key;
     regfree(&parsetree);
     if (rc == 0) {
         /*
-         * found 
+         * found
          */
         return pmatch.rm_so;
     }
 #else                           /* use our own wildcard matcher */
     /*
-     * first find the longest matching substring (ick) 
+     * first find the longest matching substring (ick)
      */
     char           *first = NULL, *result = NULL, *entry;
     const char     *position;
@@ -842,7 +842,7 @@ const char *key;
 #endif
 
     /*
-     * not found 
+     * not found
      */
     return MAX_BAD;
 }
@@ -887,7 +887,7 @@ int    best_guess;
    /* full symbolic                 (2)   */
    /* module::single symbolic       (2)   */
    /* module::partial full symbolic (2)   */
-   if (best_guess == 1 || best_guess == 2) { 
+   if (best_guess == 1 || best_guess == 2) {
      if (!__scan_num_objid(tag, newname, &newname_len)) { /* make sure it's not a numeric tag */
        newname_len = MAX_OID_LEN;
        if (best_guess == 2) {		/* Random search -IR */
@@ -896,7 +896,7 @@ int    best_guess;
          }
        }
        else if (best_guess == 1) {	/* Regex search -Ib */
-	 clear_tree_flags(get_tree_head()); 
+	 clear_tree_flags(get_tree_head());
          if (get_wild_node(tag, newname, &newname_len)) {
 	   rtp = tp = get_tree(newname, newname_len, get_tree_head());
          }
@@ -910,13 +910,13 @@ int    best_guess;
      memcpy(oid_arr,(char*)newname,newname_len*sizeof(oid));
      *oid_arr_len = newname_len;
    }
-   
+
    /* if best_guess is off and multi part tag or module::tag */
    /* numeric scalar                                         */
    /* module::single symbolic                                */
    /* module::partial full symbolic                          */
    /* FULL symbolic OID                                      */
-   else if (strchr(tag,'.') || strchr(tag,':')) { 
+   else if (strchr(tag,'.') || strchr(tag,':')) {
      if (!__scan_num_objid(tag, newname, &newname_len)) { /* make sure it's not a numeric tag */
 	newname_len = MAX_OID_LEN;
 	if (read_objid(tag, newname, &newname_len)) {	/* long name */
@@ -931,10 +931,10 @@ int    best_guess;
       memcpy(oid_arr,(char*)newname,newname_len*sizeof(oid));
       *oid_arr_len = newname_len;
    }
-   
+
    /* else best_guess is off and it is a single leaf */
    /* single symbolic                                */
-   else { 
+   else {
       rtp = tp = find_node(tag, get_tree_head());
       if (tp) {
          if (type) *type = tp->type;
@@ -1350,7 +1350,7 @@ void *cb_data;
          netsnmp_ds_set_boolean(NETSNMP_DS_LIBRARY_ID, NETSNMP_DS_LIB_PRINT_FULL_OID, 1);
       }
       /* Setting UseNumeric forces UseLongNames on so check for UseNumeric
-         after UseLongNames (above) to make sure the final outcome of 
+         after UseLongNames (above) to make sure the final outcome of
          NETSNMP_DS_LIB_OID_OUTPUT_FORMAT is NETSNMP_OID_OUTPUT_NUMERIC */
       if (SvIV(*hv_fetch((HV*)SvRV(sess_ref),"UseNumeric", 10, 1))) {
          getlabel_flag |= USE_NUMERIC_OIDS;
@@ -2055,7 +2055,7 @@ _bulkwalk_recv_pdu(walk_context *context, netsnmp_pdu *pdu)
 	 }
       }
 
-      DBPRT(2, (DBOUT "Var %03d request %s\n", pix, snprint_objid(_debugx, sizeof(_debugx), 
+      DBPRT(2, (DBOUT "Var %03d request %s\n", pix, snprint_objid(_debugx, sizeof(_debugx),
 					     expect->req_oid, expect->req_len)));
 
       /* Did we receive an error condition for this variable?
@@ -2602,7 +2602,7 @@ snmp_new_session(version, community, peer, lport, retries, timeout)
            int verbose = SvIV(perl_get_sv("SNMP::verbose", 0x01 | 0x04));
 
            __libraries_init("perl");
-           
+
 	   if (!strcmp(version, "1")) {
 		session.version = SNMP_VERSION_1;
            } else if ((!strcmp(version, "2")) || (!strcmp(version, "2c"))) {
@@ -2690,19 +2690,19 @@ snmp_new_v3_session(version, peer, retries, timeout, sec_name, sec_level, sec_en
            session.engineBoots = eng_boots;
            session.engineTime = eng_time;
            if (!strcmp(auth_proto, "MD5")) {
-               session.securityAuthProto = 
+               session.securityAuthProto =
                   snmp_duplicate_objid(usmHMACMD5AuthProtocol,
                                           USM_AUTH_PROTO_MD5_LEN);
               session.securityAuthProtoLen = USM_AUTH_PROTO_MD5_LEN;
            } else if (!strcmp(auth_proto, "SHA")) {
-               session.securityAuthProto = 
+               session.securityAuthProto =
                    snmp_duplicate_objid(usmHMACSHA1AuthProtocol,
                                         USM_AUTH_PROTO_SHA_LEN);
               session.securityAuthProtoLen = USM_AUTH_PROTO_SHA_LEN;
            } else if (!strcmp(auth_proto, "DEFAULT")) {
                const oid *theoid =
                    get_default_authtype(&session.securityAuthProtoLen);
-               session.securityAuthProto = 
+               session.securityAuthProto =
                    snmp_duplicate_objid(theoid, session.securityAuthProtoLen);
            } else {
               if (verbose)
@@ -2929,7 +2929,7 @@ snmp_set(sess_ref, varlist_ref, perl_callback)
            int verbose = SvIV(perl_get_sv("SNMP::verbose", 0x01 | 0x04));
            int use_enums;
            struct enum_list *ep;
-           int best_guess;	   
+           int best_guess;
 
            New (0, oid_arr, MAX_OID_LEN, oid);
 
@@ -3134,7 +3134,7 @@ snmp_get(sess_ref, retry_nosuch, varlist_ref, perl_callback)
 	   int old_format;
 	   SV *sv_timestamp = NULL;
            int best_guess;
-	   
+
            New (0, oid_arr, MAX_OID_LEN, oid);
 
            if (oid_arr && SvROK(sess_ref) && SvROK(varlist_ref)) {
@@ -3156,7 +3156,7 @@ snmp_get(sess_ref, retry_nosuch, varlist_ref, perl_callback)
 	      if (SvIV(*hv_fetch((HV*)SvRV(sess_ref),"UseSprintValue", 14, 1)))
                  sprintval_flag = USE_SPRINT_VALUE;
               best_guess = SvIV(*hv_fetch((HV*)SvRV(sess_ref),"BestGuess",9,1));
-	      
+
               pdu = snmp_pdu_create(SNMP_MSG_GET);
 
               varlist = (AV*) SvRV(varlist_ref);
@@ -3228,7 +3228,7 @@ snmp_get(sess_ref, retry_nosuch, varlist_ref, perl_callback)
                                     NETSNMP_OID_OUTPUT_FULL);
 	      }
               /* Setting UseNumeric forces UseLongNames on so check for UseNumeric
-                 after UseLongNames (above) to make sure the final outcome of 
+                 after UseLongNames (above) to make sure the final outcome of
                  NETSNMP_DS_LIB_OID_OUTPUT_FORMAT is NETSNMP_OID_OUTPUT_NUMERIC */
 	      if (SvIV(*hv_fetch((HV*)SvRV(sess_ref),"UseNumeric", 10, 1))) {
 	         getlabel_flag |= USE_LONG_NAMES;
@@ -3278,7 +3278,7 @@ snmp_get(sess_ref, retry_nosuch, varlist_ref, perl_callback)
                     } else {
                         av_store(varbind, VARBIND_IID_F,
                                  newSVpv("", 0));
-                    }                        
+                    }
                     __get_type_str(type, tmp_type_str);
                     tmp_sv = newSVpv(tmp_type_str, strlen(tmp_type_str));
                     av_store(varbind, VARBIND_TYPE_F, tmp_sv);
@@ -3349,7 +3349,7 @@ snmp_getnext(sess_ref, varlist_ref, perl_callback)
 	   int old_format;
 	   SV *sv_timestamp = NULL;
            int best_guess;
-	   
+
            New (0, oid_arr, MAX_OID_LEN, oid);
 
            if (oid_arr && SvROK(sess_ref) && SvROK(varlist_ref)) {
@@ -3371,7 +3371,7 @@ snmp_getnext(sess_ref, varlist_ref, perl_callback)
 	      if (SvIV(*hv_fetch((HV*)SvRV(sess_ref),"UseSprintValue", 14, 1)))
                  sprintval_flag = USE_SPRINT_VALUE;
               best_guess = SvIV(*hv_fetch((HV*)SvRV(sess_ref),"BestGuess",9,1));
-	      
+
               pdu = snmp_pdu_create(SNMP_MSG_GETNEXT);
 
               varlist = (AV*) SvRV(varlist_ref);
@@ -3495,7 +3495,7 @@ snmp_getnext(sess_ref, varlist_ref, perl_callback)
                     } else {
                         av_store(varbind, VARBIND_IID_F,
                                  newSVpv("", 0));
-                    }                        
+                    }
                     __get_type_str(type, tmp_type_str);
                     tmp_sv = newSVpv(tmp_type_str, strlen(tmp_type_str));
                     av_store(varbind, VARBIND_TYPE_F, tmp_sv);
@@ -3591,7 +3591,7 @@ snmp_getbulk(sess_ref, nonrepeaters, maxrepetitions, varlist_ref, perl_callback)
 	      if (SvIV(*hv_fetch((HV*)SvRV(sess_ref),"UseSprintValue", 14, 1)))
                  sprintval_flag = USE_SPRINT_VALUE;
               best_guess = SvIV(*hv_fetch((HV*)SvRV(sess_ref),"BestGuess",9,1));
-	      
+
               pdu = snmp_pdu_create(SNMP_MSG_GETBULK);
 
 	      pdu->errstat = nonrepeaters;
@@ -3671,7 +3671,7 @@ snmp_getbulk(sess_ref, nonrepeaters, maxrepetitions, varlist_ref, perl_callback)
                                     NETSNMP_OID_OUTPUT_FULL);
 	      }
               /* Setting UseNumeric forces UseLongNames on so check for UseNumeric
-                 after UseLongNames (above) to make sure the final outcome of 
+                 after UseLongNames (above) to make sure the final outcome of
                  NETSNMP_DS_LIB_OID_OUTPUT_FORMAT is NETSNMP_OID_OUTPUT_NUMERIC */
 	      if (SvIV(*hv_fetch((HV*)SvRV(sess_ref),"UseNumeric", 10, 1))) {
 	         getlabel_flag |= USE_LONG_NAMES;
@@ -3681,7 +3681,7 @@ snmp_getbulk(sess_ref, nonrepeaters, maxrepetitions, varlist_ref, perl_callback)
                                     NETSNMP_DS_LIB_OID_OUTPUT_FORMAT,
                                     NETSNMP_OID_OUTPUT_NUMERIC);
 	      }
-	      
+
 	      if(response && response->variables) {
               for(vars = response->variables;
                   vars;
@@ -3790,7 +3790,7 @@ snmp_bulkwalk(sess_ref, nonrepeaters, maxrepetitions, varlist_ref,perl_callback)
 	   sv_setiv(*err_num_svp, 0);
 	   sv_setiv(*err_ind_svp, 0);
            best_guess = SvIV(*hv_fetch((HV*)SvRV(sess_ref),"BestGuess",9,1));
-	   
+
 	   /* Create and initialize a new session context for this bulkwalk.
 	   ** This will be used to carry state between callbacks.
 	   */
@@ -4082,7 +4082,7 @@ snmp_trapV1(sess_ref,enterprise,agent,generic,specific,uptime,varlist_ref)
            int use_enums = SvIV(*hv_fetch((HV*)SvRV(sess_ref),"UseEnums",8,1));
            struct enum_list *ep;
            int best_guess;
-	   
+
            New (0, oid_arr, MAX_OID_LEN, oid);
 
            if (oid_arr && SvROK(sess_ref)) {
@@ -4096,7 +4096,7 @@ snmp_trapV1(sess_ref,enterprise,agent,generic,specific,uptime,varlist_ref)
               sv_setiv(*err_num_svp, 0);
               sv_setiv(*err_ind_svp, 0);
               best_guess = SvIV(*hv_fetch((HV*)SvRV(sess_ref),"BestGuess",9,1));
-	      
+
               pdu = snmp_pdu_create(SNMP_MSG_TRAP);
 
               if (SvROK(varlist_ref)) {
@@ -4221,7 +4221,7 @@ snmp_trapV2(sess_ref,uptime,trap_oid,varlist_ref)
            int use_enums = SvIV(*hv_fetch((HV*)SvRV(sess_ref),"UseEnums",8,1));
            struct enum_list *ep;
            int best_guess;
-	   
+
            New (0, oid_arr, MAX_OID_LEN, oid);
 
            if (oid_arr && SvROK(sess_ref) && SvROK(varlist_ref)) {
@@ -4235,7 +4235,7 @@ snmp_trapV2(sess_ref,uptime,trap_oid,varlist_ref)
               sv_setiv(*err_num_svp, 0);
               sv_setiv(*err_ind_svp, 0);
               best_guess = SvIV(*hv_fetch((HV*)SvRV(sess_ref),"BestGuess",9,1));
-	      
+
               pdu = snmp_pdu_create(SNMP_MSG_TRAP2);
 
               varlist = (AV*) SvRV(varlist_ref);
@@ -4360,7 +4360,7 @@ snmp_inform(sess_ref,uptime,trap_oid,varlist_ref,perl_callback)
            int use_enums = SvIV(*hv_fetch((HV*)SvRV(sess_ref),"UseEnums",8,1));
            struct enum_list *ep;
            int best_guess;
-	   
+
            New (0, oid_arr, MAX_OID_LEN, oid);
 
            if (oid_arr && SvROK(sess_ref) && SvROK(varlist_ref)) {
@@ -4374,7 +4374,7 @@ snmp_inform(sess_ref,uptime,trap_oid,varlist_ref,perl_callback)
               sv_setiv(*err_num_svp, 0);
               sv_setiv(*err_ind_svp, 0);
               best_guess = SvIV(*hv_fetch((HV*)SvRV(sess_ref),"BestGuess",9,1));
-	      
+
               pdu = snmp_pdu_create(SNMP_MSG_INFORM);
 
               varlist = (AV*) SvRV(varlist_ref);
@@ -4619,7 +4619,7 @@ snmp_translate_obj(var,mode,use_long,auto_init,best_guess,include_module_name)
 		     }
  	          }
 	        }
-		
+
 		/* Prepend modulename:: if enabled */
 		if (include_module_name) {
 		  module_tree = get_tree (oid_arr, oid_arr_len, get_tree_head());
@@ -4971,7 +4971,7 @@ snmp_mib_node_FETCH(tp_ref, key)
                  if (strncmp("indexes", key, strlen(key))) break;
                  index_av = newAV();
                  if (tp->augments) {
- 	             clear_tree_flags(get_tree_head()); 
+ 	             clear_tree_flags(get_tree_head());
                      tptmp = find_best_tree_node(tp->augments, get_tree_head(), NULL);
                      if (tptmp == NULL) {
                         tptmp = tp;

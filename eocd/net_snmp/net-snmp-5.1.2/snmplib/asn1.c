@@ -12,13 +12,13 @@
 
                       All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the name of CMU not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 CMU DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -33,9 +33,9 @@ SOFTWARE.
  * @ingroup library
  *
  * @{
- * 
- * Note on 
- * 
+ *
+ * Note on
+ *
  * Re-allocating reverse ASN.1 encoder functions.  Synopsis:
  *
  * \code
@@ -45,19 +45,19 @@ SOFTWARE.
  * size_t buf_len = 100, offset = 0;
  * long data = 12345;
  * int allow_realloc = 1;
- * 
+ *
  * if (asn_realloc_rbuild_int(&buf, &buf_len, &offset, allow_realloc,
  *                            type, &data, sizeof(long)) == 0) {
  *     error;
  * }
- * 
+ *
  * \endcode
  *
  * NOTE WELL: after calling one of these functions with allow_realloc
  * non-zero, buf might have moved, buf_len might have grown and
  * offset will have increased by the size of the encoded data.
  * You should **NEVER** do something like this:
- * 
+ *
  * \code
  *
  * u_char *buf = (u_char *)malloc(100), *ptr;
@@ -65,7 +65,7 @@ SOFTWARE.
  * size_t buf_len = 100, offset = 0;
  * long data1 = 1234, data2 = 5678;
  * int rc = 0, allow_realloc = 1;
- * 
+ *
  * rc  = asn_realloc_rbuild_int(&buf, &buf_len, &offset, allow_realloc,
  *                                type, &data1, sizeof(long));
  * ptr = buf[buf_len - offset];   / * points at encoding of data1 * /
@@ -75,13 +75,13 @@ SOFTWARE.
  * rc  = asn_realloc_rbuild_int(&buf, &buf_len, &offset, allow_realloc,
  *                              type, &data2, sizeof(long));
  * make use of ptr here;
- * 
+ *
  * \endcode
- * 
+ *
  * ptr is **INVALID** at this point.  In general, you should store the
  * offset value and compute pointers when you need them:
- * 
- * 
+ *
+ *
  * \code
  *
  * u_char *buf = (u_char *)malloc(100), *ptr;
@@ -89,7 +89,7 @@ SOFTWARE.
  * size_t buf_len = 100, offset = 0, ptr_offset;
  * long data1 = 1234, data2 = 5678;
  * int rc = 0, allow_realloc = 1;
- * 
+ *
  * rc  = asn_realloc_rbuild_int(&buf, &buf_len, &offset, allow_realloc,
  *                              type, &data1, sizeof(long));
  * ptr_offset = offset;
@@ -100,48 +100,48 @@ SOFTWARE.
  *                              type, &data2, sizeof(long));
  * ptr = buf + buf_len - ptr_offset
  * make use of ptr here;
- * 
+ *
  * \endcode
- * 
- * 
+ *
+ *
  * Here, you can see that ptr will be a valid pointer even if the block of
  * memory has been moved, as it may well have been.  Plenty of examples of
  * usage all over asn1.c, snmp_api.c, snmpusm.c.
- * 
+ *
  * The other thing you should **NEVER** do is to pass a pointer to a buffer
  * on the stack as the first argument when allow_realloc is non-zero, unless
  * you really know what you are doing and your machine/compiler allows you to
  * free non-heap memory.  There are rumours that such things exist, but many
  * consider them no more than the wild tales of a fool.
- * 
+ *
  * Of course, you can pass allow_realloc as zero, to indicate that you do not
  * wish the packet buffer to be reallocated for some reason; perhaps because
  * it is on the stack.  This may be useful to emulate the functionality of
  * the old API:
  *
- * \code 
- * 
+ * \code
+ *
  * u_char my_static_buffer[100], *cp = NULL;
  * size_t my_static_buffer_len = 100;
  * float my_pi = (float)22/(float)7;
- * 
+ *
  * cp = asn_rbuild_float(my_static_buffer, &my_static_buffer_len,
  *                       ASN_OPAQUE_FLOAT, &my_pi, sizeof(float));
  * if (cp == NULL) {
  * error;
  * }
- * 
+ *
  * \endcode
- * 
+ *
  * IS EQUIVALENT TO:
- * 
+ *
  * \code
- * 
+ *
  * u_char my_static_buffer[100];
  * size_t my_static_buffer_len = 100, my_offset = 0;
  * float my_pi = (float)22/(float)7;
  * int rc = 0;
- * 
+ *
  * rc = asn_realloc_rbuild_float(&my_static_buffer, &my_static_buffer_len,
  *                               &my_offset, 0,
  *                               ASN_OPAQUE_FLOAT, &my_pi, sizeof(float));
@@ -149,7 +149,7 @@ SOFTWARE.
  *   error;
  * }
  * \endcode
- * 
+ *
  */
 
 
@@ -201,7 +201,7 @@ SOFTWARE.
 /**
  * @internal
  * output an error for a wrong size
- * 
+ *
  * @param str        error string
  * @param wrongsize  wrong size
  * @param rightsize  expected size
@@ -220,9 +220,9 @@ _asn_size_err(const char *str, size_t wrongsize, size_t rightsize)
 }
 
 /**
- * @internal 
+ * @internal
  * output an error for a wrong length
- * 
+ *
  * @param str        error string
  * @param wrongsize  wrong  length
  * @param rightsize  expected length
@@ -243,13 +243,13 @@ _asn_length_err(const char *str, size_t wrongsize, size_t rightsize)
 /**
  * @internal
  * call after asn_parse_length to verify result.
- * 
+ *
  * @param str  error string
  * @param bufp start of buffer
  * @param data start of data
  * @param plen  ?
  * @param dlen  ?
- * 
+ *
  * @return 1 on error 0 on success
  */
 static
@@ -263,7 +263,7 @@ _asn_parse_length_check(const char *str,
 
     if (bufp == NULL) {
         /*
-         * error message is set 
+         * error message is set
          */
         return 1;
     }
@@ -282,14 +282,14 @@ _asn_parse_length_check(const char *str,
 
 
 /**
- * @internal 
+ * @internal
  * call after asn_build_header to verify result.
- * 
+ *
  * @param str     error string to output
  * @param data    data pointer to verify (NULL => error )
  * @param datalen  data len to check
  * @param typedlen  type length
- * 
+ *
  * @return 0 on success, 1 on error
  */
 static
@@ -301,7 +301,7 @@ _asn_build_header_check(const char *str, u_char * data,
 
     if (data == NULL) {
         /*
-         * error message is set 
+         * error message is set
          */
         return 1;
     }
@@ -317,15 +317,15 @@ _asn_build_header_check(const char *str, u_char * data,
 }
 
 /**
- * @internal 
+ * @internal
  * call after asn_build_header to verify result.
- * 
+ *
  * @param str       error string
  * @param pkt       packet to check
  * @param pkt_len  length of the packet
  * @param typedlen length of the type
- * 
- * @return 0 on success 1 on error 
+ *
+ * @return 0 on success 1 on error
  */
 static
     int
@@ -337,7 +337,7 @@ _asn_realloc_build_header_check(const char *str,
 
     if (pkt == NULL || *pkt == NULL) {
         /*
-         * Error message is set.  
+         * Error message is set.
          */
         return 1;
     }
@@ -354,12 +354,12 @@ _asn_realloc_build_header_check(const char *str,
 }
 
 /**
- * @internal 
- * checks the incoming packet for validity and returns its size or 0 
- * 
- * @param pkt The packet 
- * @param len The length to check 
- * 
+ * @internal
+ * checks the incoming packet for validity and returns its size or 0
+ *
+ * @param pkt The packet
+ * @param len The length to check
+ *
  * @return The size of the packet if valid; 0 otherwise
  */
 int
@@ -375,7 +375,7 @@ asn_check_packet(u_char * pkt, size_t len)
 
     if (*(pkt + 1) & 0x80) {
         /*
-         * long length 
+         * long length
          */
         if ((int) len < (int) (*(pkt + 1) & ~0x80) + 2)
             return 0;           /* still to short, incomplete length */
@@ -383,7 +383,7 @@ asn_check_packet(u_char * pkt, size_t len)
         return (asn_length + 2 + (*(pkt + 1) & ~0x80));
     } else {
         /*
-         * short length 
+         * short length
          */
         return (*(pkt + 1) + 2);
     }
@@ -413,7 +413,7 @@ _asn_bitstring_check(const char *str, size_t asn_length, u_char datum)
 }
 
 /**
- * @internal 
+ * @internal
  * asn_parse_int - pulls a long out of an int type.
  *
  *  On entry, datalength is input as the number of valid bytes following
@@ -423,13 +423,13 @@ _asn_bitstring_check(const char *str, size_t asn_length, u_char datum)
  *  Returns a pointer to the first byte past the end
  *   of this object (i.e. the start of the next object).
  *  Returns NULL on any error.
- *  
+ *
  * @param data       IN - pointer to start of object
  * @param datalength IN/OUT - number of valid bytes left in buffer
  * @param type       OUT - asn type of object
  * @param intp       IN/OUT - pointer to start of output buffer
  * @param intsize    IN - size of output buffer
- * 
+ *
  * @return pointer to the first byte past the end
  *   of this object (i.e. the start of the next object) Returns NULL on any error
  */
@@ -478,7 +478,7 @@ asn_parse_int(u_char * data,
 
 
 /**
- * @internal 
+ * @internal
  * asn_parse_unsigned_int - pulls an unsigned long out of an ASN int type.
  *
  *  On entry, datalength is input as the number of valid bytes following
@@ -488,13 +488,13 @@ asn_parse_int(u_char * data,
  *  Returns a pointer to the first byte past the end
  *   of this object (i.e. the start of the next object).
  *  Returns NULL on any error.
- *  
+ *
  * @param data       IN - pointer to start of object
  * @param datalength IN/OUT - number of valid bytes left in buffer
  * @param type       OUT - asn type of object
  * @param intp       IN/OUT - pointer to start of output buffer
  * @param intsize    IN - size of output buffer
- * 
+ *
  * @return pointer to the first byte past the end
  *   of this object (i.e. the start of the next object) Returns NULL on any error
  */
@@ -543,7 +543,7 @@ asn_parse_unsigned_int(u_char * data,
 
 
 /**
- * @internal 
+ * @internal
  * asn_build_int - builds an ASN object containing an integer.
  *
  *  On entry, datalength is input as the number of valid bytes following
@@ -553,14 +553,14 @@ asn_parse_unsigned_int(u_char * data,
  *  Returns a pointer to the first byte past the end
  *   of this object (i.e. the start of the next object).
  *  Returns NULL on any error.
- * 
- * 
+ *
+ *
  * @param data         IN - pointer to start of output buffer
  * @param datalength   IN/OUT - number of valid bytes left in buffer
  * @param type         IN  - asn type of objec
  * @param intp         IN - pointer to start of long integer
  * @param intsize      IN - size of input buffer
- * 
+ *
  * @return  Returns a pointer to the first byte past the end
  *          of this object (i.e. the start of the next object).
  *          Returns NULL on any error.
@@ -592,7 +592,7 @@ asn_build_int(u_char * data,
      */
     mask = ((u_long) 0x1FF) << ((8 * (sizeof(long) - 1)) - 1);
     /*
-     * mask is 0xFF800000 on a big-endian machine 
+     * mask is 0xFF800000 on a big-endian machine
      */
     while ((((integer & mask) == 0) || ((integer & mask) == mask))
            && intsize > 1) {
@@ -606,7 +606,7 @@ asn_build_int(u_char * data,
     *datalength -= intsize;
     mask = ((u_long) 0xFF) << (8 * (sizeof(long) - 1));
     /*
-     * mask is 0xFF000000 on a big-endian machine 
+     * mask is 0xFF000000 on a big-endian machine
      */
     while (intsize--) {
         *data++ = (u_char) ((integer & mask) >> (8 * (sizeof(long) - 1)));
@@ -620,7 +620,7 @@ asn_build_int(u_char * data,
 
 
 /**
- * @internal 
+ * @internal
  * asn_build_unsigned_int - builds an ASN object containing an integer.
  *
  *  On entry, datalength is input as the number of valid bytes following
@@ -630,14 +630,14 @@ asn_build_int(u_char * data,
  *  Returns a pointer to the first byte past the end
  *   of this object (i.e. the start of the next object).
  *  Returns NULL on any error.
- * 
- * 
+ *
+ *
  * @param data         IN - pointer to start of output buffer
  * @param datalength   IN/OUT - number of valid bytes left in buffer
  * @param type         IN  - asn type of objec
  * @param intp         IN - pointer to start of long integer
  * @param intsize      IN - size of input buffer
- * 
+ *
  * @return  Returns a pointer to the first byte past the end
  *          of this object (i.e. the start of the next object).
  *          Returns NULL on any error.
@@ -665,11 +665,11 @@ asn_build_unsigned_int(u_char * data,
     integer = *intp;
     mask = ((u_long) 0xFF) << (8 * (sizeof(long) - 1));
     /*
-     * mask is 0xFF000000 on a big-endian machine 
+     * mask is 0xFF000000 on a big-endian machine
      */
     if ((u_char) ((integer & mask) >> (8 * (sizeof(long) - 1))) & 0x80) {
         /*
-         * if MSB is set 
+         * if MSB is set
          */
         add_null_byte = 1;
         intsize++;
@@ -681,7 +681,7 @@ asn_build_unsigned_int(u_char * data,
          */
         mask = ((u_long) 0x1FF) << ((8 * (sizeof(long) - 1)) - 1);
         /*
-         * mask is 0xFF800000 on a big-endian machine 
+         * mask is 0xFF800000 on a big-endian machine
          */
         while ((((integer & mask) == 0) || ((integer & mask) == mask))
                && intsize > 1) {
@@ -700,7 +700,7 @@ asn_build_unsigned_int(u_char * data,
     }
     mask = ((u_long) 0xFF) << (8 * (sizeof(long) - 1));
     /*
-     * mask is 0xFF000000 on a big-endian machine 
+     * mask is 0xFF000000 on a big-endian machine
      */
     while (intsize--) {
         *data++ = (u_char) ((integer & mask) >> (8 * (sizeof(long) - 1)));
@@ -713,7 +713,7 @@ asn_build_unsigned_int(u_char * data,
 
 
 /**
- * @internal 
+ * @internal
  * asn_parse_string - pulls an octet string out of an ASN octet string type.
  *
  *  On entry, datalength is input as the number of valid bytes following
@@ -728,13 +728,13 @@ asn_build_unsigned_int(u_char * data,
  *  Returns a pointer to the first byte past the end
  *   of this object (i.e. the start of the next object).
  *  Returns NULL on any error.
- * 
+ *
  * @param data        IN - pointer to start of object
  * @param datalength  IN/OUT - number of valid bytes left in buffer
- * @param type        OUT - asn type of object 
+ * @param type        OUT - asn type of object
  * @param string      IN/OUT - pointer to start of output buffer
  * @param strlength   IN/OUT - size of output buffer
- * 
+ *
  * @return  Returns a pointer to the first byte past the end
  *          of this object (i.e. the start of the next object).
  *          Returns NULL on any error.
@@ -898,7 +898,7 @@ asn_parse_header(u_char * data, size_t * datalength, u_char * type)
     }
     bufp = data;
     /*
-     * this only works on data types < 30, i.e. no extension octets 
+     * this only works on data types < 30, i.e. no extension octets
      */
     if (IS_EXTENSION_ID(*bufp)) {
         ERROR_MSG("can't process ID >= 30");
@@ -927,7 +927,7 @@ asn_parse_header(u_char * data, size_t * datalength, u_char * type)
     if ((*type == ASN_OPAQUE) && (*bufp == ASN_OPAQUE_TAG1)) {
 
         /*
-         * check if 64-but counter 
+         * check if 64-but counter
          */
         switch (*(bufp + 1)) {
         case ASN_OPAQUE_COUNTER64:
@@ -940,13 +940,13 @@ asn_parse_header(u_char * data, size_t * datalength, u_char * type)
 
         default:
             /*
-             * just an Opaque 
+             * just an Opaque
              */
             *datalength = (int) asn_length;
             return bufp;
         }
         /*
-         * value is encoded as special format 
+         * value is encoded as special format
          */
         bufp = asn_parse_length(bufp + 2, &asn_length);
         if (_asn_parse_length_check("parse opaque header", bufp, data,
@@ -1177,7 +1177,7 @@ asn_build_length(u_char * data, size_t * datalength, size_t length)
     u_char         *start_data = data;
 
     /*
-     * no indefinite lengths sent 
+     * no indefinite lengths sent
      */
     if (length < 0x80) {
         if (*datalength < 1) {
@@ -1271,7 +1271,7 @@ asn_parse_objid(u_char * data,
     DEBUGDUMPSETUP("recv", data, bufp - data + asn_length);
 
     /*
-     * Handle invalid object identifier encodings of the form 06 00 robustly 
+     * Handle invalid object identifier encodings of the form 06 00 robustly
      */
     if (asn_length == 0)
         objid[0] = objid[1] = 0;
@@ -1288,7 +1288,7 @@ asn_parse_objid(u_char * data,
         } while (*(u_char *) bufp++ & ASN_BIT8);        /* last byte has high bit clear */
         /*
          * ?? note, this test will never be true, since the largest value
-         * of subidentifier is the value of MAX_SUBID! 
+         * of subidentifier is the value of MAX_SUBID!
          */
         if (subidentifier > (u_long) MAX_SUBID) {
             ERROR_MSG("subidentifier too large");
@@ -1373,11 +1373,11 @@ asn_build_objid(u_char * data,
 #endif
 
     /*
-     * check if there are at least 2 sub-identifiers 
+     * check if there are at least 2 sub-identifiers
      */
     if (objidlength == 0) {
         /*
-         * there are not, so make OID have two with value of zero 
+         * there are not, so make OID have two with value of zero
          */
         objid_val = 0;
         objidlength = 2;
@@ -1386,14 +1386,14 @@ asn_build_objid(u_char * data,
         return NULL;
     } else if (objidlength == 1) {
         /*
-         * encode the first value 
+         * encode the first value
          */
         objid_val = (op[0] * 40);
         objidlength = 2;
         op++;
     } else {
         /*
-         * combine the first two values 
+         * combine the first two values
          */
         if ((op[1] > 40) &&
             (op[0] < 2)) {
@@ -1406,13 +1406,13 @@ asn_build_objid(u_char * data,
     first_objid_val = objid_val;
 
     /*
-     * ditch illegal calls now 
+     * ditch illegal calls now
      */
     if (objidlength > MAX_OID_LEN)
         return NULL;
 
     /*
-     * calculate the number of bytes needed to store the encoded value 
+     * calculate the number of bytes needed to store the encoded value
      */
     for (i = 1, asnlength = 0;;) {
         if (objid_val < (unsigned) 0x80) {
@@ -1438,7 +1438,7 @@ asn_build_objid(u_char * data,
     }
 
     /*
-     * store the ASN.1 tag and length 
+     * store the ASN.1 tag and length
      */
     data = asn_build_header(data, datalength, type, asnlength);
     if (_asn_build_header_check
@@ -1446,7 +1446,7 @@ asn_build_objid(u_char * data,
         return NULL;
 
     /*
-     * store the encoded OID value 
+     * store the encoded OID value
      */
     for (i = 1, objid_val = first_objid_val, op = objid + 2;
          i < (int) objidlength; i++) {
@@ -1486,7 +1486,7 @@ asn_build_objid(u_char * data,
     }
 
     /*
-     * return the length and data ptr 
+     * return the length and data ptr
      */
     *datalength -= asnlength;
     DEBUGDUMPSETUP("send", initdatap, data - initdatap);
@@ -1743,7 +1743,7 @@ asn_parse_unsigned_int64(u_char * data,
     DEBUGDUMPSETUP("recv", data, bufp - data);
 #ifdef OPAQUE_SPECIAL_TYPES
     /*
-     * 64 bit counters as opaque 
+     * 64 bit counters as opaque
      */
     if ((*type == ASN_OPAQUE) &&
         (asn_length <= ASN_OPAQUE_COUNTER64_MX_BER_LEN) &&
@@ -1751,11 +1751,11 @@ asn_parse_unsigned_int64(u_char * data,
         ((*(bufp + 1) == ASN_OPAQUE_COUNTER64) ||
          (*(bufp + 1) == ASN_OPAQUE_U64))) {
         /*
-         * change type to Counter64 or U64 
+         * change type to Counter64 or U64
          */
         *type = *(bufp + 1);
         /*
-         * value is encoded as special format 
+         * value is encoded as special format
          */
         bufp = asn_parse_length(bufp + 2, &asn_length);
         if (_asn_parse_length_check("parse opaque uint64", bufp, data,
@@ -1841,11 +1841,11 @@ asn_build_unsigned_int64(u_char * data,
     high = cp->high;
     mask = ((u_long) 0xFF) << (8 * (sizeof(long) - 1));
     /*
-     * mask is 0xFF000000 on a big-endian machine 
+     * mask is 0xFF000000 on a big-endian machine
      */
     if ((u_char) ((high & mask) >> (8 * (sizeof(long) - 1))) & 0x80) {
         /*
-         * if MSB is set 
+         * if MSB is set
          */
         add_null_byte = 1;
         intsize++;
@@ -1858,7 +1858,7 @@ asn_build_unsigned_int64(u_char * data,
          */
         mask2 = ((u_long) 0x1FF) << ((8 * (sizeof(long) - 1)) - 1);
         /*
-         * mask2 is 0xFF800000 on a big-endian machine 
+         * mask2 is 0xFF800000 on a big-endian machine
          */
         while ((((high & mask2) == 0) || ((high & mask2) == mask2))
                && intsize > 1) {
@@ -1870,14 +1870,14 @@ asn_build_unsigned_int64(u_char * data,
     }
 #ifdef OPAQUE_SPECIAL_TYPES
     /*
-     * encode a Counter64 as an opaque (it also works in SNMPv1) 
+     * encode a Counter64 as an opaque (it also works in SNMPv1)
      */
     /*
-     * turn into Opaque holding special tagged value 
+     * turn into Opaque holding special tagged value
      */
     if (type == ASN_OPAQUE_COUNTER64) {
         /*
-         * put the tag and length for the Opaque wrapper 
+         * put the tag and length for the Opaque wrapper
          */
         data = asn_build_header(data, datalength, ASN_OPAQUE, intsize + 3);
         if (_asn_build_header_check
@@ -1885,7 +1885,7 @@ asn_build_unsigned_int64(u_char * data,
             return NULL;
 
         /*
-         * put the special tag and length 
+         * put the special tag and length
          */
         *data++ = ASN_OPAQUE_TAG1;
         *data++ = ASN_OPAQUE_COUNTER64;
@@ -1893,14 +1893,14 @@ asn_build_unsigned_int64(u_char * data,
         *datalength = *datalength - 3;
     } else
         /*
-         * Encode the Unsigned int64 in an opaque 
+         * Encode the Unsigned int64 in an opaque
          */
         /*
-         * turn into Opaque holding special tagged value 
+         * turn into Opaque holding special tagged value
          */
     if (type == ASN_OPAQUE_U64) {
         /*
-         * put the tag and length for the Opaque wrapper 
+         * put the tag and length for the Opaque wrapper
          */
         data = asn_build_header(data, datalength, ASN_OPAQUE, intsize + 3);
         if (_asn_build_header_check
@@ -1908,7 +1908,7 @@ asn_build_unsigned_int64(u_char * data,
             return NULL;
 
         /*
-         * put the special tag and length 
+         * put the special tag and length
          */
         *data++ = ASN_OPAQUE_TAG1;
         *data++ = ASN_OPAQUE_U64;
@@ -1960,7 +1960,7 @@ asn_build_unsigned_int64(u_char * data,
  *  Returns a pointer to the first byte past the end
  *   of this object (i.e. the start of the next object).
  *  Returns NULL on any error.
- 
+
  * @param data         IN - pointer to start of object
  * @param datalength   IN/OUT - number of valid bytes left in buffer
  * @param type         OUT - asn type of object
@@ -1999,11 +1999,11 @@ asn_parse_signed_int64(u_char * data,
         (asn_length <= ASN_OPAQUE_COUNTER64_MX_BER_LEN) &&
         (*bufp == ASN_OPAQUE_TAG1) && (*(bufp + 1) == ASN_OPAQUE_I64)) {
         /*
-         * change type to Int64 
+         * change type to Int64
          */
         *type = *(bufp + 1);
         /*
-         * value is encoded as special format 
+         * value is encoded as special format
          */
         bufp = asn_parse_length(bufp + 2, &asn_length);
         if (_asn_parse_length_check("parse opaque int64", bufp, data,
@@ -2011,7 +2011,7 @@ asn_parse_signed_int64(u_char * data,
             return NULL;
     }
     /*
-     * this should always have been true until snmp gets int64 PDU types 
+     * this should always have been true until snmp gets int64 PDU types
      */
     else {
         snprintf(ebuf, sizeof(ebuf),
@@ -2109,7 +2109,7 @@ asn_build_signed_int64(u_char * data,
     mask = ((u_int) 0xFF) << (8 * (sizeof(u_int) - 1));
     mask2 = ((u_int) 0x1FF) << ((8 * (sizeof(u_int) - 1)) - 1);
     /*
-     * mask is 0xFF800000 on a big-endian machine 
+     * mask is 0xFF800000 on a big-endian machine
      */
     while ((((high & mask2) == 0) || ((high & mask2) == mask2))
            && intsize > 1) {
@@ -2122,7 +2122,7 @@ asn_build_signed_int64(u_char * data,
      * until a real int64 gets incorperated into SNMP, we are going to
      * encode it as an opaque instead.  First, we build the opaque
      * header and then the int64 tag type we use to mark it as an
-     * int64 in the opaque string. 
+     * int64 in the opaque string.
      */
     data = asn_build_header(data, datalength, ASN_OPAQUE, intsize + 3);
     if (_asn_build_header_check
@@ -2196,14 +2196,14 @@ asn_parse_float(u_char * data,
 
     DEBUGDUMPSETUP("recv", data, bufp - data + asn_length);
     /*
-     * the float is encoded as an opaque 
+     * the float is encoded as an opaque
      */
     if ((*type == ASN_OPAQUE) &&
         (asn_length == ASN_OPAQUE_FLOAT_BER_LEN) &&
         (*bufp == ASN_OPAQUE_TAG1) && (*(bufp + 1) == ASN_OPAQUE_FLOAT)) {
 
         /*
-         * value is encoded as special format 
+         * value is encoded as special format
          */
         bufp = asn_parse_length(bufp + 2, &asn_length);
         if (_asn_parse_length_check("parse opaque float", bufp, data,
@@ -2211,7 +2211,7 @@ asn_parse_float(u_char * data,
             return NULL;
 
         /*
-         * change type to Float 
+         * change type to Float
          */
         *type = ASN_OPAQUE_FLOAT;
     }
@@ -2225,7 +2225,7 @@ asn_parse_float(u_char * data,
     memcpy(&fu.c[0], bufp, asn_length);
 
     /*
-     * correct for endian differences 
+     * correct for endian differences
      */
     fu.longVal = ntohl(fu.longVal);
 
@@ -2277,14 +2277,14 @@ asn_build_float(u_char * data,
         return NULL;
     }
     /*
-     * encode the float as an opaque 
+     * encode the float as an opaque
      */
     /*
-     * turn into Opaque holding special tagged value 
+     * turn into Opaque holding special tagged value
      */
 
     /*
-     * put the tag and length for the Opaque wrapper 
+     * put the tag and length for the Opaque wrapper
      */
     data = asn_build_header(data, datalength, ASN_OPAQUE, floatsize + 3);
     if (_asn_build_header_check
@@ -2292,7 +2292,7 @@ asn_build_float(u_char * data,
         return NULL;
 
     /*
-     * put the special tag and length 
+     * put the special tag and length
      */
     *data++ = ASN_OPAQUE_TAG1;
     *data++ = ASN_OPAQUE_FLOAT;
@@ -2301,7 +2301,7 @@ asn_build_float(u_char * data,
 
     fu.floatVal = *floatp;
     /*
-     * correct for endian differences 
+     * correct for endian differences
      */
     fu.intVal = htonl(fu.intVal);
 
@@ -2363,14 +2363,14 @@ asn_parse_double(u_char * data,
 
     DEBUGDUMPSETUP("recv", data, bufp - data + asn_length);
     /*
-     * the double is encoded as an opaque 
+     * the double is encoded as an opaque
      */
     if ((*type == ASN_OPAQUE) &&
         (asn_length == ASN_OPAQUE_DOUBLE_BER_LEN) &&
         (*bufp == ASN_OPAQUE_TAG1) && (*(bufp + 1) == ASN_OPAQUE_DOUBLE)) {
 
         /*
-         * value is encoded as special format 
+         * value is encoded as special format
          */
         bufp = asn_parse_length(bufp + 2, &asn_length);
         if (_asn_parse_length_check("parse opaque double", bufp, data,
@@ -2378,7 +2378,7 @@ asn_parse_double(u_char * data,
             return NULL;
 
         /*
-         * change type to Double 
+         * change type to Double
          */
         *type = ASN_OPAQUE_DOUBLE;
     }
@@ -2391,7 +2391,7 @@ asn_parse_double(u_char * data,
     memcpy(&fu.c[0], bufp, asn_length);
 
     /*
-     * correct for endian differences 
+     * correct for endian differences
      */
 
     tmp = ntohl(fu.intVal[0]);
@@ -2448,14 +2448,14 @@ asn_build_double(u_char * data,
     }
 
     /*
-     * encode the double as an opaque 
+     * encode the double as an opaque
      */
     /*
-     * turn into Opaque holding special tagged value 
+     * turn into Opaque holding special tagged value
      */
 
     /*
-     * put the tag and length for the Opaque wrapper 
+     * put the tag and length for the Opaque wrapper
      */
     data = asn_build_header(data, datalength, ASN_OPAQUE, doublesize + 3);
     if (_asn_build_header_check
@@ -2463,7 +2463,7 @@ asn_build_double(u_char * data,
         return NULL;
 
     /*
-     * put the special tag and length 
+     * put the special tag and length
      */
     *data++ = ASN_OPAQUE_TAG1;
     *data++ = ASN_OPAQUE_DOUBLE;
@@ -2472,7 +2472,7 @@ asn_build_double(u_char * data,
 
     fu.doubleVal = *doublep;
     /*
-     * correct for endian differences 
+     * correct for endian differences
      */
     tmp = htonl(fu.intVal[0]);
     fu.intVal[0] = htonl(fu.intVal[1]);
@@ -2492,15 +2492,15 @@ asn_build_double(u_char * data,
 /**
  * @internal
  * This function increases the size of the buffer pointed to by *pkt, which
- * is initially of size *pkt_len.  Contents are preserved **AT THE TOP END OF 
+ * is initially of size *pkt_len.  Contents are preserved **AT THE TOP END OF
  * THE BUFFER** (hence making this function useful for reverse encoding).
  * You can change the reallocation scheme, but you **MUST** guarantee to
  * allocate **AT LEAST** one extra byte.  If memory cannot be reallocated,
- * then return 0; otherwise return 1.   
- * 
+ * then return 0; otherwise return 1.
+ *
  * @param pkt     buffer to increase
  * @param pkt_len initial buffer size
- * 
+ *
  * @return 1 on success 0 on error (memory cannot be reallocated)
  */
 int
@@ -2534,11 +2534,11 @@ asn_realloc(u_char ** pkt, size_t * pkt_len)
  * @internal
  * reverse  builds an ASN header for a length with
  * length specified.
- * 
+ *
  * @param pkt     IN/OUT address of the begining of the buffer.
  * @param pkt_len IN/OUT address to an integer containing the size of pkt.
  * @param offset  IN/OUT offset to the start of the buffer where to write
- * @param r       IN if not zero reallocate the buffer to fit the 
+ * @param r       IN if not zero reallocate the buffer to fit the
  *                needed size.
  * @param length  IN - length of object
  *
@@ -2604,11 +2604,11 @@ asn_realloc_rbuild_length(u_char ** pkt, size_t * pkt_len,
  * length specified.
  *
  * @see asn_build_header
- * 
+ *
  * @param pkt     IN/OUT address of the begining of the buffer.
  * @param pkt_len IN/OUT address to an integer containing the size of pkt.
  * @param offset  IN/OUT offset to the start of the buffer where to write
- * @param r       IN if not zero reallocate the buffer to fit the 
+ * @param r       IN if not zero reallocate the buffer to fit the
  *                needed size.
  * @param type   IN - type of object
  * @param length   IN - length of object
@@ -2643,11 +2643,11 @@ asn_realloc_rbuild_header(u_char ** pkt, size_t * pkt_len,
  * builds an ASN object containing an int.
  *
  * @see asn_build_int
- * 
+ *
  * @param pkt     IN/OUT address of the begining of the buffer.
  * @param pkt_len IN/OUT address to an integer containing the size of pkt.
  * @param offset  IN/OUT offset to the start of the buffer where to write
- * @param r       IN if not zero reallocate the buffer to fit the 
+ * @param r       IN if not zero reallocate the buffer to fit the
  *                needed size.
  * @param type    IN - type of object
  * @param intp    IN - pointer to start of long integer
@@ -2688,7 +2688,7 @@ asn_realloc_rbuild_int(u_char ** pkt, size_t * pkt_len,
     if ((*(*pkt + *pkt_len - *offset) & 0x80) != (testvalue & 0x80)) {
         /*
          * Make sure left most bit is representational of the rest of the bits
-         * that aren't encoded.  
+         * that aren't encoded.
          */
         if (((*pkt_len - *offset) < 1)
             && !(r && asn_realloc(pkt, pkt_len))) {
@@ -2718,12 +2718,12 @@ asn_realloc_rbuild_int(u_char ** pkt, size_t * pkt_len,
  * @internal
  * builds an ASN object containing an string.
  *
- * @see asn_build_string 
- * 
+ * @see asn_build_string
+ *
  * @param pkt     IN/OUT address of the begining of the buffer.
  * @param pkt_len IN/OUT address to an integer containing the size of pkt.
  * @param offset  IN/OUT offset to the start of the buffer where to write
- * @param r       IN if not zero reallocate the buffer to fit the 
+ * @param r       IN if not zero reallocate the buffer to fit the
  *                needed size.
  * @param type    IN - type of object
  * @param string    IN - pointer to start of the string
@@ -2795,11 +2795,11 @@ asn_realloc_rbuild_string(u_char ** pkt, size_t * pkt_len,
  * builds an ASN object containing an unsigned int.
  *
  * @see asn_build_unsigned_int
- * 
+ *
  * @param pkt     IN/OUT address of the begining of the buffer.
  * @param pkt_len IN/OUT address to an integer containing the size of pkt.
  * @param offset  IN/OUT offset to the start of the buffer where to write
- * @param r       IN if not zero reallocate the buffer to fit the 
+ * @param r       IN if not zero reallocate the buffer to fit the
  *                needed size.
  * @param type    IN - type of object
  * @param intp    IN - pointer to start of unsigned int
@@ -2839,7 +2839,7 @@ asn_realloc_rbuild_unsigned_int(u_char ** pkt, size_t * pkt_len,
     if ((*(*pkt + *pkt_len - *offset) & 0x80) != (0 & 0x80)) {
         /*
          * Make sure left most bit is representational of the rest of the bits
-         * that aren't encoded.  
+         * that aren't encoded.
          */
         if (((*pkt_len - *offset) < 1)
             && !(r && asn_realloc(pkt, pkt_len))) {
@@ -2870,11 +2870,11 @@ asn_realloc_rbuild_unsigned_int(u_char ** pkt, size_t * pkt_len,
  * builds an ASN object containing an sequence.
  *
  * @see asn_build_sequence
- * 
+ *
  * @param pkt     IN/OUT address of the begining of the buffer.
  * @param pkt_len IN/OUT address to an integer containing the size of pkt.
  * @param offset  IN/OUT offset to the start of the buffer where to write
- * @param r       IN if not zero reallocate the buffer to fit the 
+ * @param r       IN if not zero reallocate the buffer to fit the
  *                needed size.
  * @param type    IN - type of object
  * @param length IN - length of object
@@ -2896,15 +2896,15 @@ asn_realloc_rbuild_sequence(u_char ** pkt, size_t * pkt_len,
  * builds an ASN object containing an objid.
  *
  * @see asn_build_objid
- * 
+ *
  * @param pkt     IN/OUT address of the begining of the buffer.
  * @param pkt_len IN/OUT address to an integer containing the size of pkt.
  * @param offset  IN/OUT offset to the start of the buffer where to write
- * @param r       IN if not zero reallocate the buffer to fit the 
+ * @param r       IN if not zero reallocate the buffer to fit the
  *                needed size.
  * @param type    IN - type of object
  * @param objid   IN - pointer to the object id
- * @param objidlength  IN - length of the input 
+ * @param objidlength  IN - length of the input
  *
  * @return 1 on success, 0 on error
  */
@@ -2927,11 +2927,11 @@ asn_realloc_rbuild_objid(u_char ** pkt, size_t * pkt_len,
     const char     *errpre = "build objid";
 
     /*
-     * Check if there are at least 2 sub-identifiers.  
+     * Check if there are at least 2 sub-identifiers.
      */
     if (objidlength == 0) {
         /*
-         * There are not, so make OID have two with value of zero.  
+         * There are not, so make OID have two with value of zero.
          */
         while ((*pkt_len - *offset) < 2) {
             if (!(r && asn_realloc(pkt, pkt_len))) {
@@ -2946,7 +2946,7 @@ asn_realloc_rbuild_objid(u_char ** pkt, size_t * pkt_len,
         return 0;
     } else if (objidlength == 1) {
         /*
-         * Encode the first value.  
+         * Encode the first value.
          */
         if (((*pkt_len - *offset) < 1)
             && !(r && asn_realloc(pkt, pkt_len))) {
@@ -2976,7 +2976,7 @@ asn_realloc_rbuild_objid(u_char ** pkt, size_t * pkt_len,
         }
 
         /*
-         * Combine the first two values.  
+         * Combine the first two values.
          */
         if ((objid[1] > 40) &&
             (objid[0] < 2)) {
@@ -3026,11 +3026,11 @@ asn_realloc_rbuild_objid(u_char ** pkt, size_t * pkt_len,
  * builds an ASN object containing an null object.
  *
  * @see asn_build_null
- * 
+ *
  * @param pkt     IN/OUT address of the begining of the buffer.
  * @param pkt_len IN/OUT address to an integer containing the size of pkt.
  * @param offset  IN/OUT offset to the start of the buffer where to write
- * @param r       IN if not zero reallocate the buffer to fit the 
+ * @param r       IN if not zero reallocate the buffer to fit the
  *                needed size.
  * @param type    IN - type of object
  *
@@ -3061,15 +3061,15 @@ asn_realloc_rbuild_null(u_char ** pkt, size_t * pkt_len,
  * builds an ASN object containing an bitstring.
  *
  * @see asn_build_bitstring
- * 
+ *
  * @param pkt     IN/OUT address of the begining of the buffer.
  * @param pkt_len IN/OUT address to an integer containing the size of pkt.
  * @param offset  IN/OUT offset to the start of the buffer where to write
- * @param r       IN if not zero reallocate the buffer to fit the 
+ * @param r       IN if not zero reallocate the buffer to fit the
  *                needed size.
  * @param type    IN - type of object
  * @param string   IN - pointer to the string
- * @param strlength  IN - length of the input 
+ * @param strlength  IN - length of the input
  *
  * @return 1 on success, 0 on error
  */
@@ -3142,11 +3142,11 @@ asn_realloc_rbuild_bitstring(u_char ** pkt, size_t * pkt_len,
  * builds an ASN object containing an unsigned int64.
  *
  * @see asn_build_unsigned_int64
- * 
+ *
  * @param pkt     IN/OUT address of the begining of the buffer.
  * @param pkt_len IN/OUT address to an integer containing the size of pkt.
  * @param offset  IN/OUT offset to the start of the buffer where to write
- * @param r       IN if not zero reallocate the buffer to fit the 
+ * @param r       IN if not zero reallocate the buffer to fit the
  *                needed size.
  * @param type    IN - type of object
  * @param cp           IN - pointer to counter struct
@@ -3174,7 +3174,7 @@ asn_realloc_rbuild_unsigned_int64(u_char ** pkt, size_t * pkt_len,
     }
 
     /*
-     * Encode the low 4 bytes first.  
+     * Encode the low 4 bytes first.
      */
     if (((*pkt_len - *offset) < 1) && !(r && asn_realloc(pkt, pkt_len))) {
         return 0;
@@ -3194,11 +3194,11 @@ asn_realloc_rbuild_unsigned_int64(u_char ** pkt, size_t * pkt_len,
     }
 
     /*
-     * Then the high byte if present.  
+     * Then the high byte if present.
      */
     if (high) {
         /*
-         * Do the rest of the low byte.  
+         * Do the rest of the low byte.
          */
         for (; count < 4; count++) {
             if (((*pkt_len - *offset) < 1)
@@ -3209,7 +3209,7 @@ asn_realloc_rbuild_unsigned_int64(u_char ** pkt, size_t * pkt_len,
         }
 
         /*
-         * Do high byte.  
+         * Do high byte.
          */
         if (((*pkt_len - *offset) < 1)
             && !(r && asn_realloc(pkt, pkt_len))) {
@@ -3231,7 +3231,7 @@ asn_realloc_rbuild_unsigned_int64(u_char ** pkt, size_t * pkt_len,
     if ((*(*pkt + *pkt_len - *offset) & 0x80) != (0 & 0x80)) {
         /*
          * Make sure left most bit is representational of the rest of the bits
-         * that aren't encoded.  
+         * that aren't encoded.
          */
         if (((*pkt_len - *offset) < 1)
             && !(r && asn_realloc(pkt, pkt_len))) {
@@ -3244,7 +3244,7 @@ asn_realloc_rbuild_unsigned_int64(u_char ** pkt, size_t * pkt_len,
 
 #ifdef OPAQUE_SPECIAL_TYPES
     /*
-     * Encode a Counter64 as an opaque (it also works in SNMPv1).  
+     * Encode a Counter64 as an opaque (it also works in SNMPv1).
      */
     if (type == ASN_OPAQUE_COUNTER64) {
         while ((*pkt_len - *offset) < 5) {
@@ -3258,7 +3258,7 @@ asn_realloc_rbuild_unsigned_int64(u_char ** pkt, size_t * pkt_len,
         *(*pkt + *pkt_len - (++*offset)) = ASN_OPAQUE_TAG1;
 
         /*
-         * Put the tag and length for the Opaque wrapper.  
+         * Put the tag and length for the Opaque wrapper.
          */
         if (asn_realloc_rbuild_header(pkt, pkt_len, offset, r,
                                       ASN_OPAQUE, intsize + 3)) {
@@ -3271,7 +3271,7 @@ asn_realloc_rbuild_unsigned_int64(u_char ** pkt, size_t * pkt_len,
         }
     } else if (type == ASN_OPAQUE_U64) {
         /*
-         * Encode the Unsigned int64 in an opaque.  
+         * Encode the Unsigned int64 in an opaque.
          */
         while ((*pkt_len - *offset) < 5) {
             if (!(r && asn_realloc(pkt, pkt_len))) {
@@ -3284,7 +3284,7 @@ asn_realloc_rbuild_unsigned_int64(u_char ** pkt, size_t * pkt_len,
         *(*pkt + *pkt_len - (++*offset)) = ASN_OPAQUE_TAG1;
 
         /*
-         * Put the tag and length for the Opaque wrapper.  
+         * Put the tag and length for the Opaque wrapper.
          */
         if (asn_realloc_rbuild_header(pkt, pkt_len, offset, r,
                                       ASN_OPAQUE, intsize + 3)) {
@@ -3324,11 +3324,11 @@ asn_realloc_rbuild_unsigned_int64(u_char ** pkt, size_t * pkt_len,
  * builds an ASN object containing an signed int64.
  *
  * @see asn_build_signed_int64
- * 
+ *
  * @param pkt     IN/OUT address of the begining of the buffer.
  * @param pkt_len IN/OUT address to an integer containing the size of pkt.
  * @param offset  IN/OUT offset to the start of the buffer where to write
- * @param r       IN if not zero reallocate the buffer to fit the 
+ * @param r       IN if not zero reallocate the buffer to fit the
  *                needed size.
  * @param type    IN - type of object
  * @param cp           IN - pointer to counter struct
@@ -3356,7 +3356,7 @@ asn_realloc_rbuild_signed_int64(u_char ** pkt, size_t * pkt_len,
     }
 
     /*
-     * Encode the low 4 bytes first.  
+     * Encode the low 4 bytes first.
      */
     if (((*pkt_len - *offset) < 1) && !(r && asn_realloc(pkt, pkt_len))) {
         return 0;
@@ -3376,11 +3376,11 @@ asn_realloc_rbuild_signed_int64(u_char ** pkt, size_t * pkt_len,
     }
 
     /*
-     * Then the high byte if present.  
+     * Then the high byte if present.
      */
     if (high) {
         /*
-         * Do the rest of the low byte.  
+         * Do the rest of the low byte.
          */
         for (; count < 4; count++) {
             if (((*pkt_len - *offset) < 1)
@@ -3391,7 +3391,7 @@ asn_realloc_rbuild_signed_int64(u_char ** pkt, size_t * pkt_len,
         }
 
         /*
-         * Do high byte.  
+         * Do high byte.
          */
         if (((*pkt_len - *offset) < 1)
             && !(r && asn_realloc(pkt, pkt_len))) {
@@ -3413,7 +3413,7 @@ asn_realloc_rbuild_signed_int64(u_char ** pkt, size_t * pkt_len,
     if ((*(*pkt + *pkt_len - *offset) & 0x80) != (0 & 0x80)) {
         /*
          * Make sure left most bit is representational of the rest of the bits
-         * that aren't encoded.  
+         * that aren't encoded.
          */
         if (((*pkt_len - *offset) < 1)
             && !(r && asn_realloc(pkt, pkt_len))) {
@@ -3435,7 +3435,7 @@ asn_realloc_rbuild_signed_int64(u_char ** pkt, size_t * pkt_len,
     *(*pkt + *pkt_len - (++*offset)) = ASN_OPAQUE_TAG1;
 
     /*
-     * Put the tag and length for the Opaque wrapper.  
+     * Put the tag and length for the Opaque wrapper.
      */
     if (asn_realloc_rbuild_header(pkt, pkt_len, offset, r,
                                   ASN_OPAQUE, intsize + 3)) {
@@ -3457,11 +3457,11 @@ asn_realloc_rbuild_signed_int64(u_char ** pkt, size_t * pkt_len,
  * builds an ASN object containing an float.
  *
  * @see asn_build_float
- * 
+ *
  * @param pkt     IN/OUT address of the begining of the buffer.
  * @param pkt_len IN/OUT address to an integer containing the size of pkt.
  * @param offset  IN/OUT offset to the start of the buffer where to write
- * @param r       IN if not zero reallocate the buffer to fit the 
+ * @param r       IN if not zero reallocate the buffer to fit the
  *                needed size.
  * @param type       IN - type of object
  * @param floatp     IN - pointer to the float
@@ -3483,7 +3483,7 @@ asn_realloc_rbuild_float(u_char ** pkt, size_t * pkt_len,
     } fu;
 
     /*
-     * Floatsize better not be larger than realistic.  
+     * Floatsize better not be larger than realistic.
      */
     if (floatsize != sizeof(float) || floatsize > 122) {
         return 0;
@@ -3496,7 +3496,7 @@ asn_realloc_rbuild_float(u_char ** pkt, size_t * pkt_len,
     }
 
     /*
-     * Correct for endian differences and copy value.  
+     * Correct for endian differences and copy value.
      */
     fu.floatVal = *floatp;
     fu.intVal = htonl(fu.intVal);
@@ -3504,14 +3504,14 @@ asn_realloc_rbuild_float(u_char ** pkt, size_t * pkt_len,
     memcpy(*pkt + *pkt_len - *offset, &(fu.c[0]), floatsize);
 
     /*
-     * Put the special tag and length (3 bytes).  
+     * Put the special tag and length (3 bytes).
      */
     *(*pkt + *pkt_len - (++*offset)) = (u_char) floatsize;
     *(*pkt + *pkt_len - (++*offset)) = ASN_OPAQUE_FLOAT;
     *(*pkt + *pkt_len - (++*offset)) = ASN_OPAQUE_TAG1;
 
     /*
-     * Put the tag and length for the Opaque wrapper.  
+     * Put the tag and length for the Opaque wrapper.
      */
     if (asn_realloc_rbuild_header(pkt, pkt_len, offset, r,
                                   ASN_OPAQUE, floatsize + 3)) {
@@ -3534,11 +3534,11 @@ asn_realloc_rbuild_float(u_char ** pkt, size_t * pkt_len,
  * builds an ASN object containing an double.
  *
  * @see asn_build_double
- * 
+ *
  * @param pkt     IN/OUT address of the begining of the buffer.
  * @param pkt_len IN/OUT address to an integer containing the size of pkt.
  * @param offset  IN/OUT offset to the start of the buffer where to write
- * @param r       IN if not zero reallocate the buffer to fit the 
+ * @param r       IN if not zero reallocate the buffer to fit the
  *                needed size.
  * @param type    IN - type of object
  * @param doublep           IN - pointer to double
@@ -3561,7 +3561,7 @@ asn_realloc_rbuild_double(u_char ** pkt, size_t * pkt_len,
     } fu;
 
     /*
-     * Doublesize better not be larger than realistic.  
+     * Doublesize better not be larger than realistic.
      */
     if (doublesize != sizeof(double) || doublesize > 122) {
         return 0;
@@ -3574,7 +3574,7 @@ asn_realloc_rbuild_double(u_char ** pkt, size_t * pkt_len,
     }
 
     /*
-     * Correct for endian differences and copy value.  
+     * Correct for endian differences and copy value.
      */
     fu.doubleVal = *doublep;
     tmp = htonl(fu.intVal[0]);
@@ -3584,14 +3584,14 @@ asn_realloc_rbuild_double(u_char ** pkt, size_t * pkt_len,
     memcpy(*pkt + *pkt_len - *offset, &(fu.c[0]), doublesize);
 
     /*
-     * Put the special tag and length (3 bytes).  
+     * Put the special tag and length (3 bytes).
      */
     *(*pkt + *pkt_len - (++*offset)) = (u_char) doublesize;
     *(*pkt + *pkt_len - (++*offset)) = ASN_OPAQUE_DOUBLE;
     *(*pkt + *pkt_len - (++*offset)) = ASN_OPAQUE_TAG1;
 
     /*
-     * Put the tag and length for the Opaque wrapper.  
+     * Put the tag and length for the Opaque wrapper.
      */
     if (asn_realloc_rbuild_header(pkt, pkt_len, offset, r,
                                   ASN_OPAQUE, doublesize + 3)) {

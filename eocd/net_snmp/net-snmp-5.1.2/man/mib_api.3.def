@@ -95,7 +95,7 @@ to a (colon-separated) list of directories to search.
 Note that this does not actually load the MIB modules located
 in that directory, but is an initialisation step to make them available.
 This function returns a count of files found in the directory, or a -1
-if there is an error.  
+if there is an error.
 .PP
 .B init_mib_internals
 sets up the internal structures, preparatory to reading in MIB
@@ -108,7 +108,7 @@ This is called automatically if
 is used.
 .PP
 .B shutdown_mib
-will clear the information that was gathered by 
+will clear the information that was gathered by
 .BR read_module ", " add_mibdir " and " add_module_replacement .
 It is strongly recommended that one does not invoke
 .BR shutdown_mib
@@ -181,7 +181,7 @@ corresponding list of sub-identifiers.  This is returned in the
 .I output
 parameter, with the number of sub-identifiers returned via
 .IR out_len .
-When called, 
+When called,
 .I out_len
 must hold the maximum length of the
 .I output
@@ -221,7 +221,7 @@ parameter.
 prints the same information into the buffer pointed to by
 .I buf
 which is of length
-.IR len 
+.IR len
 and returns either the number of characters printed, or -1 if the
 buffer was not large enough.  In the latter case,
 .I buf

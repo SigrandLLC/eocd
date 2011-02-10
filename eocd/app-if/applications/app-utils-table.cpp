@@ -175,7 +175,7 @@ int table_count_width(channel_info_t &info)
 		break;
 	case SHORT:
 		width = CHAN_WIDTH+REP_WIDTH+LINK_WIDTH+MODE_WIDTH+(max_prof+1) +
-			RATE_WIDTH + ANX_WIDTH + TCPAM_WIDTH; // + 
+			RATE_WIDTH + ANX_WIDTH + TCPAM_WIDTH; // +
 	default:
 		break;
 	}
@@ -470,7 +470,7 @@ void table_side(channel_info_t &info, unit u, side s)
 
 	// Adjust column widths
 	table_adjust(&info, 1);
-	// Print head of table 
+	// Print head of table
 	table_print_head(info);
 	// Print delimiter
 	table_delim(info);
@@ -514,7 +514,7 @@ void table_unit(channel_info_t &info, unit u)
 	}
 	// Adjust column widths
 	table_adjust(&info, 1);
-	// Print head of table 
+	// Print head of table
 	table_print_head(info);
 	// Print delimiter
 	table_delim(info);
@@ -554,7 +554,7 @@ void table_channels(channel_info_t info[], int cnt)
 	}
 	// Adjust column widths
 	table_adjust(info, cnt);
-	// Print head of table 
+	// Print head of table
 	table_print_head(info[0]);
 	// Print delimiter
 	table_delim(info[0]);
@@ -622,7 +622,7 @@ void table_print_short(channel_info_t info[], int cnt)
 			printf("%-5d|",info[i].stat.max_lrate);
 		else
 			printf("%-5s|","-");
-		
+
 		annex_t annex = annex_a;
 		if( info[i].stat.region1 )
 			annex = annex_b;
@@ -637,7 +637,7 @@ void table_print_short(channel_info_t info[], int cnt)
 
 int table_count_width(profiles_info_t &info)
 {
-	int width = (max_prof+1) + ANX_WIDTH + RATE_WIDTH + PWR_WIDTH + TCPAM_WIDTH + COMPAT_WIDTH; 
+	int width = (max_prof+1) + ANX_WIDTH + RATE_WIDTH + PWR_WIDTH + TCPAM_WIDTH + COMPAT_WIDTH;
 	return width;
 }
 
@@ -674,7 +674,7 @@ void table_confprof_head(profiles_info_t &info)
 	printf("%-8s|","tcpam");
 	printf("%-8s|","compat");
 	printf("\n");
-	table_delim(info);	
+	table_delim(info);
 }
 
 void table_confprof_row(confprof_info_t &info)
@@ -690,7 +690,7 @@ void table_confprof_row(confprof_info_t &info)
 	printf("\n");
 }
 
-int 
+int
 table_cprofiles(profiles_info_t &info)
 {
 

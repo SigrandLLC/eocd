@@ -6,7 +6,7 @@
 #define NETSNMPHOSTSTABLE_ENUMS_H
 
 /*
- * enums for column netSnmpHostAddressType 
+ * enums for column netSnmpHostAddressType
  */
 #define NETSNMPHOSTADDRESSTYPE_UNKNOWN		0
 #define NETSNMPHOSTADDRESSTYPE_IPV4		1
@@ -16,7 +16,7 @@
 #define NETSNMPHOSTADDRESSTYPE_DNS		16
 
 /*
- * enums for column netSnmpHostStorage 
+ * enums for column netSnmpHostStorage
  */
 #define NETSNMPHOSTSTORAGE_OTHER		1
 #define NETSNMPHOSTSTORAGE_VOLATILE		2
@@ -25,7 +25,7 @@
 #define NETSNMPHOSTSTORAGE_READONLY		5
 
 /*
- * enums for column netSnmpHostRowStatus 
+ * enums for column netSnmpHostRowStatus
  */
 #define NETSNMPHOSTROWSTATUS_ACTIVE		1
 #define NETSNMPHOSTROWSTATUS_NOTINSERVICE		2

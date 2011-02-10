@@ -39,7 +39,7 @@ static netsnmp_tdomain ipxDomain;
 
 /*
  * Return a string representing the address in data, or else the "far end"
- * address if data is NULL.  
+ * address if data is NULL.
  */
 
 static char *
@@ -67,9 +67,9 @@ netsnmp_ipx_fmtaddr(netsnmp_transport *t, void *data, int len)
 
 
 /*
- * You can write something into opaque that will subsequently get passed back 
+ * You can write something into opaque that will subsequently get passed back
  * to your send function if you like.  For instance, you might want to
- * remember where a PDU came from, so that you can send a reply there...  
+ * remember where a PDU came from, so that you can send a reply there...
  */
 
 static int
@@ -165,8 +165,8 @@ netsnmp_ipx_close(netsnmp_transport *t)
 
 /*
  * Open a IPX-based transport for SNMP.  Local is TRUE if addr is the local
- * address to bind to (i.e. this is a server-type session); otherwise addr is 
- * the remote address to send things to.  
+ * address to bind to (i.e. this is a server-type session); otherwise addr is
+ * the remote address to send things to.
  */
 
 netsnmp_transport *
@@ -185,7 +185,7 @@ netsnmp_ipx_transport(struct sockaddr_ipx *addr, int local)
         return NULL;
     }
 
-    string = netsnmp_ipx_fmtaddr(NULL, (void *)addr, 
+    string = netsnmp_ipx_fmtaddr(NULL, (void *)addr,
 				 sizeof(struct sockaddr_ipx));
     DEBUGMSGTL(("netsnmp_ipx", "open %s %s\n", local ? "local" : "remote",
                 string));
@@ -255,7 +255,7 @@ netsnmp_ipx_transport(struct sockaddr_ipx *addr, int local)
 
     /*
      * Maximum size of an IPX PDU is 576 bytes including a 30-byte header.
-     * Ridiculous!  
+     * Ridiculous!
      */
 
     t->msgMaxSize = 576 - 30;
@@ -272,7 +272,7 @@ netsnmp_ipx_transport(struct sockaddr_ipx *addr, int local)
 
 /*
  * Attempt to parse a string of the form [%08x]:%12x[/%d] where the parts
- * are the network number, the node address and the port in that order.  
+ * are the network number, the node address and the port in that order.
  */
 
 int
@@ -297,7 +297,7 @@ netsnmp_sockaddr_ipx(struct sockaddr_ipx *addr, const char *peername)
     }
 
     /*
-     * Skip leading white space.  
+     * Skip leading white space.
      */
 
     while (*peername && isspace((int) *peername)) {
@@ -307,7 +307,7 @@ netsnmp_sockaddr_ipx(struct sockaddr_ipx *addr, const char *peername)
     if (!*peername) {
         /*
          * Completely blank address.  Let this mean "any network, any address,
-         * default SNMP port".  
+         * default SNMP port".
          */
         addr->sipx_network = htonl(0);
         for (i = 0; i < 6; i++) {
@@ -318,7 +318,7 @@ netsnmp_sockaddr_ipx(struct sockaddr_ipx *addr, const char *peername)
     }
 
     /*
-     * Try to get a leading network address.  
+     * Try to get a leading network address.
      */
 
     network = strtoul(peername, &cp, 16);
@@ -334,7 +334,7 @@ netsnmp_sockaddr_ipx(struct sockaddr_ipx *addr, const char *peername)
 
     if (*peername == ':') {
         /*
-         * Okay we are looking for a node number plus optionally a port here.  
+         * Okay we are looking for a node number plus optionally a port here.
          */
         int             node[6] = { 0, 0, 0, 0, 0, 0 }, rc = 0;
         unsigned short  port = 0;
@@ -360,7 +360,7 @@ netsnmp_sockaddr_ipx(struct sockaddr_ipx *addr, const char *peername)
         }
     } else if (*peername == '/') {
         /*
-         * Okay we are just looking for a port number here.  
+         * Okay we are just looking for a port number here.
          */
         unsigned short  port = 0;
         for (i = 0; i < 6; i++) {

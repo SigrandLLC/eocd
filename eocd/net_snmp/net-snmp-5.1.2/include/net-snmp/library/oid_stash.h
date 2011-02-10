@@ -20,14 +20,14 @@ extern          "C" {
                                         struct netsnmp_oid_stash_node_s *);
 
     typedef void    (NetSNMPStashFreeNode) (void *);
-    
+
     typedef struct netsnmp_oid_stash_node_s {
         oid             value;
         struct netsnmp_oid_stash_node_s **children;     /* array of children */
         size_t          children_size;
         struct netsnmp_oid_stash_node_s *next_sibling;  /* cache too small links */
         struct netsnmp_oid_stash_node_s *prev_sibling;
-        struct netsnmp_oid_stash_node_s *parent; 
+        struct netsnmp_oid_stash_node_s *parent;
 
         void           *thedata;
     } netsnmp_oid_stash_node;
@@ -67,7 +67,7 @@ extern          "C" {
     /* frees all data in the stash and cleans it out.  Sets root = NULL */
     void netsnmp_oid_stash_free(netsnmp_oid_stash_node **root,
                                 NetSNMPStashFreeNode *freefn);
-                                
+
 
     /* a noop function that can be passed to netsnmp_oid_stash_node to
        NOT free the data */

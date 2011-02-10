@@ -13,7 +13,7 @@ nsModuleTable_free(void *context, netsnmp_iterator_info *dont_care)
 {
     free(context);
 }
-    
+
 /** Initialize the nsModuleTable table by defining it's contents and how it's structured */
 void
 initialize_table_nsModuleTable(void)
@@ -25,14 +25,14 @@ initialize_table_nsModuleTable(void)
     netsnmp_iterator_info *iinfo;
 
     /*
-     * create the table structure itself 
+     * create the table structure itself
      */
     table_info = SNMP_MALLOC_TYPEDEF(netsnmp_table_registration_info);
     iinfo = SNMP_MALLOC_TYPEDEF(netsnmp_iterator_info);
 
     /*
      * if your table is read only, it's easiest to change the
-     * HANDLER_CAN_RWRITE definition below to HANDLER_CAN_RONLY 
+     * HANDLER_CAN_RWRITE definition below to HANDLER_CAN_RONLY
      */
     my_handler = netsnmp_create_handler_registration("nsModuleTable",
                                                      nsModuleTable_handler,
@@ -56,7 +56,7 @@ initialize_table_nsModuleTable(void)
     table_info->max_column = 6;
 
     /*
-     * iterator access routines 
+     * iterator access routines
      */
     iinfo->get_first_data_point = nsModuleTable_get_first_data_point;
     iinfo->get_next_data_point = nsModuleTable_get_next_data_point;
@@ -77,7 +77,7 @@ init_nsModuleTable(void)
 {
 
     /*
-     * here we initialize all the tables we're planning on supporting 
+     * here we initialize all the tables we're planning on supporting
      */
     initialize_table_nsModuleTable();
 }
@@ -215,15 +215,15 @@ nsModuleTable_handler(netsnmp_mib_handler *handler,
         /*
          * perform anything here that you need to do.  The request have
          * already been processed by the master table_dataset handler, but
-         * this gives you chance to act on the request in some other way if 
-         * need be. 
+         * this gives you chance to act on the request in some other way if
+         * need be.
          */
 
         /*
          * the following extracts the my_data_context pointer set in the
          * loop functions above.  You can then use the results to help
          * return data for the columns of the nsModuleTable table in
-         * question 
+         * question
          */
         tree = (netsnmp_subtree *)netsnmp_extract_iterator_context(request);
         if (tree == NULL) {
@@ -234,22 +234,22 @@ nsModuleTable_handler(netsnmp_mib_handler *handler,
             }
             /*
              * XXX: no row existed, if you support creation and this is a
-             * set, start dealing with it here, else continue 
+             * set, start dealing with it here, else continue
              */
         }
 
         /*
-         * extracts the information about the table from the request 
+         * extracts the information about the table from the request
          */
         table_info = netsnmp_extract_table_info(request);
 
         /*
-         * table_info->colnum contains the column number requested 
+         * table_info->colnum contains the column number requested
          */
         /*
          * table_info->indexes contains a linked list of snmp variable
-         * bindings for the indexes of the table.  Values in the list have 
-         * been set corresponding to the indexes of the request 
+         * bindings for the indexes of the table.  Values in the list have
+         * been set corresponding to the indexes of the request
          */
         if (table_info == NULL) {
             continue;
@@ -260,7 +260,7 @@ nsModuleTable_handler(netsnmp_mib_handler *handler,
              * the table_iterator helper should change all GETNEXTs into
              * GETs for you automatically, so you don't have to worry
              * about the GETNEXT case.  Only GETs and SETs need to be
-             * dealt with here 
+             * dealt with here
              */
         case MODE_GET:
             switch (table_info->colnum) {
@@ -276,7 +276,7 @@ nsModuleTable_handler(netsnmp_mib_handler *handler,
 
             case COLUMN_NSMODULEMODES:
                 /*
-                 * basically, these BITS needs to be inverted in order 
+                 * basically, these BITS needs to be inverted in order
                  */
                 modes[0] =
                     ((HANDLER_CAN_GETANDGETNEXT & tree->reginfo->
@@ -297,7 +297,7 @@ nsModuleTable_handler(netsnmp_mib_handler *handler,
 
             default:
                 /*
-                 * We shouldn't get here 
+                 * We shouldn't get here
                  */
                 snmp_log(LOG_ERR,
                          "problem encountered in nsModuleTable_handler: unknown column\n");

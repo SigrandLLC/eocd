@@ -22,11 +22,11 @@ sub InitMakeParams {
     if ($ENV{'OSTYPE'} eq 'msys') {
       $Params{'DEFINE'} = "-DMINGW_PERL";
     }
-                  
+
     my ($snmp_lib, $snmp_llib, $sep);
 
     if (($Config{'osname'} eq 'MSWin32' && $ENV{'OSTYPE'} ne 'msys')) {
-      $opts = NetSNMPGetOpts();	
+      $opts = NetSNMPGetOpts();
       $Params{'DEFINE'} = "-DMSVC_PERL";
       $sep = '\\';
       $snmp_lib_file = 'netsnmp.lib';
@@ -38,7 +38,7 @@ sub InitMakeParams {
       else {
         $lib_dir = 'lib\\release';
       }
-      
+
       if (lc($opts->{'insource'}) eq "true") {
 	$Params{'LIBS'} = "-L$basedir\\win32\\$lib_dir\\ -l$snmp_link_lib";
       }
@@ -76,7 +76,7 @@ sub InitMakeParams {
       $Params{'CCFLAGS'} = `$opts->{'nsconfig'} --cflags`;
       chomp($Params{'CCFLAGS'});
       $Params{'CCFLAGS'} .= " " . $Config{'ccflags'};
-      
+
       if (lc($opts->{'insource'}) eq "true") {
 	$Params{'LIBS'} = "-L../../snmplib/.libs -L../../snmplib/ " . $Params{'LIBS'};
 	$Params{'CCFLAGS'} = "-I../../include " . $Params{'CCFLAGS'};
@@ -95,12 +95,12 @@ sub NetSNMPGetOpts {
     my $rootpath = shift;
     $rootpath = "../" if (!$rootpath);
     $rootpath .= '/' if ($rootpath !~ /\/$/);
-    
+
     if (($Config{'osname'} eq 'MSWin32' && $ENV{'OSTYPE'} ne 'msys')) {
 
       # Grab command line options first.  Only used if environment variables are not set
       GetOptions("NET-SNMP-IN-SOURCE=s" => \$ret{'insource'},
-        "NET-SNMP-PATH=s"      => \$ret{'prefix'},          
+        "NET-SNMP-PATH=s"      => \$ret{'prefix'},
         "NET-SNMP-DEBUG=s"     => \$ret{'debug'});
 
       if ($ENV{'NET-SNMP-IN-SOURCE'})
@@ -121,8 +121,8 @@ sub NetSNMPGetOpts {
       # Update environment variables in case they are needed
       $ENV{'NET-SNMP-IN-SOURCE'}    = $ret{'insource'};
       $ENV{'NET-SNMP-PATH'}         = $ret{'prefix'};
-      $ENV{'NET-SNMP-DEBUG'}        = $ret{'debug'};        
-     
+      $ENV{'NET-SNMP-DEBUG'}        = $ret{'debug'};
+
       $basedir = `%COMSPEC% /c cd`;
       chomp $basedir;
       $basedir =~ /(.*?)\\perl.*/;
@@ -132,7 +132,7 @@ sub NetSNMPGetOpts {
     }
     else
     {
-      if ($ENV{'NET-SNMP-CONFIG'} && 
+      if ($ENV{'NET-SNMP-CONFIG'} &&
         $ENV{'NET-SNMP-IN-SOURCE'}) {
 	# have env vars, pull from there
 	$ret{'nsconfig'} = $ENV{'NET-SNMP-CONFIG'};
@@ -151,8 +151,8 @@ sub NetSNMPGetOpts {
 	$ENV{'NET-SNMP-CONFIG'}    = $ret{'nsconfig'};
 	$ENV{'NET-SNMP-IN-SOURCE'} = $ret{'insource'};
       }
-    }	
-    
+    }
+
     $ret{'nsconfig'} =~ s/ROOTPATH/$rootpath/;
 
     $ret{'rootpath'} = $rootpath;

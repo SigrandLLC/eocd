@@ -33,7 +33,7 @@ typedef struct my_data_info_s {
    in_addr_t theoldaddr;
    char hostname[64];
    int lineno;
-} my_data_info;   
+} my_data_info;
 
 /** NOTE:
  * - these get_ routines MUST return data that will not be freed (ie,
@@ -140,12 +140,12 @@ netSnmpHostsTable_get_next_data_point(void **my_loop_context,
 
         loopctx->current_ptr =
             copy_nword(loopctx->current_ptr, loopctx->hostname, sizeof(loopctx->hostname));
-        
+
         snmp_set_var_value(put_index_data, (u_char *) loopctx->hostname,
                            strlen(loopctx->hostname));
         return put_index_data;
     }
-    
+
     /* we're out of data */
     *my_loop_context = NULL;
     return NULL;
@@ -223,7 +223,7 @@ netSnmpHostsTable_commit_row(void **my_data_context, int new_or_del)
 
     if ((out = fopen(HOSTS_FILE ".snmp", "w")) == NULL)
         return SNMP_ERR_COMMITFAILED;
-    
+
     if ((in = fopen(HOSTS_FILE, "r")) == NULL)
         return SNMP_ERR_COMMITFAILED;
 
@@ -289,10 +289,10 @@ netSnmpHostsTable_commit_row(void **my_data_context, int new_or_del)
      */
     if (!rename(HOSTS_FILE ".snmp", HOSTS_FILE))
         return SNMP_ERR_COMMITFAILED;
-        
+
     /*
      * return no errors.  And there shouldn't be any!!!  Ever!!!  You
-     * should have checked the values long before this. 
+     * should have checked the values long before this.
      */
     return SNMP_ERR_NOERROR;
 }

@@ -2,7 +2,7 @@
 .ad l
 .nh
 .SH NAME
-multiplexer: splits mode requests into calls to different handlers. \- The multiplexer helper lets you split the calling chain depending on the calling mode (get vs getnext vs set).  
+multiplexer: splits mode requests into calls to different handlers. \- The multiplexer helper lets you split the calling chain depending on the calling mode (get vs getnext vs set).
 
 .PP
 .SS "Functions"
@@ -18,7 +18,7 @@ multiplexer: splits mode requests into calls to different handlers. \- The multi
 .RI "\fIimplements the multiplexer helper \fP"
 .in -1c
 .SH "Detailed Description"
-.PP 
+.PP
 The multiplexer helper lets you split the calling chain depending on the calling mode (get vs getnext vs set). Useful if you want different routines to handle different aspects of SNMP requests, which is very common for GET vs SET type actions.
 .PP
 Functionally:
@@ -30,11 +30,11 @@ GETNEXT requests call the getnext_method, or if not present, the get_method.
 .IP "3." 4
 GETBULK requests call the getbulk_method, or if not present, the getnext_method, or if even that isn't present the get_method.
 .IP "4." 4
-SET requests call the set_method, or if not present return a SNMP_ERR_NOTWRITABLE error. 
+SET requests call the set_method, or if not present return a SNMP_ERR_NOTWRITABLE error.
 .PP
 
 .SH "Function Documentation"
-.PP 
+.PP
 .SS "\fBnetsnmp_mib_handler\fP* netsnmp_get_multiplexer_handler (\fBnetsnmp_mib_handler_methods\fP * req)"
 .PP
 returns a multiplixer handler given a \fBnetsnmp_mib_handler_methods\fP structure of subhandlers. Definition at line 36 of file multiplexer.c.

@@ -59,7 +59,7 @@ static int      numEntries = 0;
 
 /*
  * define the structure we're going to ask the agent to register our
- * information at 
+ * information at
  */
 struct variable1 sysORTable_variables[] = {
     {SYSORTABLEID, ASN_OBJECT_ID, RONLY, var_sysORTable, 1, {2}},
@@ -69,7 +69,7 @@ struct variable1 sysORTable_variables[] = {
 
 /*
  * Define the OID pointer to the top of the mib tree that we're
- * registering underneath 
+ * registering underneath
  */
 oid             sysORTable_variables_oid[] = { SNMP_OID_MIB2, 1, 9, 1 };
 #ifdef USING_MIBII_SYSTEM_MIB_MODULE
@@ -82,7 +82,7 @@ void
 init_sysORTable(void)
 {
     /*
-     * register ourselves with the agent to handle our mib tree 
+     * register ourselves with the agent to handle our mib tree
      */
 
 #ifdef USING_AGENTX_SUBAGENT_MODULE

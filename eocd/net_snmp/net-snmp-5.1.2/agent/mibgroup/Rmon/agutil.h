@@ -1,5 +1,5 @@
 /**************************************************************
- * Copyright (C) 2001 Alex Rozin, Optical Access 
+ * Copyright (C) 2001 Alex Rozin, Optical Access
  *
  *                     All Rights Reserved
  *
@@ -8,7 +8,7 @@
  * provided that the above copyright notice appear in all copies and that
  * both that copyright notice and this permission notice appear in
  * supporting documentation.
- * 
+ *
  * ALEX ROZIN DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
  * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
  * ALEX ROZIN BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR

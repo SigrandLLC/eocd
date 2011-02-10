@@ -135,7 +135,7 @@ extern struct variable2 extensible_relocatable_variables[];
 extern struct variable2 extensible_passthru_variables[];
 
 /*
- * the relocatable extensible commands variables 
+ * the relocatable extensible commands variables
  */
 struct variable2 extensible_relocatable_variables[] = {
     {MIBINDEX, ASN_INTEGER, RONLY, var_extensible_relocatable, 1,
@@ -178,13 +178,13 @@ init_extensible(void)
 
     /*
      * Define the OID pointer to the top of the mib tree that we're
-     * registering underneath 
+     * registering underneath
      */
     oid             extensible_variables_oid[] =
         { UCDAVIS_MIB, SHELLMIBNUM, 1 };
 
     /*
-     * register ourselves with the agent to handle our mib tree 
+     * register ourselves with the agent to handle our mib tree
      */
     REGISTER_MIB("ucd-snmp/extensible", extensible_extensible_variables,
                  variable2, extensible_variables_oid);
@@ -212,7 +212,7 @@ extensible_parse_config(const char *token, char *cptr)
     int            scount;
 
     /*
-     * allocate and clear memory structure 
+     * allocate and clear memory structure
      */
     ptmp = (struct extensible *) calloc(1, sizeof(struct extensible));
     if (ptmp == NULL)
@@ -222,7 +222,7 @@ extensible_parse_config(const char *token, char *cptr)
         cptr++;
     if (isdigit(*cptr)) {
         /*
-         * its a relocatable extensible mib 
+         * its a relocatable extensible mib
          */
         for (pp = &relocs, numrelocs++; *pp; pp = &((*pp)->next));
         (*pp) = ptmp;
@@ -230,7 +230,7 @@ extensible_parse_config(const char *token, char *cptr)
 
     } else {
         /*
-         * it goes in with the general extensible table 
+         * it goes in with the general extensible table
          */
         for (pp = &extens, numextens++; *pp; pp = &((*pp)->next));
         (*pp) = ptmp;
@@ -238,7 +238,7 @@ extensible_parse_config(const char *token, char *cptr)
     }
 
     /*
-     * the rest is pretty much handled the same 
+     * the rest is pretty much handled the same
      */
     if (!strncasecmp(token, "sh", 2))
         ptmp->type = SHPROC;
@@ -251,14 +251,14 @@ extensible_parse_config(const char *token, char *cptr)
     }
 
     /*
-     * name 
+     * name
      */
     cptr = skip_white(cptr);
     copy_nword(cptr, ptmp->name, sizeof(ptmp->name));
     cptr = skip_not_white(cptr);
     cptr = skip_white(cptr);
     /*
-     * command 
+     * command
      */
     if (cptr == NULL) {
         config_perror("No command specified on line");
@@ -279,7 +279,7 @@ extensible_parse_config(const char *token, char *cptr)
     if (ptmp->miblen > 0) {
         register_mib(token,
                      (struct variable *) extensible_relocatable_variables,
-                     sizeof(struct variable2), 
+                     sizeof(struct variable2),
                      sizeof(extensible_relocatable_variables) /
                      sizeof(*extensible_relocatable_variables),
                      ptmp->miboid, ptmp->miblen);
@@ -382,15 +382,15 @@ int             numextens = 0, numrelocs = 0;   /* ditto */
  * Arguments:
  * vp     IN      - pointer to variable entry that points here
  * name    IN/OUT  - IN/name requested, OUT/name found
- * length  IN/OUT  - length of IN/OUT oid's 
+ * length  IN/OUT  - length of IN/OUT oid's
  * exact   IN      - TRUE if an exact match was requested
  * var_len OUT     - length of variable or 0 if function returned
  * write_method
- * 
+ *
  */
 
 /*
- * find a give entry in the linked list associated with a proc name 
+ * find a give entry in the linked list associated with a proc name
  */
 struct extensible *
 get_exec_by_name(char *name)
@@ -417,7 +417,7 @@ execfix_parse_config(const char *token, char *cptr)
     struct extensible *execp;
 
     /*
-     * don't allow two entries with the same name 
+     * don't allow two entries with the same name
      */
     cptr = copy_nword(cptr, tmpname, sizeof(tmpname));
     if ((execp = get_exec_by_name(tmpname)) == NULL) {
@@ -672,7 +672,7 @@ find_extensible(netsnmp_subtree *tp, oid *tname, size_t tnamelen, int exact)
             myvp.name[exten->miblen] = name[exten->miblen];
             myvp.namelen = exten->miblen + 1;
             tmp = exten->miblen + 1;
-            if (!header_simple_table(&myvp, name, &tmp, -1, 
+            if (!header_simple_table(&myvp, name, &tmp, -1,
 				     NULL, NULL, numrelocs)) {
                 break;
 	    }

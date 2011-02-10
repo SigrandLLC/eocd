@@ -118,7 +118,7 @@ int             deny_severity = LOG_WARNING;
 #endif
 
 /*
- * #define NETSNMP_DS_APP_DONT_LOG 9 defined in notification_log.h 
+ * #define NETSNMP_DS_APP_DONT_LOG 9 defined in notification_log.h
  */
 
 #ifndef BSD4_3
@@ -188,13 +188,13 @@ char           *default_port = ddefault_port;
 
 /*
  * Include an extra Facility variable to allow command line adjustment of
- * syslog destination 
+ * syslog destination
  */
 int Facility = LOG_DAEMON;
 
 #ifdef WIN32SERVICE
 /*
- * SNMP Trap Receiver Status 
+ * SNMP Trap Receiver Status
  */
 #define SNMPTRAPD_RUNNING 1
 #define SNMPTRAPD_STOPPED 0
@@ -232,7 +232,7 @@ event_input(netsnmp_variable_list * vp)
     int             nvars = 0;
 
     netsnmp_variable_list	*vp2 = vp;
-    
+
     oid            *op = NULL;
 
     /* Make sure there are 5 variables.  Otherwise, don't bother */
@@ -243,7 +243,7 @@ event_input(netsnmp_variable_list * vp)
 	break;
       }
     }
-    
+
     if (nvars != -1)
     {
       vp = vp->next_variable;     /* skip sysUptime */
@@ -260,7 +260,7 @@ event_input(netsnmp_variable_list * vp)
 	fprintf(stderr, "unknown event\n");
 	eventid = 0;
       }
-      
+
       vp = vp->next_variable;
       memmove(variable, vp->val.objid, vp->val_len * sizeof(oid));
       variablelen = vp->val_len;
@@ -270,13 +270,13 @@ event_input(netsnmp_variable_list * vp)
       destip |= (*op++) << 16;
       destip |= (*op++) << 8;
       destip |= *op++;
-      
+
       vp = vp->next_variable;
       sampletype = *vp->val.integer;
-      
+
       vp = vp->next_variable;
       value = *vp->val.integer;
-      
+
       vp = vp->next_variable;
       threshold = *vp->val.integer;
     }
@@ -363,8 +363,8 @@ term_handler(int sig)
     running = 0;
 #ifdef WIN32SERVICE
     /*
-     * In case of windows, select() in receive() function will not return 
-     * on signal. Thats why following function is called, which closes the 
+     * In case of windows, select() in receive() function will not return
+     * on signal. Thats why following function is called, which closes the
      * socket descriptors and causes the select() to return
      */
     snmp_close(main_session);
@@ -389,17 +389,17 @@ pre_parse(netsnmp_session * session, netsnmp_transport *transport,
 
     if (transport != NULL && transport->f_fmtaddr != NULL) {
         /*
-         * Okay I do know how to format this address for logging.  
+         * Okay I do know how to format this address for logging.
          */
         addr_string = transport->f_fmtaddr(transport, transport_data,
                                            transport_data_length);
         /*
-         * Don't forget to free() it.  
+         * Don't forget to free() it.
          */
     }
 
     if (addr_string != NULL) {
-        if (hosts_ctl("snmptrapd", STRING_UNKNOWN, 
+        if (hosts_ctl("snmptrapd", STRING_UNKNOWN,
 		      addr_string, STRING_UNKNOWN) == 0) {
             free(addr_string);
             return 0;
@@ -480,7 +480,7 @@ free_trapd_address(void)
  * Parameters:
  *	 argc
  *	*argv[]
- *      
+ *
  * Returns:
  *	0	Always succeeds.  (?)
  *
@@ -513,7 +513,7 @@ main(int argc, char *argv[])
 #endif
 
     /*
-     * register our configuration handlers now so -H properly displays them 
+     * register our configuration handlers now so -H properly displays them
      */
     snmptrapd_register_configs( );
     register_config_handler("snmptrapd", "createUser",
@@ -525,7 +525,7 @@ main(int argc, char *argv[])
                             parse_trapd_address, free_trapd_address, NULL);
 
     /*
-     * we need to be called back later 
+     * we need to be called back later
      */
     snmp_register_callback(SNMP_CALLBACK_LIBRARY, SNMP_CALLBACK_STORE_DATA,
                            usm_store_users, NULL);
@@ -537,14 +537,14 @@ main(int argc, char *argv[])
 #endif
 
     /*
-     * Add some options if they are available.  
+     * Add some options if they are available.
      */
 #if HAVE_GETPID
     strcat(options, "p:u:");
 #endif
 
     /*
-     * Now process options normally.  
+     * Now process options normally.
      */
 
     while ((arg = getopt(argc, argv, options)) != EOF) {
@@ -568,7 +568,7 @@ main(int argc, char *argv[])
 
         case 'c':
             if (optarg != NULL) {
-                netsnmp_ds_set_string(NETSNMP_DS_LIBRARY_ID, 
+                netsnmp_ds_set_string(NETSNMP_DS_LIBRARY_ID,
 				      NETSNMP_DS_LIB_OPTIONALCONFIG, optarg);
             } else {
                 usage();
@@ -577,7 +577,7 @@ main(int argc, char *argv[])
             break;
 
         case 'C':
-            netsnmp_ds_set_boolean(NETSNMP_DS_LIBRARY_ID, 
+            netsnmp_ds_set_boolean(NETSNMP_DS_LIBRARY_ID,
 				   NETSNMP_DS_LIB_DONT_READ_CONFIGS, 1);
             break;
 
@@ -687,7 +687,7 @@ main(int argc, char *argv[])
             break;
 
         case 'n':
-            netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID, 
+            netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID,
 				   NETSNMP_DS_APP_NUMERIC_IP, 1);
             break;
 
@@ -771,7 +771,7 @@ main(int argc, char *argv[])
 
     if (optind < argc) {
         /*
-         * There are optional transport addresses on the command line.  
+         * There are optional transport addresses on the command line.
          */
         for (i = optind; i < argc; i++) {
             char *astring;
@@ -822,11 +822,11 @@ main(int argc, char *argv[])
 
 #ifdef USING_AGENTX_SUBAGENT_MODULE
     /*
-     * we're an agentx subagent? 
+     * we're an agentx subagent?
      */
     if (agentx_subagent) {
         /*
-         * make us a agentx client. 
+         * make us a agentx client.
          */
         netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID,
 			       NETSNMP_DS_AGENT_ROLE, 1);
@@ -834,23 +834,23 @@ main(int argc, char *argv[])
 #endif
 
     /*
-     * don't fail if we can't do agentx (ie, socket not there, or not root) 
+     * don't fail if we can't do agentx (ie, socket not there, or not root)
      */
-    netsnmp_ds_toggle_boolean(NETSNMP_DS_APPLICATION_ID, 
+    netsnmp_ds_toggle_boolean(NETSNMP_DS_APPLICATION_ID,
 			      NETSNMP_DS_AGENT_NO_ROOT_ACCESS);
     /*
      * ignore any warning messages.
      */
-    netsnmp_ds_toggle_boolean(NETSNMP_DS_APPLICATION_ID, 
+    netsnmp_ds_toggle_boolean(NETSNMP_DS_APPLICATION_ID,
 			      NETSNMP_DS_AGENT_NO_CONNECTION_WARNINGS);
 
     /*
-     * initialize the agent library 
+     * initialize the agent library
      */
     init_agent("snmptrapd");
 
     /*
-     * initialize local modules 
+     * initialize local modules
      */
     if (agentx_subagent) {
 #ifdef USING_AGENTX_SUBAGENT_MODULE
@@ -861,7 +861,7 @@ main(int argc, char *argv[])
     }
 
     /*
-     * Initialize the world. Create initial user 
+     * Initialize the world. Create initial user
      */
     init_snmp("snmptrapd");
     if (trap1_fmt_str_remember) {
@@ -871,17 +871,17 @@ main(int argc, char *argv[])
         print_format2 = strdup(trap1_fmt_str_remember);
     }
 
-    if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+    if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 			       NETSNMP_DS_AGENT_QUIT_IMMEDIATELY)) {
         /*
          * just starting up to process specific configuration and then
-         * shutting down immediately. 
+         * shutting down immediately.
          */
         running = 0;
     }
 #ifndef WIN32
     /*
-     * fork the process to the background if we are not printing to stderr 
+     * fork the process to the background if we are not printing to stderr
      */
     if (dofork && running) {
         int             fd;
@@ -893,7 +893,7 @@ main(int argc, char *argv[])
 
         case 0:
             /*
-             * become process group leader 
+             * become process group leader
              */
             if (setsid() == -1) {
                 fprintf(stderr, "bad setsid - %s\n", strerror(errno));
@@ -901,7 +901,7 @@ main(int argc, char *argv[])
             }
 
             /*
-             * if we are forked, we don't want to print out to stdout or stderr 
+             * if we are forked, we don't want to print out to stdout or stderr
              */
             fd = open("/dev/null", O_RDWR);
             dup2(fd, STDIN_FILENO);
@@ -982,7 +982,7 @@ main(int argc, char *argv[])
             if (ss == NULL) {
                 /*
                  * Shouldn't happen?  We have already opened the transport
-                 * successfully so what could have gone wrong?  
+                 * successfully so what could have gone wrong?
                  */
                 snmptrapd_close_sessions(sess_list);
                 netsnmp_transport_free(transport);
@@ -998,7 +998,7 @@ main(int argc, char *argv[])
         }
 
         /*
-         * Process next listen address, if there is one.  
+         * Process next listen address, if there is one.
          */
 
         if (sep != NULL) {
@@ -1131,14 +1131,14 @@ getdtablesize(void)
 #endif
 
 /*
- * Windows Service Related functions 
+ * Windows Service Related functions
  */
 #ifdef WIN32SERVICE
 /************************************************************
 * main function for Windows
 * Parse command line arguments for startup options,
 * to start as service or console mode application in windows.
-* Invokes appropriate startup funcitons depending on the 
+* Invokes appropriate startup funcitons depending on the
 * parameters passesd
 *************************************************************/
 int
@@ -1146,7 +1146,7 @@ int
 _tmain(int argc, TCHAR * argv[])
 {
     /*
-     * Define Service Name and Description, which appears in windows SCM 
+     * Define Service Name and Description, which appears in windows SCM
      */
     LPCTSTR         lpszServiceName = g_szAppName;      /* Service Registry Name */
     LPCTSTR         lpszServiceDisplayName = _T("Net-SNMP Trap Handler");       /* Display Name */
@@ -1165,7 +1165,7 @@ _tmain(int argc, TCHAR * argv[])
     switch (nRunType) {
     case REGISTER_SERVICE:
         /*
-         * Register As service 
+         * Register As service
          */
         InputOptions.Argc = argc;
         InputOptions.Argv = argv;
@@ -1176,27 +1176,27 @@ _tmain(int argc, TCHAR * argv[])
         break;
     case UN_REGISTER_SERVICE:
         /*
-         * Unregister service 
+         * Unregister service
          */
         UnregisterService(lpszServiceName);
         exit(0);
         break;
     case RUN_AS_SERVICE:
         /*
-         * Run as service 
+         * Run as service
          */
         /*
-         * Register Stop Function 
+         * Register Stop Function
          */
         RegisterStopFunction(StopSnmpTrapd);
         return RunAsService(SnmpTrapdMain);
         break;
     default:
         /*
-         * Run Net-Snmpd in console mode 
+         * Run Net-Snmpd in console mode
          */
         /*
-         * Invoke SnmpDeamonMain with input arguments 
+         * Invoke SnmpDeamonMain with input arguments
          */
         return SnmpTrapdMain(argc, argv);
         break;
@@ -1204,7 +1204,7 @@ _tmain(int argc, TCHAR * argv[])
 }
 
 /*
- * To stop Snmp Trap Receiver deamon 
+ * To stop Snmp Trap Receiver deamon
  * This portion is still not working
  */
 void
@@ -1216,7 +1216,7 @@ StopSnmpTrapd(void)
     term_handler(1);
 
     /*
-     * Wait till trap receiver is completely stopped 
+     * Wait till trap receiver is completely stopped
      */
 
     while (trapd_status != SNMPTRAPD_STOPPED) {

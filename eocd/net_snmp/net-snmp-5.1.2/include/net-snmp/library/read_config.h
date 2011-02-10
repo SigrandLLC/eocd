@@ -117,7 +117,7 @@ extern          "C" {
     struct config_line *read_config_get_handlers(const char *type);
 
     /*
-     * external memory list handlers 
+     * external memory list handlers
      */
     void            snmp_config_remember_in_list(char *line,
                                                  struct read_config_memory

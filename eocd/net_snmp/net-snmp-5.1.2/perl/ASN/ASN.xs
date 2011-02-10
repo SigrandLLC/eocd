@@ -326,7 +326,7 @@ not_there:
 }
 
 
-MODULE = NetSNMP::ASN		PACKAGE = NetSNMP::ASN		
+MODULE = NetSNMP::ASN		PACKAGE = NetSNMP::ASN
 
 
 double

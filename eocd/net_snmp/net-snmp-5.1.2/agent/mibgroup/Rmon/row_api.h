@@ -1,5 +1,5 @@
 /**************************************************************
- * Copyright (C) 2001 Alex Rozin, Optical Access 
+ * Copyright (C) 2001 Alex Rozin, Optical Access
  *
  *                     All Rights Reserved
  *
@@ -8,7 +8,7 @@
  * provided that the above copyright notice appear in all copies and that
  * both that copyright notice and this permission notice appear in
  * supporting documentation.
- * 
+ *
  * ALEX ROZIN DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
  * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
  * ALEX ROZIN BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
@@ -22,7 +22,7 @@
 #define _row_api_h_included__
 
 /*
- * control tables API section 
+ * control tables API section
  */
 
 typedef enum {
@@ -35,11 +35,11 @@ typedef enum {
 #define MAX_OWNERSTRING		128
 
 /*
- * structure for entry of all 'control' tables 
+ * structure for entry of all 'control' tables
  */
 typedef struct tagEntry {
     /*
-     * begin of the header 
+     * begin of the header
      */
     struct tagEntry *next;
     void           *table_ptr;  /* do casting to (TABLE_DEFINTION_T*) */
@@ -52,7 +52,7 @@ typedef struct tagEntry {
     u_char          only_just_created;
 
     /*
-     * end of the header 
+     * end of the header
      */
 
     void           *body;
@@ -76,7 +76,7 @@ typedef struct {
 } TABLE_DEFINTION_T;
 
 /*
- * Api prototypes 
+ * Api prototypes
  */
 void            ROWAPI_init_table(TABLE_DEFINTION_T * table_ptr,
                                   char *name,
@@ -126,7 +126,7 @@ int             ROWAPI_do_another_action(oid * name,
                                          size_t entry_size);
 
 /*
- * data tables API section 
+ * data tables API section
  */
 
 typedef int     (SCROLLER_ENTRY_DESCRUCTOR_T) (void *);
@@ -145,7 +145,7 @@ typedef struct data_scroller {
     u_long          data_total_number;  /* number of data entries, stored after validation */
 
     /*
-     * these 3 pointers make casting to private (DATA_ENTRY_T*) 
+     * these 3 pointers make casting to private (DATA_ENTRY_T*)
      */
     void           *first_data_ptr;
     NEXTED_PTR_T   *last_data_ptr;

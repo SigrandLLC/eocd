@@ -40,7 +40,7 @@ netsnmp_bulk_to_next_fix_requests(netsnmp_request_info *requests)
 {
     netsnmp_request_info *request;
     /*
-     * update the varbinds for the next request series 
+     * update the varbinds for the next request series
      */
     for (request = requests; request; request = request->next) {
         if (request->repeat > 0 &&
@@ -76,7 +76,7 @@ netsnmp_bulk_to_next_helper(netsnmp_mib_handler *handler,
         reqinfo->mode = MODE_GETBULK;
 
         /*
-         * update the varbinds for the next request series 
+         * update the varbinds for the next request series
          */
         netsnmp_bulk_to_next_fix_requests(requests);
         return ret;

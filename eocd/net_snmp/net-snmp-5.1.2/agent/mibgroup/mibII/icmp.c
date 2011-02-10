@@ -48,7 +48,7 @@
 
 /*
  * Define the OID pointer to the top of the mib tree that we're
- * registering underneath 
+ * registering underneath
  */
 oid             icmp_oid[] = { SNMP_OID_MIB2, 5 };
 #ifdef USING_MIBII_IP_MODULE
@@ -172,7 +172,7 @@ icmp_handler(netsnmp_mib_handler          *handler,
 
 
     /*
-     * 
+     *
      *
      */
     DEBUGMSGTL(("mibII/icmp", "Handler - mode %s\n",

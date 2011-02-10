@@ -2,7 +2,7 @@
 .ad l
 .nh
 .SH NAME
-Net-SNMP Agent handler and extensibility API \- The basic theory goes something like this: In the past, with the original mib module api (which derived from the original CMU SNMP code) the underlying mib modules were passed very little information (only the truly most basic information about a request).  
+Net-SNMP Agent handler and extensibility API \- The basic theory goes something like this: In the past, with the original mib module api (which derived from the original CMU SNMP code) the underlying mib modules were passed very little information (only the truly most basic information about a request).
 
 .PP
 .SS "Modules"
@@ -249,7 +249,7 @@ Net-SNMP Agent handler and extensibility API \- The basic theory goes something 
 .br
 .in -1c
 .SH "Detailed Description"
-.PP 
+.PP
 The basic theory goes something like this: In the past, with the original mib module api (which derived from the original CMU SNMP code) the underlying mib modules were passed very little information (only the truly most basic information about a request). This worked well at the time but in todays world of subagents, device instrumentation, low resource consumption, etc, it just isn't flexible enough. 'handlers' are here to fix all that.
 .PP
 With the rewrite of the agent internals for the net-snmp 5.0 release, we introduce a modular calling scheme that allows agent modules to be written in a very flexible manner, and more importantly allows reuse of code in a decent way (and without the memory and speed overheads of OO languages like C++).
@@ -260,7 +260,7 @@ Most importantly, though, is that the handlers are built on the notion of modula
 .PP
 For instance, the \fBtable\fP helper is designed to hand you a list of extracted index values from an incoming request. THe \fBtable_iterator\fP helper is built on top of the table helper, and is designed to help you iterate through data stored elsewhere (like in a kernel) that is not in OID lexographical order (ie, don't write your own index/oid sorting routine, use this helper instead). The beauty of the \fBtable_iterator helper@, as well as the  instance instance@ helper is that they take care of the complex GETNEXT processing entirely for you and hand you everything you need to merely return the data as if it was a GET request. Much less code and hair pulling. I've pulled all my hair out to help you so that only one of us has to be bald. \fP
 .SH "Typedef Documentation"
-.PP 
+.PP
 .SS "struct \fBnetsnmp_handler_registration_s\fP \fBnetsnmp_handler_registration\fP"
 .PP
 Typedefs the \fBnetsnmp_handler_registration_s\fP struct into netsnmp_handler_registration. Referenced by netsnmp_baby_steps_helper(), netsnmp_cache_helper_handler(), netsnmp_call_handler(), netsnmp_call_next_handler(), netsnmp_call_next_handler_one_request(), netsnmp_create_delegated_cache(), netsnmp_create_handler_registration(), netsnmp_find_handler_by_name(), netsnmp_find_handler_data_by_name(), netsnmp_find_table_array_handler(), netsnmp_find_table_registration_info(), netsnmp_handler_registration_dup(), netsnmp_handler_registration_free(), netsnmp_inject_handler(), netsnmp_inject_handler_before(), netsnmp_multiplexer_helper_handler(), netsnmp_old_api_helper(), netsnmp_register_handler(), netsnmp_register_handler_nocallback(), netsnmp_register_instance(), netsnmp_register_int_instance(), netsnmp_register_mib_table_row(), netsnmp_register_old_api(), netsnmp_register_read_only_instance(), netsnmp_register_read_only_scalar(), netsnmp_register_read_only_table_data(), netsnmp_register_row_merge(), netsnmp_register_scalar(), netsnmp_register_serialize(), netsnmp_register_table(), netsnmp_register_table_data(), netsnmp_register_table_data_set(), netsnmp_register_table_iterator(), netsnmp_row_merge_helper_handler(), netsnmp_serialize_helper_handler(), netsnmp_stash_cache_update(), netsnmp_table_build_oid(), netsnmp_table_build_oid_from_index(), netsnmp_table_build_result(), netsnmp_table_container_register(), netsnmp_table_data_build_result(), netsnmp_table_data_helper_handler(), netsnmp_table_data_set_helper_handler(), netsnmp_table_iterator_helper_handler(), netsnmp_unregister_handler(), and table_helper_handler().
@@ -268,7 +268,7 @@ Typedefs the \fBnetsnmp_handler_registration_s\fP struct into netsnmp_handler_re
 .PP
 Typedefs the \fBnetsnmp_mib_handler_s\fP struct into netsnmp_mib_handler. Referenced by clone_handler(), netsnmp_baby_steps_helper(), netsnmp_call_handler(), netsnmp_call_next_handler(), netsnmp_call_next_handler_one_request(), netsnmp_create_delegated_cache(), netsnmp_create_handler(), netsnmp_find_handler_by_name(), netsnmp_find_handler_data_by_name(), netsnmp_find_table_array_handler(), netsnmp_get_baby_steps_handler(), netsnmp_get_cache_handler(), netsnmp_get_mode_end_call_handler(), netsnmp_get_multiplexer_handler(), netsnmp_get_row_merge_handler(), netsnmp_get_stash_cache_handler(), netsnmp_get_table_data_handler(), netsnmp_get_table_data_set_handler(), netsnmp_get_table_handler(), netsnmp_get_table_iterator_handler(), netsnmp_handler_dup(), netsnmp_handler_free(), netsnmp_inject_handler(), netsnmp_inject_handler_before(), netsnmp_mode_end_call_add_mode_callback(), netsnmp_multiplexer_helper_handler(), netsnmp_old_api_helper(), netsnmp_register_cache_handler(), netsnmp_register_handler(), netsnmp_register_handler_by_name(), netsnmp_register_handler_nocallback(), netsnmp_row_merge_helper_handler(), netsnmp_serialize_helper_handler(), netsnmp_stash_cache_update(), netsnmp_table_data_helper_handler(), netsnmp_table_data_set_helper_handler(), netsnmp_table_iterator_helper_handler(), and table_helper_handler().
 .SH "Function Documentation"
-.PP 
+.PP
 .SS "\fBnetsnmp_mib_handler\fP* clone_handler (\fBnetsnmp_mib_handler\fP * it)"
 .PP
 clones a mib handler (it's name and access methods onlys; not myvoid) Definition at line 783 of file agent_handler.c.
@@ -300,7 +300,7 @@ clears the entire handler-registration list Definition at line 811 of file agent
 References netsnmp_free_all_list_data().
 .SS "NETSNMP_INLINE netsnmp_delegated_cache * netsnmp_create_delegated_cache (\fBnetsnmp_mib_handler\fP * handler, \fBnetsnmp_handler_registration\fP * reginfo, \fBnetsnmp_agent_request_info\fP * reqinfo, \fBnetsnmp_request_info\fP * requests, void * localinfo)"
 .PP
-creates a cache of information which can be saved for future reference. Use \fBnetsnmp_handler_check_cache()\fP later to make sure it's still valid before referencing it in the future. 
+creates a cache of information which can be saved for future reference. Use \fBnetsnmp_handler_check_cache()\fP later to make sure it's still valid before referencing it in the future.
 .PP
 \fBExamples: \fP
 .in +1c
@@ -327,9 +327,9 @@ a pointer to a populated netsnmp_mib_handler struct to be registered
 .PP
 \fBSee also:\fP
 .RS 4
-\fBnetsnmp_create_handler_registration()\fP 
+\fBnetsnmp_create_handler_registration()\fP
 .PP
-\fBnetsnmp_register_handler()\fP 
+\fBnetsnmp_register_handler()\fP
 .RE
 .PP
 Definition at line 101 of file agent_handler.c.
@@ -339,11 +339,11 @@ References netsnmp_mib_handler_s::access_method, netsnmp_mib_handler_s::handler_
 Referenced by clone_handler(), get_old_api_handler(), netsnmp_create_handler_registration(), netsnmp_get_baby_steps_handler(), netsnmp_get_bulk_to_next_handler(), netsnmp_get_cache_handler(), netsnmp_get_debug_handler(), netsnmp_get_instance_handler(), netsnmp_get_mode_end_call_handler(), netsnmp_get_multiplexer_handler(), netsnmp_get_read_only_handler(), netsnmp_get_row_merge_handler(), netsnmp_get_scalar_handler(), netsnmp_get_serialize_handler(), netsnmp_get_stash_cache_handler(), netsnmp_get_table_data_handler(), netsnmp_get_table_data_set_handler(), netsnmp_get_table_handler(), and netsnmp_get_table_iterator_handler().
 .SS "\fBnetsnmp_handler_registration\fP * netsnmp_create_handler_registration (const char * name, Netsnmp_Node_Handler * handler_access_method, oid * reg_oid, size_t reg_oid_len, int modes)"
 .PP
-creates a handler registration structure given a name, a access_method function, a registration location oid and the modes the handler supports. If modes == 0, then modes will automatically be set to the default value of only HANDLER_CAN_DEFAULT, which is by default read-only GET and GETNEXT requests. 
+creates a handler registration structure given a name, a access_method function, a registration location oid and the modes the handler supports. If modes == 0, then modes will automatically be set to the default value of only HANDLER_CAN_DEFAULT, which is by default read-only GET and GETNEXT requests.
 .PP
 \fBNote:\fP
 .RS 4
-This ends up calling netsnmp_create_handler(name, handler_access_method) 
+This ends up calling netsnmp_create_handler(name, handler_access_method)
 .RE
 .PP
 \fBParameters:\fP
@@ -382,9 +382,9 @@ Returns a pointer to a netsnmp_handler_registration struct. NULL is returned onl
 .PP
 \fBSee also:\fP
 .RS 4
-\fBnetsnmp_create_handler()\fP 
+\fBnetsnmp_create_handler()\fP
 .PP
-\fBnetsnmp_register_handler()\fP 
+\fBnetsnmp_register_handler()\fP
 .RE
 .PP
 
@@ -412,7 +412,7 @@ References netsnmp_mib_handler_s::myvoid, netsnmp_find_handler_by_name(), netsnm
 Referenced by netsnmp_find_table_registration_info().
 .SS "NETSNMP_INLINE void netsnmp_free_delegated_cache (netsnmp_delegated_cache * dcache)"
 .PP
-frees a cache once you're finished using it 
+frees a cache once you're finished using it
 .PP
 \fBExamples: \fP
 .in +1c
@@ -435,7 +435,7 @@ References netsnmp_free_all_list_data(), and netsnmp_request_info_s::parent_data
 Referenced by netsnmp_add_varbind_to_cache(), and netsnmp_table_iterator_helper_handler().
 .SS "NETSNMP_INLINE netsnmp_delegated_cache * netsnmp_handler_check_cache (netsnmp_delegated_cache * dcache)"
 .PP
-check's a given cache and returns it if it is still valid (ie, the agent still considers it to be an outstanding request. Returns NULL if it's no longer valid. 
+check's a given cache and returns it if it is still valid (ie, the agent still considers it to be an outstanding request. Returns NULL if it's no longer valid.
 .PP
 \fBExamples: \fP
 .in +1c
@@ -521,7 +521,7 @@ add data to a request that can be extracted later by submodules \fBParameters:\f
 .PP
 \fBReturns:\fP
 .RS 4
-void 
+void
 .RE
 .PP
 
@@ -546,7 +546,7 @@ extract data from a request that was added previously by a parent module \fBPara
 .PP
 \fBReturns:\fP
 .RS 4
-a void pointer(request->parent_data->data), otherwise NULL is returned if request is NULL or request->parent_data is NULL or request->parent_data object is not found. 
+a void pointer(request->parent_data->data), otherwise NULL is returned if request is NULL or request->parent_data is NULL or request->parent_data object is not found.
 .RE
 .PP
 

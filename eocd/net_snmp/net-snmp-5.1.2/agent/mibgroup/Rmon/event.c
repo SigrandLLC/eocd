@@ -50,17 +50,17 @@
 #include "event.h"
 
 /*
- * Implementation headers 
+ * Implementation headers
  */
 #include "agutil_api.h"
 #include "row_api.h"
 
 /*
- * File scope definitions section 
+ * File scope definitions section
  */
 
 /*
- * from MIB compilation 
+ * from MIB compilation
  */
 #define eventEntryFirstIndexBegin       11
 
@@ -91,7 +91,7 @@
 
 
 /*
- * defaults & limitations 
+ * defaults & limitations
  */
 
 #define MAX_LOG_ENTRIES_PER_CTRL	200
@@ -126,14 +126,14 @@ typedef struct {
 } CRTL_ENTRY_T;
 
 /*
- * Main section 
+ * Main section
  */
 
 static TABLE_DEFINTION_T EventCtrlTable;
 static TABLE_DEFINTION_T *table_ptr = &EventCtrlTable;
 
 /*
- * Control Table RowApi Callbacks 
+ * Control Table RowApi Callbacks
  */
 
 static int
@@ -158,13 +158,13 @@ event_Create(RMON_ENTRY_T * eptr)
     body = (CRTL_ENTRY_T *) eptr->body;
 
     /*
-     * set defaults 
+     * set defaults
      */
 
     body->event_description = NULL;
     body->event_community = AGSTRDUP("public");
     /*
-     * ag_trace ("Dbg: created event_community=<%s>", body->event_community); 
+     * ag_trace ("Dbg: created event_community=<%s>", body->event_community);
      */
     body->event_type = EVENT_NONE;
     ROWDATAAPI_init(&body->scrlr,
@@ -247,7 +247,7 @@ event_Deactivate(RMON_ENTRY_T * eptr)
     CRTL_ENTRY_T   *body = (CRTL_ENTRY_T *) eptr->body;
 
     /*
-     * free data list 
+     * free data list
      */
     ROWDATAAPI_descructor(&body->scrlr);
 
@@ -280,7 +280,7 @@ write_eventControl(int action, u_char * var_val, u_char var_val_type,
 
     case RESERVE2:
         /*
-         * get values from PDU, check them and save them in the cloned entry 
+         * get values from PDU, check them and save them in the cloned entry
          */
         long_temp = name[eventEntryFirstIndexBegin];
         leaf_id = (int) name[eventEntryFirstIndexBegin - 1];
@@ -306,7 +306,7 @@ write_eventControl(int action, u_char * var_val, u_char var_val_type,
 
             cloned_body->event_description = AGSTRDUP(char_temp);
             /*
-             * ag_trace ("rx: event_description=<%s>", cloned_body->event_description); 
+             * ag_trace ("rx: event_description=<%s>", cloned_body->event_description);
              */
             AGFREE(char_temp);
 
@@ -500,7 +500,7 @@ var_logTable(struct variable *vp,
 }
 
 /*
- * External API section 
+ * External API section
  */
 
 static char    *
@@ -600,7 +600,7 @@ event_send_trap(CRTL_ENTRY_T * evptr, u_char is_rising,
     register int    iii;
 
     /*
-     * set the last 'oid' : risingAlarm or fallingAlarm 
+     * set the last 'oid' : risingAlarm or fallingAlarm
      */
     if (is_rising) {
         iii = OID_LENGTH(rmon1_trap_oid);
@@ -615,7 +615,7 @@ event_send_trap(CRTL_ENTRY_T * evptr, u_char is_rising,
     }
 
     /*
-     * build the var list 
+     * build the var list
      */
     top = oa_bind_var(top, &alarm_index, ASN_INTEGER, sizeof(u_int),
                       alarm_index_oid, OID_LENGTH(alarm_index_oid));
@@ -660,7 +660,7 @@ event_save_log(CRTL_ENTRY_T * body, char *event_descr)
     lptr->data_index = ROWDATAAPI_get_total_number(&body->scrlr);
 
     /*
-     * ag_trace ("log has been saved, data_index=%d", (int) lptr->data_index); 
+     * ag_trace ("log has been saved, data_index=%d", (int) lptr->data_index);
      */
 }
 
@@ -687,7 +687,7 @@ event_api_send_alarm(u_char is_rising,
     eptr = ROWAPI_find(table_ptr, event_index);
     if (!eptr) {
         /*
-         * ag_trace ("event cannot find entry %ld", event_index); 
+         * ag_trace ("event cannot find entry %ld", event_index);
          */
         return SNMP_ERR_NOSUCHNAME;
     }
@@ -713,7 +713,7 @@ event_api_send_alarm(u_char is_rising,
                                       value, the_threshold,
                                       sample_type, alarm_descr);
         /*
-         * if (explain) ag_trace ("Dbg:'%s'", explain); 
+         * if (explain) ag_trace ("Dbg:'%s'", explain);
          */
         event_save_log(evptr, explain);
         if (explain)
@@ -748,7 +748,7 @@ add_event_entry(int ctrl_index,
     body = (CRTL_ENTRY_T *) eptr->body;
 
     /*
-     * set parameters 
+     * set parameters
      */
 
     if (event_description) {
@@ -776,7 +776,7 @@ add_event_entry(int ctrl_index,
 #endif
 
 /*
- * Registration & Initializatio section 
+ * Registration & Initializatio section
  */
 
 oid             eventTable_variables_oid[] =
@@ -785,7 +785,7 @@ oid             logTable_variables_oid[] = { 1, 3, 6, 1, 2, 1, 16, 9, 2 };
 
 struct variable2 eventTable_variables[] = {
     /*
-     * magic number        , variable type, ro/rw , callback fn  ,           L, oidsuffix 
+     * magic number        , variable type, ro/rw , callback fn  ,           L, oidsuffix
      */
     {EVENTINDEX, ASN_INTEGER, RONLY, var_eventTable, 2, {1, 1}},
     {EVENTDESCRIPTION, ASN_OCTET_STR, RWRITE, var_eventTable, 2, {1, 2}},
@@ -798,7 +798,7 @@ struct variable2 eventTable_variables[] = {
 
 struct variable2 logTable_variables[] = {
     /*
-     * magic number        , variable type, ro/rw , callback fn  ,           L, oidsuffix 
+     * magic number        , variable type, ro/rw , callback fn  ,           L, oidsuffix
      */
     {LOGEVENTINDEX, ASN_INTEGER, RONLY, var_logTable, 2, {1, 1}},
     {LOGINDEX, ASN_INTEGER, RONLY, var_logTable, 2, {1, 2}},
@@ -820,7 +820,7 @@ init_event(void)
 #if 0
     add_event_entry(3, "Alarm", EVENT_LOG_AND_TRAP, NULL);
     /*
-     * add_event_entry (5, ">=", EVENT_LOG_AND_TRAP, NULL); 
+     * add_event_entry (5, ">=", EVENT_LOG_AND_TRAP, NULL);
      */
 #endif
 }

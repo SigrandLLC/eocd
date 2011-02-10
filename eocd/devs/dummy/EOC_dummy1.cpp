@@ -20,8 +20,8 @@ EOC_dummy1::send(EOC_msg *m)
     return snd->enqueue(m->mptr(),m->msize());
     return 0;
 }
-    
-    
+
+
 EOC_msg *
 EOC_dummy1::recv()
 {
@@ -29,7 +29,7 @@ EOC_dummy1::recv()
     int len;
 //    printf("DUMMY1: Receiving\n");
     if( rcv->dequeue(buf,&len) )
-	return NULL;    
+	return NULL;
     ptr = (char*)malloc(len);
     memcpy(ptr,buf,len);
     EOC_msg *msg = new EOC_msg;
@@ -43,7 +43,7 @@ EOC_dummy1::recv()
 EOC_dev::Linkstate
 EOC_dummy1::link_state(){ return ONLINE; }
 
-int EOC_dummy1:: 
+int EOC_dummy1::
 statistics(int loop, side_perf &p)
 {
     int ret = 0;

@@ -27,5 +27,5 @@ config_require(util_funcs)
 #endif                          /* _statistics_h_included__ */
 
 /*
- * end of file statistics.h 
+ * end of file statistics.h
  */

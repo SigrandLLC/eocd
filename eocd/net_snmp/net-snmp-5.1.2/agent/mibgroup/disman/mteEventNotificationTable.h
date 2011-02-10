@@ -6,14 +6,14 @@
 #define MTEEVENTNOTIFICATIONTABLE_H
 
 /*
- * function declarations 
+ * function declarations
  */
 void            init_mteEventNotificationTable(void);
 void            initialize_table_mteEventNotificationTable(void);
 Netsnmp_Node_Handler mteEventNotificationTable_handler;
 
 /*
- * column number definitions for table mteEventNotificationTable 
+ * column number definitions for table mteEventNotificationTable
  */
 #define COLUMN_MTEEVENTNOTIFICATION		1
 #define COLUMN_MTEEVENTNOTIFICATIONOBJECTSOWNER		2

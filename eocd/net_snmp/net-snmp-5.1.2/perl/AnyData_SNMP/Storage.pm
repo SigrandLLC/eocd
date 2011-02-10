@@ -240,7 +240,7 @@ sub file2str {
 	}
 	return undef;
     }
-    
+
     # add in basecols information:
     my @ret = ($self->{'hostname'}, $self->{'lastnode'}[0][1]);
     DEBUG("Dump row results: ",Dumper($self->{'lastnode'}),"\n");
@@ -264,10 +264,10 @@ sub map_data {
 
 sub pretty_print_oid {
     use NetSNMP::default_store qw(:all);
-    netsnmp_ds_set_boolean(NETSNMP_DS_LIBRARY_ID, 
+    netsnmp_ds_set_boolean(NETSNMP_DS_LIBRARY_ID,
 			   NETSNMP_DS_LIB_DONT_BREAKDOWN_OIDS,0);
     my $new = SNMP::translateObj($_->[2], 0);
-    netsnmp_ds_set_boolean(NETSNMP_DS_LIBRARY_ID, 
+    netsnmp_ds_set_boolean(NETSNMP_DS_LIBRARY_ID,
 			   NETSNMP_DS_LIB_DONT_BREAKDOWN_OIDS,1);
     my $new2 = SNMP::translateObj($_->[2], 0);
     if ($new) {
@@ -296,7 +296,7 @@ sub push_row {
 	# no column info passed in.  Update everything (mode probably INSERTS).
 #	@origvars = @{$self->{'col_names'}}};
 #	splice (@origvars,0,1+$#AnyData::Storage::SNMP::basecols);
-	
+
 	map { push @origvars, $_ if $SNMP::MIB{$_}{'access'} =~ /Write|Create/; } @{$self->{'real_cols'}} ;
 
 	DEBUG("set cols: ", Dumper(\@origvars));
@@ -309,7 +309,7 @@ sub push_row {
     foreach my $var (@origvars) {
 	my $access = $SNMP::MIB{$var}{'access'};
 	# not in this table, probably (hopefully) an index from another:
-	next if ($SNMP::MIB{$var}{'parent'}{'parent'}{'label'} ne 
+	next if ($SNMP::MIB{$var}{'parent'}{'parent'}{'label'} ne
 		 $self->{process_table});
 	DEBUG("$var -> $access\n");
 	if ($access =~ /(Write|Create)/) {
@@ -317,13 +317,13 @@ sub push_row {
 	} elsif ($mode eq 'insert') {
 	    DEBUG("XXX: error if not index\n");
 	} elsif ($mode eq 'update') {
-	    DEBUG("update to non-writable column attempted (SNMP error coming)\n");	
+	    DEBUG("update to non-writable column attempted (SNMP error coming)\n");
 	}
     }
 
     # generate index OID component if we don't have it.
     if ($values->[$AnyData::Storage::SNMP::iidptr] eq '') {
-	$values->[$AnyData::Storage::SNMP::iidptr] = 
+	$values->[$AnyData::Storage::SNMP::iidptr] =
 	    $self->make_iid($self->{process_table}, $values);
     }
 
@@ -331,7 +331,7 @@ sub push_row {
     my @newvars;
     foreach my $v (@vars) {
 	my $num = $self->{'col_nums'}{$v};
-	DEBUG("types: $v -> $num -> ", $self->{'col_types'}[$num], 
+	DEBUG("types: $v -> $num -> ", $self->{'col_types'}[$num],
 	      " -> val=", $values->[$num], "\n");
 	next if (!defined($values->[$num]));
 	# build varbind: column-oid, instance-id, value type, value
@@ -351,7 +351,7 @@ sub push_row {
     } elsif (!$self->{'sess'}[0]->set($vblist)) {
 	my $err = "$self->{process_table}: " . $self->{'sess'}[0]->{ErrorStr};
 	if ($self->{'sess'}[0]->{ErrorInd}) {
-	    $err = $err . " (at varbind #" 
+	    $err = $err . " (at varbind #"
 		. $self->{'sess'}[0]->{ErrorInd}  . " = " ;
 	    my $dump = Data::Dumper->new([$vblist->[$self->{'sess'}[0]->{ErrorInd} -1]]);
 	    $err .= $dump->Indent(0)->Terse(1)->Dump;
@@ -369,7 +369,7 @@ sub seek {
 sub make_iid {
     DEBUG("calling AnyData::Storage::SNMP make_iid\n");
     my ($self, $tname, $vals) = @_;
-    
+
     # Get indexes
     my $mib = $SNMP::MIB{$tname};
     my $entry = $mib->{'children'}[0];

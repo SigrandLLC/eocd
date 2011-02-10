@@ -255,7 +255,7 @@ What's the difference between UCD-SNMP and Net-SNMP?
     (Though the dividing line between a bug-fix and a new feature is
   something of a vague one, so some changes in the 4.2.x line may be
   relatively non-trivial!)
- 
+
     Starting with the 5.0 release, we are also trying to review and
   rework the underlying code base to improve the readability and
   maintainability of the package.  The 5.0 changes have mostly
@@ -326,7 +326,7 @@ What happens if mine isn't listed?
   "configure --enable-mini-agent --with-defaults".  Then if this
   minimal agent compiles and runs successfully, try adding the
   missing mibgroups using the configure option '--with-mib-module'.
-  
+
     If configure fails with "invalid configuration" messages, or
   you get completely stuck, contact the coders list for advice.
   Similarly, if you manage to get this working on a new system,
@@ -547,7 +547,7 @@ Can I use SNMPv1 requests with an SNMPv2 MIB (or vice versa)?
   SNMPv1 requests will either treat such objects as an
   error, or skip over them completely.
 
-  
+
 
 Where can I find more information about network management?
 ----------------------------------------------------------
@@ -716,12 +716,12 @@ Why can't I see values in the <INSERT ENTERPRISE HERE> tree?
   the starting point - e.g:
 
 	snmpwalk -v1 -c public localhost ucdavis
- 
+
   Or, of course, you can walk a selected portion of an enterprise subtree
   by specifying the appropriate starting point - e.g:
 
 	snmpwalk -v1 -c public localhost ucdavis.version
-  
+
   If you still can't see any information, keep reading.  The next few
   questions will probably help you.
 
@@ -738,7 +738,7 @@ Requests always seem to timeout, and don't give me anything back.  Why?
 
   A fuller list of possible causes (with indications of how to check
   for each) is as follows:
-  
+
 	- is the machine you are querying up and running?
 		(Does it respond to 'ping' or similar requests?)
 	- is there an SNMP agent running on it?
@@ -840,7 +840,7 @@ Requesting an object fails with "Unknown Object Identifier"  Why?
   for object names, either based at the root of the whole MIB tree
   (".iso.org.dod.internet.mgmt.mib-2.system.sysUpTime") or the 'mib-2'
   subtree ("system.sysUpTime").  Try:
-  
+
 	snmpget -v1 -c public myhost system.sysUpTime.0
 
   These earlier versions of the tools may take a command-line option '-R'
@@ -1021,7 +1021,7 @@ I get an error when trying to get a string-indexed table value - why?
   or	snmpget .....  'vacmSecurityModel.0."wes"'
 
 
-  
+
 How do I send traps and notifications?
 ---------------------------------------
 
@@ -1031,8 +1031,8 @@ How do I send traps and notifications?
 
 	snmptrap -v 1 -c public localhost "" "" 0 0  ""
 	snmptrap -v 1 -c public localhost "" "" 6 99 ""
-  
-  The empty parameters "" will use suitable defaults for the relevant 
+
+  The empty parameters "" will use suitable defaults for the relevant
   values (enterprise OID, address of sender and current sysuptime).
 
     An SNMPv2 or SNMPv3 notification (either trap or inform) takes
@@ -1088,7 +1088,7 @@ How do I handle traps and notifications?
 
   There's a tutorial with more details on the web site at
 	http://www.net-snmp.org/tutorial-5/commands/snmptrap.html
-  
+
 
 
 My traphandler script doesn't work when run like this - why not?
@@ -1189,7 +1189,7 @@ How do I use SNMPv3?
 
   See the AGENT section for how to configure the agent to respond to
   SNMPv3 requests.
- 
+
 
 
 How big can an SNMP request (or reply) be?
@@ -1294,7 +1294,7 @@ Where can I get the perl SNMP package?
   With the v5 release of the Net-SNMP suite, this is now accompanied by
   a number of perl modules grouped together under the NetSNMP namespace.
 
-  Consult the README file in the SNMP perl module distribution to find 
+  Consult the README file in the SNMP perl module distribution to find
   out what version of the ucd-snmp library it needs to be linked against.
 
 
@@ -1375,7 +1375,7 @@ The perl 'make test' fails on the OID tests. Is it safe to continue?
   then this is a sign of a more fundamental problem.
 
   The 4.2.x line perl support was a single module, so was independent
-  of the way that the C library was configured.  In contrast to this, 
+  of the way that the C library was configured.  In contrast to this,
   the 5.0.x perl support consist of a number of inter-cooperating modules,
   which rely on sharing a consistent C library environment.  In practise,
   this means that the perl modules *MUST* be configured and compiled using
@@ -1427,13 +1427,13 @@ I'm trying to use tkmib and it can't locate Tk.pm?
 
 I'm trying to install your RPM, but it complains about missing perl modules. Why?
 --------------------------------------------------------------------------------
-                                                                                                                    
+
   This has been particularly noted on RedHat 9, complaining about the
   module "perl(Term::ReadKey)" - even if this is actually present (e.g.
   having been installed directly from CPAN).  In fact, this is not
   specific to perl modules - the same issue can potentially arise with
   other RPM dependencies.
-                                                                                                                    
+
   The problem is that the RPM mechanism keeps a local database of what
   software packages have been installed, and checks this for any other
   features that this RPM requires.  If software is installed "manually"
@@ -1441,16 +1441,16 @@ I'm trying to install your RPM, but it complains about missing perl modules. Why
   Attempting to install another RPM that rely on this functionality will
   then complain about the "missing" package, because the RPM system doesn't
   know that's it's actually available.
-                                                                                                                    
+
   The ideal solution is to *always* install software using a consistent
   mechanism (which may involve building RPMs locally, or looking for a
   suitable pre-built version).
-                                                                                                                    
+
   Failing this, it's possible to tell the "rpm" command to ignore such
   dependencies, and install the package anyway.  Try:
-                                                                                                                    
+
               rpm -i --nodeps {package}
-                                                                                                                    
+
   In this situation, it's then up to you to make sure that any other
   necessary packages *are* actually present on the system.
 
@@ -1487,7 +1487,7 @@ Where can I find a MIB compiler?
 
     The second type of tool is one to turn a MIB specification into C code,
   specifically one designed to aid agent implementation.  The command 'mib2c'
-  is an example of such a tool for the Net-SNMP agent.  
+  is an example of such a tool for the Net-SNMP agent.
   See the CODING section for more information.
 
 
@@ -1843,7 +1843,7 @@ How do I add functionality?
     Note that there is no visible difference between 'pass-through'
   MIB support, subagents, and modules implemented within the main agent
   itself. Tools querying the agent will see a single MIB structure.
- 
+
 
 
 I've installed a new MIB file.  Why can't I query it?
@@ -1892,7 +1892,7 @@ What's the difference between 'exec', 'sh' and 'pass'?
 
   See 'snmpd.conf(5)' for more details.
 
-  
+
 
 What's the difference between AgentX, SMUX and proxied SNMP?
 -----------------------------------------------------------
@@ -1907,7 +1907,7 @@ What's the difference between AgentX, SMUX and proxied SNMP?
     SMUX and proxy SNMP both essentially use the standard SNMP packet format.
   The main difference is that a proxy SNMP subagent need not be aware that
   it is acting in such a role.  It typically listens on a non-standard port,
-  and simply receives requests as usual, forwarded from the master agent. 
+  and simply receives requests as usual, forwarded from the master agent.
   The main issue to be aware of is that such requests will usually appear
   to come from the local host, and this may affect how the access control
   mechanisms need to be set up.
@@ -2170,7 +2170,7 @@ Where are these traps sent to?
 
     Note that all notifications will be sent to all destinations.  The
   agent does not (currently) support notification filtering.
- 
+
 
 
 How can I send a particular trap to selected destinations?
@@ -2299,7 +2299,7 @@ How can I listen on just one particular interface?
   on the system, and accept request received from any of them.  With
   version 4.2, the '-p' option can be used to listen on individual
   interfaces.  For example,
-	
+
 			snmpd -p 161@127.0.0.1
 
   will listen (on the standard port) on the loopback interface only, and
@@ -2391,7 +2391,7 @@ I don't understand the new access control stuff - what does it mean?
   where the entries in braces need to be defined elsewhere (I'm coming
   to that - be patient!), and the rest can be left as shown here.
 
-	[ If you really want to know, the 'sec.model' field can 
+	[ If you really want to know, the 'sec.model' field can
 	  be used to have an access line that's only relevant to
 	  particular versions of SNMP (such v1 or v2c) rather than
 	  "any" version, and the 'sec.level' field to ensure that
@@ -2414,7 +2414,7 @@ I don't understand the new access control stuff - what does it mean?
   with the MIB sub-identifier names - it's purely an identifying tag for
   use within the config file (though choosing a meaningful name is, as
   always, a very good idea).
-  
+
     The {mask} field can be used to control which elements of the OID subtree
   should be regarded as relevant when determining which view an OID is in.
   Normally, the whole of the OID should be included, and in this case the
@@ -2568,22 +2568,22 @@ Why am I getting "Connection refused"?
     Requests always seem to timeout, and don't give me anything back.  Why?
 
 
- 
+
 I'm getting errors about "bad security model" - why?
 ----------------------------------------------------
 
-  Until release 4.2, the access control handling accepted the token "any" 
+  Until release 4.2, the access control handling accepted the token "any"
   to cover all of the recognised security models.  This is explicitly
   forbidden in the relevant RFC, so support for this is being withdrawn.
     As an interim measure, it is currently accepted (with the warning you
   see), but this will not be the case in future releases of the agent.
- 
+
     You should replace the token 'any' with 'v1', 'v2c' or 'usm' as
   appropriate.  If you want to support all three of these security models,
   you'll need to use three distinct group lines, one for each. See the
   example snmpd.conf file for details.
 
-  
+
 
 I'm getting errors about "bad prefix match parameter" - why?
 ------------------------------------------------------------
@@ -2593,7 +2593,7 @@ I'm getting errors about "bad prefix match parameter" - why?
   acceptable for the sixth field.  Simply replace this with the word 'exact'.
 
 
-  
+
 Why can't I see values in the UCDavis 'extensible' or 'disk' trees?
 ------------------------------------------------------------------
 
@@ -2694,7 +2694,7 @@ The speed/type of my network interfaces is wrong - how can I fix it?
   guessed from the name.
 
     See the snmpd.conf(5) man page for details.
-  
+
 
 
 The interface statistics for my subinterfaces are all zero - why?
@@ -2788,7 +2788,7 @@ How about "Can't open /dev/kmem"?
   report values for many of the variables (particularly those relating
   to network statistics).
 
- 
+
 
 The agent is complaining about 'snmpd.conf'.  Where is this?
 -----------------------------------------------------------
@@ -2834,7 +2834,7 @@ How do I compile with 'cc' instead of 'gcc'?
   detected the presence of 'gcc', cached this information, and may still
   try to use this anyway.   In which case, simply remove the 'config.cache'
   file before re-running configure.
- 
+
 
 
 But gcc doesn't compile it successfully on my new Solaris system. Why not?
@@ -2936,7 +2936,7 @@ How can I reduce the memory footprint?
      one of the configured MIB modules depends on it.
 
    '--with-mibdirs=' and '--with-mibs='
-     These options tell the agent not to load any MIB modules. 
+     These options tell the agent not to load any MIB modules.
      This doesn't affect the size of libraries or application
      binaries, but will reduce the memory footprint during runtime.
 
@@ -3031,7 +3031,7 @@ How does the agent fetch the value of a MIB variable from the system?
 
   This depends on the MIB variable (and the operating system).
 
-    Much of the 'mib-2' information is extracted from kernel memory - 
+    Much of the 'mib-2' information is extracted from kernel memory -
   often by seeking to the appropriate location in the kernel itself and
   reading the data structures directly.
 
@@ -3149,7 +3149,7 @@ Which mib2c configuration file should I use?
   handler routine for each table.  Most of the processing is handled
   internally within the agent, so this handler routine is really
   only needed if particular column objects require special processing.
-  
+
     The config file 'mib2c.iterate.conf' is aimed at tables which
   model data held external to the agent (not necessarily ordered
   according to the MIB indexing requirements).  It generates a pair
@@ -3172,7 +3172,7 @@ Which mib2c configuration file should I use?
   of the processing is handled internally.  Many of the generated
   routines can be deleted if the relevant objects need no special
   processing.
- 
+
     The most recent 'mfd' (or 'MIBs For Dummies') configuration takes
   this idea of small (often optional) 'stub' routines even further.
   This generates a collection of separate *files*, each of which
@@ -3286,7 +3286,7 @@ I've added my code to this template and it still doesn't work.  Why not?
 
     - Is the initialisation routine being run?
         (Activate the debugging code that you put into
-         this routine.  You *do* include debugging code 
+         this routine.  You *do* include debugging code
          as a matter of course, don't you?)
 
     - Has the module been registered with the agent?
@@ -3322,8 +3322,8 @@ Mib2c only handles a single table in my MIB. How can I fix this?
 	 #============================================
 	 foreach $vtable (@table_list) {
 	     foreach $ptable (@processtable) {
-	-       $variables{$ptable}{'processed'} = 
-	+       $variables{$ptable}{'processed'} .= 
+	-       $variables{$ptable}{'processed'} =
+	+       $variables{$ptable}{'processed'} .=
 	            (eval "\"$variables{$ptable}{'code'}\"") . "\n\n";
 	     }
 
@@ -3493,7 +3493,7 @@ How can I get the agent to send an SNMPv3 trap (or inform)?
   calls mentioned above.  Generating an SNMPv3 notification
   (rather than a community-based one) is controlled by the
   snmpd.conf file.
-  
+
     To send an SNMPv3 trap, this file should contain a
   'snmpsess' directive, specifying the version, security
   level, user name and passphrases (if applicable), as
@@ -3534,7 +3534,7 @@ What if I'm using an AgentX sub-agent instead?
 
     That doesn't matter - the routines described in 'snmp_trap_api(3)'
   can still be used, and the subagent will do the Right Thing.
-  
+
   One of the original design aims of the AgentX support was that this
   should be transparent to a MIB module implementer.  The agent-module
   interface should be independent of the protocol used to receive the
@@ -3625,7 +3625,7 @@ What ASN.1 parser is used?
 -------------------------
 
   The parser used by both the agent and client programs is coded by hand.
-  This parser has recently been re-vamped to allow control of which of 
+  This parser has recently been re-vamped to allow control of which of
   the available MIBs should be included, and to handle duplicate object
   subidentifiers.
     The source code can be found in the snmplib directory (in 'parse.c'),
@@ -3647,7 +3647,7 @@ What is the Official Slogan of the net-snmp-coders list?
 	(with thanks to Rohit Dube)
 
   And an alternate, added 26-Apr-2000:
-  
+
   "In theory, it shouldn't be that hard, but it just needs to be done."
 
 

@@ -77,9 +77,9 @@
 
 #ifdef STRUCT_DES_KS_STRUCT_HAS_WEAK_KEY
 /* these are older names for newer structures that exist in openssl .9.7 */
-#define DES_key_schedule    des_key_schedule 
-#define DES_cblock          des_cblock 
-#define DES_key_sched       des_key_sched 
+#define DES_key_schedule    des_key_schedule
+#define DES_cblock          des_cblock
+#define DES_key_sched       des_key_sched
 #define DES_ncbc_encrypt    des_ncbc_encrypt
 #define DES_cbc_encrypt    des_cbc_encrypt
 #define OLD_DES
@@ -103,10 +103,10 @@
 
 /*
  * sc_get_properlength(oid *hashtype, u_int hashtype_len):
- * 
+ *
  * Given a hashing type ("hashtype" and its length hashtype_len), return
  * the length of the hash result.
- * 
+ *
  * Returns either the length or SNMPERR_GENERR for an unknown hashing type.
  */
 int
@@ -152,8 +152,8 @@ sc_init(void)
     rval = SNMPERR_SC_NOT_CONFIGURED;
 #endif                           /* USE_INTERNAL_MD5 */
     /*
-     * XXX ogud: The only reason to do anything here with openssl is to 
-     * * XXX ogud: seed random number generator 
+     * XXX ogud: The only reason to do anything here with openssl is to
+     * * XXX ogud: seed random number generator
      */
 #endif                          /* ifndef USE_OPENSSL */
     return rval;
@@ -165,7 +165,7 @@ sc_init(void)
  * Parameters:
  *	*buf		Pre-allocated buffer.
  *	*buflen 	Size of buffer.
- *      
+ *
  * Returns:
  *	SNMPERR_SUCCESS			Success.
  */
@@ -190,7 +190,7 @@ sc_random(u_char * buf, size_t * buflen)
     /*
      * fill the buffer with random integers.  Note that random()
      * is defined in config.h and may not be truly the random()
-     * system call if something better existed 
+     * system call if something better existed
      */
     rval = *buflen - *buflen % sizeof(rndval);
     for (i = 0; i < rval; i += sizeof(rndval)) {
@@ -224,7 +224,7 @@ _SCAPI_NOT_CONFIGURED
  *	*MAC		Will be returned with allocated bytes containg hash.
  *	*maclen		Length of the hash buffer in bytes; also indicates
  *				whether the MAC should be truncated.
- *      
+ *
  * Returns:
  *	SNMPERR_SUCCESS			Success.
  *	SNMPERR_GENERR			All errs
@@ -353,18 +353,18 @@ sc_generate_keyed_hash(const oid * authtype, size_t authtypelen,
 #endif                          /* */
 /*
  * sc_hash(): a generic wrapper around whatever hashing package we are using.
- * 
+ *
  * IN:
  * hashtype    - oid pointer to a hash type
  * hashtypelen - length of oid pointer
  * buf         - u_char buffer to be hashed
  * buf_len     - integer length of buf data
  * MAC_len     - length of the passed MAC buffer size.
- * 
- * OUT:    
+ *
+ * OUT:
  * MAC         - pre-malloced space to store hash output.
  * MAC_len     - length of MAC output to the MAC buffer.
- * 
+ *
  * Returns:
  * SNMPERR_SUCCESS              Success.
  * SNMP_SC_GENERAL_FAILURE      Any error.
@@ -561,7 +561,7 @@ _SCAPI_NOT_CONFIGURED
  *	 ptlen		Length of plaintext.
  *	*ciphertext	Ciphertext to crypt.
  *	*ctlen		Length of ciphertext.
- *      
+ *
  * Returns:
  *	SNMPERR_SUCCESS			Success.
  *	SNMPERR_SC_NOT_CONFIGURED	Encryption is not supported.
@@ -682,7 +682,7 @@ sc_encrypt(const oid * privtype, size_t privtypelen,
     if (ISTRANSFORM(privtype, DESPriv)) {
 
         /*
-         * now calculate the padding needed 
+         * now calculate the padding needed
          */
         pad = pad_size - (ptlen % pad_size);
         plast = (int) ptlen - (pad_size - pad);
@@ -701,13 +701,13 @@ sc_encrypt(const oid * privtype, size_t privtypelen,
 
         memcpy(my_iv, iv, ivlen);
         /*
-         * encrypt the data 
+         * encrypt the data
          */
         DES_ncbc_encrypt(plaintext, ciphertext, plast, key_sch,
                          (DES_cblock *) my_iv, DES_ENCRYPT);
         if (pad > 0) {
             /*
-             * then encrypt the pad block 
+             * then encrypt the pad block
              */
             DES_ncbc_encrypt(pad_block, ciphertext + plast, pad_size,
                              key_sch, (DES_cblock *) my_iv, DES_ENCRYPT);
@@ -724,7 +724,7 @@ sc_encrypt(const oid * privtype, size_t privtypelen,
 
         memcpy(my_iv, iv, ivlen);
         /*
-         * encrypt the data 
+         * encrypt the data
          */
         AES_cfb128_encrypt(plaintext, ciphertext, ptlen,
                            &aes_key, my_iv, &new_ivlen, AES_ENCRYPT);
@@ -733,7 +733,7 @@ sc_encrypt(const oid * privtype, size_t privtypelen,
 #endif
   sc_encrypt_quit:
     /*
-     * clear memory just in case 
+     * clear memory just in case
      */
     memset(my_iv, 0, sizeof(my_iv));
     memset(pad_block, 0, sizeof(pad_block));
@@ -828,7 +828,7 @@ sc_encrypt(const oid * privtype, size_t privtypelen,
  *	 ctlen
  *	*plaintext
  *	*ptlen
- *      
+ *
  * Returns:
  *	SNMPERR_SUCCESS			Success.
  *	SNMPERR_SC_NOT_CONFIGURED	Encryption is not supported.
@@ -941,7 +941,7 @@ sc_decrypt(const oid * privtype, size_t privtypelen,
 
         memcpy(my_iv, iv, ivlen);
         /*
-         * encrypt the data 
+         * encrypt the data
          */
         AES_cfb128_encrypt(ciphertext, plaintext, ctlen,
                            &aes_key, my_iv, &new_ivlen, AES_DECRYPT);
@@ -950,7 +950,7 @@ sc_decrypt(const oid * privtype, size_t privtypelen,
 #endif
 
     /*
-     * exit cond 
+     * exit cond
      */
   sc_decrypt_quit:
 #ifdef OLD_DES
@@ -993,7 +993,7 @@ sc_decrypt(const oid * privtype, size_t privtypelen,
     if (ISTRANSFORM(privtype, DESPriv)) {
 	memset(pkcs_des_key, 0, sizeof(pkcs_des_key));
 	memcpy(pkcs_des_key, key, sizeof(pkcs_des_key));
-	rval = pkcs_decrpyt(CKM_DES_CBC, pkcs_des_key, 
+	rval = pkcs_decrpyt(CKM_DES_CBC, pkcs_des_key,
 		sizeof(pkcs_des_key), iv, ivlen, ciphertext,
 		ctlen, plaintext, ptlen);
         *ptlen = ctlen;

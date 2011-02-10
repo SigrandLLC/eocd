@@ -33,14 +33,14 @@ main(int argc, char *argv[] )
 		printf("Cannot connect to %s\n",sock_name);
 		return 0;
     }
- 
+
 	{
 		printf("Change profile span#3-------------------------\n");
 		app_frame *req = new app_frame(APP_CPROF,APP_SET,app_frame::REQUEST,1,"");
 		cprof_payload *p = (cprof_payload*)req->payload_ptr();
 		span_conf_profile_t *mconf = &p->conf;
 		cprof_changes *c = (cprof_changes *)req->changelist_ptr();
-	
+
 		memset(p,0,sizeof(*p));
 		memset(c,0,sizeof(*c));
 		strcpy(p->pname,"span#3");
@@ -62,7 +62,7 @@ main(int argc, char *argv[] )
 			delete resp;
 			delete req;
 			return 0;
-		} 
+		}
 		if( resp->is_negative() ){ // no such unit or no net_side
 			printf("Request is dropped\n");
 			return 0;;

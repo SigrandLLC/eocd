@@ -17,7 +17,7 @@
 class EOC_scheduler{
  public:
     enum unit_state{ NotPresent,Discovered, Inventored, Configured };
-    enum sched_state{ Offline,Setup,Normal };    
+    enum sched_state{ Offline,Setup,Normal };
  protected:
     struct state_machine{
 		// TODO: Maybe linked list ??
@@ -39,10 +39,10 @@ class EOC_scheduler{
     	send_q = new sched_queue();
 		wait_q = new sched_queue();
 		statem = new state_machine;
-		// Sched request after response in 60/12 = 5 sec 		
-		ts_offs = tick_per_minute/12; 
-		// Wait for response to request 60/6 = 10 sec 		
-		wait_to = tick_per_minute/6; 
+		// Sched request after response in 60/12 = 5 sec
+		ts_offs = tick_per_minute/12;
+		// Wait for response to request 60/6 = 10 sec
+		wait_to = tick_per_minute/6;
 		jump_Offline();
     }
     //
@@ -57,19 +57,19 @@ class EOC_scheduler{
 			break;
 		}
     }
-    
+
     sched_state state(){ return statem->state; }
-    inline void tick(){ 
+    inline void tick(){
 		ts++;
 	}
-    
+
     // Schedule request & check response to me scheduled
     int request(sched_elem &el);
     int response(EOC_msg *m);
     int resched();
     // debug
     void print(){
-    	printf("______________________________________\n");   
+    	printf("______________________________________\n");
 		printf("send_q:\n");
 		send_q->print();
 		printf("______________________________________\n");
@@ -83,10 +83,10 @@ class EOC_scheduler{
   1. Тип ожидаемого ответа
   2. Время отсылки запроса
   3. Источник ответа (фиксированный или широковещательный)
-  4. Перевод в новое состояние ???? Кого? 
+  4. Перевод в новое состояние ???? Кого?
   (Discovery -ответ переводитконкретный элемент в состояние Inventory)
   4 состояния - 1. Discovery, 2. Inventory, 3. Configure 4. Online
-  5. 
+  5.
 
   Машина состояний для канала:
   1. Offline - нет связи
@@ -94,13 +94,13 @@ class EOC_scheduler{
   1.1 Отослать запрос
   1.2 Собирать ответы пока не придет ответ от слейва, каждый новый эл-т канала
   добавляется в БД и переходит в состояние Inventory
-  3. Online - если каждый из юнитов успешно прошел все стадии 
+  3. Online - если каждый из юнитов успешно прошел все стадии
   ( 1. Discovery, 2. Inventory, 3. Configure )
 
   Для юнита:
   1. Discovered - элемент создан
   2. Inventored - пришел Inventory response
   3. Configured - пришел Configure response
-    
+
 */
 #endif

@@ -20,7 +20,7 @@ question 3 Minimum number of processes named '$1' that should be running [defaul
 token disk
 info Check for disk space usage of a partition.
 info The agent can check the amount of available disk space, and make
-info sure it is above a set limit.  
+info sure it is above a set limit.
 info
 info # disk PATH [MIN=100000]
 info #

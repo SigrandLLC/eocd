@@ -39,7 +39,7 @@ $s1 = new SNMP::Session(
 ok(defined($s1));
 
 ######################################################################
-# 
+#
 # Attempt to use the bulkwalk method to get a few variables from the
 # SNMP agent.
 # test 1
@@ -58,7 +58,7 @@ if (defined($list[0][0])) {
   # Sanity check the returned values.  list[0] is sysUptime nonrepeater.
   ok($list[0][0]->tag eq ".1.3.6.1.2.1.1.3");	# check system.sysUptime OID
   ok($list[0][0]->iid eq "0");			# check system.sysUptime.0 IID
-  ok($list[0][0]->val =~ m/^\d+$/);		# Uptime is numeric 
+  ok($list[0][0]->val =~ m/^\d+$/);		# Uptime is numeric
   ok($list[0][0]->type eq "TICKS");		# Uptime should be in ticks.
 }
 else {
@@ -71,7 +71,7 @@ if (defined($list[1][0])) {
   # Find out how many interfaces to expect.  list[1] is ifNumber nonrepeater.
   ok($list[1][0]->tag eq ".1.3.6.1.2.1.2.1");	# Should be system.ifNumber OID.
   ok($list[1][0]->iid eq "0");			# system.ifNumber.0 IID.
-  ok($list[1][0]->val =~ m/^\d+$/);		# Number is all numeric 
+  ok($list[1][0]->val =~ m/^\d+$/);		# Number is all numeric
   #XXX: test fails due SMIv1 codes being returned intstead of SMIv2...
   #ok($list[1][0]->type eq "INTEGER32");		# Number should be integer.
 
@@ -82,7 +82,7 @@ else {
   ok(0);
   ok(0);
 }
-    
+
 # Make sure we got an ifSpeed for each interface.  list[2] is ifSpeed repeater.
 ok(scalar @{$list[2]} == $ifaces);
 # Make sure we got an ifDescr for each interface.  list[3] is ifDescr repeater.
@@ -92,7 +92,7 @@ if (defined($list[2][0])) {
   # Test for reasonable values from the agent.
   ok($list[2][0]->tag eq ".1.3.6.1.2.1.2.2.1.5");	# Should be system.ifSpeed OID.
   ok($list[2][0]->iid eq "1");			# Instance should be 1.
-  ok($list[2][0]->val =~ m/^\d+$/);		# Number is all numeric 
+  ok($list[2][0]->val =~ m/^\d+$/);		# Number is all numeric
   ok($list[2][0]->type eq "GAUGE");		# Number should be a gauge.
 }
 else {
@@ -112,7 +112,7 @@ if (defined($list[3][0])) {
   # This might fail for some weird (Windows?) systems.  Can be safely ignored.
   $loopback = $list[3][0]->val;
   if ($^O =~ /win32/i) {
-    ok(($loopback =~ /loopback/i));  
+    ok(($loopback =~ /loopback/i));
   }
   else {
     ok(($loopback =~ /^lo/));
@@ -124,7 +124,7 @@ else {
   ok(0);
   ok(0);
 }
-  
+
 ###############################################################################
 # Attempt to use the bulkwalk method to get only non-repeaters
 # test 2
@@ -142,7 +142,7 @@ if (defined($list[0][0])) {
   # Sanity check the returned values.  list[0] is sysUptime nonrepeater.
   ok($list[0][0]->tag eq ".1.3.6.1.2.1.1.3");	# check system.sysUptime OID
   ok($list[0][0]->iid eq "0");			# check system.sysUptime.0 IID
-  ok($list[0][0]->val =~ m/^\d+$/);		# Uptime is numeric 
+  ok($list[0][0]->val =~ m/^\d+$/);		# Uptime is numeric
   ok($list[0][0]->type eq "TICKS");		# Uptime should be in ticks.
 }
 else {
@@ -156,7 +156,7 @@ if (defined($list[1][0])) {
   # Find out how many interfaces to expect.  list[1] is ifNumber nonrepeater.
   ok($list[1][0]->tag eq ".1.3.6.1.2.1.2.1");	# Should be system.ifNumber OID.
   ok($list[1][0]->iid eq "0");			# system.ifNumber.0 IID.
-  ok($list[1][0]->val =~ m/^\d+$/);		# Number is all numeric 
+  ok($list[1][0]->val =~ m/^\d+$/);		# Number is all numeric
   #XXX: test fails due SMIv1 codes being returned intstead of SMIv2...
   #ok($list[1][0]->type eq "INTEGER32");		# Number should be integer.
   $ifaces = $list[1][0]->val;
@@ -190,7 +190,7 @@ if (defined($list[0][0])) {
   # Test for reasonable values from the agent.
   ok($list[0][0]->tag eq ".1.3.6.1.2.1.2.2.1.1");	# Should be system.ifIndex OID.
   ok($list[0][0]->iid eq "1");			# Instance should be 1.
-  ok($list[0][0]->val =~ m/^\d+$/);		# Number is all numeric 
+  ok($list[0][0]->val =~ m/^\d+$/);		# Number is all numeric
   #XXX: test fails due SMIv1 codes being returned intstead of SMIv2...
   #ok($list[0][0]->type eq "INTEGER32");		# Number should be an integer.
 }
@@ -203,7 +203,7 @@ else {
 if (defined($list[1][0])) {
   ok($list[1][0]->tag eq ".1.3.6.1.2.1.2.2.1.5");	# Should be system.ifSpeed OID.
   ok($list[1][0]->iid eq "1");			# Instance should be 1.
-  ok($list[1][0]->val =~ m/^\d+$/);		# Number is all numeric 
+  ok($list[1][0]->val =~ m/^\d+$/);		# Number is all numeric
   ok($list[1][0]->type eq "GAUGE");		# Number should be a gauge.
 }
 else {
@@ -216,7 +216,7 @@ else {
 ######################################################################
 #  Asynchronous Bulkwalk Methods
 ######################################################################
-# 
+#
 # Attempt to use the bulkwalk method to get a few variables from the
 # SNMP agent.
 # test 4
@@ -234,7 +234,7 @@ sub async_cb1 {
       $vbr = $list->[0][0];
       ok($vbr->tag eq ".1.3.6.1.2.1.1.3");	# check system.sysUptime OID
       ok($vbr->iid eq "0");			# check system.sysUptime.0 IID
-      ok($vbr->val =~ m/^\d+$/);			# Uptime is numeric 
+      ok($vbr->val =~ m/^\d+$/);			# Uptime is numeric
       ok($vbr->type eq "TICKS");			# Uptime should be in ticks.
     }
     else {
@@ -249,7 +249,7 @@ sub async_cb1 {
       $vbr = $list->[1][0];
       ok($vbr->tag eq ".1.3.6.1.2.1.2.1");	# Should be system.ifNumber OID.
       ok($vbr->iid eq "0");			# system.ifNumber.0 IID.
-      ok($vbr->val =~ m/^\d+$/);			# Number is all numeric 
+      ok($vbr->val =~ m/^\d+$/);			# Number is all numeric
       #XXX: test fails due SMIv1 codes being returned intstead of SMIv2...
       #    ok($vbr->type eq "INTEGER32");		# Number should be integer.
       $ifaces = $vbr->[2];
@@ -262,12 +262,12 @@ sub async_cb1 {
 
     # Test for reasonable values from the agent.
     ok(scalar @{$list->[2]} == $ifaces);
-    
+
     if (defined($list->[2][0])) {
       $vbr = $list->[2][0];
       ok($vbr->tag eq ".1.3.6.1.2.1.2.2.1.5");	# Should be ifSpeed OID
       ok($vbr->iid eq "1");			# Instance should be 1.
-      ok($vbr->val =~ m/^\d+$/);			# Number is all numeric 
+      ok($vbr->val =~ m/^\d+$/);			# Number is all numeric
       ok($vbr->type eq "GAUGE");			# Should be a gauge.
 
       ok(scalar @{$list->[3]} == $ifaces);
@@ -279,7 +279,7 @@ sub async_cb1 {
       ok(0);
       ok(0);
     }
-  
+
     if (defined($list->[3][0])) {
       $vbr = $list->[3][0];
       ok($vbr->tag eq ".1.3.6.1.2.1.2.2.1.2");	# Should be ifDescr OID

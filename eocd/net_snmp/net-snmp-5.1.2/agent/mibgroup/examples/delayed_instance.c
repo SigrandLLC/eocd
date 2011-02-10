@@ -67,13 +67,13 @@ delayed_instance_handler(netsnmp_mib_handler *handler,
          * here we merely mention that we'll answer this request
          * later.  we don't actually care about the mode type in this
          * example, but for certain cases you may, so I'll leave in the
-         * otherwise useless switch and case statements 
+         * otherwise useless switch and case statements
          */
 
     default:
         /*
          * mark this variable as something that can't be handled now.
-         * We'll answer it later. 
+         * We'll answer it later.
          */
         requests->delegated = 1;
 
@@ -83,7 +83,7 @@ delayed_instance_handler(netsnmp_mib_handler *handler,
          * (like an external request sent to a different network
          * or system socket, etc), but for this example we'll do
          * something really simply and just insert an alarm for a
-         * certain period of time 
+         * certain period of time
          */
         snmp_alarm_register(delay_time, /* seconds */
                             0,  /* dont repeat. */
@@ -94,7 +94,7 @@ delayed_instance_handler(netsnmp_mib_handler *handler,
                              * information that we'll want later
                              * on.  This argument is passed back
                              * to us in the callback function for
-                             * an alarm 
+                             * an alarm
                              */
                             (void *)
                             netsnmp_create_delegated_cache(handler,
@@ -113,7 +113,7 @@ void
 return_delayed_response(unsigned int clientreg, void *clientarg)
 {
     /*
-     * extract the cache from the passed argument 
+     * extract the cache from the passed argument
      */
     netsnmp_delegated_cache *cache = (netsnmp_delegated_cache *) clientarg;
 
@@ -125,7 +125,7 @@ return_delayed_response(unsigned int clientreg, void *clientarg)
      * here we double check that the cache we created earlier is still
      * * valid.  If not, the request timed out for some reason and we
      * * don't need to keep processing things.  Should never happen, but
-     * * this double checks. 
+     * * this double checks.
      */
     cache = netsnmp_handler_check_cache(cache);
 
@@ -135,7 +135,7 @@ return_delayed_response(unsigned int clientreg, void *clientarg)
     }
 
     /*
-     * re-establish the previous pointers we are used to having 
+     * re-establish the previous pointers we are used to having
      */
     reqinfo = cache->reqinfo;
     requests = cache->requests;
@@ -146,7 +146,7 @@ return_delayed_response(unsigned int clientreg, void *clientarg)
 
     /*
      * mention that it's no longer delegated, and we've now answered
-     * the query (which we'll do down below). 
+     * the query (which we'll do down below).
      */
     requests->delegated = 0;
 
@@ -154,17 +154,17 @@ return_delayed_response(unsigned int clientreg, void *clientarg)
         /*
          * registering as an instance means we don't need to deal with
          * getnext processing, so we don't handle it here at all.
-         * 
+         *
          * However, since the instance handler already reset the mode
          * back to GETNEXT from the faked GET mode, we need to do the
          * same thing in both cases.  This should be fixed in future
-         * versions of net-snmp hopefully. 
+         * versions of net-snmp hopefully.
          */
 
     case MODE_GET:
     case MODE_GETNEXT:
         /*
-         * return the currend delay time 
+         * return the currend delay time
          */
         snmp_set_var_typed_value(cache->requests->requestvb,
                                  ASN_INTEGER,
@@ -174,16 +174,16 @@ return_delayed_response(unsigned int clientreg, void *clientarg)
 
     case MODE_SET_RESERVE1:
         /*
-         * check type 
+         * check type
          */
         if (requests->requestvb->type != ASN_INTEGER) {
             /*
-             * not an integer.  Bad dog, no bone. 
+             * not an integer.  Bad dog, no bone.
              */
             netsnmp_set_request_error(reqinfo, requests,
                                       SNMP_ERR_WRONGTYPE);
             /*
-             * we don't need the cache any longer 
+             * we don't need the cache any longer
              */
             netsnmp_free_delegated_cache(cache);
             return;
@@ -192,13 +192,13 @@ return_delayed_response(unsigned int clientreg, void *clientarg)
 
     case MODE_SET_RESERVE2:
         /*
-         * store old value for UNDO support in the future. 
+         * store old value for UNDO support in the future.
          */
         memdup((u_char **) & delay_time_cache,
                (u_char *) & delay_time, sizeof(delay_time));
 
         /*
-         * malloc failed 
+         * malloc failed
          */
         if (delay_time_cache == NULL) {
             netsnmp_set_request_error(reqinfo, requests,
@@ -211,7 +211,7 @@ return_delayed_response(unsigned int clientreg, void *clientarg)
          * Add our temporary information to the request itself.
          * This is then retrivable later.  The free function
          * passed auto-frees it when the request is later
-         * deleted.  
+         * deleted.
          */
         netsnmp_request_add_list_data(requests,
                                       netsnmp_create_data_list
@@ -221,7 +221,7 @@ return_delayed_response(unsigned int clientreg, void *clientarg)
 
     case MODE_SET_ACTION:
         /*
-         * update current value 
+         * update current value
          */
         delay_time = *(requests->requestvb->val.integer);
         DEBUGMSGTL(("testhandler", "updated delay_time -> %d\n",
@@ -232,7 +232,7 @@ return_delayed_response(unsigned int clientreg, void *clientarg)
         /*
          * ack, something somewhere failed.  We reset back to the
          * previously old value by extracting the previosuly
-         * stored information back out of the request 
+         * stored information back out of the request
          */
         delay_time =
             *((u_long *) netsnmp_request_get_list_data(requests,
@@ -244,13 +244,13 @@ return_delayed_response(unsigned int clientreg, void *clientarg)
         /*
          * the only thing to do here is free the old memdup'ed
          * value, but it's auto-freed by the datalist recovery, so
-         * we don't have anything to actually do here 
+         * we don't have anything to actually do here
          */
         break;
     }
 
     /*
-     * free the information cache 
+     * free the information cache
      */
     netsnmp_free_delegated_cache(cache);
 }

@@ -159,7 +159,7 @@ init_errormib(void)
 
     /*
      * define the structure we're going to ask the agent to register our
-     * information at 
+     * information at
      */
     struct variable2 extensible_error_variables[] = {
         {MIBINDEX, ASN_INTEGER, RONLY, var_extensible_errors, 1,
@@ -174,13 +174,13 @@ init_errormib(void)
 
     /*
      * Define the OID pointer to the top of the mib tree that we're
-     * registering underneath 
+     * registering underneath
      */
     oid             extensible_error_variables_oid[] =
         { UCDAVIS_MIB, ERRORMIBNUM };
 
     /*
-     * register ourselves with the agent to handle our mib tree 
+     * register ourselves with the agent to handle our mib tree
      */
     REGISTER_MIB("ucd-snmp/errormib", extensible_error_variables,
                  variable2, extensible_error_variables_oid);
@@ -191,11 +191,11 @@ init_errormib(void)
  * Arguments:
  * vp     IN      - pointer to variable entry that points here
  * name    IN/OUT  - IN/name requested, OUT/name found
- * length  IN/OUT  - length of IN/OUT oid's 
+ * length  IN/OUT  - length of IN/OUT oid's
  * exact   IN      - TRUE if an exact match was requested
  * var_len OUT     - length of variable or 0 if function returned
  * write_method
- * 
+ *
  */
 u_char         *
 var_extensible_errors(struct variable *vp,

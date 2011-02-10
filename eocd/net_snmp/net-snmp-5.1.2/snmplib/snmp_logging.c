@@ -1,6 +1,6 @@
 /*
  * logging.c - generic logging for snmp-agent
- * * Contributed by Ragnar Kjørstad, ucd@ragnark.vestdata.no 1999-06-26 
+ * * Contributed by Ragnar Kjørstad, ucd@ragnark.vestdata.no 1999-06-26
  */
 /* Portions of this file are subject to the following copyright(s).  See
  * the Net-SNMP's COPYING file for more details and other copyrights
@@ -12,9 +12,9 @@
  * Use is subject to license terms specified in the COPYING file
  * distributed with the Net-SNMP package.
  */
-/** @defgroup snmp_logging generic logging for net-snmp 
+/** @defgroup snmp_logging generic logging for net-snmp
  *  @ingroup library
- * 
+ *
  *  @{
  */
 #include <net-snmp/net-snmp-config.h>
@@ -97,7 +97,7 @@ static int      newline = 1;	 /* MTCRITICAL_RESOURCE */
 
 #ifndef HAVE_VSNPRINTF
                 /*
-                 * Need to use the UCD-provided one 
+                 * Need to use the UCD-provided one
                  */
 int             vsnprintf(char *str, size_t count, const char *fmt,
                           va_list arg);
@@ -106,7 +106,7 @@ int             vsnprintf(char *str, size_t count, const char *fmt,
 void
 init_snmp_logging(void)
 {
-    netsnmp_ds_register_premib(ASN_BOOLEAN, "snmp", "logTimestamp", 
+    netsnmp_ds_register_premib(ASN_BOOLEAN, "snmp", "logTimestamp",
 			 NETSNMP_DS_LIBRARY_ID, NETSNMP_DS_LIB_LOG_TIMESTAMP);
 }
 
@@ -156,46 +156,46 @@ decode_priority( char *optarg, int *pri_max )
     int pri_low = LOG_DEBUG;
 
     switch (*optarg) {
-        case '0': 
-        case '!': 
+        case '0':
+        case '!':
             pri_low = LOG_EMERG;
             break;
-        case '1': 
-        case 'a': 
-        case 'A': 
+        case '1':
+        case 'a':
+        case 'A':
             pri_low = LOG_ALERT;
             break;
-        case '2': 
-        case 'c': 
-        case 'C': 
+        case '2':
+        case 'c':
+        case 'C':
             pri_low = LOG_CRIT;
             break;
-        case '3': 
-        case 'e': 
-        case 'E': 
+        case '3':
+        case 'e':
+        case 'E':
             pri_low = LOG_ERR;
             break;
-        case '4': 
-        case 'w': 
-        case 'W': 
+        case '4':
+        case 'w':
+        case 'W':
             pri_low = LOG_WARNING;
             break;
-        case '5': 
-        case 'n': 
-        case 'N': 
+        case '5':
+        case 'n':
+        case 'N':
             pri_low = LOG_NOTICE;
             break;
-        case '6': 
-        case 'i': 
-        case 'I': 
+        case '6':
+        case 'i':
+        case 'I':
             pri_low = LOG_INFO;
             break;
-        case '7': 
-        case 'd': 
-        case 'D': 
+        case '7':
+        case 'd':
+        case 'D':
             pri_low = LOG_DEBUG;
             break;
-        default: 
+        default:
             fprintf(stderr, "invalid priority: %c\n",*optarg);
             return -1;
     }
@@ -407,12 +407,12 @@ snmp_log_options_usage(const char *lead, FILE * outf)
  * @param priority is an integer representing the type of message to be written
  *	to the snmp log file.  The types are errors, warning, and information.
  *      	The error types are:
- *		- LOG_EMERG       system is unusable 
- *		- LOG_ALERT       action must be taken immediately 
- *		- LOG_CRIT        critical conditions 
+ *		- LOG_EMERG       system is unusable
+ *		- LOG_ALERT       action must be taken immediately
+ *		- LOG_CRIT        critical conditions
  *		- LOG_ERR         error conditions
  *	The warning type is:
- *              - LOG_WARNING     warning conditions 
+ *              - LOG_WARNING     warning conditions
  *	The information types are:
  *		- LOG_NOTICE      normal but significant condition
  *		- LOG_INFO        informational
@@ -854,7 +854,7 @@ log_handler_stdouterr(  netsnmp_log_handler* logh, int pri, const char *string)
 {
     char            sbuf[40];
 
-    if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID, 
+    if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID,
                                NETSNMP_DS_LIB_LOG_TIMESTAMP) && newline) {
         sprintf_stamp(NULL, sbuf);
     } else {
@@ -966,7 +966,7 @@ log_handler_file(    netsnmp_log_handler* logh, int pri, const char *string)
      * We use imagic to save information about whether the next output
      * will start a new line, and thus might need a timestamp
      */
-    if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID, 
+    if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID,
                                NETSNMP_DS_LIB_LOG_TIMESTAMP) && logh->imagic) {
         sprintf_stamp(NULL, sbuf);
     } else {

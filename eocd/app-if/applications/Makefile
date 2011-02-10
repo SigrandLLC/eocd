@@ -12,7 +12,7 @@ OBJ_DIR=$(TOPDIR)/build
 OBJS= $(OBJ_DIR)/app_comm.o $(OBJ_DIR)/app_frame.o $(OBJ_DIR)/eoc_debug.o
 OBJS_CLI=$(OBJ_DIR)/app_comm_cli.o
 OBJS_SRV=$(OBJ_DIR)/app_comm_srv.o
-OBJS_EXT= $(OBJ_DIR)/eoc_debug.o ../libcomm.a 
+OBJS_EXT= $(OBJ_DIR)/eoc_debug.o ../libcomm.a
 
 all: client server eoc-info
 

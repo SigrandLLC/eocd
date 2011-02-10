@@ -63,7 +63,7 @@ auto_nlist_value(const char *string)
         it->symbol = (char *) malloc(strlen(string) + 1);
         strcpy(it->symbol, string);
         /*
-         * allocate an extra byte for inclusion of a preceding '_' later 
+         * allocate an extra byte for inclusion of a preceding '_' later
          */
         it->nl[0].n_name = (char *) malloc(strlen(string) + 2);
 #ifdef aix4
@@ -80,7 +80,7 @@ auto_nlist_value(const char *string)
         }
 #endif
         if (it->nl[0].n_type == 0) {
-            if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+            if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 					NETSNMP_DS_AGENT_NO_ROOT_ACCESS)) {
                 snmp_log(LOG_ERR, "nlist err: neither %s nor _%s found.\n",
                          string, string);
@@ -126,7 +126,7 @@ init_nlist(struct nlist nl[])
 
     if ((kernel = kvm_openfiles(KERNEL_LOC, NULL, NULL, O_RDONLY, kvm_errbuf))
 	== NULL) {
-        if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+        if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 				   NETSNMP_DS_AGENT_NO_ROOT_ACCESS)) {
             return;
 	} else {
@@ -136,7 +136,7 @@ init_nlist(struct nlist nl[])
         }
     }
     if ((ret = kvm_nlist(kernel, nl)) == -1) {
-        if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+        if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 				   NETSNMP_DS_AGENT_NO_ROOT_ACCESS)) {
             return;
 	} else {
@@ -155,7 +155,7 @@ init_nlist(struct nlist nl[])
             nl[0].n_value = 0;
         } else {
             snmp_log_perror("knlist");
-            if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+            if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 				       NETSNMP_DS_AGENT_NO_ROOT_ACCESS)) {
                 return;
 	    } else {
@@ -165,7 +165,7 @@ init_nlist(struct nlist nl[])
     }
 #else
     if ((ret = nlist(KERNEL_LOC, nl)) == -1) {
-        if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+        if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 				   NETSNMP_DS_AGENT_NO_ROOT_ACCESS)) {
             return;
 	} else {
@@ -181,7 +181,7 @@ init_nlist(struct nlist nl[])
             nl[ret].n_type = 1;
 #endif
         if (nl[ret].n_type == 0) {
-            if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+            if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 					NETSNMP_DS_AGENT_NO_ROOT_ACCESS)) {
                 DEBUGMSGTL(("auto_nlist", "nlist err:  %s not found\n",
                             nl[ret].n_name));
@@ -224,7 +224,7 @@ auto_nlist_print_tree(int indent, struct autonlist *ptr)
             return;
         sprintf(buf, "%%%ds\n", indent);
         /*
-         * DEBUGMSGTL(("auto_nlist", "buf: %s\n",buf)); 
+         * DEBUGMSGTL(("auto_nlist", "buf: %s\n",buf));
          */
         DEBUGMSGTL(("auto_nlist", buf, ptr->symbol));
         auto_nlist_print_tree(indent + 2, ptr->left);

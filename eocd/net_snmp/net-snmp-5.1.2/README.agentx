@@ -1,7 +1,7 @@
 This sub-group of the UCD agent is a 'mature beta' implementation of
 the AgentX agent extensibility protocol, as described in RFC 2741.
 
-  This is a reasonably full implementation, in as much as it 
+  This is a reasonably full implementation, in as much as it
 supports all the protocol operations described in this document.
 The core functionality has received a reasonable amount of exposure,
 and is believed to be more or less stable in normal use.   It will

@@ -21,7 +21,7 @@ static struct simple_proxy *proxies = NULL;
 oid             testoid[] = { 1, 3, 6, 1, 4, 1, 2021, 8888, 1 };
 
 /*
- * this must be standardized somewhere, right? 
+ * this must be standardized somewhere, right?
  */
 #define MAX_ARGS 128
 
@@ -51,7 +51,7 @@ proxyOptProc(int argc, char *const *argv, int opt)
     default:
         break;
         /*
-         * shouldn't get here 
+         * shouldn't get here
          */
     }
 }
@@ -60,7 +60,7 @@ void
 proxy_parse_config(const char *token, char *line)
 {
     /*
-     * proxy args [base-oid] [remap-to-remote-oid] 
+     * proxy args [base-oid] [remap-to-remote-oid]
      */
 
     netsnmp_session session, *ss;
@@ -75,7 +75,7 @@ proxy_parse_config(const char *token, char *line)
     DEBUGMSGTL(("proxy_config", "entering\n"));
 
     /*
-     * create the argv[] like array 
+     * create the argv[] like array
      */
     strcpy(argv[0] = args[0], "snmpd-proxy");   /* bogus entry for getopt() */
     for (argn = 1, cp = line; cp && argn < MAX_ARGS;) {
@@ -104,23 +104,23 @@ proxy_parse_config(const char *token, char *line)
 
     SOCK_STARTUP;
     /*
-     * usm_set_reportErrorOnUnknownID(0); 
+     * usm_set_reportErrorOnUnknownID(0);
      *
-     * hack, stupid v3 ASIs. 
+     * hack, stupid v3 ASIs.
      */
     /*
      * XXX: on a side note, we don't really need to be a reference
      * platform any more so the proper thing to do would be to fix
      * snmplib/snmpusm.c to pass in the pdu type to usm_process_incoming
-     * so this isn't needed. 
+     * so this isn't needed.
      */
     ss = snmp_open(&session);
     /*
-     * usm_set_reportErrorOnUnknownID(1); 
+     * usm_set_reportErrorOnUnknownID(1);
      */
     if (ss == NULL) {
         /*
-         * diagnose snmp_open errors with the input netsnmp_session pointer 
+         * diagnose snmp_open errors with the input netsnmp_session pointer
          */
         snmp_sess_perror("snmpget", &session);
         SOCK_CLEANUP;
@@ -155,10 +155,10 @@ proxy_parse_config(const char *token, char *line)
     DEBUGMSG(("proxy_init", "\n"));
 
     /*
-     * add to our chain 
+     * add to our chain
      */
     /*
-     * must be sorted! 
+     * must be sorted!
      */
     listpp = &proxies;
     while (*listpp &&
@@ -168,16 +168,16 @@ proxy_parse_config(const char *token, char *line)
     }
 
     /*
-     * listpp should be next in line from us. 
+     * listpp should be next in line from us.
      */
     if (*listpp) {
         /*
-         * make our next in the link point to the current link 
+         * make our next in the link point to the current link
          */
         newp->next = *listpp;
     }
     /*
-     * replace current link with us 
+     * replace current link with us
      */
     *listpp = newp;
 
@@ -301,14 +301,14 @@ proxy_handler(netsnmp_mib_handler *handler,
         if (sp->base_len > 0) {
             if ((ourlength - sp->name_len + sp->base_len) > MAX_OID_LEN) {
                 /*
-                 * too large 
+                 * too large
                  */
                 snmp_log(LOG_ERR,
                          "proxy oid request length is too long\n");
                 return SNMP_ERR_NOERROR;
             }
             /*
-             * suffix appended? 
+             * suffix appended?
              */
             DEBUGMSGTL(("proxy", "length=%d, base_len=%d, name_len=%d\n",
                         ourlength, sp->base_len, sp->name_len));
@@ -328,7 +328,7 @@ proxy_handler(netsnmp_mib_handler *handler,
     }
 
     /*
-     * send the request out 
+     * send the request out
      */
     DEBUGMSGTL(("proxy", "sending pdu\n"));
     snmp_async_send(sp->sess, pdu, proxy_got_response,
@@ -371,7 +371,7 @@ proxy_got_response(int operation, netsnmp_session * sess, int reqid,
     case NETSNMP_CALLBACK_OP_TIMED_OUT:
         /*
          * WWWXXX: don't leave requests delayed if operation is
-         * something like TIMEOUT 
+         * something like TIMEOUT
          */
         DEBUGMSGTL(("proxy", "got timed out... requests = %08p\n", requests));
 
@@ -394,7 +394,7 @@ proxy_got_response(int operation, netsnmp_session * sess, int reqid,
             netsnmp_set_request_error(cache->reqinfo, requests, pdu->errstat);
 
         /*
-         * update the original request varbinds with the results 
+         * update the original request varbinds with the results
          */
 	} else for (var = vars, request = requests;
              request && var;
@@ -447,7 +447,7 @@ proxy_got_response(int operation, netsnmp_session * sess, int reqid,
                  */
                 if (sp->base_len) {
                     /*
-                     * XXX: oid size maxed? 
+                     * XXX: oid size maxed?
                      */
                     memcpy(myname, sp->name, sizeof(oid) * sp->name_len);
                     myname_len =
@@ -480,7 +480,7 @@ proxy_got_response(int operation, netsnmp_session * sess, int reqid,
         if (request || var) {
             /*
              * ack, this is bad.  The # of varbinds don't match and
-             * there is no way to fix the problem 
+             * there is no way to fix the problem
              */
             if (pdu)
                 snmp_free_pdu(pdu);
@@ -493,9 +493,9 @@ proxy_got_response(int operation, netsnmp_session * sess, int reqid,
         /* fix bulk_to_next operations */
         if (cache->reqinfo->mode == MODE_GETBULK)
             netsnmp_bulk_to_next_fix_requests(requests);
-        
+
         /*
-         * free the response 
+         * free the response
          */
         if (pdu && 0)
             snmp_free_pdu(pdu);

@@ -19,13 +19,13 @@ scripts should abort when errors occur.
 The usage of nsb-package is:
 
  Usage: nsb-package [-c] [-d] [-p] [-s SRCD] [-b BUILDD] [-i INSTALLD] VERSION
-  
+
     VERSION    : relase number (eg 5.0.3)
     -s SRCDIR  : soure directory [$HOME/src/net-snmp-VERSION]
     -b BUILDD  : build directory [$HOME/build/]
                  NOTE-platform will be appended to build directory
     -i INSTALLD: install directory [$HOME/build/\$PLATFORM/usr/local]
-   
+
     -c : skip configure
     -d : dirty build (don't make distclean)
     -m : skip 'make all'
@@ -51,7 +51,7 @@ Recommended Procedure
    $ CVS_RSH=ssh cvs -d $USER@cvs.net-snmp.org:/cvsroot/net-snmp \
          -q co -r Ext-5-0-3 -d ~/src/net-snmp-Ext-5-0-3 net-snmp
 
-3) Run the package script. 
+3) Run the package script.
 
    $ $HOME/src/net-snmp-cvs/dist/nsb-package -p -r \
         -s $HOME/src/net-snmp-5.0.5 5.0.5
@@ -97,7 +97,7 @@ can to skip the test step to get to the install step:
 OTHER PROBLEMS
 --------------
 * "Cannot find nsb-functions"
-  
+
    It's a hack, but symlink nsb-functions and nsb-package to your local
    bin directory ($HOME/bin).  I'm trying to think of a better solution.
 

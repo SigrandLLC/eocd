@@ -1,7 +1,7 @@
 Field "SNMPAgent" {
 	Type Enumeration;
 	Flags	capability, general, locate;
-	Enumeration 
+	Enumeration
 		"Unset",
 		"UCD HP-UX 9",
 		"UCD HP-UX 10",

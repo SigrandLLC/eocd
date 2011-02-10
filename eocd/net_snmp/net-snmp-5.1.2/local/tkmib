@@ -148,15 +148,15 @@ $FileMenuBut->pack(-side => 'left');
 
 $MibMenuBut = $MenuFrame->Menubutton(-pady => $tmpbd, -padx => $tmpbd, -text => "Mib",
 				      -menuitems =>
-      [[Button => "Find a mib node", 
+      [[Button => "Find a mib node",
 	-command => sub { my $var;
-			  entryBox("Find a Mib Node", 
+			  entryBox("Find a Mib Node",
 				   "Enter a mib node name to search for:",
 				   \$var, \&findANode );}],
        [Button => "Load a New Mib File", -command => [\&loadNewMibFile]],
-       [Button => "Load a New Mib Module", 
+       [Button => "Load a New Mib Module",
 	-command => sub { my $var;
-			  entryBox("Load a Module", 
+			  entryBox("Load a Module",
 				   "Enter a SNMP MIB module name to load:",
 				   \$var, \&loadIt);}]
        ]);
@@ -175,7 +175,7 @@ $OptMenuBut = $MenuFrame->Menubutton(-pady => $tmpbd, -padx => $tmpbd, -text => 
 	   [Radiobutton => 'module', -variable => \$displayoidas]
 	   ]
 	  ],
-	 [Button => "Writable Color", 
+	 [Button => "Writable Color",
 	  -command => [\&entryBox,"Writable Color",
 		       "Color for writable objects:",
 		       \$writecolor]]
@@ -189,29 +189,29 @@ $OptMenuBut = $MenuFrame->Menubutton(-pady => $tmpbd, -padx => $tmpbd, -text => 
        ], # ends version number specification
        [Cascade => "SNMPv1/2c options", -menuitems =>
 	[
-	 [Button => "Community Name", 
-	  -command => [\&entryBox,"Community Name", "Community name to use:", 
+	 [Button => "Community Name",
+	  -command => [\&entryBox,"Community Name", "Community name to use:",
 		       \$session_opts{'Community'}]]
 	]
        ],
        [Cascade => "SNMP3 options", -menuitems =>
 	[
-	 [Button => "Security Name", 
-	  -command => [\&entryBox,"Security Name", "Security Name to use:", 
+	 [Button => "Security Name",
+	  -command => [\&entryBox,"Security Name", "Security Name to use:",
 		       \$session_opts{'SecName'}]],
          [Cascade => "Security Level", -menuitems =>
           [
 	   [Radiobutton => 'noAuthNoPriv',
 	    -variable => \$session_opts{'SecLevel'}],
-           [Radiobutton => 'authNoPriv', 
+           [Radiobutton => 'authNoPriv',
 	    -variable => \$session_opts{'SecLevel'}],
-	   [Radiobutton => 'authPriv', 
+	   [Radiobutton => 'authPriv',
             -variable => \$session_opts{'SecLevel'}]
           ]
          ],
-	 [Button => "Authentication Passphrase", 
-	  -command => [\&entryBox,"Authentication Passphrase", 
-		       "Authentication Passphrase to use:", 
+	 [Button => "Authentication Passphrase",
+	  -command => [\&entryBox,"Authentication Passphrase",
+		       "Authentication Passphrase to use:",
 		       \$session_opts{'AuthPass'}]],
          [Cascade => "Authentication Type", -menuitems =>
           [
@@ -221,9 +221,9 @@ $OptMenuBut = $MenuFrame->Menubutton(-pady => $tmpbd, -padx => $tmpbd, -text => 
 	    -variable => \$session_opts{'AuthProto'}],
           ]
          ],
-	 [Button => "Privacy Passphrase", 
-	  -command => [\&entryBox,"Privacy Passphrase", 
-		       "Privacy Passphrase to use:", 
+	 [Button => "Privacy Passphrase",
+	  -command => [\&entryBox,"Privacy Passphrase",
+		       "Privacy Passphrase to use:",
 		       \$session_opts{'PrivPass'}]],
          [Cascade => "Privacy Type", -menuitems =>
           [
@@ -233,23 +233,23 @@ $OptMenuBut = $MenuFrame->Menubutton(-pady => $tmpbd, -padx => $tmpbd, -text => 
          ],
 	]
        ],
-       [Button => "Time between graph polls", 
-	-command => sub { entryBox("graph polls", "Time between graph polls:", 
+       [Button => "Time between graph polls",
+	-command => sub { entryBox("graph polls", "Time between graph polls:",
 				    \$graphtime);}],
-       [Button => "Port number", 
-	-command => sub { entryBox("Port Number", "SNMP Port number to use:", 
+       [Button => "Port number",
+	-command => sub { entryBox("Port Number", "SNMP Port number to use:",
 				    \$session_opts{'RemotePort'});}],
-       [Button => "TimeOut", 
-	-command => sub { entryBox("Time Out", "Timeout for SNMP requests:", 
+       [Button => "TimeOut",
+	-command => sub { entryBox("Time Out", "Timeout for SNMP requests:",
 				    \$session_opts{'Timeout'});}],
-       [Button => "Retries", 
-	-command => sub { entryBox("Retries", 
-				   "Number of Times to Retransmit Requests:", 
+       [Button => "Retries",
+	-command => sub { entryBox("Retries",
+				   "Number of Times to Retransmit Requests:",
 				    \$session_opts{'Retries'});}],
        [Button => "Save Options",
 	-command => \&save_options]
        ])->pack(-side => 'left');
-        
+
 $tmp = $OptMenuBut->cget(-menu);
 $OptMenuWidgets = $tmp->entrycget("Display", -menu);
 $OptMenuWidgets = $OptMenuWidgets->entrycget("MIB Information", -menu);
@@ -272,7 +272,7 @@ for($i=0;$i<= $#displayInfo;$i++) {
     createRow($i) if ($displayInfoStates{$displayInfo[$i]});
     optionalWidget($i,$OptMenuWidgets, \$displayInfoStates{$displayInfo[$i]});
 }
-    
+
 $descrFrame=$top->Frame(-relief => 'raised', -borderwidth => $tmpbd);
 $descrFrame->pack(-side => 'top', -fill =>'x');
 $descrFrame->Label(-pady => $tmpbd, -padx => $tmpbd, -text => 'Description:', -anchor => 'w')->pack(-side => 'top',
@@ -323,7 +323,7 @@ sub insertresult {
     my $val = shift;
     $oid = $OID if ($oid eq "OID");
     $output->insert('end', $oid, "oid:$oid");
-    $output->tagBind("oid:$oid", '<1>', [sub{shift; 
+    $output->tagBind("oid:$oid", '<1>', [sub{shift;
 					     my $oid = shift;
 					     findANode($oid);
 					     my $tag = SNMP::translateObj($oid);
@@ -333,7 +333,7 @@ sub insertresult {
     $output->insert('end', $val, "value:$oid");
     if ($mib->{'access'} =~ /(Write|Create)/) {
 	$output->tagConfigure("value:$oid", -foreground => $writecolor);
-	$output->tagBind("value:$oid", '<1>', [sub{shift; 
+	$output->tagBind("value:$oid", '<1>', [sub{shift;
 						   my $oid = shift;
 						   my $value = shift;
 						   snmpsetmaybebegin($oid, $value);
@@ -587,7 +587,7 @@ sub updateGraph() {
     my $oid = $graphoid;
     my $tag = SNMP::translateObj($graphoid,0);
     my $var = new SNMP::Varbind([$oid]);
-    $graphsess->{ErrorStr} = "";    
+    $graphsess->{ErrorStr} = "";
     while (!$graphsess->{ErrorStr} && !$stopit) {
 	my $val = $graphsess->getnext($var);
 	if ($#graphvars == -1 && SNMP::translateObj($var->tag) !~ /^$oid/) {
@@ -615,10 +615,10 @@ sub updateGraph() {
 	    } else {
 		$graphtb{$1}[$gcount] = $var->val;
 	    }
-	    $max = $graphtb{$1}[$#{$graphtb{$1}}] 
+	    $max = $graphtb{$1}[$#{$graphtb{$1}}]
 		if ($#{$graphtb{$1}} >= 0 &&
 		    $graphtb{$1}[$#{$graphtb{$1}}] > $max);
-	    $min = $graphtb{$1}[$#{$graphtb{$1}}] 
+	    $min = $graphtb{$1}[$#{$graphtb{$1}}]
 		if ($#{$graphtb{$1}} >= 0 &&
 		    $graphtb{$1}[$#{$graphtb{$1}}] < $min);
 	}
@@ -671,7 +671,7 @@ sub showInfo {
 
     $tag =~ s/[.0-9]+$//;
     $oid = SNMP::translateObj($tag);
-	
+
     if (!defined($last) || "$last" ne $oid) {
 	updateInfo($oid);
     }
@@ -680,7 +680,7 @@ sub showInfo {
     $mibOID->update();
     $last = $oid;
 }
-	
+
 sub showAllChildren {
     my $id = shift;
     $id =~ s/^\.//;
@@ -717,13 +717,13 @@ sub showChildren {
 	$oid = ".$oid";
 	my $mib = $SNMP::MIB{format_oid($oid,'full')};
 	if (defined($mib)) {
-	    my $children = $$mib{'children'}; 
+	    my $children = $$mib{'children'};
 	    if (ref($children) eq "ARRAY") {
 		foreach $i (sort {$$a{'subID'} <=> $$b{'subID'}} @{$children}) {
 		    addMibOID($$i{'objectID'});
 		}
 	    } else {
-		$status->configure(-text => SNMP::translateObj($oid,1) . 
+		$status->configure(-text => SNMP::translateObj($oid,1) .
 				   " has no children");
 		return;
 	    }
@@ -747,10 +747,10 @@ sub updateInfo {
 	    $tablebutton->configure(-state => 'disabled');
 	}
 	$mibOID->configure(-text => $mib->{'objectID'});
-	$mibTextOID->configure(-text => 
+	$mibTextOID->configure(-text =>
 			     SNMP::translateObj($mib->{'objectID'},1));
 	$descr->delete('0.0','end');
-	if (defined($mib->{'description'}) && 
+	if (defined($mib->{'description'}) &&
 	    $mib->{'description'} ne "") {
 	    my $desc = $mib->{'description'};
 	    $desc =~ s/\n[ \t]+/\n/g;
@@ -776,7 +776,7 @@ sub optionalWidget {
     my $num = shift;
     my $menu = shift;
     my $var = shift;
-    $menu->checkbutton(-label => $displayInfo[$num], 
+    $menu->checkbutton(-label => $displayInfo[$num],
 		       -variable => $var,
 		       -command => [\&toggleWidgetShown, $num, $var]);
 }
@@ -785,7 +785,7 @@ sub createRow {
     my $i = shift;
     if (!$displayLabels[$i]) {
 	$displayLabels[$i] = $dispFrame->Label(-pady => $tmpbd, -padx => $tmpbd,
-					       -text => $displayInfo[$i], 
+					       -text => $displayInfo[$i],
 					       -anchor => 'w',
 					       -borderwidth => $tmpbd);
     }
@@ -881,29 +881,29 @@ sub entryBox {
     $e->pack(-side => 'left');
     $f = $top->Frame();
     $f->pack(-side => 'bottom');
-    my $b = $f->Button(-pady => $tmpbd, -padx => $tmpbd, -text => 'Ok', 
+    my $b = $f->Button(-pady => $tmpbd, -padx => $tmpbd, -text => 'Ok',
 		       -command => [sub { my $w = shift;
 					  my $v1 = shift;
 					  my $v2 = shift;
 					  my $call = shift;
 					  my $ret = 1;
 					  $$v1 = $$v2 if defined($v1);
-					  $ret = $call->($$v2) 
+					  $ret = $call->($$v2)
 					      if defined($call);
 					  $w->destroy() if ($ret);}, $top, $var,
 				    \$newvar, $callback]);
     $b->pack(-side => 'left');
     $e->bind('<Return>',[$b,'invoke']);
-    $b = $f->Button(-pady => $tmpbd, -padx => $tmpbd, 
+    $b = $f->Button(-pady => $tmpbd, -padx => $tmpbd,
 		    -text => 'Cancel', -command => [sub { my $w = shift;
 							  $w->destroy();}, $top
 						    ]);
     $b->pack(-side => 'right');
     $e->bind('<Escape>',[$b,'invoke']);
-    
+
 }
 
-sub findANode {     
+sub findANode {
     my $val = shift;
     my $tag = SNMP::translateObj($val);
     if ($tag) {
@@ -919,7 +919,7 @@ sub test_version {
     my ($gt, $major, $minor, $sub) = @_;
     $SNMP::VERSION =~ /(\d)\.(\d).(\d)/;
     if ($gt) {
-	if ($1 > $major || ($1 == $major && $2 > $minor) || 
+	if ($1 > $major || ($1 == $major && $2 > $minor) ||
 	    ($1 == $major && $2 == $minor && $3 >= $sub)) {
 	    return 1;
 	}

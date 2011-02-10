@@ -52,7 +52,7 @@ extern void     init_routes(void);
 
 /*
  * define the structure we're going to ask the agent to register our
- * information at 
+ * information at
  */
 struct variable1 ipaddr_variables[] = {
     {IPADADDR,      ASN_IPADDRESS, RONLY, var_ipAddrEntry, 1, {1}},
@@ -98,7 +98,7 @@ struct variable1 ipmedia_variables[] = {
 
 /*
  * Define the OID pointer to the top of the mib tree that we're
- * registering underneath, and the OID of the MIB module 
+ * registering underneath, and the OID of the MIB module
  */
 oid             ip_oid[]                = { SNMP_OID_MIB2, 4 };
 
@@ -148,7 +148,7 @@ init_ip(void)
 
 
     /*
-     * for speed optimization, we call this now to do the lookup 
+     * for speed optimization, we call this now to do the lookup
      */
 #ifdef IPSTAT_SYMBOL
     auto_nlist(IPSTAT_SYMBOL, 0, 0);
@@ -243,7 +243,7 @@ ip_handler(netsnmp_mib_handler          *handler,
 
 
     /*
-     * 
+     *
      *
      */
     DEBUGMSGTL(("mibII/ip", "Handler - mode %s\n",
@@ -329,13 +329,13 @@ ip_handler(netsnmp_mib_handler          *handler,
 #ifdef HAVE_SYS_TCPIPSTATS_H
     /*
      * This actually reads statistics for *all* the groups together,
-     * so we need to isolate the IP-specific bits.  
+     * so we need to isolate the IP-specific bits.
      */
 #define	ipstat		ipstat.ipstat
 #endif
     case IPFORWARDING:
     case IPDEFAULTTTL:
-        /* 
+        /*
          * Query these two individually
          */
         ret_value = ip_load(NULL, (void *)subid);
@@ -620,7 +620,7 @@ ip_load(netsnmp_cache *cache, void *vmagic)
     unsigned int    ulen;
     int             ret;
     int             magic = (int) vmagic;
-    
+
     if ((fd = open_mib("/dev/ip", O_RDONLY, 0, NM_ASYNC_OFF)) < 0) {
         DEBUGMSGTL(("mibII/ip", "Failed to load IP object %d (hpux11)\n", magic));
         return (-1);            /* error */

@@ -38,7 +38,7 @@ extern "C" {
 #endif
 
 
-EOC_main *m;    
+EOC_main *m;
 
 
 static void child_handler(int signum)
@@ -47,11 +47,11 @@ static void child_handler(int signum)
 	case SIGALRM:
     printf("Starting eocd v%s: FAIL\n",EOC_VER);
     exit(EXIT_FAILURE);
-	case SIGUSR1: 
-    printf("Starting eocd v%s: OK\n",EOC_VER);    
+	case SIGUSR1:
+    printf("Starting eocd v%s: OK\n",EOC_VER);
 		exit(EXIT_SUCCESS);
 	case SIGCHLD:
-    printf("Starting eocd v%s: FAIL\n",EOC_VER);    
+    printf("Starting eocd v%s: FAIL\n",EOC_VER);
     exit(EXIT_FAILURE);
 	}
 }
@@ -77,7 +77,7 @@ daemonize( )
 	pid_t pid, sid, parent;
 	int lfp = -1;
 
-	// already a daemon 
+	// already a daemon
 	if ( getppid() == 1 )
     return -1;
 
@@ -97,7 +97,7 @@ daemonize( )
 	signal(SIGUSR1,child_handler);
 	signal(SIGALRM,child_handler);
 
-	// Fork off the parent process 
+	// Fork off the parent process
 	pid = fork();
 	if (pid < 0) {
 		syslog( LOG_ERR, "unable to fork daemon, code=%d (%s)",
@@ -238,14 +238,14 @@ int main( int argc, char *argv[] ) {
 
 	signal(SIGPIPE,SIG_IGN);
 	// Register SIGHUP signal for configuration refresh
-	signal(SIGHUP,server_handler); 
+	signal(SIGHUP,server_handler);
   	// Register SIGUSR1 signal to write configuration to disk
-	signal(SIGUSR1,server_handler); 
+	signal(SIGUSR1,server_handler);
 
 
 	/* Now we are a daemon -- do the work for which we were paid */
 	m = new EOC_main(config_path,"/var/eocd/");
-    
+
 	if( !m->get_valid() ){
 	    delete m;
     	return -1;

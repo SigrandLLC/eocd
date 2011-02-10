@@ -49,11 +49,11 @@ extern          "C" {
 
 
     /*
-     * struct usmUser: a structure to represent a given user in a list 
+     * struct usmUser: a structure to represent a given user in a list
      */
     /*
      * Note: Any changes made to this structure need to be reflected in
-     * the following functions: 
+     * the following functions:
      */
 
     struct usmUser;

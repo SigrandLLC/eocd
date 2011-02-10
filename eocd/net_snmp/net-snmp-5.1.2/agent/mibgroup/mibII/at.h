@@ -22,7 +22,7 @@ config_arch_require(solaris2, kernel_sunos5)
 #define IPMEDIATYPE             3
 
 /*
- * in case its missing: 
+ * in case its missing:
  */
 #ifndef ATF_PERM
 # define ATF_PERM	0x04

@@ -17,7 +17,7 @@ config_require(utilities/execute)
      netsnmp_subtree *find_extensible(netsnmp_subtree *, oid *, size_t, int);
 
 /*
- * config file parsing routines 
+ * config file parsing routines
  */
      void            extensible_free_config(void);
      void            extensible_parse_config(const char *, char *);

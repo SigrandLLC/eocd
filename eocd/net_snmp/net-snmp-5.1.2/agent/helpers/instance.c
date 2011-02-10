@@ -50,13 +50,13 @@ netsnmp_get_instance_handler(void)
 }
 
 /**
- * This function registers an instance helper handler, which is a way of 
+ * This function registers an instance helper handler, which is a way of
  * registering an exact OID such that GENEXT requests are handled entirely
- * by the helper. First need to inject it into the calling chain of the 
- * handler defined by the netsnmp_handler_registration struct, reginfo.  
+ * by the helper. First need to inject it into the calling chain of the
+ * handler defined by the netsnmp_handler_registration struct, reginfo.
  * The new handler is injected at the top of the list and will be the new
- * handler to be called first.  This function also injects a serialize 
- * handler before actually calling netsnmp_register_handle, registering 
+ * handler to be called first.  This function also injects a serialize
+ * handler before actually calling netsnmp_register_handle, registering
  * reginfo.
  *
  * @param reginfo a handler registration structure which could get created
@@ -75,7 +75,7 @@ netsnmp_register_instance(netsnmp_handler_registration *reginfo)
 }
 
 /**
- * This function injects a "read only" handler into the handler chain 
+ * This function injects a "read only" handler into the handler chain
  * prior to serializing/registering the handler.
  *
  * The only purpose of this "read only" handler is to return an
@@ -276,7 +276,7 @@ netsnmp_instance_ulong_handler(netsnmp_mib_handler *handler,
 
     switch (reqinfo->mode) {
         /*
-         * data requests 
+         * data requests
          */
     case MODE_GET:
         snmp_set_var_typed_value(requests->requestvb, ASN_UNSIGNED,
@@ -284,7 +284,7 @@ netsnmp_instance_ulong_handler(netsnmp_mib_handler *handler,
         break;
 
         /*
-         * SET requests.  Should only get here if registered RWRITE 
+         * SET requests.  Should only get here if registered RWRITE
          */
     case MODE_SET_RESERVE1:
         if (requests->requestvb->type != ASN_UNSIGNED)
@@ -294,7 +294,7 @@ netsnmp_instance_ulong_handler(netsnmp_mib_handler *handler,
 
     case MODE_SET_RESERVE2:
         /*
-         * store old info for undo later 
+         * store old info for undo later
          */
         memdup((u_char **) & it_save, (u_char *) it, sizeof(u_long));
         if (it_save == NULL) {
@@ -310,7 +310,7 @@ netsnmp_instance_ulong_handler(netsnmp_mib_handler *handler,
 
     case MODE_SET_ACTION:
         /*
-         * update current 
+         * update current
          */
         DEBUGMSGTL(("testhandler", "updated u_long %ul -> %ul\n", *it,
                     *(requests->requestvb->val.integer)));
@@ -326,7 +326,7 @@ netsnmp_instance_ulong_handler(netsnmp_mib_handler *handler,
     case MODE_SET_COMMIT:
     case MODE_SET_FREE:
         /*
-         * nothing to do 
+         * nothing to do
          */
         break;
     }
@@ -352,7 +352,7 @@ netsnmp_instance_counter32_handler(netsnmp_mib_handler *handler,
 
     switch (reqinfo->mode) {
         /*
-         * data requests 
+         * data requests
          */
     case MODE_GET:
         snmp_set_var_typed_value(requests->requestvb, ASN_COUNTER,
@@ -360,7 +360,7 @@ netsnmp_instance_counter32_handler(netsnmp_mib_handler *handler,
         break;
 
         /*
-         * SET requests.  Should only get here if registered RWRITE 
+         * SET requests.  Should only get here if registered RWRITE
          */
     default:
         snmp_log(LOG_ERR,
@@ -389,7 +389,7 @@ netsnmp_instance_long_handler(netsnmp_mib_handler *handler,
 
     switch (reqinfo->mode) {
         /*
-         * data requests 
+         * data requests
          */
     case MODE_GET:
         snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
@@ -397,7 +397,7 @@ netsnmp_instance_long_handler(netsnmp_mib_handler *handler,
         break;
 
         /*
-         * SET requests.  Should only get here if registered RWRITE 
+         * SET requests.  Should only get here if registered RWRITE
          */
     case MODE_SET_RESERVE1:
         if (requests->requestvb->type != ASN_INTEGER)
@@ -407,7 +407,7 @@ netsnmp_instance_long_handler(netsnmp_mib_handler *handler,
 
     case MODE_SET_RESERVE2:
         /*
-         * store old info for undo later 
+         * store old info for undo later
          */
         memdup((u_char **) & it_save, (u_char *) it, sizeof(u_long));
         if (it_save == NULL) {
@@ -423,7 +423,7 @@ netsnmp_instance_long_handler(netsnmp_mib_handler *handler,
 
     case MODE_SET_ACTION:
         /*
-         * update current 
+         * update current
          */
         DEBUGMSGTL(("testhandler", "updated u_long %ul -> %ul\n", *it,
                     *(requests->requestvb->val.integer)));
@@ -439,7 +439,7 @@ netsnmp_instance_long_handler(netsnmp_mib_handler *handler,
     case MODE_SET_COMMIT:
     case MODE_SET_FREE:
         /*
-         * nothing to do 
+         * nothing to do
          */
         break;
     }
@@ -459,13 +459,13 @@ netsnmp_instance_int_handler(netsnmp_mib_handler *handler,
     int *it = (int *) handler->myvoid;
     int *it_save;
     long tmp_it;
-    
+
     DEBUGMSGTL(("netsnmp_instance_int_handler", "Got request:  %d\n",
                 reqinfo->mode));
 
     switch (reqinfo->mode) {
         /*
-         * data requests 
+         * data requests
          */
     case MODE_GET:
 	/*
@@ -477,7 +477,7 @@ netsnmp_instance_int_handler(netsnmp_mib_handler *handler,
         break;
 
         /*
-         * SET requests.  Should only get here if registered RWRITE 
+         * SET requests.  Should only get here if registered RWRITE
          */
     case MODE_SET_RESERVE1:
         if (requests->requestvb->type != ASN_INTEGER)
@@ -487,7 +487,7 @@ netsnmp_instance_int_handler(netsnmp_mib_handler *handler,
 
     case MODE_SET_RESERVE2:
         /*
-         * store old info for undo later 
+         * store old info for undo later
          */
         memdup((u_char **) & it_save, (u_char *) it, sizeof(u_long));
         if (it_save == NULL) {
@@ -503,7 +503,7 @@ netsnmp_instance_int_handler(netsnmp_mib_handler *handler,
 
     case MODE_SET_ACTION:
         /*
-         * update current 
+         * update current
          */
         DEBUGMSGTL(("testhandler", "updated int %d -> %l\n", *it,
                     *(requests->requestvb->val.integer)));
@@ -519,7 +519,7 @@ netsnmp_instance_int_handler(netsnmp_mib_handler *handler,
     case MODE_SET_COMMIT:
     case MODE_SET_FREE:
         /*
-         * nothing to do 
+         * nothing to do
          */
         break;
     }
@@ -593,11 +593,11 @@ netsnmp_instance_helper_handler(netsnmp_mib_handler *handler,
         break;
     }
     /*
-     * got here only if illegal mode found 
+     * got here only if illegal mode found
      */
     return SNMP_ERR_GENERR;
 }
 
 /*
- * @} 
+ * @}
  */

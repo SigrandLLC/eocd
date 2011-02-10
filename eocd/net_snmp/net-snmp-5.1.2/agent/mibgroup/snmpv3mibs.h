@@ -3,7 +3,7 @@
 
 /*
  * snmpv3mibs.h: mib module to include the modules relavent to the
- * snmpv3 mib(s) 
+ * snmpv3 mib(s)
  */
 
 config_require(snmpv3/snmpEngine)

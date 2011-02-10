@@ -10,7 +10,7 @@ config_require(util_funcs)
      extern FindVarMethod var_extensible_loadave;
 
 /*
- * config file parsing routines 
+ * config file parsing routines
  */
      void            loadave_parse_config(const char *, char *);
      void            loadave_free_config(void);

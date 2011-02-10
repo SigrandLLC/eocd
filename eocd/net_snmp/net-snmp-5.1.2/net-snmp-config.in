@@ -213,7 +213,7 @@ else
 		;;
 	esac
       done
-      
+
       if test "x$1" = "x" ; then
           prompt=yes
 	  echo "Enter a SNMPv3 user name to create: "
@@ -497,4 +497,4 @@ if test "x$usage" = "xyes"; then
   echo "    --prefix              Display the installation prefix"
   echo ""
   exit
-fi  
+fi

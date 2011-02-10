@@ -18,7 +18,7 @@
     help.  The module the table_iterator helps should, afterwards,
     never be called for the case of "MODE_GETNEXT" and only for the GET
     and SET related modes instead.
- 
+
     The fundamental notion between the table iterator is that it
     allows your code to iterate over each "row" within your data
     storage mechanism, without requiring that it be sorted in a
@@ -51,10 +51,10 @@
         ever be held by the table_iterator helper.  If allocated
         during iteration the free_data_context pointer should be set
         to an appropriate function.
- 
+
     The table iterator operates in a series of steps that call your
     code hooks from your netsnmp_iterator_info registration pointer.
- 
+
       - the get_first_data_point hook is called at the beginning of
         processing.  It should set the variable list to a list of
         indexes for the given table.  It should also set the
@@ -114,9 +114,9 @@ netsnmp_get_table_iterator_handler(netsnmp_iterator_info *iinfo)
 }
 
 
-/** 
- * Creates and registers a table iterator helper handler calling 
- * netsnmp_create_handler with a handler name set to TABLE_ITERATOR_NAME 
+/**
+ * Creates and registers a table iterator helper handler calling
+ * netsnmp_create_handler with a handler name set to TABLE_ITERATOR_NAME
  * and access method, netsnmp_table_iterator_helper_handler.
  *
  * If NOT_SERIALIZED is not defined the function injects the serialize
@@ -144,9 +144,9 @@ netsnmp_register_table_iterator(netsnmp_handler_registration *reginfo,
 }
 
 /** extracts the table_iterator specific data from a request.
- * This function extracts the table iterator specific data from a 
+ * This function extracts the table iterator specific data from a
  * netsnmp_request_info object.  Calls netsnmp_request_get_list_data
- * with request->parent_data set with data from a request that was added 
+ * with request->parent_data set with data from a request that was added
  * previously by a module and TABLE_ITERATOR_NAME handler name.
  *
  * @param request the netsnmp request info structure
@@ -214,7 +214,7 @@ netsnmp_insert_iterator_context(netsnmp_request_info *request, void *data)
         that_index = table_info->indexes;
         build_oid_noalloc(that_oid, MAX_OID_LEN, &that_oid_len,
                           base_oid, 2, that_index);
-      
+
         /*
          * This request has the same index values,
          * so add the newly-created row information.
@@ -298,7 +298,7 @@ netsnmp_iterator_remember(netsnmp_request_info *request,
         memcpy(ti_info->best_match, oid_to_save, oid_to_save_len * sizeof(oid));
 
     return ti_info;
-}    
+}
 
 #define TABLE_ITERATOR_NOTAGAIN 255
 /** implements the table_iterator helper */
@@ -331,7 +331,7 @@ netsnmp_table_iterator_helper_handler(netsnmp_mib_handler *handler,
     netsnmp_table_registration_info *table_reg_info = NULL;
     int i;
     netsnmp_data_list    *ldata;
-    
+
     iinfo = (netsnmp_iterator_info *) handler->myvoid;
     if (!iinfo || !reginfo || !reqinfo)
         return SNMPERR_GENERR;
@@ -339,14 +339,14 @@ netsnmp_table_iterator_helper_handler(netsnmp_mib_handler *handler,
     tbl_info = iinfo->table_reginfo;
 
     /*
-     * copy in the table registration oid for later use 
+     * copy in the table registration oid for later use
      */
     coloid_len = reginfo->rootoid_len + 2;
     memcpy(coloid, reginfo->rootoid, reginfo->rootoid_len * sizeof(oid));
     coloid[reginfo->rootoid_len] = 1;   /* table.entry node */
 
     /*
-     * illegally got here if these functions aren't defined 
+     * illegally got here if these functions aren't defined
      */
     if (iinfo->get_first_data_point == NULL ||
         iinfo->get_next_data_point == NULL) {
@@ -435,7 +435,7 @@ netsnmp_table_iterator_helper_handler(netsnmp_mib_handler *handler,
                     /* setup, malloc search data: */
                     if (!index_search) {
                         /*
-                         * hmmm....  invalid table? 
+                         * hmmm....  invalid table?
                          */
                         snmp_log(LOG_WARNING,
                                  "invalid index list or failed malloc for table %s\n",
@@ -455,7 +455,7 @@ netsnmp_table_iterator_helper_handler(netsnmp_mib_handler *handler,
 
                 /* remember to free this later */
                 free_this_index_search = index_search;
-            
+
                 /* compare against each request*/
                 for(request = requests ; request; request = request->next) {
                     if (request->processed)
@@ -550,7 +550,7 @@ netsnmp_table_iterator_helper_handler(netsnmp_mib_handler *handler,
                              */
                             if (iinfo->flags & NETSNMP_ITERATOR_FLAG_SORTED)
                                 request_count--;
-                        
+
                         } else {
                             if (iinfo->free_data_context && callback_data_context) {
                                 (iinfo->free_data_context)(callback_data_context,
@@ -570,7 +570,7 @@ netsnmp_table_iterator_helper_handler(netsnmp_mib_handler *handler,
                         snmp_log(LOG_ERR,
                                  "table_iterator called with unsupported mode\n");
                         break;  /* XXX return */
-                
+
                     }
                 }
 
@@ -637,7 +637,7 @@ netsnmp_table_iterator_helper_handler(netsnmp_mib_handler *handler,
 
             if (!ti_info)
                 continue;
-        
+
             switch(reqinfo->mode) {
 
             case MODE_GETNEXT:
@@ -665,12 +665,12 @@ netsnmp_table_iterator_helper_handler(netsnmp_mib_handler *handler,
                                                    ti_info->data_context,
                                                    NULL));
                 break;
-            
+
             default:
                 break;
             }
         }
-            
+
         /* we change all GETNEXT operations into GET operations.
            why? because we're just so nice to the lower levels.
            maybe someday they'll pay us for it.  doubtful though. */
@@ -702,7 +702,7 @@ netsnmp_table_iterator_helper_handler(netsnmp_mib_handler *handler,
                 request->requestvb->type == SNMP_NOSUCHINSTANCE) {
                 /*
                  * get next skipped this value for this column, we
-                 * need to keep searching forward 
+                 * need to keep searching forward
                  */
                 if (request->processed != TABLE_ITERATOR_NOTAGAIN)
                     request->requestvb->type = ASN_PRIV_RETRY;

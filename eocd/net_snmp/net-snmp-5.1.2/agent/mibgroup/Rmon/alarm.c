@@ -1,21 +1,21 @@
 /**************************************************************
  * Copyright (C) 2001 Alex Rozin, Optical Access
- * 
+ *
  *                     All Rights Reserved
- * 
+ *
  * Permission to use, copy, modify and distribute this software and its
  * documentation for any purpose and without fee is hereby granted,
  * provided that the above copyright notice appear in all copies and that
  * both that copyright notice and this permission notice appear in
- * supporting documentation. 
- * 
+ * supporting documentation.
+ *
  * ALEX ROZIN DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
  * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
  * ALEX ROZIN BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
  * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
  * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
  * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
- * SOFTWARE. 
+ * SOFTWARE.
  ******************************************************************/
 
 #include <net-snmp/net-snmp-config.h>
@@ -46,15 +46,15 @@
 #include "util_funcs.h"
 #include "alarm.h"
     /*
-     * Implementation headers 
+     * Implementation headers
      */
 #include "agutil_api.h"
 #include "row_api.h"
     /*
-     * File scope definitions section 
+     * File scope definitions section
      */
     /*
-     * from MIB compilation 
+     * from MIB compilation
      */
 #define alarmEntryFirstIndexBegin       11
 #define MMM_MAX				0xFFFFFFFFl
@@ -116,7 +116,7 @@
      } CRTL_ENTRY_T;
 
 /*
- * Main section 
+ * Main section
  */
 
      static TABLE_DEFINTION_T
@@ -134,7 +134,7 @@
 #endif
 
 /*
- * find & enjoy it in event.c 
+ * find & enjoy it in event.c
  */
      extern int
      event_api_send_alarm(u_char is_rising,
@@ -163,26 +163,26 @@ fetch_var_val(oid * name, size_t namelen, u_long * new_value)
         return SNMP_ERR_NOSUCHNAME;
     }
 
-    
+
     memcpy(called_var.name, tree_ptr->name_a,
            tree_ptr->namelen * sizeof(oid));
- 
-    if (tree_ptr->reginfo && 
-        tree_ptr->reginfo->handler && 
-        tree_ptr->reginfo->handler->next && 
+
+    if (tree_ptr->reginfo &&
+        tree_ptr->reginfo->handler &&
+        tree_ptr->reginfo->handler->next &&
         tree_ptr->reginfo->handler->next->myvoid) {
         s_var_ptr = (struct variable *)tree_ptr->reginfo->handler->next->myvoid;
     }
 
     if (s_var_ptr) {
         if (s_var_ptr->namelen) {
-                called_var.namelen = 
+                called_var.namelen =
                                    tree_ptr->namelen;
                 called_var.type = s_var_ptr->type;
                 called_var.magic = s_var_ptr->magic;
                 called_var.acl = s_var_ptr->acl;
                 called_var.findVar = s_var_ptr->findVar;
-                access =    
+                access =
                     (*(s_var_ptr->findVar)) (&called_var, name, &namelen,
                                              1, &var_len, &write_method);
 
@@ -197,11 +197,11 @@ fetch_var_val(oid * name, size_t namelen, u_long * new_value)
                 if (access) {
 
                     /*
-                     * check 'var_len' ? 
+                     * check 'var_len' ?
                      */
 
                     /*
-                     * check type 
+                     * check type
                      */
                     switch (called_var.type) {
                     case ASN_INTEGER:
@@ -264,7 +264,7 @@ alarm_check_var(unsigned int clientreg, void *clientarg)
         new_value : new_value - body->last_abs_value;
     body->last_abs_value = new_value;
     /*
-     * ag_trace ("fetched value=%ld check %ld", (long) new_value, (long) body->value); 
+     * ag_trace ("fetched value=%ld check %ld", (long) new_value, (long) body->value);
      */
 #if 0                           /* KUKU */
     kuku_sum += body->value;
@@ -298,7 +298,7 @@ alarm_check_var(unsigned int clientreg, void *clientarg)
 }
 
 /*
- * Control Table RowApi Callbacks 
+ * Control Table RowApi Callbacks
  */
 
 int
@@ -316,7 +316,7 @@ alarm_Create(RMON_ENTRY_T * eptr)
     body = (CRTL_ENTRY_T *) eptr->body;
 
     /*
-     * set defaults 
+     * set defaults
      */
     body->interval = 1;
     memcpy(&body->var_name, &DEFAULT_VAR, sizeof(VAR_OID_T));
@@ -364,7 +364,7 @@ alarm_Activate(RMON_ENTRY_T * eptr)
 
     if (SAMPLE_TYPE_ABSOLUTE != body->sample_type) {
         /*
-         * check startup alarm 
+         * check startup alarm
          */
         if (ALARM_RISING == body->startup_type ||
             ALARM_BOTH == body->startup_type) {
@@ -449,7 +449,7 @@ alarm_Copy(RMON_ENTRY_T * eptr)
     body->falling_event_index = clone->falling_event_index;
     /*
      * ag_trace ("alarm_Copy: rising_threshold=%lu falling_threshold=%lu",
-     * body->rising_threshold, body->falling_threshold); 
+     * body->rising_threshold, body->falling_threshold);
      */
     return 0;
 }
@@ -478,7 +478,7 @@ write_alarmEntry(int action, u_char * var_val, u_char var_val_type,
                                         table_ptr, sizeof(CRTL_ENTRY_T));
     case RESERVE2:
         /*
-         * get values from PDU, check them and save them in the cloned entry 
+         * get values from PDU, check them and save them in the cloned entry
          */
         long_tmp = name[alarmEntryFirstIndexBegin];
         leaf_id = (int) name[alarmEntryFirstIndexBegin - 1];
@@ -678,7 +678,7 @@ var_alarmEntry(struct variable * vp, oid * name, size_t * length,
 }
 
 /*
- * Registration & Initializatio section 
+ * Registration & Initializatio section
  */
 
 oid             oidalarmVariablesOid[] = { 1, 3, 6, 1, 2, 1, 16, 3 };
@@ -716,5 +716,5 @@ init_alarm(void)
 }
 
 /*
- * end of file alarm.c 
+ * end of file alarm.c
  */

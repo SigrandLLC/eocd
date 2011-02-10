@@ -1,4 +1,4 @@
-Note, this is based on the text from a web page, which can be found in 
+Note, this is based on the text from a web page, which can be found in
 the documentation section of the http://www.net-snmp.org web page.
 
 Extending the UCD-SNMP agent
@@ -399,7 +399,7 @@ Much of the code defining the contents of the MIB has traditionally been
 held in the header file. However, much of this has slowly migrated to the
 code file, and this is now the recommended location for it (as typified by
 the output of mib2c).
-  The main element of this is a variable structure specifying the details of 
+  The main element of this is a variable structure specifying the details of
 the objects implemented.  This takes the form of an unconstrained array of
 type struct variableN (where N is the length of the longest suffix in the
 table). Thus

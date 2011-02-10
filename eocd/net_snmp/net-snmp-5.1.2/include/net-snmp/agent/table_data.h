@@ -1,5 +1,5 @@
 /*
- * table_iterator.h 
+ * table_iterator.h
  */
 #ifndef _TABLE_DATA_HANDLER_H_
 #define _TABLE_DATA_HANDLER_H_
@@ -46,7 +46,7 @@ extern          "C" {
                                                      netsnmp_table_row
                                                      *row);
     void           *netsnmp_table_data_delete_row(netsnmp_table_row *row);
-    void          
+    void
         *netsnmp_table_data_remove_and_delete_row(netsnmp_table_data
                                                   *table,
                                                   netsnmp_table_row *row);
@@ -61,12 +61,12 @@ extern          "C" {
                                                        size_t
                                                        searchfor_len);
 
-    int            
+    int
         netsnmp_register_table_data(netsnmp_handler_registration *reginfo,
                                     netsnmp_table_data *table,
                                     netsnmp_table_registration_info
                                     *table_info);
-    int            
+    int
         netsnmp_register_read_only_table_data(netsnmp_handler_registration
                                               *reginfo,
                                               netsnmp_table_data *table,
@@ -84,7 +84,7 @@ extern          "C" {
                                       netsnmp_table_row *origrow,
                                       netsnmp_table_row *newrow);
 
-    int            
+    int
         netsnmp_table_data_build_result(netsnmp_handler_registration
                                         *reginfo,
                                         netsnmp_agent_request_info

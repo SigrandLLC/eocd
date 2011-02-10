@@ -11,12 +11,12 @@
 #define REQ_DISCOVERY 1
 typedef struct{
     u8 hop;
-} req_discovery; 
+} req_discovery;
 #define REQ_DISCOVERY_SZ sizeof(req_discovery)
 
 #define REQ_INVENTORY 2
 typedef struct{
-}req_inventory; 
+}req_inventory;
 #define REQ_INVENTORY_SZ sizeof(req_inventory)
 
 #define REQ_CONFIGURE 3
@@ -46,8 +46,8 @@ typedef struct{
     u8 :6;
     u8 cs_srst :1;
     u8 cs_bckoff :1;
-    u8 :6; 
-    
+    u8 :6;
+
 } req_srst_bckoff;
 #define REQ_SRST_BCKOFF_SZ sizeof(req_srst_bckoff)
 

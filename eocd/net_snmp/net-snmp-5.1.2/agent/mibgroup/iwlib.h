@@ -90,21 +90,21 @@
 #error "Your kernel/libc combination is not supported"
 #endif
 
-#ifdef GENERIC_HEADERS 
+#ifdef GENERIC_HEADERS
 /* Proposed by Dr. Michael Rietz <rietz@mail.amps.de>, 27.3.2 */
 /* If this works for all, it might be more stable on the long term - Jean II */
 #include <net/if_arp.h>		/* For ARPHRD_ETHER */
 #include <sys/socket.h>		/* For AF_INET & struct sockaddr */
 #include <netinet/in.h>         /* For struct sockaddr_in */
 #include <netinet/if_ether.h>
-#endif /* GENERIC_HEADERS */    
+#endif /* GENERIC_HEADERS */
 
-#ifdef GLIBC22_HEADERS 
+#ifdef GLIBC22_HEADERS
 /* Added by Ross G. Miller <Ross_Miller@baylor.edu>, 3/28/01 */
 #include <linux/if_arp.h> 	/* For ARPHRD_ETHER */
 #include <linux/socket.h>	/* For AF_INET & struct sockaddr */
 #include <sys/socket.h>
-#endif /* GLIBC22_HEADERS */    
+#endif /* GLIBC22_HEADERS */
 
 #ifdef KLUDGE_HEADERS
 #include <socketbits.h>

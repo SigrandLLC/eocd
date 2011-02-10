@@ -1,5 +1,5 @@
 /**************************************************************
- * Copyright (C) 2001 Alex Rozin, Optical Access 
+ * Copyright (C) 2001 Alex Rozin, Optical Access
  *
  *                     All Rights Reserved
  *
@@ -8,7 +8,7 @@
  * provided that the above copyright notice appear in all copies and that
  * both that copyright notice and this permission notice appear in
  * supporting documentation.
- * 
+ *
  * ALEX ROZIN DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
  * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
  * ALEX ROZIN BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
@@ -49,13 +49,13 @@
 #include "history.h"
 
 /*
- * Implementation headers 
+ * Implementation headers
  */
 #include "agutil_api.h"
 #include "row_api.h"
 
 /*
- * File scope definitions section 
+ * File scope definitions section
  */
 
 #define historyControlEntryFirstIndexBegin      11
@@ -85,7 +85,7 @@
 #define DATA_UTILIZATION	17
 
 /*
- * defaults & limitations 
+ * defaults & limitations
  */
 
 #define MAX_BUCKETS_IN_CRTL_ENTRY	50
@@ -118,7 +118,7 @@ static TABLE_DEFINTION_T HistoryCtrlTable;
 static TABLE_DEFINTION_T *table_ptr = &HistoryCtrlTable;
 
 /*
- * Main section 
+ * Main section
  */
 
 #  define Leaf_historyControlDataSource                    2
@@ -156,7 +156,7 @@ write_historyControl(int action, u_char * var_val, u_char var_val_type,
                                         sizeof(CRTL_ENTRY_T));
     case RESERVE2:
         /*
-         * get values from PDU, check them and save them in the cloned entry 
+         * get values from PDU, check them and save them in the cloned entry
          */
         long_temp = name[historyControlEntryFirstIndexBegin];
         leaf_id = (int) name[historyControlEntryFirstIndexBegin - 1];
@@ -320,7 +320,7 @@ var_historyControlTable(struct variable *vp,
 }
 
 /*
- * history row management control callbacks 
+ * history row management control callbacks
  */
 
 static void
@@ -350,7 +350,7 @@ history_get_backet(unsigned int clientreg, void *clientarg)
     ETH_STATS_T     newSample;
 
     /*
-     * ag_trace ("history_get_backet: timer_id=%d", (int) clientreg); 
+     * ag_trace ("history_get_backet: timer_id=%d", (int) clientreg);
      */
     hdr_ptr = (RMON_ENTRY_T *) clientarg;
     if (!hdr_ptr) {
@@ -370,7 +370,7 @@ history_get_backet(unsigned int clientreg, void *clientarg)
         ag_trace("Err: history_get_backet when entry %d is not valid ?!!",
                  (int) hdr_ptr->ctrl_index);
         /*
-         * snmp_alarm_print_list (); 
+         * snmp_alarm_print_list ();
          */
         snmp_alarm_unregister(body->timer_id);
         ag_trace("Err: unregistered %ld", (long) body->timer_id);
@@ -399,7 +399,7 @@ history_get_backet(unsigned int clientreg, void *clientarg)
     bptr->utilization /= body->coeff;
 
     /*
-     * update previous_bucket 
+     * update previous_bucket
      */
     body->previous_bucket.start_interval = AGUTIL_sys_up_time();
     memcpy(&body->previous_bucket.EthData, &newSample,
@@ -407,7 +407,7 @@ history_get_backet(unsigned int clientreg, void *clientarg)
 }
 
 /*
- * Control Table RowApi Callbacks 
+ * Control Table RowApi Callbacks
  */
 
 int
@@ -421,7 +421,7 @@ history_Create(RMON_ENTRY_T * eptr)
     body = (CRTL_ENTRY_T *) eptr->body;
 
     /*
-     * set defaults 
+     * set defaults
      */
     body->interval = HIST_DEF_INTERVAL;
     body->timer_id = 0;
@@ -437,7 +437,7 @@ int
 history_Validate(RMON_ENTRY_T * eptr)
 {
     /*
-     * T.B.D. (system dependent) check valid inteface in body->data_source; 
+     * T.B.D. (system dependent) check valid inteface in body->data_source;
      */
     return 0;
 }
@@ -459,7 +459,7 @@ history_Activate(RMON_ENTRY_T * eptr)
 
     body->scrlr.current_data_ptr = body->scrlr.first_data_ptr;
     /*
-     * ag_trace ("Dbg:   registered in history_Activate"); 
+     * ag_trace ("Dbg:   registered in history_Activate");
      */
     body->timer_id = snmp_alarm_register(body->interval, SA_REPEAT,
                                          history_get_backet, eptr);
@@ -474,11 +474,11 @@ history_Deactivate(RMON_ENTRY_T * eptr)
     snmp_alarm_unregister(body->timer_id);
     /*
      * ag_trace ("Dbg: unregistered in history_Deactivate timer_id=%d",
-     * (int) body->timer_id); 
+     * (int) body->timer_id);
      */
 
     /*
-     * free data list 
+     * free data list
      */
     ROWDATAAPI_descructor(&body->scrlr);
 
@@ -628,7 +628,7 @@ add_hist_entry(int ctrl_index, int ifIndex,
     body = (CRTL_ENTRY_T *) eptr->body;
 
     /*
-     * set parameters 
+     * set parameters
      */
 
     body->data_source.objid[body->data_source.length - 1] = ifIndex;
@@ -648,7 +648,7 @@ add_hist_entry(int ctrl_index, int ifIndex,
 #endif
 
 /*
- * Registration & Initializatio section 
+ * Registration & Initializatio section
  */
 
 oid             historyControlTable_variables_oid[] =
@@ -656,7 +656,7 @@ oid             historyControlTable_variables_oid[] =
 
 struct variable2 historyControlTable_variables[] = {
     /*
-     * magic number        , variable type, ro/rw , callback fn  ,           L, oidsuffix 
+     * magic number        , variable type, ro/rw , callback fn  ,           L, oidsuffix
      */
     {CTRL_INDEX, ASN_INTEGER, RONLY, var_historyControlTable, 2, {1, 1}},
     {CTRL_DATASOURCE, ASN_OBJECT_ID, RWRITE, var_historyControlTable, 2,
@@ -678,7 +678,7 @@ oid             etherHistoryTable_variables_oid[] =
 
 struct variable2 etherHistoryTable_variables[] = {
     /*
-     * magic number     , variable type , ro/rw , callback fn  ,        L, oidsuffix 
+     * magic number     , variable type , ro/rw , callback fn  ,        L, oidsuffix
      */
     {DATA_INDEX, ASN_INTEGER, RONLY, var_etherHistoryTable, 2, {1, 1}},
     {DATA_SAMPLEINDEX, ASN_INTEGER, RONLY, var_etherHistoryTable, 2,
@@ -724,6 +724,6 @@ init_history(void)
                       &history_Deactivate, &history_Copy);
 
     /*
-     * add_hist_entry (2, 3, 4, 2); 
+     * add_hist_entry (2, 3, 4, 2);
      */
 }

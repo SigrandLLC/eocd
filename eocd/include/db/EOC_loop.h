@@ -61,18 +61,18 @@ class EOC_loop{
     side_perf last_msg;
 	char lstate; // link state
 	time_t moni_ts; // last moniSecs refresh
-    
+
     // TODO: check how hardware maintain moulo counters: i.e. if counter overflow - would it count zero as addit count?
     inline u8 modulo_diff(u8 val,u8 nval,u8 modulo,char *type){
 		u32 ret = ((nval-val>=0) ? nval-val : nval + (modulo-val)+1);
 		//	printf("modulo_diff8(%s): val(%u) nval(%u) modulo(%u) ret(%u)\n",type,val,nval,modulo,ret);
-		return ret;	
+		return ret;
     }
 
     inline u16 modulo_diff(u16 val,u16 nval,u16 modulo,char *type){
 		u32 ret = ((nval-val>=0) ? nval-val : nval + (modulo-val)+1);
 		//	printf("modulo_diff16(%s): val(%u) nval(%u) modulo(%u) ret(%u)\n",type,val,nval,modulo,ret);
-		return ret;	
+		return ret;
     }
 
     inline int int_diff(u32 val,u32 nval,u32 modulo,char *type){
@@ -121,7 +121,7 @@ class EOC_loop{
 		index = i;
 		return 0;
     }
-    
+
     int d1_counters(int index,counters_elem &cntrs){
 		if( !(index < EOC_1DAY_INTS && index>=0) )
 			return -1;
@@ -165,17 +165,17 @@ class EOC_loop{
 	void update_mon_sec()
 	{
 		time_t cur = time(NULL);
-		
+
 
 		if( !lstate )
 			return;
-		
+
 		if( (_15min_ints[0]->tstamp + EOC_15MIN_SECS) > moni_ts ){
-			if( (_15min_ints[0]->tstamp + EOC_15MIN_SECS) < cur ){ 
-				// if 15min interval exceeds. 
+			if( (_15min_ints[0]->tstamp + EOC_15MIN_SECS) < cur ){
+				// if 15min interval exceeds.
 				// If also 1day exceeds => 15min too - so dont need to chech 1day int
 				int bkp = cur;
-				cur = _15min_ints[0]->tstamp + EOC_15MIN_SECS;			
+				cur = _15min_ints[0]->tstamp + EOC_15MIN_SECS;
 				_15min_ints[0]->cntrs.mon_sec += cur-moni_ts;
 				_1day_ints[0]->cntrs.mon_sec += cur-moni_ts;
 				moni_ts = cur;
@@ -197,7 +197,7 @@ class EOC_loop{
 				cur = _1day_ints[0]->tstamp + EOC_1DAY_SECS;
 				_1day_ints[0]->cntrs.mon_sec += cur-moni_ts;
 				moni_ts = cur;
-			}	
+			}
 		}
 	}
 

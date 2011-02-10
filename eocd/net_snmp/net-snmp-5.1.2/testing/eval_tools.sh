@@ -113,7 +113,7 @@ SKIPIFNOT() {
 	    exit 0;
 	fi
 }
-	
+
 
 #------------------------------------ -o-
 #
@@ -132,7 +132,7 @@ VERIFY() {	# <path_to_file(s)>
 
 #------------------------------------ -o-
 #
-STARTTEST() {	
+STARTTEST() {
 	[ ! -e "$junkoutputfile" ] && {
 		touch $junkoutputfile
 		return
@@ -269,7 +269,7 @@ WAITFOR() {
 	if [ $SNMP_CAN_USLEEP = 1 ] ; then
 	  sleeptime=`expr $SNMP_SLEEP '*' 50`
           SNMP_SLEEP=.1
-	else 
+	else
 	  sleeptime=`expr $SNMP_SLEEP '*' 5`
 	  SNMP_SLEEP=1
 	fi
@@ -297,7 +297,7 @@ WAITFOR() {
   ## restore the previous save state and test result
     OK_TO_SAVE_RESULT=$save_state
     snmp_last_test_result=$save_test
-}    
+}
 
 # WAITFORORDIE "grep string" ["file"]
 WAITFORORDIE() {

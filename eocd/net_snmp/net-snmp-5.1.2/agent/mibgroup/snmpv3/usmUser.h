@@ -10,19 +10,19 @@
 
 /*
  * <...prefix>.<engineID_length>.<engineID>.<user_name_length>.<user_name>
- * = 1 + 32 + 1 + 32 
+ * = 1 + 32 + 1 + 32
  */
 #define USM_LENGTH_OID_MAX	66
 
 /*
- * we use header_generic and checkmib from the util_funcs module 
+ * we use header_generic and checkmib from the util_funcs module
  */
 
 config_require(util_funcs)
 config_add_mib(SNMP-USER-BASED-SM-MIB)
 
     /*
-     * Magic number definitions: 
+     * Magic number definitions:
      */
 #define   USMUSERSPINLOCK       1
 #define   USMUSERSECURITYNAME   2
@@ -37,7 +37,7 @@ config_add_mib(SNMP-USER-BASED-SM-MIB)
 #define   USMUSERSTORAGETYPE    11
 #define   USMUSERSTATUS         12
     /*
-     * function definitions 
+     * function definitions
      */
      extern void     init_usmUser(void);
      extern FindVarMethod var_usmUser;

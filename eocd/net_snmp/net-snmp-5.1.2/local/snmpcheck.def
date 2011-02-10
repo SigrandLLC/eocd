@@ -137,7 +137,7 @@ sub check {
 			$tmp->[0]->fix($mibloc);     # fix now if curses
 		    } else {
 			print $ans;
-			printf("\nChecking %s: %s\r",$self->{'Host'}, 
+			printf("\nChecking %s: %s\r",$self->{'Host'},
 			       $self->{'MibDesc'});
 		    }
 		} elsif ($::fixit > 0) {
@@ -203,16 +203,16 @@ sub new{
 	$self->{'Frame'} = $tmp->Frame();
     }
     bless $self;
-    $self->{'ErrName'} = 
+    $self->{'ErrName'} =
 	$self->snmp_get("$self->{'Mib'}$::mibident.$self->{'MibLocation'}");
-    $self->{'ErrMsg'} = 
+    $self->{'ErrMsg'} =
 	$self->snmp_get("$self->{'Mib'}$::miberrmsg.$self->{'MibLocation'}");
     if (exists $self->{'HostId'}->{'Down'}) {
 	return $self;
     }
     if ($::display) {
 	$self->{'Frame'}->pack();
-	$self->{'Desc'} = 
+	$self->{'Desc'} =
 	    $self->{'Frame'}->Button(-text => sprintf("%-12.12s %-42.42s",
 						     $self->{'ErrName'},
 						     $self->{'ErrMsg'}),
@@ -225,7 +225,7 @@ sub new{
 				     -activebackground => '#C9C9C9',
 				     -background => '#E0C9C9',
 				     -command => [\&selectme,$self]);
-	$self->{'Desc'}->pack(-fill => "x",-expand => 1,-side=>"left"); # 
+	$self->{'Desc'}->pack(-fill => "x",-expand => 1,-side=>"left"); #
 	if ($::raiseonnew) {
 	    $tmp->toplevel->deiconify();
 	    $tmp->toplevel->raise();
@@ -347,7 +347,7 @@ sub fix {
     if ($::display) {
       main::setstatus(sprintf("Fixing %s:  %s",
 			      $self->{'Host'}, $self->{'ErrName'}));
-    } 
+    }
     else {
 	printf(" / Fixing...\b\b\b\b\b\b\b\b\b");
     }
@@ -380,7 +380,7 @@ sub fix {
 	if ($::display) {
 #	    $self->{'HostId'}->deleteProb($self);
 	    main::setmsg("Fixed $self->{'ErrName'} on $self->{'Host'}");
-	} 
+	}
 	else {
 	    printf("Fixed     \n");
 	}
@@ -416,7 +416,7 @@ sub new {
 	    $self->{'MainFrame'}->configure(-relief =>"sunken",-borderwidth=>2);
 	}
 	$self->{'ProbFrame'} = $self->{'MainFrame'}->Frame();
-	$self->{'hostlabel'} = 
+	$self->{'hostlabel'} =
 	    $self->{'MainFrame'}->Button(-text => sprintf("%-9.9s",
 							    $self->{'Name'}),
 					 -bd => 0, -padx => 0, -pady => 0,
@@ -430,9 +430,9 @@ sub new {
 				   -padx=> 1,-pady =>1);
 	$self->{'ProbFrame'}->pack(-side=>"left",-ipadx=>1,
 				   -padx=> 1,-pady =>1);
-	$self->{'MainFrame'}->pack( #-padx => 2,-pady =>2, 
+	$self->{'MainFrame'}->pack( #-padx => 2,-pady =>2,
 				   -fill => "x", -expand => 1);
-    } 
+    }
     foreach $mibx ( sort mibsort keys(%::miblist) ) {
 	push(@{$self->{'Mibs'}},
 	     new Mib ($self,"$::mibheadall$mibx",$::miblist{$mibx},
@@ -501,7 +501,7 @@ sub hostdown {
     $self->{'Down'} = 1;
     if ($::display) {
 	if (!exists $self->{'hostlabel'}) {
-	    $self->{'hostlabel'} = 
+	    $self->{'hostlabel'} =
 		$self->{'MainFrame'}->Button(-text => sprintf("%-9.9s",
 							      $self->{'Name'}),
 					     -bd => 0, -padx => 0, -pady => 0,
@@ -513,7 +513,7 @@ sub hostdown {
 					     -relief => "flat");
 	}
 	::addToLog("$self->{'Name'} is down",2);
-	$self->{'hostlabel'}->configure(-text => 
+	$self->{'hostlabel'}->configure(-text =>
 					sprintf("%-9.9s down",$self->{'Name'}),
 					-width => 14);
     }
@@ -587,12 +587,12 @@ sub deleteProb {
     for ($k = 0; $k <= $#{$self->{'Problems'}}; $k++) {
 	if (ref($self->{'Problems'}->[$k]) eq Problem ||
 	    ref($self->{'Problems'}->[$k]) eq FixProblem ) {
-	    if ($self->{'Problems'}->[$k]->{'Mib'} eq $child->{'Mib'} && 
+	    if ($self->{'Problems'}->[$k]->{'Mib'} eq $child->{'Mib'} &&
 	    $self->{'Problems'}->[$k]->{'MibLocation'} eq
 	    $child->{'MibLocation'}) {
 		splice(@{$self->{'Problems'}},$k,1);
 		$child->deleteself();
-		if ($#{$self->{'Problems'}} == -1 && 
+		if ($#{$self->{'Problems'}} == -1 &&
 		    !exists $self->{'noDelete'}) {
 		    $self->deleteme();
 		}
@@ -645,7 +645,7 @@ if (($andlog || $#ARGV == -1) && !$dontstart) {
 }
 
 #
-# Check all the found hosts 
+# Check all the found hosts
 #
 
 if ($display) {
@@ -669,7 +669,7 @@ if ($display) {
     $msgBar = $top->Frame(-relief => "raised",-borderwidth => 2);
     $msg = $msgBar->Label(-text => "",-anchor =>"e");
     $msgl = $msgBar->Label(-text => "Note:  ", -anchor => "w");
-    
+
     $botFrame = $top->Frame();
     $butFrame = $top->Frame();
     $entryhost = "";
@@ -708,7 +708,7 @@ if ($display) {
     $RescanPrefsBut->checkbutton(-label =>"Auto Rescan",
 			       -variable =>\$AutoRescan,
 			       -command => sub {if ($AutoRescan) {
-				   $afterId = 
+				   $afterId =
 				     Tk::after($rescanWhen*1000,[\&autorescan])
 				   } else {
 				     Tk::after("cancel",$afterId);
@@ -731,7 +731,7 @@ if ($display) {
     $PrefsMenuBut->entryconfigure("Log Verbosity",
 				  -menu => $LogVerbBut);
     for ($i=1; $i <= $numloglevels; $i++) {
-	$LogVerbBut->radiobutton(-label => "$i", -variable => \$loglevel, 
+	$LogVerbBut->radiobutton(-label => "$i", -variable => \$loglevel,
 				 -value => $i);
     }
 
@@ -739,17 +739,17 @@ if ($display) {
     $CheckForBut = $PrefsMenu->Menu();
     $PrefsMenuBut->entryconfigure("Check For",
 				  -menu => $CheckForBut);
-    $CheckForBut->command(-label => "Fixable Problems", 
+    $CheckForBut->command(-label => "Fixable Problems",
 			  -command => [\&setmibchecklist,@fixitlist]);
-    $CheckForBut->command(-label => "Everything", 
+    $CheckForBut->command(-label => "Everything",
 			  -command => [\&setmibchecklist,keys(%miblist)]);
     $CheckForBut->separator();
     foreach $i ( sort mibsort keys(%::mibchecklist) ) {
-	$CheckForBut->checkbutton(-label => $miblist{$i}, 
+	$CheckForBut->checkbutton(-label => $miblist{$i},
 				  -variable => \$mibchecklist{$i});
     }
 
-    $PrefsMenuBut->checkbutton(-label => "Ping Host First", 
+    $PrefsMenuBut->checkbutton(-label => "Ping Host First",
 			       -variable => \$pinghost);
 
     # Agent control
@@ -758,17 +758,17 @@ if ($display) {
     $agentMenu = $agentMenuBut->Menu(-tearoff => 1);
     $agentMenuBut->configure(-menu => $agentMenu);
     $agentMenuBut->pack(-side => "left");
-    $agentMenuBut->command(-label => "Re-read Configuration", 
-			   -command => [sub {if ($selected) { $top->Busy(); 
+    $agentMenuBut->command(-label => "Re-read Configuration",
+			   -command => [sub {if ($selected) { $top->Busy();
 							      my $args = sprint($::default_get_args, $selected->{'Host'});
 $_ = `$::snmppath/snmpset $args $mibupdateconfig i 1`; $top->Unbusy();}}]);
-    $agentMenuBut->command(-label => "Clear Exec Cache", 
+    $agentMenuBut->command(-label => "Clear Exec Cache",
 			   -command => [sub {if ($selected) { $top->Busy();
 							      my $args = sprint($::default_get_args, $selected->{'Host'});
 $_ = `$::snmppath/snmpset $args $mibclearcache i 1`; $top->Unbusy();}}]);
     $agentMenuBut->separator();
-    $agentMenuBut->command(-label => "Re-start Agent", 
-			   -command => [sub {if ($selected) { $top->Busy(); 
+    $agentMenuBut->command(-label => "Re-start Agent",
+			   -command => [sub {if ($selected) { $top->Busy();
 							      my $args = sprint($::default_get_args, $selected->{'Host'});
 $_ = `$::snmppath/snmpset $args $mibrestartagent i 1`; $top->Unbusy();} }]);
 
@@ -828,7 +828,7 @@ $_ = `$::snmppath/snmpset $args $mibrestartagent i 1`; $top->Unbusy();} }]);
     &makehidden() if ($hidden);
     $top->update();
 
-    # generate log window, but tell it not to create display 
+    # generate log window, but tell it not to create display
     $logwindow = MainWindow->new;
     $logwindow->option('add','*highlightThickness','0');        #wish this worked
 #     $logwindow->option('add','*highlightbackground','#C9C9C9');
@@ -837,7 +837,7 @@ $_ = `$::snmppath/snmpset $args $mibrestartagent i 1`; $top->Unbusy();} }]);
 
     $logbuttons = $logwindow->Frame;
     $logbuttons->pack(-side => 'bottom', -expand => 1, -fill => 'x');
-    $logclose = $logbuttons->Button(-text => 'Close', 
+    $logclose = $logbuttons->Button(-text => 'Close',
 				 -command => ['withdraw',$logwindow]);
     $logclose->pack(-side => 'left', -expand => 1);
 
@@ -849,7 +849,7 @@ $_ = `$::snmppath/snmpset $args $mibrestartagent i 1`; $top->Unbusy();} }]);
     $logwindow->title("snmpcheck Action Log file");
     $logwindow->iconname("snmpcheck-log");
     $logtext->delete('1.0','end');
-    $logclear = $logbuttons->Button(-text => 'Clear Log', 
+    $logclear = $logbuttons->Button(-text => 'Clear Log',
 				 -command => [\&deleteLog]);
     $logclear->pack(-side => 'right', -expand => 1);
     if (! $logwindowatstart) {
@@ -879,7 +879,7 @@ sub loadAllHosts {
     foreach $host ( @hostlist ) {
 	newHost($host);
     }
-}    
+}
 
 sub newHost {
     my $name = shift;
@@ -929,7 +929,7 @@ sub addToLog {
 }
 
 sub displayTyfon {
-    remote_cmd_generic("cat /net/tyfon/1/OV/log/ece-log","Tyfon -- ece-log"); 
+    remote_cmd_generic("cat /net/tyfon/1/OV/log/ece-log","Tyfon -- ece-log");
 }
 
 sub displayLog {
@@ -964,7 +964,7 @@ sub selectitem {
     $DelBut->configure(-state => "normal", -command => ['deleteme',$selected]);
     $ChkBut->configure(-state => "normal", -command => ['check',$selected]);
     if ($selected->canfix() && !(exists $selected->{'Down'})) {
-	$FixBut->configure(-state => "normal", 
+	$FixBut->configure(-state => "normal",
 			   -command => ['fix',$selected]);
     } else {
 	$FixBut->configure(-state => "disabled");
@@ -990,7 +990,7 @@ sub makeappear {
     $statusBar->pack(-expand => 1, -fill => "x");
     $msgBar->pack(-expand => 1, -fill => "x");
     $HostFrame->pack(-expand => 1, -fill => "x");
-    $butFrame->pack(-expand => 1, -fill => "x"); 
+    $butFrame->pack(-expand => 1, -fill => "x");
     $botFrame->pack(-expand => 1, -fill => "x");
     reliefen();
     $hidden=0;
@@ -1098,24 +1098,24 @@ sub remote_cmd_generic {
     $scroll->pack(-side => 'left', -fill => 'y');
     $text->configure(-yscrollcommand => ['set', $scroll]);
 
-    my $close = $buttons->Button(-text => 'Close', 
+    my $close = $buttons->Button(-text => 'Close',
 				 -command => ['destroy',$newwin]);
     $close->pack(-side => 'left', -expand => 1);
-    my $rerun = $buttons->Button(-text => 'Re-Run', 
+    my $rerun = $buttons->Button(-text => 'Re-Run',
 				 -command=>[\&fill_text,'',$text,
 					    \$cmd,$insert]);
     $rerun->pack(-side => 'left', -expand => 1);
 
     my $cmdlabel = $entries->Label(-text => "Command:  ");
-    my $cmdtexte = $entries->Entry(-textvariable => \$cmd, 
+    my $cmdtexte = $entries->Entry(-textvariable => \$cmd,
 				      -relief => "sunken");
     $cmdtexte->bind('<Return>' => [\&fill_text,$text, \$cmd,$insert]);
     $cmdlabel->pack(-side => 'left');
     $cmdtexte->pack(-side => 'left');
-    
+
     my $searchtext = '';
     my $searchlabel = $entries->Label(-text => "Search for:  ");
-    my $searchtexte = $entries->Entry(-textvariable => \$searchtext, 
+    my $searchtexte = $entries->Entry(-textvariable => \$searchtext,
 				      -relief => "sunken");
 
     $searchtexte->pack(-side => 'right');
@@ -1128,7 +1128,7 @@ sub remote_cmd_generic {
 						$text->tag('add', 'search', $current, "$current + $length char");
 						$current = $text->index("$current + $length char");
 						$text->tag('configure','search',
-							   -background => 
+							   -background =>
 							   'lightBlue');}}]);
 
     if (defined($title)) {
@@ -1166,7 +1166,7 @@ sub fill_text {
 
 sub display_help {
     print "
-Usage:  snmpcheck [-x] [-n|y] [-h] [-H] [-V NUM] [-L] [-f] [[-a] HOSTS] 
+Usage:  snmpcheck [-x] [-n|y] [-h] [-H] [-V NUM] [-L] [-f] [[-a] HOSTS]
 
   -h\tDisplay this message.
   -a\tcheck error log file AND hosts specified on command line.

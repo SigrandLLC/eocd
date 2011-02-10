@@ -144,7 +144,7 @@ structure (a struct snmp_session, copied from snmp_sess_open).
 The thread can adjust parameters such as the session timeout
 or the community string with this returned struct snmp_session pointer.
 Changes to the remote or local port values have no effect on an opened Session.
- 
+
 The thread can build PDUs and bind variables to PDUs, as it performs its duties.
 The thread then calls snmp_sess_send() or snmp_sess_async_send() to build and send
 an SNMP APDU to the remote device. If a Get-Response-PDU is expected, the thread
@@ -184,7 +184,7 @@ in a multi-threaded application :
 
 
 Function Summary
- 
+
 The functions in the following table are functionally equivalent,
 with the exception of these behaviors:
 - The Traditional API manages many sessions
@@ -192,7 +192,7 @@ with the exception of these behaviors:
        and touches the Sessions list
 - The Single API manages only one session
 - The Single API passes an opaque pointer, and does not use Sessions list
- 
+
   Traditional        Single                    Comment
   ===========        ==============            =======
   snmp_sess_init     snmp_sess_init            Call before either open
@@ -277,7 +277,7 @@ Example 2 : Single API use.
           return 0;
       }
       snmp_sess_close(sessp);
- 
+
 Example 3. Differences Between Traditional API and Single API Usage
 5a6
 >       void *sessp;  /* <-- an opaque pointer, not a struct pointer */
@@ -291,7 +291,7 @@ Example 3. Differences Between Traditional API and Single API Usage
 <       /* Pass sptr to snmp_error from here forward */
 ---
 >       sptr = snmp_sess_session(sessp); /* <-- get the snmp_session pointer */
-> 
+>
 >       /* Pass sptr to snmp_sess_error from here forward */
 26,27c29,30
 <       if (0 == snmp_send(sptr, pdu)) {

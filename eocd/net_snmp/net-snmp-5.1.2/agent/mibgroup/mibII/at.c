@@ -143,7 +143,7 @@ static int      ARP_Scan_Next(u_long *, char *, u_long *);
 
 /*
  * define the structure we're going to ask the agent to register our
- * information at 
+ * information at
  */
 struct variable1 at_variables[] = {
     {ATIFINDEX, ASN_INTEGER, RONLY, var_atEntry, 1, {1}},
@@ -153,7 +153,7 @@ struct variable1 at_variables[] = {
 
 /*
  * Define the OID pointer to the top of the mib tree that we're
- * registering underneath 
+ * registering underneath
  */
 oid             at_variables_oid[] = { SNMP_OID_MIB2, 3, 1, 1 };
 
@@ -161,7 +161,7 @@ void
 init_at(void)
 {
     /*
-     * register ourselves with the agent to handle our mib tree 
+     * register ourselves with the agent to handle our mib tree
      */
     REGISTER_MIB("mibII/at", at_variables, variable1, at_variables_oid);
 #ifdef solaris2
@@ -177,11 +177,11 @@ init_at(void)
  * Arguments:
  * vp     IN      - pointer to variable entry that points here
  * name    IN/OUT  - IN/name requested, OUT/name found
- * length  IN/OUT  - length of IN/OUT oid's 
+ * length  IN/OUT  - length of IN/OUT oid's
  * exact   IN      - TRUE if an exact match was requested
  * var_len OUT     - length of variable or 0 if function returned
  * write_method
- * 
+ *
  */
 
 u_char         *
@@ -215,7 +215,7 @@ var_atEntry(struct variable *vp,
     int             oid_length;
 
     /*
-     * fill in object part of name for current (less sizeof instance part) 
+     * fill in object part of name for current (less sizeof instance part)
      */
     memcpy((char *) current, (char *) vp->name,
            (int) vp->namelen * sizeof(oid));
@@ -385,7 +385,7 @@ var_atEntry(struct variable * vp,
     int             offset, olength;
 
     /*
-     * fill in object part of name for current (less sizeof instance part) 
+     * fill in object part of name for current (less sizeof instance part)
      */
 
     DEBUGMSGTL(("mibII/at", "var_atEntry: "));
@@ -495,7 +495,7 @@ static mib_ipNetToMediaEnt *at = (mib_ipNetToMediaEnt *) 0;
 /*
  * at used to be allocated every time we needed to look at the arp cache.
  * This cause us to parse /proc/net/arp twice for each request and didn't
- * allow us to filter things like we'd like to.  So now we use it 
+ * allow us to filter things like we'd like to.  So now we use it
  * semi-statically.  We initialize it to size 0 and if we need more room
  * we realloc room for ARP_CACHE_INCR more entries in the table.
  * We never release what we've taken . . .
@@ -593,7 +593,7 @@ ARP_Scan_Init(void)
     }
 
     /*
-     * Get rid of the header line 
+     * Get rid of the header line
      */
     fgets(line, sizeof(line), in);
 
@@ -626,7 +626,7 @@ ARP_Scan_Init(void)
         }
         /*
          * Invalidated entries have their flag set to 0.
-         * * We want to ignore them 
+         * * We want to ignore them
          */
         if (tmp_flags == 0) {
             continue;
@@ -696,7 +696,7 @@ ARP_Scan_Next(u_long * IPAddr, char *PhysAddr, u_long * ifType)
 #ifdef linux
     if (arptab_current < arptab_size) {
         /*
-         * copy values 
+         * copy values
          */
         *IPAddr = at[arptab_current].at_iaddr.s_addr;
         *ifType =
@@ -707,18 +707,18 @@ ARP_Scan_Next(u_long * IPAddr, char *PhysAddr, u_long * ifType)
                sizeof(at[arptab_current].at_enaddr));
 
         /*
-         * increment to point next entry 
+         * increment to point next entry
          */
         arptab_current++;
         /*
-         * return success 
+         * return success
          */
         return (1);
     }
 #elif defined(hpux11)
     if (arptab_current < arptab_size) {
         /*
-         * copy values 
+         * copy values
          */
         *IPAddr = at[arptab_current].NetAddr;
         memcpy(PhysAddr, at[arptab_current].PhysAddr.o_bytes,
@@ -726,11 +726,11 @@ ARP_Scan_Next(u_long * IPAddr, char *PhysAddr, u_long * ifType)
         *ifType = at[arptab_current].Type;
         *ifIndex = at[arptab_current].IfIndex;
         /*
-         * increment to point next entry 
+         * increment to point next entry
          */
         arptab_current++;
         /*
-         * return success 
+         * return success
          */
         return (1);
     }
@@ -741,13 +741,13 @@ ARP_Scan_Next(u_long * IPAddr, char *PhysAddr, u_long * ifType)
 #ifdef STRUCT_ARPHD_HAS_AT_NEXT
         /*
          * The arp table is an array of linked lists of arptab entries.
-         * Unused slots have pointers back to the array entry itself 
+         * Unused slots have pointers back to the array entry itself
          */
 
         if (at_ptr == (auto_nlist_value(ARPTAB_SYMBOL) +
                        arptab_current * sizeof(struct arphd))) {
             /*
-             * Usused 
+             * Usused
              */
             arptab_current++;
             at_ptr = at[arptab_current].at_next;
@@ -841,7 +841,7 @@ var_atEntry(struct variable *vp,
     u_char          dest_addr[4];
 
     /*
-     * fill in object part of name for current (less sizeof instance part) 
+     * fill in object part of name for current (less sizeof instance part)
      */
     memcpy((char *) current, (char *) vp->name,
            (int) vp->namelen * sizeof(oid));
@@ -857,7 +857,7 @@ var_atEntry(struct variable *vp,
         pIpNetTable = (PMIB_IPNETTABLE) malloc(dwActualSize);
         if (pIpNetTable != NULL) {
             /*
-             * Get the sorted IpNet Table 
+             * Get the sorted IpNet Table
              */
             status = GetIpNetTable(pIpNetTable, &dwActualSize, TRUE);
         }
@@ -902,14 +902,14 @@ var_atEntry(struct variable *vp,
     }
     if (arp_row == NULL) {
         /*
-         * Free allocated memory in case of SET request's FREE phase 
+         * Free allocated memory in case of SET request's FREE phase
          */
         arp_row = (PMIB_IPNETROW) malloc(sizeof(MIB_IPNETROW));
     }
 
     if (lowState < 0 || status != NO_ERROR) {
         /*
-         * for creation of new row, only ipNetToMediaTable case is considered 
+         * for creation of new row, only ipNetToMediaTable case is considered
          */
         if (*length == 15 || *length == 16) {
             create_flag = 1;
@@ -1070,7 +1070,7 @@ write_arp(int action,
         break;
     case RESERVE2:
         /*
-         * Save the old value, in case of UNDO 
+         * Save the old value, in case of UNDO
          */
         if (oldarp_row == NULL) {
             oldarp_row = (PMIB_IPNETROW) malloc(sizeof(MIB_IPNETROW));
@@ -1085,7 +1085,7 @@ write_arp(int action,
             arp_row->dwIndex = *((int *) var_val);
             /*
              * In case of new entry, physical address is mandatory.
-             * * SetIpNetEntry will be done in COMMIT case 
+             * * SetIpNetEntry will be done in COMMIT case
              */
             if (!create_flag) {
                 if (SetIpNetEntry(arp_row) != NO_ERROR) {
@@ -1093,22 +1093,22 @@ write_arp(int action,
                     retval = SNMP_ERR_COMMITFAILED;
                 }
                 /*
-                 * Don't know yet, whether change in ifIndex creates new row or not 
+                 * Don't know yet, whether change in ifIndex creates new row or not
                  */
                 /*
-                 * else{ 
+                 * else{
                  */
                 /*
-                 * temp_row.dwType = 2; 
+                 * temp_row.dwType = 2;
                  */
                 /*
-                 * if(SetIpNetEntry(&temp_row) != NO_ERROR) 
+                 * if(SetIpNetEntry(&temp_row) != NO_ERROR)
                  */
                 /*
-                 * retval = SNMP_ERR_COMMITFAILED; 
+                 * retval = SNMP_ERR_COMMITFAILED;
                  */
                 /*
-                 * } 
+                 * }
                  */
             }
             break;
@@ -1152,11 +1152,11 @@ write_arp(int action,
         return retval;
     case UNDO:
         /*
-         * Reverse the SET action and free resources 
+         * Reverse the SET action and free resources
          */
         if (oldarp_row != NULL) {
             /*
-             * UNDO the changes done for existing entry. 
+             * UNDO the changes done for existing entry.
              */
             if (!create_flag) {
                 if ((status = SetIpNetEntry(oldarp_row)) != NO_ERROR) {
@@ -1185,7 +1185,7 @@ write_arp(int action,
         break;
     case COMMIT:
         /*
-         * if new entry and physical address specified, create new entry 
+         * if new entry and physical address specified, create new entry
          */
         if (create_flag) {
             if (arp_row->dwPhysAddrLen != 0) {
@@ -1197,21 +1197,21 @@ write_arp(int action,
                 }
             } else {
                 /*
-                 * For new entry, physical address must be set. 
+                 * For new entry, physical address must be set.
                  */
                 snmp_log(LOG_ERR,
                          "Can't create new entry without physical address\n");
                 retval = SNMP_ERR_WRONGVALUE;
             }
             /*
-             * unset the create_flag, so that CreateIpNetEntry called only once 
+             * unset the create_flag, so that CreateIpNetEntry called only once
              */
             create_flag = 0;
         }
 
     case FREE:
         /*
-         * Free any resources allocated 
+         * Free any resources allocated
          */
         free(oldarp_row);
         oldarp_row = NULL;

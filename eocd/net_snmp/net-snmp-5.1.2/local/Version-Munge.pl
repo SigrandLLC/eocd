@@ -35,13 +35,13 @@ my @exprs = (
 	     # c files with a equal sign and a specific variable
 	     { type => 'c',
 	       expr => 'VersionInfo(\s*=\s*[^"]*)"(.*)"',
-	       repl => 'VersionInfo$1"$VERSION"', 
+	       repl => 'VersionInfo$1"$VERSION"',
 	       files => [qw(snmplib/snmp_version.c)]},
 
 	     # documentation files
 	     { type => 'docs',
 	       expr => 'Version: [\.0-9a-zA-Z]+' =>
-	       repl => 'Version: $VERSION', 
+	       repl => 'Version: $VERSION',
 	       files => [qw(README FAQ dist/net-snmp.spec)]},
 
 	     # sed files

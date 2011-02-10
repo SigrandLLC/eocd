@@ -57,16 +57,16 @@ extern          "C" {
     int             snmp_vlog(int priority, const char *format,
                               va_list ap);
     /*
-     * 0 - successful message formatting 
+     * 0 - successful message formatting
      */
     /*
-     * -1 - Could not format log-string 
+     * -1 - Could not format log-string
      */
     /*
-     * -2 - Could not allocate memory for log-message 
+     * -2 - Could not allocate memory for log-message
      */
     /*
-     * -3 - Log-message too long! 
+     * -3 - Log-message too long!
      */
 
     void            snmp_log_perror(const char *s);
@@ -80,7 +80,7 @@ extern          "C" {
 
     int snmp_log_options(char *optarg, int argc, char *const *argv);
     void snmp_log_options_usage(const char *lead, FILE *outf);
-    typedef struct netsnmp_log_handler_s netsnmp_log_handler; 
+    typedef struct netsnmp_log_handler_s netsnmp_log_handler;
     typedef int (NetsnmpLogHandler)(netsnmp_log_handler*, int, const char *);
 
     NetsnmpLogHandler log_handler_stdouterr;

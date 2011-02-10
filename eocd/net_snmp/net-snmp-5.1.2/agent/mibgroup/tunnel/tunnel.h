@@ -6,7 +6,7 @@
  * Copyright (c) 2000-2003 Frank Strauss <strauss@ibr.cs.tu-bs.de>
  *
  *                          All Rights Reserved
- * 
+ *
  * Permission to use, copy, modify and distribute this software and its
  * documentation for any purpose and without fee is hereby granted,
  * provided that the above copyright notice appears in all copies and
@@ -15,7 +15,7 @@
  * The Regents of the University of California not be used in advertising
  * or publicity pertaining to distribution of the software without
  * specific written permission.
- * 
+ *
  * THE AUTHOR AND CMU AND THE REGENTS OF THE UNIVERSITY OF CALIFORNIA
  * DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS.  IN NO EVENT SHALL

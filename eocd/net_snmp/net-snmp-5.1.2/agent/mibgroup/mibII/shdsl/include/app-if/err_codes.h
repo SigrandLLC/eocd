@@ -3,7 +3,7 @@
 
 enum err_codes {
 DEFERR=1,   // Default err code
-ERTYPE,     // Error in request type 
+ERTYPE,     // Error in request type
 ERCHEXIST,  // Channel already exist
 ERCHNEXIST, // Channel not existb
 ERNOPROF,   // Profile not exist
@@ -16,7 +16,7 @@ ERPBUSY,    // Conf profile is in use
 ERNODB,     // Channel dont maintain SHDSL DB
 ERUNEXP,    // Unexpected error
 ERNOELEM,   // Requested unit not exist
-ERPNCOMP,	// Some settings of profile not compatible with devices 
+ERPNCOMP,	// Some settings of profile not compatible with devices
 ERPRONLY,	// Profile is read-only
 };
 

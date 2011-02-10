@@ -98,7 +98,7 @@ dbg_oid(char *comment,char *name, int length)
 {
     DEBUGMSGTL(("mibII/shdsl", comment));
     DEBUGMSGOID(("mibII/shdsl", name, length));
-    DEBUGMSG(("mibII/shdsl", "\n"));    
+    DEBUGMSG(("mibII/shdsl", "\n"));
 }
 
 
@@ -107,37 +107,37 @@ dbg_oid(char *comment,char *name, int length)
 oid hdsl2Shdsl_variables_oid[] = { SNMP_OID_MIB2, 10, 48, 1 };
 struct variable3 shdsl_spanconf[] = {
 { CONF_NREPS, ASN_GAUGE,RWRITE, var_SpanConfEntry, 3, {1,1,1} },
-{ CONF_PRFL, ASN_OCTET_STR, RWRITE, var_SpanConfEntry, 3, {1,1,2} },    
-{ CONF_ALARMPRFL, ASN_OCTET_STR, RWRITE, var_SpanConfEntry, 3, {1,1,3} },    
+{ CONF_PRFL, ASN_OCTET_STR, RWRITE, var_SpanConfEntry, 3, {1,1,2} },
+{ CONF_ALARMPRFL, ASN_OCTET_STR, RWRITE, var_SpanConfEntry, 3, {1,1,3} },
 };
 
 struct variable3 shdsl_spanstat[] = {
 { STATUS_NAVAILREPS, ASN_UNSIGNED, RONLY, var_SpanStatusEntry, 3, {2,1,1} },
-{ STATUS_MAXATTLRATE, ASN_UNSIGNED, RONLY, var_SpanStatusEntry, 3, {2,1,2} },    
-{ STATUS_ACTLRATE, ASN_UNSIGNED, RONLY, var_SpanStatusEntry, 3, {2,1,3} },    
+{ STATUS_MAXATTLRATE, ASN_UNSIGNED, RONLY, var_SpanStatusEntry, 3, {2,1,2} },
+{ STATUS_ACTLRATE, ASN_UNSIGNED, RONLY, var_SpanStatusEntry, 3, {2,1,3} },
 { STATUS_TRNSMSNMODCUR, ASN_BIT_STR, RONLY, var_SpanStatusEntry, 3, {2,1,4} },
-{ STATUS_MAXATTPRATE, ASN_UNSIGNED, RONLY, var_SpanStatusEntry, 3, {2,1,5} },    
-{ STATUS_ACTPRATE, ASN_UNSIGNED, RONLY, var_SpanStatusEntry, 3, {2,1,6} },        
+{ STATUS_MAXATTPRATE, ASN_UNSIGNED, RONLY, var_SpanStatusEntry, 3, {2,1,5} },
+{ STATUS_ACTPRATE, ASN_UNSIGNED, RONLY, var_SpanStatusEntry, 3, {2,1,6} },
 };
 
 struct variable3 shdsl_inventory[] = {
 {INV_INDEX, ASN_INTEGER, NOACCESS, var_InventoryEntry, 3, {3,1,1}},
-{INV_VID, ASN_OCTET_STR, RONLY, var_InventoryEntry, 3, {3,1,2}},    
-{INV_VMODELNUM, ASN_OCTET_STR, RONLY, var_InventoryEntry, 3, {3,1,3}},    
+{INV_VID, ASN_OCTET_STR, RONLY, var_InventoryEntry, 3, {3,1,2}},
+{INV_VMODELNUM, ASN_OCTET_STR, RONLY, var_InventoryEntry, 3, {3,1,3}},
 {INV_VSERNUM, ASN_OCTET_STR, RONLY, var_InventoryEntry, 3, {3,1,4}},
-{INV_VEOCSV, ASN_INTEGER, RONLY, var_InventoryEntry, 3, {3,1,5}},    
-{INV_STANDARDV, ASN_INTEGER, RONLY, var_InventoryEntry, 3, {3,1,6}},    
-{INV_VLISTNUM, ASN_OCTET_STR, RONLY, var_InventoryEntry, 3, {3,1,7}},        
-{INV_VISSUENUM, ASN_OCTET_STR, RONLY, var_InventoryEntry, 3, {3,1,8}},    
+{INV_VEOCSV, ASN_INTEGER, RONLY, var_InventoryEntry, 3, {3,1,5}},
+{INV_STANDARDV, ASN_INTEGER, RONLY, var_InventoryEntry, 3, {3,1,6}},
+{INV_VLISTNUM, ASN_OCTET_STR, RONLY, var_InventoryEntry, 3, {3,1,7}},
+{INV_VISSUENUM, ASN_OCTET_STR, RONLY, var_InventoryEntry, 3, {3,1,8}},
 {INV_VSOFTWV,ASN_OCTET_STR , RONLY, var_InventoryEntry, 3, {3,1,9}},
-{INV_EQCODE, ASN_OCTET_STR, RONLY, var_InventoryEntry, 3, {3,1,10}},    
+{INV_EQCODE, ASN_OCTET_STR, RONLY, var_InventoryEntry, 3, {3,1,10}},
 {INV_VOTHER, ASN_OCTET_STR, RONLY, var_InventoryEntry, 3, {3,1,11}},
-{INV_TRNSMODECPB, ASN_BIT_STR, RONLY, var_InventoryEntry, 3, {3,1,12}}    
+{INV_TRNSMODECPB, ASN_BIT_STR, RONLY, var_InventoryEntry, 3, {3,1,12}}
 };
 
 /*
   struct variable3 shdsl_endp_conf[] = {
-  {ENDP_CONF_PROF, ASN_OCTET_STR, RONLY, var_EndpointConfEntry, 3, {4,1,3}},    
+  {ENDP_CONF_PROF, ASN_OCTET_STR, RONLY, var_EndpointConfEntry, 3, {4,1,3}},
   };
 */
 
@@ -231,12 +231,12 @@ init_shdsl(void)
     memset(tbl,0,sizeof(tbl));
 
     /*
-     * register ourselves with the agent to handle our mib tree 
+     * register ourselves with the agent to handle our mib tree
      */
     PDEBUG(0,"Register Span Conf");
     REGISTER_MIB("mibII/hdsl2ShdslSpanConf", shdsl_spanconf, variable3,
                  hdsl2Shdsl_variables_oid);
-				 
+
     PDEBUG(0,"Register Span Status");
     REGISTER_MIB("mibII/hdsl2shdslSpanStatus", shdsl_spanstat, variable3,
                  hdsl2Shdsl_variables_oid);
@@ -267,10 +267,10 @@ init_shdsl(void)
 	  REGISTER_MIB("mibII/hdsl2shdslUnitMaint", shdsl_unit_maint, variable3,
 	  hdsl2Shdsl_variables_oid);
 	*/
-		
+
 	REGISTER_MIB("mibII/hdsl2shdslSpanConfProfile", shdsl_conf_prof, variable3,
 				 hdsl2Shdsl_variables_oid);
-	  
+
     DEBUGMSGTL(("mibII/hdsl2Shdsl","register variables"));
 	PDEBUG(0,"Register finished");
 }
@@ -280,7 +280,7 @@ init_shdsl(void)
  * Arguments:
  * vp     IN      - pointer to variable entry that points here
  * name    IN/OUT  - IN/name requested, OUT/name found
- * length  IN/OUT  - length of IN/OUT oid's 
+ * length  IN/OUT  - length of IN/OUT oid's
  * exact   IN      - TRUE if an exact match was requested
  * var_len OUT     - length of variable or 0 if function returned
  * write_method
@@ -324,7 +324,7 @@ chann_names()
    	struct timeval tv1,tv2;
     gettimeofday(&tv1,NULL);
 	// ---- DEBUG ----//
-	
+
     if( ((tvcur.tv_sec - tbl_tv.tv_sec) > CACHE_INT) || tverr ){
 
         ifname[0] = 0;
@@ -336,7 +336,7 @@ chann_names()
     	    DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
     	    return -1;
 		}
-    
+
         do{
 			set_chan_name(fr1,ifname);
 			fr2 = comm_request(comm,fr1);
@@ -349,7 +349,7 @@ chann_names()
 			p = (span_name_payload*)comm_frame_payload(fr2);
 			for(i=0;i<p->filled;i++){
 				len = strnlen(p->spans[i].name,SPAN_NAME_LEN);
-				if( (p->spans[i].t == slave) || 
+				if( (p->spans[i].t == slave) ||
 					(index = ifname_to_index(p->spans[i].name,len)) < 0 )
 					continue;
 
@@ -369,11 +369,11 @@ chann_names()
 			}
 			comm_frame_free(fr2);
 		}while( tbl_size<SHDSL_MAX_CHANNELS && !p->last_msg );
-		
+
 		comm_frame_free(fr1);
 		tbl_tv = tvcur;
     }
-			
+
 	//--- DEBUG ---//
     gettimeofday(&tv2,NULL);
 	PDEBUG(0,"<------- %d ------------",tv2.tv_usec-tv1.tv_usec);
@@ -416,7 +416,7 @@ header_ifIndex(struct variable *vp,
     if( (base_compare = snmp_oid_compare(name,oid_min,newname,oid_min)) > 0){
 		return MATCH_FAILED;
     }
-    
+
     if( exact ){
 		if( base_compare || (*length < vp->namelen+1) ){
 			return MATCH_FAILED;
@@ -458,9 +458,9 @@ header_ifIndex(struct variable *vp,
 		} else
 			return MATCH_FAILED;
     }
-	
+
     *write_method = 0;
-    *var_len = sizeof(long); 
+    *var_len = sizeof(long);
     dbg_oid("Result_oid ",name,*length);
 
 	//--- DEBUG ---//
@@ -472,7 +472,7 @@ header_ifIndex(struct variable *vp,
 
 
 /*
- * Span Configuration Group 
+ * Span Configuration Group
  */
 
 u_char *
@@ -499,8 +499,8 @@ var_SpanConfEntry(struct variable * vp,
 
     if ( ( iface=header_ifIndex(vp, name, length, exact, var_len,write_method) )
          == MATCH_FAILED || (*length != vp->namelen+1)){
-		//	DEBUGMSG(("mibII/shdsl", "SpanConf: MATCH_FAILED\n"));	
-		//	printf("mibII/shdsl SpanConf: MATCH_FAILED\n");	
+		//	DEBUGMSG(("mibII/shdsl", "SpanConf: MATCH_FAILED\n"));
+		//	printf("mibII/shdsl SpanConf: MATCH_FAILED\n");
 		goto exit;
     }
 
@@ -546,12 +546,12 @@ var_SpanConfEntry(struct variable * vp,
 		strncpy(ConfProfile,p->conf_prof,SNMP_ADMIN_LEN);
 		//	strncpy(ConfProfile,"profile",SNMP_ADMIN_LEN);
 		*var_len=strnlen(ConfProfile,SNMP_ADMIN_LEN);
-		return_ptr = (u_char *)ConfProfile;	
+		return_ptr = (u_char *)ConfProfile;
 		break;
     case CONF_ALARMPRFL:
 		goto exit;
 		//!!	*var_len=strlen(ConfAlarmProfile);
-		//!!	return (u_char *)ConfAlarmProfile;	
+		//!!	return (u_char *)ConfAlarmProfile;
     default:
 		break;
     }
@@ -570,7 +570,7 @@ var_SpanConfEntry(struct variable * vp,
 
 
 /*
- * Span Status Group 
+ * Span Status Group
  */
 
 u_char *
@@ -584,7 +584,7 @@ var_SpanStatusEntry(struct variable * vp,
 
     span_status_payload *p;
     char *return_ptr = NULL;
-    // Cacheing 
+    // Cacheing
     int tverr = 0;
     struct timeval tvcur;
 
@@ -597,7 +597,7 @@ var_SpanStatusEntry(struct variable * vp,
 
     if ( ( iface=header_ifIndex(vp, name, length, exact, var_len,write_method) )
 	     == MATCH_FAILED || (*length != vp->namelen+1)){
-		PDEBUG(0,"mibII/shdsl SpanConf: MATCH_FAILED");	
+		PDEBUG(0,"mibII/shdsl SpanConf: MATCH_FAILED");
         goto exit;
     }
 
@@ -623,7 +623,7 @@ var_SpanStatusEntry(struct variable * vp,
         // Cache data
 		if( !spanstatus_tbl[interface_ind] )
 			spanstatus_tbl[interface_ind] = malloc(sizeof(shdsl_spanstatus_elem));
-	
+
 		spanstatus_tbl[interface_ind]->p = *p;
         spanstatus_tbl[interface_ind]->tv = tvcur;
     }else{
@@ -633,7 +633,7 @@ var_SpanStatusEntry(struct variable * vp,
     //---- ack ----//
     switch (vp->magic) {
     case STATUS_NAVAILREPS:
-		long_return= p->nreps;    
+		long_return= p->nreps;
 		if( p->nreps <0 )
 			long_return = 0;
 		return_ptr = (u_char *) & long_return;
@@ -662,7 +662,7 @@ var_SpanStatusEntry(struct variable * vp,
     default:
 		break;
     }
-   
+
  exit:
     if( fr1 )
 		comm_frame_free(fr1);
@@ -702,17 +702,17 @@ header_unitIndex(struct variable *vp,
 	// ---- DEBUG ----//
 
 	// If OID is belong to Inventory Table
-    if( (iface = header_ifIndex(vp, name, length,1/*exact = 1*/, var_len,write_method)) 
+    if( (iface = header_ifIndex(vp, name, length,1/*exact = 1*/, var_len,write_method))
 	    != MATCH_FAILED ){ 	// OID belongs to Invetory table and ifIdex is valid
 		PDEBUG(0,"OID belong to Inv Table, interface_ind=%d,if = %s\n",interface_ind,
 				tbl[interface_ind].name);
-        
+
 		if( gettimeofday(&tvcur,NULL) ){
 			PDEBUG(0,"tverr occured");
 			tverr = 1;
 		}
 
-		if( ((tvcur.tv_sec - tbl[interface_ind].tv.tv_sec) > CACHE_INT) || tverr || 
+		if( ((tvcur.tv_sec - tbl[interface_ind].tv.tv_sec) > CACHE_INT) || tverr ||
 			tbl[interface_ind].units < 0 ){
 			p = (span_params_payload*)comm_alloc_request(APP_SPAN_PARAMS,
 														 APP_GET,tbl[interface_ind].name,&fr1);
@@ -740,8 +740,8 @@ header_unitIndex(struct variable *vp,
 
 		if( exact ){ // Need exact MATCH
 			//	    printf("unitIndex: Exact match\n");
-			if( (*length >= vp->namelen+2) && 
-				(name[vp->namelen+1] > 0) && 
+			if( (*length >= vp->namelen+2) &&
+				(name[vp->namelen+1] > 0) &&
 				(name[vp->namelen+1]<= tbl[interface_ind].units) ){
 				//		    printf("unitIndex: Exact match - OK\n");
 				ret_val = name[vp->namelen+1];
@@ -767,33 +767,33 @@ header_unitIndex(struct variable *vp,
 			}
 		}
     }
-    
+
     if( exact ){
 		PDEBUG(0,"Exact match - seems failed");
 		goto exit;
     }
-    
-    if( (iface=header_ifIndex(vp, name, length, exact, var_len,write_method)) 
+
+    if( (iface=header_ifIndex(vp, name, length, exact, var_len,write_method))
 		== MATCH_FAILED ){ // No next interface or In OID is lager than Inventory Table OIDs
 		PDEBUG(0,"Search for next iface failed");
 		goto exit;
     }
-    
+
     if( fr2 ){
 		comm_frame_free(fr2);
 		fr2 = NULL;
     }
 
-    if( ((tvcur.tv_sec - tbl[interface_ind].tv.tv_sec) > CACHE_INT) || tverr || 
+    if( ((tvcur.tv_sec - tbl[interface_ind].tv.tv_sec) > CACHE_INT) || tverr ||
 		tbl[interface_ind].units < 0 ){
-	
-		if( !fr1 ){	
+
+		if( !fr1 ){
 			p = (span_params_payload*)comm_alloc_request(APP_SPAN_PARAMS,
 														 APP_GET,tbl[interface_ind].name,&fr1);
 		}else{
 			p = (span_params_payload*)comm_frame_payload(fr1);
 		}
-		    
+
 		if( !p ){
 			PDEBUG(0,"Cannot allocate application frame");
     	    goto exit;
@@ -805,13 +805,13 @@ header_unitIndex(struct variable *vp,
 		}
 		p = (span_params_payload*)comm_frame_payload(fr2);
 
-		PDEBUG(0,"Get params info for %s: units(%d) loops(%d)\n",tbl[interface_ind].name,p->units,p->loops);    
+		PDEBUG(0,"Get params info for %s: units(%d) loops(%d)\n",tbl[interface_ind].name,p->units,p->loops);
 
 		tbl[interface_ind].units = p->units;
 		tbl[interface_ind].wires = p->loops;
 		tbl[interface_ind].tv = tvcur;
     }
-	
+
     name[vp->namelen+1] = stu_c;
     *length = vp->namelen + 2;
 	PDEBUG(0,"Result: unit #%d\n",name[vp->namelen+1]);
@@ -872,9 +872,9 @@ var_InventoryEntry(struct variable * vp,
 		PDEBUG(0,"Error requesting");
 		goto exit;
 	}
-    
+
 	while( !fr2 ){
-		
+
 		if ( ( unit = header_unitIndex(vp,name,length,exact,var_len,write_method) )
 			 == MATCH_FAILED ){
 			PDEBUG(0,"Cannot find unit");
@@ -893,7 +893,7 @@ var_InventoryEntry(struct variable * vp,
 			comm_frame_free(fr2);
 		fr2 = comm_request(comm,fr1);
 	}
-    
+
 	if( !fr2 ){
 		PDEBUG(0,"Error requesting");
 		goto exit;
@@ -908,7 +908,7 @@ var_InventoryEntry(struct variable * vp,
     case INV_VID:
 		*var_len = sizeof(resp->ven_id);
 		memset(return_buf,0,*var_len);
-		strncpy(return_buf,resp->ven_id,*var_len);    
+		strncpy(return_buf,resp->ven_id,*var_len);
 		/* 		strncpy(return_buf,"111",10); */
 		/* 		*var_len = strlen(return_buf); */
 		return_ptr = (u_char *)return_buf;
@@ -916,7 +916,7 @@ var_InventoryEntry(struct variable * vp,
     case INV_VMODELNUM:
 		*var_len = sizeof(resp->ven_model);
 		memset(return_buf,0,*var_len);
-		strncpy(return_buf,resp->ven_model,*var_len);    
+		strncpy(return_buf,resp->ven_model,*var_len);
 		/* 		strncpy(return_buf,"222",10); */
 		/* 		*var_len = strlen(return_buf); */
 		return_ptr = (u_char *)return_buf;
@@ -924,7 +924,7 @@ var_InventoryEntry(struct variable * vp,
 	case INV_VSERNUM:
 		*var_len = sizeof(resp->ven_serial);
 		memset(return_buf,0,*var_len);
-		strncpy(return_buf,resp->ven_serial,*var_len);    
+		strncpy(return_buf,resp->ven_serial,*var_len);
 		return_ptr = (u_char *)return_buf;
 		break;
 	case INV_VEOCSV:
@@ -957,7 +957,7 @@ var_InventoryEntry(struct variable * vp,
 		break;
 	case INV_VOTHER:
 		*var_len = strlen(resp->other);
-		strncpy(return_buf,resp->other,*var_len);    
+		strncpy(return_buf,resp->other,*var_len);
 		return_ptr = (u_char *)return_buf;
 		break;
 		/*    case INV_TRNSMODECPB:
@@ -981,14 +981,14 @@ var_InventoryEntry(struct variable * vp,
 /*
  * ------------ Segment Endpoint Group --------------------
  */
- 
- 
+
+
 /*
  * header_endpIndex:
  * 	Defines propriate endpoint index for incoming OID
  */
 
-static int 
+static int
 header_endpIndex(struct variable *vp,
 				 oid * name,
 				 size_t * length,
@@ -1020,7 +1020,7 @@ header_endpIndex(struct variable *vp,
 						return name[vp->namelen+2];
 					break;
 				case stu_r:
-					if( name[vp->namelen+2] != (net_side+1) )		
+					if( name[vp->namelen+2] != (net_side+1) )
 						return MATCH_FAILED;
 					else
 						return name[vp->namelen+2];
@@ -1033,7 +1033,7 @@ header_endpIndex(struct variable *vp,
 				case sru6:
 				case sru7:
 				case sru8:
-					if( name[vp->namelen+2] == (cust_side+1) || 
+					if( name[vp->namelen+2] == (cust_side+1) ||
 						name[vp->namelen+2] == (net_side+1) )
 						return name[vp->namelen+2];
 					else
@@ -1055,18 +1055,18 @@ header_endpIndex(struct variable *vp,
 				}else if( *length == vp->namelen+2 ){
 					name[vp->namelen+2] == (net_side+1);
 					*length = vp->namelen+3;
-					return name[vp->namelen+2];	
+					return name[vp->namelen+2];
 				}
 			}
 		}
     }
-	
-    // OID does not belong to Inventory Table OR NO next regenerator 
+
+    // OID does not belong to Inventory Table OR NO next regenerator
     if( exact ){
 		return MATCH_FAILED;
     }
 	//    printf("endpIndex: SWITCH to next unit\n");
-    if( (unit=header_unitIndex(vp, name, length, exact, var_len,write_method)) 
+    if( (unit=header_unitIndex(vp, name, length, exact, var_len,write_method))
 	    == MATCH_FAILED ){ // No next interface or In OID is lager than Inventory Table OIDs
 		return MATCH_FAILED;
     }
@@ -1078,7 +1078,7 @@ header_endpIndex(struct variable *vp,
 		name[vp->namelen+2] = (cust_side+1);
 		break;
     case stu_r:
-		name[vp->namelen+2] = (net_side+1);    
+		name[vp->namelen+2] = (net_side+1);
 		break;
     case sru1:
     case sru2:
@@ -1109,7 +1109,7 @@ header_endpIndex(struct variable *vp,
  *	(by now only 1 pair supported)
  */
 
-static int 
+static int
 header_wirePairIndex(struct variable *vp,
 					 oid * name,
 					 size_t * length,
@@ -1139,7 +1139,7 @@ header_wirePairIndex(struct variable *vp,
 
 		if( exact ){ // Need exact MATCH
 			PDEBUG(0,"Exact Match");
-			if( (*length >= vp->namelen+4) && 
+			if( (*length >= vp->namelen+4) &&
 				(name[vp->namelen+3] > 0) && (name[vp->namelen+3] <= tbl[interface_ind].wires) ){
 				ret_val =  name[vp->namelen+3];
 				goto exit;
@@ -1147,7 +1147,7 @@ header_wirePairIndex(struct variable *vp,
 				goto exit;
 			}
 		} else { // Nonexact match
-			// Because we have only one wire pair - we change it only 
+			// Because we have only one wire pair - we change it only
 			// if field is empty
 			if( *length == vp->namelen+3 ){
 				name[vp->namelen+3] = 1; // first pair
@@ -1165,13 +1165,13 @@ header_wirePairIndex(struct variable *vp,
 			}
 		}
     }
-	
+
 	PDEBUG(0,"Exact match failed");
     if( exact ){
 		goto exit;
     }
-    
-    if( (endp = header_endpIndex(vp, name, length, exact, var_len,write_method)) 
+
+    if( (endp = header_endpIndex(vp, name, length, exact, var_len,write_method))
 	    == MATCH_FAILED ){ // No next interface or In OID is lager than Inventory Table OIDs
 		goto exit;
     }
@@ -1223,7 +1223,7 @@ var_EndpointCurrEntry(struct variable * vp,
     if ( ( pair = header_wirePairIndex(vp,name,length,exact,var_len,write_method) )
 		 == MATCH_FAILED )
         goto exit;
-       
+
     PDEBUG(0,"Result : if(%s) unit(%d) side(%d) pair(%d)",tbl[interface_ind].name,unit_index,endp_index,pair);
 
     p = (endp_cur_payload*)comm_alloc_request(APP_ENDP_CUR,APP_GET,
@@ -1239,17 +1239,17 @@ var_EndpointCurrEntry(struct variable * vp,
     fr2 = comm_request(comm,fr1);
     PDEBUG(0,"Request if(%s) unit(%d) side(%d) loop(%d)",
 		   tbl[interface_ind].name,p->unit,p->side,p->loop);
-    
+
     if( !fr2 && exact ){
 		PDEBUG(0,"var_InventoryEntry: error requesting");
 		goto exit;
     }
-    
+
     while( !fr2 ){
 		if ( ( pair = header_wirePairIndex(vp,name,length,exact,var_len,write_method) )
 			 == MATCH_FAILED )
     	    goto exit;
-    
+
 		PDEBUG(0,"Result (rep): if(%s) unit(%d) side(%d) pair(%d)",tbl[interface_ind].name,unit_index,endp_index,pair);
 		set_chan_name(fr1,tbl[interface_ind].name);
 		p->unit = unit_index;
@@ -1266,11 +1266,11 @@ var_EndpointCurrEntry(struct variable * vp,
 		PDEBUG(0,"error requesting");
 		goto exit;
     }
-    
+
     p = (endp_cur_payload*)comm_frame_payload(fr2);
-    
+
 	// ------------------------------ Return requested information ------------------------------- //
-	
+
     //---- ack ----//
     switch (vp->magic) {
     case ENDP_STAT_CUR_ATN:
@@ -1369,7 +1369,7 @@ var_EndpointCurrEntry(struct variable * vp,
 
 // ----------------- Perfomance/Status intervals ------------------//
 
-static int 
+static int
 header_intervalIndex(struct variable *vp,
 					 oid * name,
 					 size_t * length,
@@ -1381,8 +1381,8 @@ header_intervalIndex(struct variable *vp,
     struct app_frame *fr1=NULL,*fr2=NULL;
     endp_int_payload *p;
     int int_num,ret_val = MATCH_FAILED;
-    
-    
+
+
     PDEBUG(0,"(Input) if(%d) unit(%d) side(%d) pair(%d) int(%d) id(%d)",
 		   __FUNCTION__,name[vp->namelen],name[vp->namelen+1],name[vp->namelen+2],
 		   name[vp->namelen+3],name[vp->namelen+4],msg_id);
@@ -1390,7 +1390,7 @@ header_intervalIndex(struct variable *vp,
     //-------------- Try requested wire_pair ----------------//
     if ( ( wire = header_wirePairIndex(vp,name,length, 1 /*exact = 1*/,var_len,write_method) )
 		 != MATCH_FAILED ){
-    
+
 		wire_index = wire;
 		if( exact ){
 			if( *length != vp->namelen+5 )
@@ -1412,13 +1412,13 @@ header_intervalIndex(struct variable *vp,
 		}else{
 			p = (endp_int_payload*)comm_alloc_request(msg_id,APP_GET_NEXT,
 													  tbl[interface_ind].name,&fr1);
-		}	
+		}
 		if( !p ){
 			DEBUGMSGTL(("mibII/hdsl2Shdsl","interval15Index: Cannot allocate application frame"));
 			PDEBUG(0,"Cannot allocate application frame");
 			return MATCH_FAILED;
 		}
-	    
+
 		p->unit = unit_index;
 		p->side = endp_index-1;
 		p->loop = wire_index-1;
@@ -1426,7 +1426,7 @@ header_intervalIndex(struct variable *vp,
 
 		PDEBUG(0,"(Output) unit(%d) side(%d) pair(%d) int(%d)",
 			   p->unit,p->side,p->loop,p->int_num);
-	
+
 		fr2 = comm_request(comm,fr1);
 		if( fr2 ){
 			p = (endp_int_payload*)comm_frame_payload(fr2);
@@ -1438,11 +1438,11 @@ header_intervalIndex(struct variable *vp,
 			goto exit;
 		}
     }
-    
+
     if( exact ){
 		goto exit;
     }
-    
+
     //-------------- Switch to next wire_pair ----------------//
     if ( ( wire = header_wirePairIndex(vp,name,length, exact,var_len,write_method) )
 		 == MATCH_FAILED ){
@@ -1455,7 +1455,7 @@ header_intervalIndex(struct variable *vp,
     }else{
 		p = (endp_int_payload*)comm_frame_payload(fr1);
     }
-    
+
     if( !p ){
 		DEBUGMSGTL(("mibII/hdsl2Shdsl","interval15Index: Cannot allocate application frame"));
 		PDEBUG(0,"interval15Index: Cannot allocate application frame");
@@ -1501,7 +1501,7 @@ header_intervalIndex(struct variable *vp,
 
 
 /*
- * Segment Endpoint 15-Minute Interval Status/Performance Group 
+ * Segment Endpoint 15-Minute Interval Status/Performance Group
  */
 u_char *
 var_15MinIntervalEntry(struct variable * vp,
@@ -1522,7 +1522,7 @@ var_15MinIntervalEntry(struct variable * vp,
     if ( (int_num = header_intervalIndex(vp,name,length,exact,var_len,write_method,APP_ENDP_15MIN) )
 		 == MATCH_FAILED )
         goto exit;
-    
+
 	//    printf("Result : if(%s) unit(%d) side(%d) pair(%d) int(%d)\n",tbl[interface_ind].name,unit_index,endp_index,wire_index,int_num);
 
     //---- ack ----//
@@ -1585,7 +1585,7 @@ var_1DayIntervalEntry(struct variable * vp,
     if ( (int_num = header_intervalIndex(vp,name,length,exact,var_len,write_method,APP_ENDP_1DAY) )
 		 == MATCH_FAILED )
         goto exit;
-    
+
     PDEBUG(0,"(Result) : if(%s) unit(%d) side(%d) pair(%d) int(%d)",tbl[interface_ind].name,unit_index,endp_index,wire_index,int_num);
 
     //---- ack ----//
@@ -1631,7 +1631,7 @@ var_1DayIntervalEntry(struct variable * vp,
 
 cprof_payload _cprof;
 
-static int 
+static int
 header_confProfIndex(struct variable *vp,
 					 oid * name,
 					 size_t * length,
@@ -1655,7 +1655,7 @@ header_confProfIndex(struct variable *vp,
     }
 
 	PDEBUG(DERR,"process...");
-    
+
     if( exact ){
 		int len;
 		if( base_compare || (*length < vp->namelen) ){
@@ -1665,7 +1665,7 @@ header_confProfIndex(struct variable *vp,
         len = *length - vp->namelen;
         len = (len>SNMP_ADMIN_LEN) ? SNMP_ADMIN_LEN : len;
         memcpy(profname,name+vp->namelen,len);
-		profname[len+1] = 0;	
+		profname[len+1] = 0;
 		p = (cprof_payload*)
 			comm_alloc_request(APP_CPROF,APP_GET,"",&fr1);
     }else{
@@ -1681,12 +1681,12 @@ header_confProfIndex(struct variable *vp,
 				profname[i] = name[vp->namelen+i];
 			}
 			profname[len] = 0;
-			*length = vp->namelen;	    
+			*length = vp->namelen;
 			//printf("%s: nonexact, profname=%s\n",__FUNCTION__,profname);
 		}
 		p = (cprof_payload*)
 			comm_alloc_request(APP_CPROF,APP_GET_NEXT,"",&fr1);
-    }	
+    }
     if( !p ){
 		DEBUGMSGTL(("mibII/hdsl2Shdsl","Cannot allocate application frame"));
 		if( fr1 )
@@ -1704,7 +1704,7 @@ header_confProfIndex(struct variable *vp,
 		return MATCH_FAILED;
     }
 	PDEBUG(DERR,"request successfull");
-    
+
     p = (cprof_payload*)comm_frame_payload(fr2);
     _cprof = *p;
 	PDEBUG(DERR,"get profile - %s,len=%d,vp->namelen=%d",p->pname,strnlen(p->pname,SNMP_ADMIN_LEN+1),vp->namelen);
@@ -1718,7 +1718,7 @@ printf("%s: name:\n",__FUNCTION__);
 for(i=0;i<*length;i++){
 	if( (name[i]>='a' && name[i]<='z') || (name[i]>='0' && name[i]<='9') || name[i]=='#' )
 		printf("%c.",name[i]);
-	else 
+	else
 		printf("%d.",name[i]);
 }
 printf("\n");
@@ -1745,7 +1745,7 @@ var_SpanConfProfEntry(struct variable * vp,
         DEBUGMSGTL(("mibII/hdsl2Shdsl","Error connecting to \"eocd\""));
         return NULL;
     }
-	PDEBUG(DERR,"Connect=OK");    
+	PDEBUG(DERR,"Connect=OK");
 
 printf("%s: name:\n",__FUNCTION__);
 for(i=0;i<*length;i++){
@@ -1785,7 +1785,7 @@ printf("\n");
 		long_return= _cprof.conf.psd;
 		return_ptr = (u_char *)&long_return;
 		break;
-		/*	
+		/*
 			case CONF_TRNSM_MODE:
 			*var_len = sizeof(char);
 			long_return = *((unsigned char*)&info->transm_mode);
@@ -1832,11 +1832,11 @@ printf("\n");
 			  return_ptr = (u_char *)&long_return;
 		*/
     }
-    
+
 	PDEBUG(DERR,"exit:");
  exit:
     comm_free(comm);
-    comm = NULL;    
+    comm = NULL;
 	PDEBUG(DERR,"return");
     return return_ptr;
 }

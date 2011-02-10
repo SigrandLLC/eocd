@@ -4,12 +4,12 @@
 snmpusm - creates and maintains SNMPv3 users on a remote entity.
 .SH SYNOPSIS
 .B snmpusm
-[COMMON OPTIONS] 
+[COMMON OPTIONS]
 .B create
 USER [CLONEFROM-USER]
 .br
 .B snmpusm
-[COMMON OPTIONS] 
+[COMMON OPTIONS]
 .B delete
 USER
 .br
@@ -25,7 +25,7 @@ OLD-PASSPHRASE NEW-PASSPHRASE
 
 .SH DESCRIPTION
 .B snmpusm
-is an SNMP application that can be used to do simple maintenance on 
+is an SNMP application that can be used to do simple maintenance on
 the users known to an SNMP agent, by manipulating the agent's
 User-based Security Module (USM) table.  The user needs
 write access to the usmUserTable MIB table.  This tool can be
@@ -100,7 +100,7 @@ delete USER
 .SH CHANGING PASS PHRASES
 User profiles contain private keys that are never
 transmitted over the wire in clear text (regardless of whether the
-administration requests are encrypted or not).  
+administration requests are encrypted or not).
 To change the secret key for a user, it is necessary to specify the
 user's old passphrase as well as the new one.
 This uses the command

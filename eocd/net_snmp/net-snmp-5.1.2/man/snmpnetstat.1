@@ -3,17 +3,17 @@
 .\" that may apply:
 .\" /***********************************************************
 .\" 	Copyright 1989 by Carnegie Mellon University
-.\" 
+.\"
 .\"                       All Rights Reserved
-.\" 
-.\" Permission to use, copy, modify, and distribute this software and its 
-.\" documentation for any purpose and without fee is hereby granted, 
+.\"
+.\" Permission to use, copy, modify, and distribute this software and its
+.\" documentation for any purpose and without fee is hereby granted,
 .\" provided that the above copyright notice appear in all copies and that
-.\" both that copyright notice and this permission notice appear in 
+.\" both that copyright notice and this permission notice appear in
 .\" supporting documentation, and that the name of CMU not be
 .\" used in advertising or publicity pertaining to distribution of the
-.\" software without specific, written prior permission.  
-.\" 
+.\" software without specific, written prior permission.
+.\"
 .\" CMU DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 .\" ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
 .\" CMU BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
@@ -59,7 +59,7 @@ snmpnetstat [common options] [-in] [-I interface] AGENT [interval]
 snmpnetstat [common options] [-an] [-s] [-P protocol] AGENT
 .SH DESCRIPTION
 The
-.I snmpnetstat 
+.I snmpnetstat
 command symbolically displays the values of various network-related
 information retrieved from a remote system using the SNMP protocol.
 There are a number of output formats,
@@ -67,7 +67,7 @@ depending on the options for the information presented.
 The first form of the command displays a list of active sockets.
 The second form presents the values of other network-related
 information according to the option selected.
-Using the third form, with an 
+Using the third form, with an
 .I interval
 specified,
 .I snmpnetstat
@@ -102,7 +102,7 @@ server processes are not shown.
 Show the state of all of the network interfaces.
 The  interface  display  provides  a  table  of cumulative
 statistics regarding packets transferred, errors, and collisions.
-The  network addresses of the interface and the maximum transmission 
+The  network addresses of the interface and the maximum transmission
 unit (``mtu'') are also displayed.
 .PP
 .B \-o
@@ -117,19 +117,19 @@ used with an
 as described below.
 .PP
 .B \-n
-Show network addresses as numbers (normally 
+Show network addresses as numbers (normally
 .I snmpnetstat
 interprets addresses and attempts to display them
 symbolically).
 This option may be used with any of the display formats.
 .PP
 .BI \-P " protocol"
-Show statistics about 
+Show statistics about
 .IR protocol,
 which is either a well-known name for a protocol or an alias for it.  Some
-protocol names and aliases are listed in the file 
+protocol names and aliases are listed in the file
 .IR /etc/protocols .
-A null response typically means that there are no interesting numbers to 
+A null response typically means that there are no interesting numbers to
 report.
 The program will complain if
 .I protocol
@@ -144,7 +144,7 @@ option, show routing statistics instead.
 Show the routing tables.
 When
 .B \-s
-is also present, show per-protocol routing statistics instead of 
+is also present, show per-protocol routing statistics instead of
 the routing tables.
 .PP
 When  snmpnetstat is invoked with an interval argument, it
@@ -162,7 +162,7 @@ the   protocol.    Address   formats   are   of  the  form
 ``host.port'' or ``network.port'' if  a  socket's  address
 specifies  a  network  but no specific host address.  When
 known, the host and network addresses are displayed symbolically
-according   to  the  data  bases 
+according   to  the  data  bases
 .I /etc/hosts  and
 .IR /etc/networks,
 respectively.  If a symbolic  name  for  an
@@ -215,7 +215,7 @@ of each screen of information contains a summary since the
 system was last rebooted.  Subsequent lines of output show
 values accumulated over the preceding interval.
 .PP
-.I The Active Sockets Display for a 
+.I The Active Sockets Display for a
 .I Single Protocol
 .PP
 When a protocol is specified with the

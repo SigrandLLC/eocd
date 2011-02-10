@@ -68,7 +68,7 @@ se_store_in_list(struct snmp_enum_list *new_list,
 
     if (major > current_maj_num || minor > current_min_num) {
         /*
-         * XXX: realloc 
+         * XXX: realloc
          */
         return SE_NOMEM;
     }

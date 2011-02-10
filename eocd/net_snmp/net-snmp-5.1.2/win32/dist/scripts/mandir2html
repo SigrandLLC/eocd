@@ -10,7 +10,7 @@
 #
 # Requirements:
 #
-# -man 
+# -man
 # -man2html3.0.1 (http://search.cpan.org/~ehood/man2html3.0.1/)
 # -tidy (http://tidy.sourceforge.net/)
 #
@@ -24,12 +24,12 @@
 # .
 # /tmp/net-snmp/man/man8
 # /tmp/net-snmp/man/man9
-# 
+#
 # Some applications can install the man files using:
 #
 # cd (source folder)/man
 # make install prefix=/tmp/net-snmp
-#  
+#
 ################################################################
 # Options
 
@@ -94,7 +94,7 @@ foreach my $file (@files)
    else {
      $command = "man $man_dir\/$1\/$2 | $man2html -cgiurl=\'man\$section".$separator."\$title.\$section\$subsection.html\' | $tidy > $man_dir_html/$1$separator$2.html";
    }
- 
+
    print "executing: $command\n";
 
    system "$command";

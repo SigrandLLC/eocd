@@ -6,7 +6,7 @@ extern          "C" {
 #endif
 
 /*
- * The multiplexer helper 
+ * The multiplexer helper
  */
 
 /** @name multiplexer

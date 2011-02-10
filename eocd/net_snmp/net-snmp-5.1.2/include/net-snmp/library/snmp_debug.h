@@ -7,7 +7,7 @@ extern          "C" {
 
     /*
      * snmp_debug.h:
-     * 
+     *
      * - prototypes for snmp debugging routines.
      * - easy to use macros to wrap around the functions.  This also provides
      * the ability to remove debugging code easily from the applications at
@@ -17,7 +17,7 @@ extern          "C" {
 
     /*
      * These functions should not be used, if at all possible.  Instead, use
-     * the macros below. 
+     * the macros below.
      */
 #if HAVE_STDARG_H
     void            debugmsg(const char *token, const char *format, ...);
@@ -46,49 +46,49 @@ extern          "C" {
     /*
      * Use these macros instead of the functions above to allow them to be
      * re-defined at compile time to NOP for speed optimization.
-     * 
+     *
      * They need to be called enclosing all the arguments in a single set of ()s.
      * Example:
      * DEBUGMSGTL(("token", "debugging of something %s related\n", "snmp"));
-     * 
+     *
      * Usage:
      * All of the functions take a "token" argument that helps determine when
      * the output in question should be printed.  See the snmpcmd.1 manual page
      * on the -D flag to turn on/off output for a given token on the command line.
-     * 
+     *
      * DEBUGMSG((token, format, ...)):      equivalent to printf(format, ...)
      * (if "token" debugging output
      * is requested by the user)
-     * 
+     *
      * DEBUGMSGT((token, format, ...)):     equivalent to DEBUGMSG, but prints
      * "token: " at the beginning of the
      * line for you.
-     * 
+     *
      * DEBUGTRACE                           Insert this token anywhere you want
      * tracing output displayed when the
      * "trace" debugging token is selected.
-     * 
+     *
      * DEBUGMSGL((token, format, ...)):     equivalent to DEBUGMSG, but includes
      * DEBUGTRACE debugging line just before
      * yours.
-     * 
+     *
      * DEBUGMSGTL((token, format, ...)):    Same as DEBUGMSGL and DEBUGMSGT
      * combined.
-     * 
+     *
      * Important:
      * It is considered best if you use DEBUGMSGTL() everywhere possible, as it
      * gives the nicest format output and provides tracing support just before
      * every debugging statement output.
-     * 
+     *
      * To print multiple pieces to a single line in one call, use:
-     * 
+     *
      * DEBUGMSGTL(("token", "line part 1"));
      * DEBUGMSG  (("token", " and part 2\n"));
-     * 
+     *
      * to get:
-     * 
+     *
      * token: line part 1 and part 2
-     * 
+     *
      * as debugging output.
      */
 
@@ -97,7 +97,7 @@ extern          "C" {
     /*
      * define two macros : one macro with, one without,
      *                     a test if debugging is enabled.
-     * 
+     *
      * Generally, use the macro with _DBG_IF_
      */
 
@@ -225,10 +225,10 @@ extern          "C" {
 
     /*
      * setup routines:
-     * 
+     *
      * debug_register_tokens(char *):     registers a list of tokens to
      * print debugging output for.
-     * 
+     *
      * debug_is_token_registered(char *): returns SNMPERR_SUCCESS or SNMPERR_GENERR
      * if a token has been registered or
      * not (and debugging output is "on").
@@ -252,7 +252,7 @@ typedef struct netsnmp_token_descr_s {
 
 extern int                 debug_num_tokens;
 extern netsnmp_token_descr dbg_tokens[MAX_DEBUG_TOKENS];
-    
+
 #ifdef __cplusplus
 }
 #endif

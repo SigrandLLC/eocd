@@ -33,7 +33,7 @@ void release_cached_resources( unsigned int regNo, void *clientargs );
  *  @{
  */
 
-/** returns a cache handler that can be injected into a given handler chain.  
+/** returns a cache handler that can be injected into a given handler chain.
  */
 netsnmp_mib_handler *
 netsnmp_get_cache_handler(int timeout, NetsnmpCacheLoad *load_hook,
@@ -189,7 +189,7 @@ netsnmp_cache_helper_handler(netsnmp_mib_handler *handler,
     break;
 
   default:
-    snmp_log(LOG_WARNING, "cache_handler: Unrecognised mode (%d)\n", 
+    snmp_log(LOG_WARNING, "cache_handler: Unrecognised mode (%d)\n",
                            reqinfo->mode);
   }
 

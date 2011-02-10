@@ -43,7 +43,7 @@
 
 
 /*
- * Our list of supported transport domains.  
+ * Our list of supported transport domains.
  */
 
 static netsnmp_tdomain *domain_list = NULL;
@@ -51,7 +51,7 @@ static netsnmp_tdomain *domain_list = NULL;
 
 
 /*
- * The standard SNMP domains.  
+ * The standard SNMP domains.
  */
 
 oid             netsnmpUDPDomain[] = { 1, 3, 6, 1, 6, 1, 1 };
@@ -71,7 +71,7 @@ static void     netsnmp_tdomain_dump(void);
 
 
 /*
- * Make a deep copy of an netsnmp_transport.  
+ * Make a deep copy of an netsnmp_transport.
  */
 
 netsnmp_transport *
@@ -259,7 +259,7 @@ netsnmp_tdomain_register(netsnmp_tdomain *n)
             if (netsnmp_oid_equals(n->name, n->name_length,
                                 d->name, d->name_length) == 0) {
                 /*
-                 * Already registered.  
+                 * Already registered.
                  */
                 return 0;
             }
@@ -319,7 +319,7 @@ netsnmp_tdomain_transport(const char *string, int local,
 
     if ((cp = strchr(mystring, ':')) == NULL) {
         /*
-         * There doesn't appear to be a transport specifier.  
+         * There doesn't appear to be a transport specifier.
          */
         DEBUGMSGTL(("tdomain", "no specifier in \"%s\"\n", mystring));
         if (*mystring == '/') {
@@ -356,7 +356,7 @@ netsnmp_tdomain_transport(const char *string, int local,
     /*
      * Okay no match so far.  Consider the possibility that we have something
      * like hostname.domain.com:port which will have confused the parser above.
-     * Try and match again with the appropriate default domain.  
+     * Try and match again with the appropriate default domain.
      */
 
     if (default_domain) {

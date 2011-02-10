@@ -1,5 +1,5 @@
 /*
- * HP specific stuff that OpenView recognizes 
+ * HP specific stuff that OpenView recognizes
  */
 
 #include <net-snmp/net-snmp-config.h>
@@ -27,7 +27,7 @@ int_hpux(void)
 
     /*
      * define the structure we're going to ask the agent to register our
-     * information at 
+     * information at
      */
     struct variable2 hp_variables[] = {
         {HPCONF, ASN_INTEGER, RWRITE, var_hp, 1, {HPCONF}},
@@ -43,7 +43,7 @@ int_hpux(void)
 
     /*
      * Define the OID pointer to the top of the mib tree that we're
-     * registering underneath 
+     * registering underneath
      */
     oid             hp_variables_oid[] =
         { 1, 3, 6, 1, 4, 1, 11, 2, 13, 1, 2, 1 };
@@ -51,7 +51,7 @@ int_hpux(void)
         { 1, 3, 6, 1, 4, 1, 11, 2, 13, 2 };
 
     /*
-     * register ourselves with the agent to handle our mib tree 
+     * register ourselves with the agent to handle our mib tree
      */
     REGISTER_MIB("ucd-snmp/hpux:hp", hp_variables, variable2,
                  hp_variables_oid);

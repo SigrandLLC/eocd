@@ -127,7 +127,7 @@ make_tempfile(void)
     fd = mkstemp(name);
 #else
     if (mktemp(name)) {
-# ifndef WIN32        
+# ifndef WIN32
         fd = open(name, O_CREAT | O_EXCL | O_WRONLY);
 # else
         /*
@@ -259,17 +259,17 @@ get_exec_output(struct extensible *ex)
             }
 
             /*
-             * write standard output and standard error to pipe. 
+             * write standard output and standard error to pipe.
              */
             /*
-             * close all other file descriptors. 
+             * close all other file descriptors.
              */
             for (cnt = getdtablesize() - 1; cnt >= 2; --cnt)
                 (void) close(cnt);
             (void) dup(1);      /* stderr */
 
             /*
-             * set standard input to /dev/null 
+             * set standard input to /dev/null
              */
             close(0);
             (void) open("/dev/null", O_RDWR);
@@ -320,7 +320,7 @@ get_exec_output(struct extensible *ex)
 #ifdef EXCACHETIME
             unlink(cachefile);
             /*
-             * XXX  Use SNMP_FILEMODE_CLOSED instead of 644? 
+             * XXX  Use SNMP_FILEMODE_CLOSED instead of 644?
              */
             if ((cfd =
                  open(cachefile, O_WRONLY | O_TRUNC | O_CREAT,
@@ -354,7 +354,7 @@ get_exec_output(struct extensible *ex)
             close(cfd);
             close(fd[0]);
             /*
-             * wait for the child to finish 
+             * wait for the child to finish
              */
             if (ex->pid > 0 && waitpid(ex->pid, &ex->result, 0) < 0) {
                 setPerrorstatus("waitpid()");
@@ -392,7 +392,7 @@ get_exec_pipes(char *cmd, int *fdIn, int *fdOut, int *pid)
     char            ctmp[STRMAX], *cptr1, *cptr2, argvs[STRMAX], **argv,
         **aptr;
     /*
-     * Setup our pipes 
+     * Setup our pipes
      */
     if (pipe(fd[0]) || pipe(fd[1])) {
         setPerrorstatus("pipe");
@@ -411,10 +411,10 @@ get_exec_pipes(char *cmd, int *fdIn, int *fdOut, int *pid)
         }
 
         /*
-         * write standard output and standard error to pipe. 
+         * write standard output and standard error to pipe.
          */
         /*
-         * close all non-standard open file descriptors 
+         * close all non-standard open file descriptors
          */
         for (cnt = getdtablesize() - 1; cnt >= 2; --cnt)
             (void) close(cnt);
@@ -499,7 +499,7 @@ restart_doit(int a)
     snmp_shutdown("snmpd");
 
     /*
-     * do the exec 
+     * do the exec
      */
 #if HAVE_EXECV
     execv(argvrestartname, argvrestartp);
@@ -567,7 +567,7 @@ sprint_mib_oid(char *buf, oid name[], size_t len)
  *	  *var_len	 Hook for size of returned data type.
  *	(**write_method) Hook for write method (UNUSED).
  *	   max
- *      
+ *
  * Returns:
  *	0	If name matches vp->name (accounting for 'exact') and is
  *			not greater in length than 'max'.
@@ -578,7 +578,7 @@ sprint_mib_oid(char *buf, oid name[], size_t len)
  *	requested).  Also check that 'name' is not longer than 'max' if
  *	max is greater-than/equal 0.
  * Store a successful match in 'name', and increment the OID instance if
- *	the match was not exact.  
+ *	the match was not exact.
  *
  * 'name' and 'length' are undefined upon failure.
  *
@@ -624,7 +624,7 @@ header_simple_table(struct variable *vp, oid * name, size_t * length,
             newname[*length - 1] = name[*length - 1] + 1;
         } else {
             /*
-             * Careful not to overflow...  
+             * Careful not to overflow...
              */
             newname[*length - 1] = name[*length - 1];
         }
@@ -636,7 +636,7 @@ header_simple_table(struct variable *vp, oid * name, size_t * length,
                 newname[*length - 1] = name[*length - 1] + 1;
             } else {
                 /*
-                 * Careful not to overflow...  
+                 * Careful not to overflow...
                  */
                 newname[*length - 1] = name[*length - 1];
             }
@@ -664,11 +664,11 @@ header_simple_table(struct variable *vp, oid * name, size_t * length,
  * Arguments:
  * vp     IN      - pointer to variable entry that points here
  * name    IN/OUT  - IN/name requested, OUT/name found
- * length  IN/OUT  - length of IN/OUT oid's 
+ * length  IN/OUT  - length of IN/OUT oid's
  * exact   IN      - TRUE if an exact match was requested
  * var_len OUT     - length of variable or 0 if function returned
  * write_method
- * 
+ *
  */
 
 /*******************************************************************-o-******
@@ -681,7 +681,7 @@ header_simple_table(struct variable *vp, oid * name, size_t * length,
  *	   exact   (I)     TRUE if an exact match was requested.
  *	  *var_len (O)     Length of variable or 0 if function returned.
  *	(**write_method)   Hook to name a write method (UNUSED).
- *      
+ *
  * Returns:
  *	MATCH_SUCCEEDED	If vp->name matches name (accounting for exact bit).
  *	MATCH_FAILED	Otherwise,
@@ -719,7 +719,7 @@ header_generic(struct variable *vp,
 }
 
 /*
- * checkmib(): provided for backwards compatibility, do not use: 
+ * checkmib(): provided for backwards compatibility, do not use:
  */
 int
 checkmib(struct variable *vp, oid * name, size_t * length,
@@ -728,7 +728,7 @@ checkmib(struct variable *vp, oid * name, size_t * length,
     /*
      * checkmib used to be header_simple_table, with reveresed boolean
      * return output.  header_simple_table() was created to match
-     * header_generic(). 
+     * header_generic().
      */
     return (!header_simple_table(vp, name, length, exact, var_len,
                                  write_method, max));
@@ -742,12 +742,12 @@ find_field(char *ptr, int field)
 
     if (field == LASTFIELD) {
         /*
-         * skip to end 
+         * skip to end
          */
         while (*ptr++);
         ptr = ptr - 2;
         /*
-         * rewind a field length 
+         * rewind a field length
          */
         while (*ptr != 0 && isspace(*ptr) && init <= ptr)
             ptr--;
@@ -791,7 +791,7 @@ parse_miboid(const char *buf, oid * oidout)
             buf++;
     }
     /*
-     * oidout[i] = -1; hmmm 
+     * oidout[i] = -1; hmmm
      */
     return i;
 }
@@ -900,7 +900,7 @@ Search_Table(mib_table_t t, void *entry, int exact)
 
     if (table->compare == NULL) {
         /*
-         * XXX - not sure this is right ? 
+         * XXX - not sure this is right ?
          */
         memcpy(entry, table->data, table->data_size);
         return 0;

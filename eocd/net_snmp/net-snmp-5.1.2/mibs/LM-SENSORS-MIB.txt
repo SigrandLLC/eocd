@@ -19,7 +19,7 @@ IMPORTS
 lmSensorsMIB MODULE-IDENTITY
     LAST-UPDATED "200011050000Z"
     ORGANIZATION "AdamsNames Ltd"
-    CONTACT-INFO    
+    CONTACT-INFO
         "Primary Contact: M J Oldfield
          email:     m@mail.tc"
     DESCRIPTION

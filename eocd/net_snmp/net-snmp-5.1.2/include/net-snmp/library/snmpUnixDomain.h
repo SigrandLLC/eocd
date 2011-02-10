@@ -29,7 +29,7 @@ int netsnmp_unix_getSecName(void *opaque, int olength,
 
 
 /*
- * "Constructor" for transport domain object.  
+ * "Constructor" for transport domain object.
  */
 
 void            netsnmp_unix_ctor(void);

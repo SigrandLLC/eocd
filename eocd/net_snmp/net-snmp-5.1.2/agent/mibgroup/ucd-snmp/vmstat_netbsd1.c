@@ -5,7 +5,7 @@
 #include <net-snmp/net-snmp-config.h>
 
 /*
- * Ripped from /usr/scr/usr.bin/vmstat/vmstat.c (covering all bases) 
+ * Ripped from /usr/scr/usr.bin/vmstat/vmstat.c (covering all bases)
  */
 #include <sys/param.h>
 #include <sys/time.h>
@@ -53,7 +53,7 @@
 #include "vmstat.h"
 
 /*
- * CPU percentage 
+ * CPU percentage
  */
 #define CPU_PRC         100
 #define CPTIME_SYMBOL	"cp_time"
@@ -97,7 +97,7 @@ init_vmstat_netbsd1(void)
          {CPURAWINTR}},
 
         /*
-         * Future use: 
+         * Future use:
          */
         /*
          * {ERRORFLAG, ASN_INTEGER, RONLY, var_extensible_vmstat, 1, {ERRORFLAG }},
@@ -107,12 +107,12 @@ init_vmstat_netbsd1(void)
 
     /*
      * Define the OID pointer to the top of the mib tree that we're
-     * registering underneath 
+     * registering underneath
      */
     oid             vmstat_variables_oid[] = { UCDAVIS_MIB, 11 };
 
     /*
-     * register ourselves with the agent to handle our mib tree 
+     * register ourselves with the agent to handle our mib tree
      */
     REGISTER_MIB("ucd-snmp/vmstat", extensible_vmstat_variables, variable2,
                  vmstat_variables_oid);
@@ -181,7 +181,7 @@ var_extensible_vmstat(struct variable *vp,
         return (NULL);
 
     /*
-     * Update structures (only if time has passed) 
+     * Update structures (only if time has passed)
      */
     if (time_new != time_old) {
 #ifdef KERN_CP_TIME
@@ -198,7 +198,7 @@ var_extensible_vmstat(struct variable *vp,
             memset(cpu_new, 0, sizeof(cpu_new));
 #else
         /*
-         * CPU usage 
+         * CPU usage
          */
         auto_nlist(CPTIME_SYMBOL, (char *) cpu_new, sizeof(cpu_new));
 #endif
@@ -218,19 +218,19 @@ var_extensible_vmstat(struct variable *vp,
             cpu_total = 1;
 
         /*
-         * Memory info 
+         * Memory info
          */
         mem_old = mem_new;
         sysctl(mem_mib, 2, &mem_new, &mem_size, NULL, 0);
     }
 
     /*
-     * Rate macro 
+     * Rate macro
      */
 #define rate(x) (((x)+ time_diff/2) / time_diff)
 
     /*
-     * Page-to-kb macro 
+     * Page-to-kb macro
      */
 #define ptok(p) ((p) * (mem_new.pagesize >> 10))
 
@@ -302,7 +302,7 @@ var_extensible_vmstat(struct variable *vp,
         long_ret = cpu_new[CP_INTR];
         return ((u_char *) (&long_ret));
         /*
-         * reserved for future use 
+         * reserved for future use
          */
         /*
          * case ERRORFLAG:

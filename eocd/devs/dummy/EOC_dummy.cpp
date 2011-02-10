@@ -23,14 +23,14 @@ EOC_dummy::EOC_dummy(char *file1,char *file2)
     close(fd);
 
     f1 = strndup(file1,256);
-    f2 = strndup(file2,256);    
+    f2 = strndup(file2,256);
     valid = 1;
 }
 
 EOC_dummy::~EOC_dummy()
 {
     free(f1);
-    free(f2);    
+    free(f2);
 }
 
 
@@ -41,7 +41,7 @@ EOC_dummy::send(EOC_msg *m)
     int fd;
     int wrcnt = 0;
     int err = 0;
-    
+
     if( !valid )
 	return -1;
 
@@ -49,7 +49,7 @@ EOC_dummy::send(EOC_msg *m)
 	valid = 0;
 	return -1;
     }
-    
+
     wrcnt = write(fd,m->mptr(),m->msize());
     if( wrcnt < m->msize() )
 	err = -1;
@@ -57,8 +57,8 @@ EOC_dummy::send(EOC_msg *m)
     close(fd);
     return err;
 }
-    
-    
+
+
 EOC_msg *
 EOC_dummy::recv()
 {
@@ -76,7 +76,7 @@ EOC_dummy::recv()
 	valid = 0;
 	return NULL;
     }
-    
+
     rdbytes = ((BUFF_SZ-rdcnt) > HDLC_BUFF_SZ) ? HDLC_BUFF_SZ : (BUFF_SZ-rdcnt);
     while ( rdbytes && (cnt=read(fd,(buff+rdcnt),rdbytes)) ){
 	rdcnt += cnt;
@@ -86,7 +86,7 @@ EOC_dummy::recv()
 
     if( !rdcnt )
 	return NULL;
-    
+
     ptr = (char*)malloc(sizeof(char) * rdcnt);
     memcpy(ptr,buff,rdcnt);
     msg = new EOC_msg;
@@ -99,7 +99,7 @@ EOC_dummy::recv()
     FILE *stream = fopen(f2,"w");
     if( stream )
 	fclose(stream);
-/* DEBUG END */    
+/* DEBUG END */
     return msg;
 }
 

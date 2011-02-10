@@ -52,7 +52,7 @@ get_unknown_context_count(netsnmp_mib_handler *handler,
                           netsnmp_request_info *requests)
 {
     /*
-     * we're only called for GETs of the right node, so this is easy: 
+     * we're only called for GETs of the right node, so this is easy:
      */
 
     u_long          long_ret =
@@ -70,7 +70,7 @@ get_unavailable_context_count(netsnmp_mib_handler *handler,
                               netsnmp_request_info *requests)
 {
     /*
-     * we're only called for GETs of the right node, so this is easy: 
+     * we're only called for GETs of the right node, so this is easy:
      */
 
     u_long          long_ret =

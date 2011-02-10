@@ -28,7 +28,7 @@
  */
 
 /** returns a serialize handler that can be injected into a given
- *  handler chain.  
+ *  handler chain.
  */
 netsnmp_mib_handler *
 netsnmp_get_serialize_handler(void)
@@ -58,25 +58,25 @@ netsnmp_serialize_helper_handler(netsnmp_mib_handler *handler,
 
     DEBUGMSGTL(("helper:serialize", "Got request\n"));
     /*
-     * loop through requests 
+     * loop through requests
      */
     for (request = requests; request; request = request->next) {
         int             ret;
 
         /*
-         * store next pointer and delete it 
+         * store next pointer and delete it
          */
         requesttmp = request->next;
         request->next = NULL;
 
         /*
-         * call the next handler 
+         * call the next handler
          */
         ret =
             netsnmp_call_next_handler(handler, reginfo, reqinfo, request);
 
         /*
-         * restore original next pointer 
+         * restore original next pointer
          */
         request->next = requesttmp;
 
@@ -87,7 +87,7 @@ netsnmp_serialize_helper_handler(netsnmp_mib_handler *handler,
     return SNMP_ERR_NOERROR;
 }
 
-/** 
+/**
  *  initializes the serialize helper which then registers a serialize
  *  handler as a run-time injectable handler for configuration file
  *  use.

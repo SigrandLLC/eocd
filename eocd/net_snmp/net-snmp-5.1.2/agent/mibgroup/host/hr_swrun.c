@@ -298,7 +298,7 @@ init_hr_swrun(void)
             && myProcess32Next)
 #if 0
             /*
-             * This doesn't work after all on Win98 SE 
+             * This doesn't work after all on Win98 SE
              */
             query = CW_GETPINFO_FULL;
 #else
@@ -328,11 +328,11 @@ init_hr_swrun(void)
  * Arguments:
  * vp     IN      - pointer to variable entry that points here
  * name    IN/OUT  - IN/name requested, OUT/name found
- * length  IN/OUT  - length of IN/OUT oid's 
+ * length  IN/OUT  - length of IN/OUT oid's
  * exact   IN      - TRUE if an exact match was requested
  * var_len OUT     - length of variable or 0 if function returned
  * write_method
- * 
+ *
  */
 
 int
@@ -413,7 +413,7 @@ header_hrswrunEntry(struct variable *vp,
 #endif
             DEBUGMSGTL(("host/hr_swrun", " saved\n"));
             /*
-             * Save process status information 
+             * Save process status information
              */
             break;
         }
@@ -425,7 +425,7 @@ header_hrswrunEntry(struct variable *vp,
             LowProcIndex = current_proc_entry - 1;
 #endif
             /*
-             * Save process status information 
+             * Save process status information
              */
             DEBUGMSG(("host/hr_swrun", " saved"));
         }
@@ -542,7 +542,7 @@ var_hrswrun(struct variable * vp,
 #if NO_DUMMY_VALUES
         return NULL;
 #else
-        /* 
+        /*
          * per dts, on coders:
          * cos (in general) we won't know which process should
          * be regarded as "the primary O/S process".
@@ -571,7 +571,7 @@ var_hrswrun(struct variable * vp,
             *cp = '\0';
 #elif defined(solaris2)
 #if _SLASH_PROC_METHOD_
-        if (proc_buf) { 
+        if (proc_buf) {
             char *pos=strchr(proc_buf->pr_psargs,' ');
             if (pos != NULL) *pos = '\0';
             strlcpy(string, basename(proc_buf->pr_psargs),sizeof(string));
@@ -649,7 +649,7 @@ var_hrswrun(struct variable * vp,
 #endif
         *var_len = strlen(string);
         /*
-         * remove trailing newline 
+         * remove trailing newline
          */
         if (*var_len) {
             cp = string + *var_len - 1;
@@ -663,7 +663,7 @@ var_hrswrun(struct variable * vp,
     case HRSWRUN_PATH:
 #ifdef HAVE_SYS_PSTAT_H
         /*
-         * Path not available - use argv[0] 
+         * Path not available - use argv[0]
          */
         sprintf(string, "%s", proc_buf.pst_cmd);
         cp = strchr(string, ' ');
@@ -671,7 +671,7 @@ var_hrswrun(struct variable * vp,
             *cp = '\0';
 #elif defined(dynix)
         /*
-         * Path not available - use argv[0] 
+         * Path not available - use argv[0]
          */
         sprintf(string, "%s", lowpsinfo.pr_psargs);
         cp = strchr(string, ' ');
@@ -707,7 +707,7 @@ var_hrswrun(struct variable * vp,
             strcpy(string, buf);
         else {
             /*
-             * swapped out - no cmdline 
+             * swapped out - no cmdline
              */
             fclose(fp);
             sprintf(string, "/proc/%d/status", pid);
@@ -806,11 +806,11 @@ var_hrswrun(struct variable * vp,
         memset(buf, 0, sizeof(buf));
 
         /*
-         * argv[0] '\0' argv[1] '\0' .... 
+         * argv[0] '\0' argv[1] '\0' ....
          */
         if (!fgets(buf, sizeof(buf) - 2, fp)) {
             /*
-             * maybe be empty (even argv[0] is missing) 
+             * maybe be empty (even argv[0] is missing)
              */
             string[0] = '\0';
             *var_len = 0;
@@ -819,14 +819,14 @@ var_hrswrun(struct variable * vp,
         }
 
         /*
-         * Skip over argv[0] 
+         * Skip over argv[0]
          */
         cp = buf;
         while (*cp)
             ++cp;
         ++cp;
         /*
-         * Now join together separate arguments. 
+         * Now join together separate arguments.
          */
         while (1) {
             while (*cp)
@@ -1233,7 +1233,7 @@ void
 End_HR_SWRun(void)
 {
     /*
-     * just a stub... because it's declared 
+     * just a stub... because it's declared
      */
 }
 

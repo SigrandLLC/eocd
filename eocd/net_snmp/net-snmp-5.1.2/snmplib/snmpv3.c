@@ -46,7 +46,7 @@
 #endif
 
 /*
- * Stuff needed for getHwAddress(...) 
+ * Stuff needed for getHwAddress(...)
  */
 #ifdef HAVE_SYS_IOCTL_H
 #	include <sys/ioctl.h>
@@ -171,15 +171,15 @@ snmpv3_secLevel_conf(const char *word, char *cptr)
 
     if (strcasecmp(cptr, "noAuthNoPriv") == 0 || strcmp(cptr, "1") == 0 ||
 	strcasecmp(cptr, "nanp") == 0) {
-        netsnmp_ds_set_int(NETSNMP_DS_LIBRARY_ID, 
+        netsnmp_ds_set_int(NETSNMP_DS_LIBRARY_ID,
 			   NETSNMP_DS_LIB_SECLEVEL, SNMP_SEC_LEVEL_NOAUTH);
     } else if (strcasecmp(cptr, "authNoPriv") == 0 || strcmp(cptr, "2") == 0 ||
 	       strcasecmp(cptr, "anp") == 0) {
-        netsnmp_ds_set_int(NETSNMP_DS_LIBRARY_ID, 
+        netsnmp_ds_set_int(NETSNMP_DS_LIBRARY_ID,
 			   NETSNMP_DS_LIB_SECLEVEL, SNMP_SEC_LEVEL_AUTHNOPRIV);
     } else if (strcasecmp(cptr, "authPriv") == 0 || strcmp(cptr, "3") == 0 ||
 	       strcasecmp(cptr, "ap") == 0) {
-        netsnmp_ds_set_int(NETSNMP_DS_LIBRARY_ID, 
+        netsnmp_ds_set_int(NETSNMP_DS_LIBRARY_ID,
 			   NETSNMP_DS_LIB_SECLEVEL, SNMP_SEC_LEVEL_AUTHPRIV);
     } else {
         snprintf(buf, sizeof(buf), "Unknown security level: %s", cptr);
@@ -187,7 +187,7 @@ snmpv3_secLevel_conf(const char *word, char *cptr)
         config_perror(buf);
     }
     DEBUGMSGTL(("snmpv3", "default secLevel set to: %s = %d\n", cptr,
-                netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID, 
+                netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID,
 				   NETSNMP_DS_LIB_SECLEVEL)));
 }
 
@@ -387,7 +387,7 @@ snmpv3_options(char *optarg, netsnmp_session * session, char **Apsz,
  * XXX	What if multiple engines all choose the same address?
  *      (answer:  You're screwed, because you might need a kul database
  *       which is dependant on the current engineID.  Enumeration and other
- *       tricks won't work). 
+ *       tricks won't work).
  */
 int
 setup_engineID(u_char ** eidp, const char *text)
@@ -396,7 +396,7 @@ setup_engineID(u_char ** eidp, const char *text)
         ucdavisid = htonl(UCDAVIS_OID), localsetup = (eidp) ? 0 : 1;
 
     /*
-     * Use local engineID if *eidp == NULL.  
+     * Use local engineID if *eidp == NULL.
      */
 #ifdef HAVE_GETHOSTNAME
     u_char          buf[SNMP_MAXBUF_SMALL];
@@ -411,17 +411,17 @@ setup_engineID(u_char ** eidp, const char *text)
     engineIDIsSet = 1;
 
     /*
-     * get the host name and save the information 
+     * get the host name and save the information
      */
 #ifdef HAVE_GETHOSTNAME
     gethostname((char *) buf, sizeof(buf));
     hent = gethostbyname((char *) buf);
     /*
-     * Determine if we are using IPV6 
+     * Determine if we are using IPV6
      */
 #ifdef AF_INET6
     /*
-     * see if they selected IPV4 or IPV6 support 
+     * see if they selected IPV4 or IPV6 support
      */
     if ((ENGINEID_TYPE_IPV6 == localEngineIDType) ||
         (ENGINEID_TYPE_IPV4 == localEngineIDType)) {
@@ -429,7 +429,7 @@ setup_engineID(u_char ** eidp, const char *text)
             localEngineIDType = ENGINEID_TYPE_IPV6;
         } else {
             /*
-             * Not IPV6 so we go with default 
+             * Not IPV6 so we go with default
              */
             localEngineIDType = ENGINEID_TYPE_IPV4;
         }
@@ -437,7 +437,7 @@ setup_engineID(u_char ** eidp, const char *text)
 #else
     /*
      * No IPV6 support.  Check if they selected IPV6 engineID type.  If so
-     * * make it IPV4 for them 
+     * * make it IPV4 for them
      */
     if (ENGINEID_TYPE_IPV6 == localEngineIDType) {
         localEngineIDType = ENGINEID_TYPE_IPV4;
@@ -447,13 +447,13 @@ setup_engineID(u_char ** eidp, const char *text)
 
     /*
      * Determine if we have text and if so setup our localEngineIDType
-     * * appropriately.  
+     * * appropriately.
      */
     if (NULL != text) {
         engineIDType = localEngineIDType = ENGINEID_TYPE_TEXT;
     }
     /*
-     * Determine length of the engineID string. 
+     * Determine length of the engineID string.
      */
     len = 5;                    /* always have 5 leading bytes */
     switch (localEngineIDType) {
@@ -499,7 +499,7 @@ setup_engineID(u_char ** eidp, const char *text)
     }
     if (localEngineIDType == ENGINEID_TYPE_UCD_RND)
         /*
-         * we must use the net-snmp enterprise id here, regardless 
+         * we must use the net-snmp enterprise id here, regardless
          */
         memcpy(bufp, &ucdavisid, sizeof(ucdavisid));    /* XXX Must be 4 bytes! */
     else
@@ -515,7 +515,7 @@ setup_engineID(u_char ** eidp, const char *text)
     case ENGINEID_TYPE_UCD_RND:
         if (oldEngineID) {
             /*
-             * keep our previous notion of the engineID 
+             * keep our previous notion of the engineID
              */
             memcpy(bufp, oldEngineID, oldEngineIDLength);
         } else {
@@ -524,7 +524,7 @@ setup_engineID(u_char ** eidp, const char *text)
              * an address which may change and may even become conflicting
              * in the future like most of the default v3 engineID types
              * suffer from.
-             * 
+             *
              * Ours is built from 2 fairly random elements: a random number and
              * the current time in seconds.  This method suffers from boxes
              * that may not have a correct clock setting and random number
@@ -555,7 +555,7 @@ setup_engineID(u_char ** eidp, const char *text)
             int             x;
             bufp[4] = ENGINEID_TYPE_MACADDR;
             /*
-             * use default NIC if none provided 
+             * use default NIC if none provided
              */
             if (NULL == engineIDNic) {
                 x = getHwAddress(DEFAULT_NIC, &bufp[5]);
@@ -564,7 +564,7 @@ setup_engineID(u_char ** eidp, const char *text)
             }
             if (0 != x)
                 /*
-                 * function failed fill MAC address with zeros 
+                 * function failed fill MAC address with zeros
                  */
             {
                 memset(&bufp[5], 0, 6);
@@ -587,7 +587,7 @@ setup_engineID(u_char ** eidp, const char *text)
         }
 #else                           /* HAVE_GETHOSTNAME */
         /*
-         * Unknown address type.  Default to 127.0.0.1. 
+         * Unknown address type.  Default to 127.0.0.1.
          */
         bufp[5] = 127;
         bufp[6] = 0;
@@ -648,12 +648,12 @@ usm_parse_create_usmUser(const char *token, char *line)
     newuser = usm_create_user();
 
     /*
-     * READ: Security Name 
+     * READ: Security Name
      */
     cp = copy_nword(line, buf, sizeof(buf));
 
     /*
-     * might be a -e ENGINEID argument 
+     * might be a -e ENGINEID argument
      */
     if (strcmp(buf, "-e") == 0) {
         size_t          ebuf_len = 32, eout_len = 0;
@@ -666,7 +666,7 @@ usm_parse_create_usmUser(const char *token, char *line)
         }
 
         /*
-         * Get the specified engineid from the line.  
+         * Get the specified engineid from the line.
          */
         cp = copy_nword(cp, buf, sizeof(buf));
         if (!snmp_hex_to_binary(&ebuf, &ebuf_len, &eout_len, 1, buf)) {
@@ -695,7 +695,7 @@ usm_parse_create_usmUser(const char *token, char *line)
         goto add;               /* no authentication or privacy type */
 
     /*
-     * READ: Authentication Type 
+     * READ: Authentication Type
      */
     if (strncmp(cp, "MD5", 3) == 0) {
         memcpy(newuser->authProtocol, usmHMACMD5AuthProtocol,
@@ -712,7 +712,7 @@ usm_parse_create_usmUser(const char *token, char *line)
     cp = skip_token(cp);
 
     /*
-     * READ: Authentication Pass Phrase 
+     * READ: Authentication Pass Phrase
      */
     if (!cp) {
         config_perror("no authentication pass phrase");
@@ -721,7 +721,7 @@ usm_parse_create_usmUser(const char *token, char *line)
     }
     cp = copy_nword(cp, buf, sizeof(buf));
     /*
-     * And turn it into a localized key 
+     * And turn it into a localized key
      */
     ret = generate_Ku(newuser->authProtocol, newuser->authProtocolLen,
                       (u_char *) buf, strlen(buf), userKey, &userKeyLen);
@@ -750,7 +750,7 @@ usm_parse_create_usmUser(const char *token, char *line)
         goto add;               /* no privacy type (which is legal) */
 
     /*
-     * READ: Privacy Type 
+     * READ: Privacy Type
      */
     if (strncmp(cp, "DES", 3) == 0) {
         memcpy(newuser->privProtocol, usmDESPrivProtocol,
@@ -774,18 +774,18 @@ usm_parse_create_usmUser(const char *token, char *line)
 
     cp = skip_token(cp);
     /*
-     * READ: Authentication Pass Phrase 
+     * READ: Authentication Pass Phrase
      */
     if (!cp) {
         /*
-         * assume the same as the authentication key 
+         * assume the same as the authentication key
          */
         memdup(&newuser->privKey, newuser->authKey, newuser->authKeyLen);
         newuser->privKeyLen = newuser->authKeyLen;
     } else {
         cp = copy_nword(cp, buf, sizeof(buf));
         /*
-         * And turn it into a localized key 
+         * And turn it into a localized key
          */
         ret = generate_Ku(newuser->authProtocol, newuser->authProtocolLen,
                           (u_char *) buf, strlen(buf),
@@ -863,13 +863,13 @@ engineIDType_conf(const char *word, char *cptr)
 {
     engineIDType = atoi(cptr);
     /*
-     * verify valid type selected 
+     * verify valid type selected
      */
     switch (engineIDType) {
     case ENGINEID_TYPE_IPV4:   /* IPv4 */
     case ENGINEID_TYPE_IPV6:   /* IPv6 */
         /*
-         * IPV? is always good 
+         * IPV? is always good
          */
         break;
 #if defined(IFHWADDRLEN) && defined(SIOCGIFHWADDR)
@@ -878,7 +878,7 @@ engineIDType_conf(const char *word, char *cptr)
 #endif
     default:
         /*
-         * unsupported one chosen 
+         * unsupported one chosen
          */
         config_perror("Unsupported enginedIDType, forcing IPv4");
         engineIDType = ENGINEID_TYPE_IPV4;
@@ -902,15 +902,15 @@ engineIDNic_conf(const char *word, char *cptr)
 {
     /*
      * Make sure they haven't already specified the engineID via the
-     * * configuration file 
+     * * configuration file
      */
     if (0 == engineIDIsSet)
         /*
-         * engineID has NOT been set via configuration file 
+         * engineID has NOT been set via configuration file
          */
     {
         /*
-         * See if already set if so erase & release it 
+         * See if already set if so erase & release it
          */
         if (NULL != engineIDNic) {
             SNMP_FREE(engineIDNic);
@@ -952,28 +952,28 @@ version_conf(const char *word, char *cptr)
 {
     if ((strcmp(cptr,  "1") == 0) ||
         (strcmp(cptr, "v1") == 0)) {
-        netsnmp_ds_set_int(NETSNMP_DS_LIBRARY_ID, NETSNMP_DS_LIB_SNMPVERSION, 
+        netsnmp_ds_set_int(NETSNMP_DS_LIBRARY_ID, NETSNMP_DS_LIB_SNMPVERSION,
 			   NETSNMP_DS_SNMP_VERSION_1);       /* bogus value */
     } else if ((strcasecmp(cptr,  "2c") == 0) ||
                (strcasecmp(cptr, "v2c") == 0)) {
-        netsnmp_ds_set_int(NETSNMP_DS_LIBRARY_ID, NETSNMP_DS_LIB_SNMPVERSION, 
+        netsnmp_ds_set_int(NETSNMP_DS_LIBRARY_ID, NETSNMP_DS_LIB_SNMPVERSION,
 			   NETSNMP_DS_SNMP_VERSION_2c);
     } else if ((strcasecmp(cptr,  "3" ) == 0) ||
                (strcasecmp(cptr, "v3" ) == 0)) {
-        netsnmp_ds_set_int(NETSNMP_DS_LIBRARY_ID, NETSNMP_DS_LIB_SNMPVERSION, 
+        netsnmp_ds_set_int(NETSNMP_DS_LIBRARY_ID, NETSNMP_DS_LIB_SNMPVERSION,
 			   NETSNMP_DS_SNMP_VERSION_3);
     } else {
         config_perror("Unknown version specification");
         return;
     }
     DEBUGMSGTL(("snmpv3", "set default version to %d\n",
-                netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID, 
+                netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID,
 				   NETSNMP_DS_LIB_SNMPVERSION)));
 }
 
 /*
  * engineID_old_conf(const char *, char *):
- * 
+ *
  * Reads a octet string encoded engineID into the oldEngineID and
  * oldEngineIDLen pointers.
  */
@@ -989,7 +989,7 @@ oldengineID_conf(const char *word, char *cptr)
  *
  * Parameters:
  *	*type	Label for the config file "type" used by calling entity.
- *      
+ *
  * Set time and engineID.
  * Set parsing functions for config file tokens.
  * Initialize SNMP Crypto API (SCAPI).
@@ -1004,7 +1004,7 @@ init_snmpv3(const char *type)
         type = "__snmpapp__";
 
     /*
-     * we need to be called back later 
+     * we need to be called back later
      */
     snmp_register_callback(SNMP_CALLBACK_LIBRARY,
                            SNMP_CALLBACK_POST_READ_CONFIG,
@@ -1014,7 +1014,7 @@ init_snmpv3(const char *type)
                            SNMP_CALLBACK_POST_PREMIB_READ_CONFIG,
                            init_snmpv3_post_premib_config, NULL);
     /*
-     * we need to be called back later 
+     * we need to be called back later
      */
     snmp_register_callback(SNMP_CALLBACK_LIBRARY, SNMP_CALLBACK_STORE_DATA,
                            snmpv3_store, (void *) strdup(type));
@@ -1027,20 +1027,20 @@ init_snmpv3(const char *type)
                            free_enginetime_on_shutdown, NULL);
 
     /*
-     * initialize submodules 
+     * initialize submodules
      */
     /*
      * NOTE: this must be after the callbacks are registered above,
-     * since they need to be called before the USM callbacks. 
+     * since they need to be called before the USM callbacks.
      */
     init_secmod();
 
     /*
-     * register all our configuration handlers (ack, there's a lot) 
+     * register all our configuration handlers (ack, there's a lot)
      */
 
     /*
-     * handle engineID setup before everything else which may depend on it 
+     * handle engineID setup before everything else which may depend on it
      */
     register_prenetsnmp_mib_handler(type, "engineID", engineID_conf, NULL,
                                     "string");
@@ -1054,11 +1054,11 @@ init_snmpv3(const char *type)
                             NULL);
 
     /*
-     * default store config entries 
+     * default store config entries
      */
     netsnmp_ds_register_config(ASN_OCTET_STR, "snmp", "defSecurityName",
 			       NETSNMP_DS_LIBRARY_ID, NETSNMP_DS_LIB_SECNAME);
-    netsnmp_ds_register_config(ASN_OCTET_STR, "snmp", "defContext", 
+    netsnmp_ds_register_config(ASN_OCTET_STR, "snmp", "defContext",
 			       NETSNMP_DS_LIBRARY_ID, NETSNMP_DS_LIB_CONTEXT);
     netsnmp_ds_register_config(ASN_OCTET_STR, "snmp", "defPassphrase",
 			     NETSNMP_DS_LIBRARY_ID, NETSNMP_DS_LIB_PASSPHRASE);
@@ -1112,13 +1112,13 @@ init_snmpv3_post_config(int majorid, int minorid, void *serverarg,
 
     if (engineIDLen == 0) {
         /*
-         * Somethine went wrong - help! 
+         * Somethine went wrong - help!
          */
         return SNMPERR_GENERR;
     }
 
     /*
-     * if our engineID has changed at all, the boots record must be set to 1 
+     * if our engineID has changed at all, the boots record must be set to 1
      */
     if (engineIDLen != (int) oldEngineIDLength ||
         oldEngineID == NULL || c_engineID == NULL ||
@@ -1127,7 +1127,7 @@ init_snmpv3_post_config(int majorid, int minorid, void *serverarg,
     }
 
     /*
-     * set our local engineTime in the LCD timing cache 
+     * set our local engineTime in the LCD timing cache
      */
     set_enginetime(c_engineID, engineIDLen,
                    snmpv3_local_snmpEngineBoots(),
@@ -1171,7 +1171,7 @@ snmpv3_store(int majorID, int minorID, void *serverarg, void *clientarg)
 
     if (engineIDLen) {
         /*
-         * store the engineID used for this run 
+         * store the engineID used for this run
          */
         sprintf(line, "oldEngineID ");
         read_config_save_octet_string(line + strlen(line), c_engineID,
@@ -1194,7 +1194,7 @@ snmpv3_local_snmpEngineBoots(void)
  * Parameters:
  *	*buf
  *	 buflen
- *      
+ *
  * Returns:
  *	Length of engineID	On Success
  *	SNMPERR_GENERR		Otherwise.
@@ -1226,7 +1226,7 @@ snmpv3_get_engineID(u_char * buf, size_t buflen)
  *       *dest_len
  *       src
  *	 srclen
- *      
+ *
  * Returns:
  *	Length of engineID	On Success
  *	0		        Otherwise.
@@ -1264,7 +1264,7 @@ snmpv3_clone_engineID(u_char ** dest, size_t * destlen, u_char * src,
  *
  * Parameters:
  *	*length
- *      
+ *
  * Returns:
  *	Pointer to copy of engineID	On Success.
  *	NULL				If malloc() or snmpv3_get_engineID()
@@ -1295,7 +1295,7 @@ snmpv3_generate_engineID(size_t * length)
 
 /*
  * snmpv3_local_snmpEngineTime(): return the number of seconds since the
- * snmpv3 engine last incremented engine_boots 
+ * snmpv3 engine last incremented engine_boots
  */
 u_long
 snmpv3_local_snmpEngineTime(void)
@@ -1308,7 +1308,7 @@ snmpv3_local_snmpEngineTime(void)
 
 
 /*
- * Code only for Linux systems 
+ * Code only for Linux systems
  */
 #if defined(IFHWADDRLEN) && defined(SIOCGIFHWADDR)
 static int
@@ -1353,15 +1353,15 @@ getHwAddress(const char *networkDevice, /* e.g. "eth0", "eth1" */
         return -1;
     }
     /*
-     * erase the request block 
+     * erase the request block
      */
     memset(&request, 0, sizeof(request));
     /*
-     * copy the name of the net device we want to find the HW address for 
+     * copy the name of the net device we want to find the HW address for
      */
     strncpy(request.ifr_name, networkDevice, IFNAMSIZ - 1);
     /*
-     * Get the HW address 
+     * Get the HW address
      */
     if (ioctl(sock, SIOCGIFHWADDR, &request)) {
         close(sock);
@@ -1375,11 +1375,11 @@ getHwAddress(const char *networkDevice, /* e.g. "eth0", "eth1" */
 
 #ifdef SNMP_TESTING_CODE
 /*
- * snmpv3_set_engineBootsAndTime(): this function does not exist.  Go away. 
+ * snmpv3_set_engineBootsAndTime(): this function does not exist.  Go away.
  */
 /*
  * It certainly should never be used, unless in a testing scenero,
- * which is why it was created 
+ * which is why it was created
  */
 void
 snmpv3_set_engineBootsAndTime(int boots, int ttime)

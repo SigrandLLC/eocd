@@ -1,5 +1,5 @@
 #
-# getValues($dbh, 
+# getValues($dbh,
 #           [-varcol => varname,]
 #           [-valcol => varval,]
 #           [-key => keyname,]

@@ -198,7 +198,7 @@ int
 handler_wrapper(netsnmp_mib_handler          *handler,
                 netsnmp_handler_registration *reginfo,
                 netsnmp_agent_request_info   *reqinfo,
-                netsnmp_request_info         *requests) 
+                netsnmp_request_info         *requests)
 {
     u_long intret = 5;
     handler_cb_data *cb_data = (handler_cb_data *) handler->myvoid;
@@ -244,7 +244,7 @@ handler_wrapper(netsnmp_mib_handler          *handler,
     return SNMP_ERR_NOERROR;
 }
 
-MODULE = NetSNMP::agent		PACKAGE = NetSNMP::agent		
+MODULE = NetSNMP::agent		PACKAGE = NetSNMP::agent
 
 double
 constant(sv,arg)
@@ -281,8 +281,8 @@ init_snmp(name)
 int
 init_master_agent()
 
-void    
-snmp_enable_stderrlog()    
+void
+snmp_enable_stderrlog()
 
 MODULE = NetSNMP::agent  PACKAGE = NetSNMP::agent PREFIX = na_
 
@@ -426,7 +426,7 @@ getOID(me)
         ST(0) = POPs;
         XSRETURN(1);
     }
-        
+
 netsnmp_oid *
 nari_getOIDptr(me)
         SV *me;
@@ -711,7 +711,7 @@ nari_setValue(me, type, value)
 
               RETVAL = 1;
               break;
-              
+
             default:
                 snmp_log(LOG_ERR, "unknown var value type: %d\n",
                         type);
@@ -721,7 +721,7 @@ nari_setValue(me, type, value)
 
     OUTPUT:
         RETVAL
-        
+
 void
 nari_setOID(me, value)
         SV *me;
@@ -782,7 +782,7 @@ narqi_setMode(me, newvalue)
     CODE:
         reqinfo = (netsnmp_agent_request_info *) SvIV(SvRV(me));
         reqinfo->mode = newvalue;
-        
 
-MODULE = NetSNMP::agent		PACKAGE = NetSNMP::agent		
+
+MODULE = NetSNMP::agent		PACKAGE = NetSNMP::agent
 

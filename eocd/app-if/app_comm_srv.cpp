@@ -17,7 +17,7 @@ app_comm_srv(char *sock_path,char *sock_name) : app_comm(sock_path,sock_name)
     struct stat sbuf;
     int s;
     int ret=0,len;
-    
+
     // Check path exist
     if( (ret = stat(sock_path,&sbuf)) ){
 		if( errno != ENOENT ){
@@ -32,7 +32,7 @@ app_comm_srv(char *sock_path,char *sock_name) : app_comm(sock_path,sock_name)
 			PERROR("Error creating dir %s",sock_path);
 			return;
 		}
-    }  
+    }
     if( !S_ISDIR(sbuf.st_mode) ){
 		PDEBUG(DERR,"Error: %s is not directory",sock_path);
 		return;
@@ -41,16 +41,16 @@ app_comm_srv(char *sock_path,char *sock_name) : app_comm(sock_path,sock_name)
     // Create socket
     if ((s = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
     	PERROR("Cannot create socket");
-		return;    
+		return;
     }
-			    
+
     if( unlink(sname) ){
 		if( errno != ENOENT ){
 			PERROR("Cannot unlink (%s)",sname);
 			return;
 		}
     }
-    
+
     saun.sun_family = AF_UNIX;
     strcpy(saun.sun_path,sname);
     len = sizeof(saun.sun_family) + strlen(saun.sun_path);
@@ -63,7 +63,7 @@ app_comm_srv(char *sock_path,char *sock_name) : app_comm(sock_path,sock_name)
     	PERROR("Error trying listen socket (%s)",sname);
 		return;
     }
-    
+
     // setup non blocking
     if( set_nonblock(s) )
 		return; /* ?? */
@@ -72,7 +72,7 @@ app_comm_srv(char *sock_path,char *sock_name) : app_comm(sock_path,sock_name)
     sfd = s;
     conn_num = 0;
 
-    return;			
+    return;
 }
 
 
@@ -81,7 +81,7 @@ build_select_list()
 {
     int i;
     if( sfd < 0 )
-		return -1; 
+		return -1;
     // blank fd set
     FD_ZERO(&socks);
     // fill fd set
@@ -127,8 +127,8 @@ complete_wait()
     int i,j;
     int num_act=0;
     char tmp;
-	
-    memset(conn_act,0,sizeof(conn_act));	
+
+    memset(conn_act,0,sizeof(conn_act));
     for (i=0; i<conn_num; i++) {
 		if (FD_ISSET(conn_fd[i],&socks)){
 			if( ::recv(conn_fd[i],&tmp,1,MSG_PEEK|MSG_DONTWAIT) < 1 ){
@@ -178,7 +178,7 @@ send(int c_num,char *buf,size_t size)
 ssize_t app_comm_srv::
 recv(int &c_idx,char *&buf)
 {
-    if( (c_idx = next_fd()) <0 ) 
+    if( (c_idx = next_fd()) <0 )
 		return 0;
     c_idx++;
 	PDEBUG(DERR,"Receive from %d fd",c_idx);

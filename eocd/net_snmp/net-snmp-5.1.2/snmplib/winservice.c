@@ -35,7 +35,7 @@ labelFIN: \
      */
 
     /*
-     * Application Name 
+     * Application Name
      * This should be declared by the application, which wants to register as
      * windows service
      */
@@ -46,22 +46,22 @@ extern LPTSTR g_szAppName;
      */
 
     /*
-     * Flag to indicate whether process is running as Service 
+     * Flag to indicate whether process is running as Service
      */
 BOOL g_fRunningAsService = FALSE;
 
     /*
-     * Variable to maintain Current Service status 
+     * Variable to maintain Current Service status
      */
 static SERVICE_STATUS ServiceStatus;
 
     /*
-     * Service Handle 
+     * Service Handle
      */
 static SERVICE_STATUS_HANDLE hServiceStatus = 0L;
 
     /*
-     * Service Table Entry 
+     * Service Table Entry
      */
 SERVICE_TABLE_ENTRY ServiceTableEntry[] = {
   {NULL, ServiceMain},		/* Service Main function */
@@ -112,7 +112,7 @@ RegisterService (LPCTSTR lpszServiceName, LPCTSTR lpszServiceDisplayName,
   {
 
     /*
-     * Open Service Control Manager handle 
+     * Open Service Control Manager handle
      */
     hSCManager = OpenSCManager (NULL, NULL, SC_MANAGER_CREATE_SERVICE);
     if (hSCManager == NULL)
@@ -122,12 +122,12 @@ RegisterService (LPCTSTR lpszServiceName, LPCTSTR lpszServiceDisplayName,
       }
 
     /*
-     * Generate the Command to be executed by SCM 
+     * Generate the Command to be executed by SCM
      */
     _stprintf (szServiceCommand, "%s %s", szServicePath, _T ("-service"));
 
     /*
-     * Create the Desired service 
+     * Create the Desired service
      */
     hService = CreateService (hSCManager, lpszServiceName, lpszServiceDisplayName,
 			SERVICE_ALL_ACCESS, SERVICE_WIN32_OWN_PROCESS,
@@ -146,16 +146,16 @@ RegisterService (LPCTSTR lpszServiceName, LPCTSTR lpszServiceDisplayName,
       }
 
     /*
-     * Create registry entries for EventLog 
+     * Create registry entries for EventLog
      */
     /*
-     * Create registry Application event log key 
+     * Create registry Application event log key
      */
     _tcscpy (szRegKey, szRegAppLogKey);
     _tcscat (szRegKey, lpszServiceName);
 
     /*
-     * Create registry key 
+     * Create registry key
      */
     if (RegCreateKey (HKEY_LOCAL_MACHINE, szRegKey, &hKey) != ERROR_SUCCESS)
       {
@@ -166,21 +166,21 @@ RegisterService (LPCTSTR lpszServiceName, LPCTSTR lpszServiceDisplayName,
       }
 
     /*
-     * Add Event ID message file name to the 'EventMessageFile' subkey 
+     * Add Event ID message file name to the 'EventMessageFile' subkey
      */
     RegSetValueEx (hKey, "EventMessageFile", 0, REG_EXPAND_SZ,
 		   (CONST BYTE *) szServicePath,
 		   _tcslen (szServicePath) + sizeof (TCHAR));
 
     /*
-     * Set the supported types flags. 
+     * Set the supported types flags.
      */
     dwData = EVENTLOG_ERROR_TYPE | EVENTLOG_WARNING_TYPE | EVENTLOG_INFORMATION_TYPE;
     RegSetValueEx (hKey, "TypesSupported", 0, REG_DWORD,
 		   (CONST BYTE *) & dwData, sizeof (DWORD));
 
     /*
-     * Close Registry key 
+     * Close Registry key
      */
     RegCloseKey (hKey);
 
@@ -190,14 +190,14 @@ RegisterService (LPCTSTR lpszServiceName, LPCTSTR lpszServiceDisplayName,
     if (lpszServiceDescription != NULL || StartUpArg->Argc > 2)
       {
 	/*
-	 * Create Registry Key path 
+	 * Create Registry Key path
 	 */
 	_tcscpy (szRegKey, _T ("SYSTEM\\CurrentControlSet\\Services\\"));
 	_tcscat (szRegKey, g_szAppName);
 	hKey = NULL;
 
 	/*
-	 * Open Registry key using Create and Set access. 
+	 * Open Registry key using Create and Set access.
 	 */
 	if (RegOpenKeyEx (HKEY_LOCAL_MACHINE, szRegKey, 0, KEY_WRITE,
 			  &hKey) != ERROR_SUCCESS)
@@ -210,7 +210,7 @@ RegisterService (LPCTSTR lpszServiceName, LPCTSTR lpszServiceDisplayName,
 	  }
 
 	/*
-	 * Create description subkey and the set value 
+	 * Create description subkey and the set value
 	 */
 	if (lpszServiceDescription != NULL)
 	  {
@@ -228,12 +228,12 @@ RegisterService (LPCTSTR lpszServiceName, LPCTSTR lpszServiceDisplayName,
 	  }
 
 	/*
-	 * Save startup arguments if they are present 
+	 * Save startup arguments if they are present
 	 */
 	if (StartUpArg->Argc > 2)
 	  {
 	    /*
-	     * Create Subkey parameters 
+	     * Create Subkey parameters
 	     */
 	    if (RegCreateKeyEx
 		(hKey, "Parameters", 0, NULL,
@@ -248,18 +248,18 @@ RegisterService (LPCTSTR lpszServiceName, LPCTSTR lpszServiceDisplayName,
 	      }
 
 	    /*
-	     * Save parameters 
+	     * Save parameters
 	     */
 
 	    /*
-	     * Loop through arguments 
+	     * Loop through arguments
 	     */
 	    for (i = 2, j = 1; i < StartUpArg->Argc; i++, j++)
 	      {
 		_stprintf (szRegKey, "%s%d", _T ("Param"), j);
 
 		/*
-		 * Create registry key 
+		 * Create registry key
 		 */
 		if (RegSetValueEx
 		    (hParamKey, szRegKey, 0, REG_SZ,
@@ -277,24 +277,24 @@ RegisterService (LPCTSTR lpszServiceName, LPCTSTR lpszServiceDisplayName,
 	  }
 
 	/*
-	 * Everything is set, delete hKey 
+	 * Everything is set, delete hKey
 	 */
 	RegCloseKey (hParamKey);
 	RegCloseKey (hKey);
       }
 
     /*
-     * Ready to Log messages 
+     * Ready to Log messages
      */
 
     /*
-     * Successfully registered as service 
+     * Successfully registered as service
      */
     _stprintf (MsgErrorString, "%s %s", lpszServiceName,
 	       _T ("- Successfully registered as Service"));
 
     /*
-     * Log message to eventlog 
+     * Log message to eventlog
      */
     WriteToEventLog (EVENTLOG_INFORMATION_TYPE, MsgErrorString);
   }
@@ -313,7 +313,7 @@ RegisterService (LPCTSTR lpszServiceName, LPCTSTR lpszServiceDisplayName,
 }
 
     /*
-     * Unregister the service with the  Windows SCM 
+     * Unregister the service with the  Windows SCM
      * Input - ServiceName
      */
 VOID
@@ -330,7 +330,7 @@ UnregisterService (LPCSTR lpszServiceName)
   TRY
   {
     /*
-     * Open Service Control Manager 
+     * Open Service Control Manager
      */
     hSCManager = OpenSCManager (NULL, NULL, SC_MANAGER_CREATE_SERVICE);
     if (hSCManager == NULL)
@@ -340,7 +340,7 @@ UnregisterService (LPCSTR lpszServiceName)
       }
 
     /*
-     * Open registered service 
+     * Open registered service
      */
     hService = OpenService (hSCManager, lpszServiceName, SERVICE_ALL_ACCESS);
     if (hService == NULL)
@@ -352,8 +352,8 @@ UnregisterService (LPCSTR lpszServiceName)
       }
 
     /*
-     * Query service status 
-     * If running stop before deleting 
+     * Query service status
+     * If running stop before deleting
      */
     if (QueryServiceStatus (hService, &sStatus))
       {
@@ -365,7 +365,7 @@ UnregisterService (LPCSTR lpszServiceName)
       };
 
     /*
-     * Delete the service  
+     * Delete the service
      */
     if (DeleteService (hService) == FALSE)
       {
@@ -373,7 +373,7 @@ UnregisterService (LPCSTR lpszServiceName)
 		   lpszServiceName);
 
 	/*
-	 * Log message to eventlog 
+	 * Log message to eventlog
 	 */
 	WriteToEventLog (EVENTLOG_INFORMATION_TYPE, MsgErrorString);
 	LEAVE;
@@ -386,7 +386,7 @@ UnregisterService (LPCSTR lpszServiceName)
     WriteToEventLog (EVENTLOG_INFORMATION_TYPE, MsgErrorString);
 
     /*
-     * Delete registry entries for EventLog 
+     * Delete registry entries for EventLog
      */
     _tcscpy (szRegKey, szRegAppLogKey);
     _tcscat (szRegKey, lpszServiceName);
@@ -394,7 +394,7 @@ UnregisterService (LPCSTR lpszServiceName)
   }
 
   /*
-   * Delete the handles 
+   * Delete the handles
    */
   FINALLY
   {
@@ -430,14 +430,14 @@ WriteToEventLog (WORD wType, LPCTSTR pszFormat, ...)
   if (!g_fRunningAsService)
     {
       /*
-       * We are running in command mode, output the string 
+       * We are running in command mode, output the string
        */
       _putts (szMessage);
     }
 }
 
     /*
-     * Pre-process the second command-line argument from the user. 
+     * Pre-process the second command-line argument from the user.
      *     Service related options are:
      *     -register       - registers the service
      *     -unregister     - unregisters the service
@@ -454,7 +454,7 @@ ParseCmdLineForServiceOption (int argc, TCHAR * argv[])
     {
 
       /*
-       * second argument present 
+       * second argument present
        */
       if (lstrcmpi (_T ("-register"), argv[1]) == 0)
 	{
@@ -484,7 +484,7 @@ DisplayError (LPCTSTR pszTitle)
   LPVOID pErrorMsg;
 
   /*
-   * Build Error String 
+   * Build Error String
    */
   FormatMessage (FORMAT_MESSAGE_ALLOCATE_BUFFER |
 		 FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError (),
@@ -503,7 +503,7 @@ DisplayError (LPCTSTR pszTitle)
 }
 
     /*
-     *  To update current service status 
+     *  To update current service status
      *  Sends the current service status to the SCM. Also updates
      *  the global service status structure.
      */
@@ -525,7 +525,7 @@ UpdateServiceStatus (DWORD dwStatus, DWORD dwErrorCode, DWORD dwWaitHint)
     }
 
   /*
-   * special cases that depend on the new state 
+   * special cases that depend on the new state
    */
   switch (dwStatus)
     {
@@ -561,7 +561,7 @@ ServiceMain (DWORD argc, LPTSTR argv[])
   DWORD dwThreadId;
 
   /*
-   * Input Arguments to function startup 
+   * Input Arguments to function startup
    */
   DWORD ArgCount = 0;
   LPTSTR *ArgArray = NULL;
@@ -574,7 +574,7 @@ ServiceMain (DWORD argc, LPTSTR argv[])
   InputParams ThreadInputParams;
 
   /*
-   * Build the Input parameters to pass to worker thread 
+   * Build the Input parameters to pass to worker thread
    */
 
   /*
@@ -583,12 +583,12 @@ ServiceMain (DWORD argc, LPTSTR argv[])
    */
 
   /*
-   * Read registry parameter 
+   * Read registry parameter
    */
   ArgCount = 1;
 
   /*
-   * Create Registry Key path 
+   * Create Registry Key path
    */
   _stprintf (szRegKey, "%s%s\\%s",
 	     _T ("SYSTEM\\CurrentControlSet\\Services\\"), g_szAppName,
@@ -598,10 +598,10 @@ ServiceMain (DWORD argc, LPTSTR argv[])
     {
 
       /*
-       * Read startup Configuration information 
+       * Read startup Configuration information
        */
       /*
-       * Find number of subkeys inside parameters 
+       * Find number of subkeys inside parameters
        */
       if (RegQueryInfoKey (hParamKey, NULL, NULL, 0,
 	   NULL, NULL, NULL, &TotalParams,
@@ -612,24 +612,24 @@ ServiceMain (DWORD argc, LPTSTR argv[])
 	      ArgCount += TotalParams;
 
 	      /*
-	       * Allocate memory to hold strings 
+	       * Allocate memory to hold strings
 	       */
 	      ArgArray = (LPTSTR *) malloc (sizeof (LPTSTR) * ArgCount);
 
 	      /*
-	       * Copy first argument 
+	       * Copy first argument
 	       */
 	      ArgArray[0] = _tcsdup (argv[0]);
 	      for (i = 1; i <= TotalParams; i++)
 		{
 
 		  /*
-		   * Create Subkey value name 
+		   * Create Subkey value name
 		   */
 		  _stprintf (szRegKey, "%s%d", "Param", i);
 
 		  /*
-		   * Set size 
+		   * Set size
 		   */
 		  nSize = 128;
 		  RegQueryValueEx (hParamKey, szRegKey, 0, NULL,
@@ -644,7 +644,7 @@ ServiceMain (DWORD argc, LPTSTR argv[])
     {
 
       /*
-       * No statup agrs are given 
+       * No statup agrs are given
        */
       ThreadInputParams.Argc = argc;
       ThreadInputParams.Argv = argv;
@@ -657,7 +657,7 @@ ServiceMain (DWORD argc, LPTSTR argv[])
     }
 
   /*
-   * Register Service Control Handler 
+   * Register Service Control Handler
    */
   hServiceStatus = RegisterServiceCtrlHandler (g_szAppName, ControlHandler);
   if (hServiceStatus == 0)
@@ -668,12 +668,12 @@ ServiceMain (DWORD argc, LPTSTR argv[])
     }
 
   /*
-   * Update the service status to START_PENDING 
+   * Update the service status to START_PENDING
    */
   UpdateServiceStatus (SERVICE_START_PENDING, NO_ERROR, SCM_WAIT_INTERVAL);
 
   /*
-   * Spin of worker thread, which does majority of the work 
+   * Spin of worker thread, which does majority of the work
    */
   TRY
   {
@@ -694,7 +694,7 @@ ServiceMain (DWORD argc, LPTSTR argv[])
       }
 
     /*
-     * Set Service Status to Running 
+     * Set Service Status to Running
      */
     UpdateServiceStatus (SERVICE_RUNNING, NO_ERROR, SCM_WAIT_INTERVAL);
 
@@ -707,7 +707,7 @@ ServiceMain (DWORD argc, LPTSTR argv[])
   FINALLY
   {
     /*
-     * Release resources 
+     * Release resources
      */
     UpdateServiceStatus (SERVICE_STOPPED, NO_ERROR, SCM_WAIT_INTERVAL);
     if (hServiceThread)
@@ -715,12 +715,12 @@ ServiceMain (DWORD argc, LPTSTR argv[])
     FreeSecurityAttributes (&SecurityAttributes);
 
     /*
-     * Delete allocated argument list 
+     * Delete allocated argument list
      */
     if (ArgCount > 1 && ArgArray != NULL)
       {
 	/*
-	 * Delete all strings 
+	 * Delete all strings
 	 */
 	for (i = 0; i < ArgCount; i++)
 	  {
@@ -741,30 +741,30 @@ RunAsService (INT (*ServiceFunction) (INT, LPTSTR *))
 {
 
   /*
-   * Set the ServiceEntryPoint 
+   * Set the ServiceEntryPoint
    */
   ServiceEntryPoint = ServiceFunction;
 
   /*
-   * By default, mark as Running as a service 
+   * By default, mark as Running as a service
    */
   g_fRunningAsService = TRUE;
 
   /*
-   * Initialize ServiceTableEntry table 
+   * Initialize ServiceTableEntry table
    */
   ServiceTableEntry[0].lpServiceName = g_szAppName;	/* Application Name */
 
   /*
-   * Call SCM via StartServiceCtrlDispatcher to run as Service 
-   * * If the function returns TRUE we are running as Service, 
+   * Call SCM via StartServiceCtrlDispatcher to run as Service
+   * * If the function returns TRUE we are running as Service,
    */
   if (StartServiceCtrlDispatcher (ServiceTableEntry) == FALSE)
     {
       g_fRunningAsService = FALSE;
 
       /*
-       * Some other error has occurred. 
+       * Some other error has occurred.
        */
       WriteToEventLog (EVENTLOG_ERROR_TYPE,
 		       _T ("Couldn't start service - %s"), g_szAppName);
@@ -805,7 +805,7 @@ ControlHandler (DWORD dwControl)
      * To stop the service.
      * If a stop function was registered, invoke it,
      * otherwise terminate the worker thread.
-     * After stopping, Service status is set to STOP in 
+     * After stopping, Service status is set to STOP in
      * main loop
      */
 VOID
@@ -839,7 +839,7 @@ ProcessServiceInterrogate (VOID)
      * structure that contains the security descriptor.
      * The structure contains a dynamically allocated security
      * descriptor that must be freed either manually, or by
-     * calling FreeSecurityAttributes 
+     * calling FreeSecurityAttributes
      */
 BOOL
 SetSimpleSecurityAttributes (SECURITY_ATTRIBUTES * pSecurityAttr)
@@ -849,7 +849,7 @@ SetSimpleSecurityAttributes (SECURITY_ATTRIBUTES * pSecurityAttr)
 
   /*
    * If an invalid address is passed as a parameter, return
-   * FALSE right away. 
+   * FALSE right away.
    */
   if (!pSecurityAttr)
     return FALSE;
@@ -873,7 +873,7 @@ SetSimpleSecurityAttributes (SECURITY_ATTRIBUTES * pSecurityAttr)
   else
     {
       /*
-       * Couldn't initialize or set security descriptor. 
+       * Couldn't initialize or set security descriptor.
        */
       LocalFree (pSecurityDesc);
     }
@@ -897,7 +897,7 @@ FreeSecurityAttributes (SECURITY_ATTRIBUTES * pSecurityAttr)
      * Returns when called registered function returns
      *
      * Input:
-     *   lpParam contains argc and argv, pass to service main function 
+     *   lpParam contains argc and argv, pass to service main function
      */
 DWORD WINAPI
 ThreadFunction (LPVOID lpParam)

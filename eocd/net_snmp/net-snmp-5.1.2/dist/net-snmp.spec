@@ -147,9 +147,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc EXAMPLE.conf.def FAQ INSTALL NEWS PORTING TODO
 %doc README README.agentx README.hpux11 README.krb5
 %doc README.snmpv3 README.solaris README.thread README.win32
-	 
+
 #%config(noreplace) /etc/net-snmp/snmpd.conf
-	 
+
 #%{_datadir}/snmp/snmpconf-data
 %{_datadir}/snmp
 

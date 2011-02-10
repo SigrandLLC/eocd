@@ -26,7 +26,7 @@
 #include <net-snmp/library/snmp.h>
 #include <net-snmp/library/snmp-tc.h>
 /*
- * #include <net-snmp/library/libsnmp.h> 
+ * #include <net-snmp/library/libsnmp.h>
  */
 
 #endif                          /* NET_SNMP_DEFINITIONS_H */

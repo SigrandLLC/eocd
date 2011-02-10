@@ -2,7 +2,7 @@
 .ad l
 .nh
 .SH NAME
-generic linked-list data handling with a string as a key. \- 
+generic linked-list data handling with a string as a key. \-
 .SS "Functions"
 
 .in +1c
@@ -60,7 +60,7 @@ generic linked-list data handling with a string as a key. \-
 .RI "\fIintended to be registerd as a .conf parser It should be registered using: \fP"
 .in -1c
 .SH "Function Documentation"
-.PP 
+.PP
 .SS "NETSNMP_INLINE void netsnmp_add_list_data (\fBnetsnmp_data_list\fP ** head, \fBnetsnmp_data_list\fP * node)"
 .PP
 depreciated: use \fBnetsnmp_data_list_add_node()\fP Definition at line 77 of file data_list.c.
@@ -72,16 +72,16 @@ Referenced by netsnmp_data_list_add_node(), netsnmp_read_data_callback(), netsnm
 .PP
 adds creates a data_list node given a name, data and a free function ptr. \fBParameters:\fP
 .RS 4
-\fIname\fP the name of the node to cache the data. 
+\fIname\fP the name of the node to cache the data.
 .br
-\fIdata\fP the data to be stored under that name 
+\fIdata\fP the data to be stored under that name
 .br
-\fIbeer\fP A function that can free the data pointer (in the future) 
+\fIbeer\fP A function that can free the data pointer (in the future)
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-a newly created data_list node which can be given to the netsnmp_add_list_data function. 
+a newly created data_list node which can be given to the netsnmp_add_list_data function.
 .RE
 .PP
 Definition at line 57 of file data_list.c.
@@ -93,18 +93,18 @@ Referenced by netsnmp_cache_helper_handler(), netsnmp_data_list_add_data(), nets
 .PP
 adds data to a datalist \fBParameters:\fP
 .RS 4
-\fIhead\fP a pointer to the head node of a data_list 
+\fIhead\fP a pointer to the head node of a data_list
 .br
-\fIname\fP the name of the node to cache the data. 
+\fIname\fP the name of the node to cache the data.
 .br
-\fIdata\fP the data to be stored under that name 
+\fIdata\fP the data to be stored under that name
 .br
-\fIbeer\fP A function that can free the data pointer (in the future) 
+\fIbeer\fP A function that can free the data pointer (in the future)
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-a newly created data_list node which was inserted in the list 
+a newly created data_list node which was inserted in the list
 .RE
 .PP
 Definition at line 120 of file data_list.c.
@@ -114,9 +114,9 @@ References netsnmp_create_data_list(), netsnmp_data_list_s::next, and snmp_log()
 .PP
 adds data to a datalist \fBParameters:\fP
 .RS 4
-\fIhead\fP a pointer to the head node of a data_list 
+\fIhead\fP a pointer to the head node of a data_list
 .br
-\fInode\fP a node to stash in the data_list 
+\fInode\fP a node to stash in the data_list
 .RE
 .PP
 Definition at line 103 of file data_list.c.
@@ -126,7 +126,7 @@ References netsnmp_add_list_data().
 .PP
 frees all data and nodes in a list. \fBParameters:\fP
 .RS 4
-\fIhead\fP the top node of the list to be freed. 
+\fIhead\fP the top node of the list to be freed.
 .RE
 .PP
 Definition at line 39 of file data_list.c.
@@ -136,11 +136,11 @@ References netsnmp_free_list_data(), netsnmp_data_list_s::next, and SNMP_FREE.
 Referenced by netsnmp_clear_handler_list(), and netsnmp_free_request_data_sets().
 .SS "NETSNMP_INLINE void netsnmp_free_list_data (\fBnetsnmp_data_list\fP * node)"
 .PP
-frees the data and a name at a given data_list node. Note that this doesn't free the node itself. 
+frees the data and a name at a given data_list node. Note that this doesn't free the node itself.
 .PP
 \fBParameters:\fP
 .RS 4
-\fInode\fP the node for which the data should be freed 
+\fInode\fP the node for which the data should be freed
 .RE
 .PP
 Definition at line 23 of file data_list.c.
@@ -152,14 +152,14 @@ Referenced by netsnmp_free_all_list_data(), netsnmp_free_request_data_set(), and
 .PP
 returns a data_list node's data for a given name within a data_list \fBParameters:\fP
 .RS 4
-\fIhead\fP the head node of a data_list 
+\fIhead\fP the head node of a data_list
 .br
-\fIname\fP the name to find 
+\fIname\fP the name to find
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-a pointer to the data cached at that node 
+a pointer to the data cached at that node
 .RE
 .PP
 Definition at line 156 of file data_list.c.
@@ -171,14 +171,14 @@ Referenced by netsnmp_read_data_callback(), and netsnmp_request_get_list_data().
 .PP
 returns a data_list node for a given name within a data_list \fBParameters:\fP
 .RS 4
-\fIhead\fP the head node of a data_list 
+\fIhead\fP the head node of a data_list
 .br
-\fIname\fP the name to find 
+\fIname\fP the name to find
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-a pointer to the data_list node 
+a pointer to the data_list node
 .RE
 .PP
 Definition at line 172 of file data_list.c.
@@ -199,17 +199,17 @@ Referenced by netsnmp_register_save_list().
 .PP
 registers to store a data_list set of data at persistant storage time \fBParameters:\fP
 .RS 4
-\fIdatalist\fP the data to be saved 
+\fIdatalist\fP the data to be saved
 .br
-\fItype\fP the name of the application to save the data as. If left NULL the default application name that was registered during the init_snmp call will be used (recommended). 
+\fItype\fP the name of the application to save the data as. If left NULL the default application name that was registered during the init_snmp call will be used (recommended).
 .br
-\fItoken\fP the unique token identifier string to use as the first word in the persistent file line. 
+\fItoken\fP the unique token identifier string to use as the first word in the persistent file line.
 .br
-\fIdata_list_save_ptr\fP a function pointer which will be called to save the rest of the data to a buffer. 
+\fIdata_list_save_ptr\fP a function pointer which will be called to save the rest of the data to a buffer.
 .br
-\fIdata_list_read_ptr\fP a function pointer which can read the remainder of a saved line and return the application specific void * pointer. 
+\fIdata_list_read_ptr\fP a function pointer which can read the remainder of a saved line and return the application specific void * pointer.
 .br
-\fIdata_list_free_ptr\fP a function pointer which will be passed to the data node for freeing it in the future when/if the list/node is cleaned up or destroyed. 
+\fIdata_list_free_ptr\fP a function pointer which will be passed to the data node for freeing it in the future when/if the list/node is cleaned up or destroyed.
 .RE
 .PP
 \fBTodo\fP
@@ -224,14 +224,14 @@ References netsnmp_add_list_data(), netsnmp_create_data_list(), netsnmp_read_dat
 .PP
 Removes a named node from a data_list (and frees it). \fBParameters:\fP
 .RS 4
-\fIrealhead\fP a pointer to the head node of a data_list 
+\fIrealhead\fP a pointer to the head node of a data_list
 .br
-\fIname\fP the name to find and remove 
+\fIname\fP the name to find and remove
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-0 on successful find-and-delete, 1 otherwise. 
+0 on successful find-and-delete, 1 otherwise.
 .RE
 .PP
 Definition at line 188 of file data_list.c.

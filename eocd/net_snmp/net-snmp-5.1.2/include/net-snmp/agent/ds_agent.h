@@ -1,11 +1,11 @@
 #ifndef NETSNMP_DS_AGENT_H
 #define NETSNMP_DS_AGENT_H
 /*
- * defines agent's default store registrations 
+ * defines agent's default store registrations
  */
 
 /*
- * booleans 
+ * booleans
  */
 #define NETSNMP_DS_AGENT_VERBOSE        0       /* 1 if verbose output desired */
 #define NETSNMP_DS_AGENT_ROLE           1       /* 0 if master, 1 if client */
@@ -16,7 +16,7 @@
 #define NETSNMP_DS_AGENT_NO_CONNECTION_WARNINGS 6 /* 1 = !see !connect msgs */
 #define NETSNMP_DS_AGENT_LEAVE_PIDFILE  7       /* 1 = leave PID file on exit */
 /*
- * strings 
+ * strings
  */
 #define NETSNMP_DS_AGENT_PROGNAME 0     /* argv[0] */
 #define NETSNMP_DS_AGENT_X_SOCKET 1     /* AF_UNIX or ip:port socket addr */
@@ -26,7 +26,7 @@
 #define NETSNMP_DS_SMUX_SOCKET    5     /* ip:port socket addr */
 
 /*
- * integers 
+ * integers
  */
 #define NETSNMP_DS_AGENT_FLAGS    0     /* session.flags */
 #define NETSNMP_DS_AGENT_USERID   1

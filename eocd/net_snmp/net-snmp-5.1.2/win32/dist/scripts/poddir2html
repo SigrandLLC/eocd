@@ -11,7 +11,7 @@
 #
 # Requirements:
 #
-# -pod2html 
+# -pod2html
 # -tidy (http://tidy.sourceforge.net/)
 #
 ################################################################
@@ -79,7 +79,7 @@ for (my $i=0; $i <= $#files; ) {
   print "$command\n";
 
   system "$command";
-  
+
 }
 
 

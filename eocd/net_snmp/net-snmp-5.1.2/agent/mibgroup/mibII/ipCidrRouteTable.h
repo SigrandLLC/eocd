@@ -11,7 +11,7 @@ config_require(mibII/ipCidrRouteTable_checkfns)
 config_add_mib(IP-FORWARD-MIB)
 
 /*
- * function declarations 
+ * function declarations
  */
 void            init_ipCidrRouteTable(void);
 void            initialize_table_ipCidrRouteTable(void);
@@ -21,12 +21,12 @@ Netsnmp_First_Data_Point ipCidrRouteTable_get_first_data_point;
 Netsnmp_Next_Data_Point ipCidrRouteTable_get_next_data_point;
 
 /*
- * column number definitions for table ipCidrRouteTable 
+ * column number definitions for table ipCidrRouteTable
  */
 #include "ipCidrRouteTable_columns.h"
 
 /*
- * enum definions 
+ * enum definions
  */
 #include "ipCidrRouteTable_enums.h"
 

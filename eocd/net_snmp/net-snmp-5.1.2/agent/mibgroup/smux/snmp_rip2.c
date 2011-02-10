@@ -1,5 +1,5 @@
 /*
- * $Id: snmp_rip2.c,v 5.0 2002/04/20 07:30:06 hardaker Exp $ 
+ * $Id: snmp_rip2.c,v 5.0 2002/04/20 07:30:06 hardaker Exp $
  */
 
 /*
@@ -113,7 +113,7 @@ var_rip2(struct variable *vp,
      */
 
     /*
-     * No writes for now 
+     * No writes for now
      */
     *write_method = NULL;
 
@@ -121,13 +121,13 @@ var_rip2(struct variable *vp,
      * Donot allow access to the peer stuff as it crashes gated.
      * However A GetNext on the last 23.3.1.9 variable will force gated into
      * the peer stuff and cause it to crash.
-     * The only way to fix this is to either solve the Gated problem, or 
+     * The only way to fix this is to either solve the Gated problem, or
      * remove the peer variables from Gated itself and cause it to return
      * NULL at the crossing. Currently doing the later.
      */
 
     /*
-     * Reject GET and GETNEXT for anything above rip2ifconf range 
+     * Reject GET and GETNEXT for anything above rip2ifconf range
      */
     result = snmp_oid_compare(name, *length, max_rip_mib,
                               sizeof(max_rip_mib) / sizeof(u_int));
@@ -138,7 +138,7 @@ var_rip2(struct variable *vp,
     }
 
     /*
-     * for GETs we need to be in the rip2 range so reject anything below 
+     * for GETs we need to be in the rip2 range so reject anything below
      */
     result = snmp_oid_compare(name, *length, min_rip_mib,
                               sizeof(min_rip_mib) / sizeof(u_int));
@@ -151,7 +151,7 @@ var_rip2(struct variable *vp,
 
     /*
      * On return, 'var' points to the value returned which is of length
-     * '*var_len'. 'name' points to the new (same as the one passed in for 
+     * '*var_len'. 'name' points to the new (same as the one passed in for
      * GETs) oid which has 'length' suboids.
      * 'smux_type' contains the type of the variable.
      */
@@ -166,7 +166,7 @@ var_rip2(struct variable *vp,
     vp->type = smux_type;
 
     /*
-     * XXX Need a mechanism to return errors in gated's responses 
+     * XXX Need a mechanism to return errors in gated's responses
      */
 
     if (var == NULL)

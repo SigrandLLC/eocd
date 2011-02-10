@@ -25,7 +25,7 @@
 #include <net-snmp/net-snmp-config.h>
 #ifdef solaris2
 /*-
- * Includes of standard ANSI C header files 
+ * Includes of standard ANSI C header files
  */
 
 #include <stdio.h>
@@ -59,7 +59,7 @@
 #include <netinet/in.h>
 
 /*-
- * Includes of local application header files 
+ * Includes of local application header files
  */
 
 #include <net-snmp/net-snmp-includes.h>
@@ -204,7 +204,7 @@ init_kernel_sunos5(void)
     if (creg == 0) {
 	creg = snmp_alarm_register(period, SA_REPEAT, kernel_sunos5_cache_age,
 				   (void *)period);
-	DEBUGMSGTL(("kernel_sunos5", "registered alarm %d with period %ds\n", 
+	DEBUGMSGTL(("kernel_sunos5", "registered alarm %d with period %ds\n",
 		    creg, period));
     }
 }
@@ -216,8 +216,8 @@ init_kernel_sunos5(void)
  * module names and by the name of the statistics it tries to figure out the
  * rest of necessary information.  Returns 0 in case of success and < 0 if
  * there were any errors.
- 
- * 
+
+ *
  * NOTE: To use this function correctly you have to know the actual type of the
  * value to be returned, so you may build the test program, figure out the type
  * and use it. Exposing kstat data types to upper layers doesn't seem to be
@@ -226,7 +226,7 @@ init_kernel_sunos5(void)
 
 
 int
-getKstatInt(const char *classname, const char *statname, 
+getKstatInt(const char *classname, const char *statname,
 	    const char *varname, int *value)
 {
     kstat_ctl_t    *ksc;
@@ -287,7 +287,7 @@ getKstatInt(const char *classname, const char *statname,
 	break;
 #endif
     default:
-	DEBUGMSGTL(("kernel_sunos5", 
+	DEBUGMSGTL(("kernel_sunos5",
 		    "non-int type in kstat data: \"%s\" \"%s\" \"%s\" %d\n",
 		    classname, statname, varname, named->data_type));
 	ret = 0;            /* fail */
@@ -333,7 +333,7 @@ getKstat(const char *statname, const char *varname, void *value)
 
     /*
      * First, get "kstat_headers" statistics. It should
-     * contain all available modules. 
+     * contain all available modules.
      */
 
     if ((ks = kstat_lookup(ksc, "unix", 0, "kstat_headers")) == NULL) {
@@ -345,9 +345,9 @@ getKstat(const char *statname, const char *varname, void *value)
 	goto Return;        /* kstat errors */
     }
     kstat_data = ks->ks_data;
-    
+
     /*
-     * Now, look for the name of our stat in the headers buf 
+     * Now, look for the name of our stat in the headers buf
      */
     for (i = 0; i < ks->ks_ndata; i++) {
 	DEBUGMSGTL(("kernel_sunos5",
@@ -361,14 +361,14 @@ getKstat(const char *statname, const char *varname, void *value)
 	    break;
 	}
     }
-    
+
     if (i == ks->ks_ndata) {
 	ret = -1;
 	goto Return;        /* Not found */
     }
-    
+
     /*
-     * Get the named statistics 
+     * Get the named statistics
      */
     if ((ks = kstat_lookup(ksc, module_name, instance, statname)) == NULL) {
 	ret = -10;
@@ -387,9 +387,9 @@ getKstat(const char *statname, const char *varname, void *value)
 	ret = -2;
 	goto Return;        /* Invalid stat type */
     }
-    
+
     for (i = 0, d = KSTAT_NAMED_PTR(ks); i < ks->ks_ndata; i++, d++) {
-	DEBUGMSGTL(("kernel_sunos5", "variable: \"%s\" (type %d)\n", 
+	DEBUGMSGTL(("kernel_sunos5", "variable: \"%s\" (type %d)\n",
 		    d->name, d->data_type));
 
 	if (strcmp(d->name, varname) == 0) {
@@ -552,7 +552,7 @@ getKstatString(const char *statname, const char *varname,
             switch (d->data_type) {
             case KSTAT_DATA_CHAR:
                 value[value_len-1] = '\0';
-                strncpy(value, d->value.c, value_len-1); 
+                strncpy(value, d->value.c, value_len-1);
                 DEBUGMSGTL(("kernel_sunos5", "value: %s\n", d->value.c));
                 break;
             default:
@@ -616,7 +616,7 @@ getMibstat(mibgroup_e grid, void *resp, size_t entrysize,
 		time(NULL)));
     if (cache_valid) {
 	/*
-	 * Is it really? 
+	 * Is it really?
 	 */
 	if (cachep->cache_comp != (void *)comp || cachep->cache_arg != arg) {
 	    cache_valid = 0;        /* Nope. */
@@ -625,7 +625,7 @@ getMibstat(mibgroup_e grid, void *resp, size_t entrysize,
 
     if (cache_valid) {
 	/*
-	 * Entry is valid, let's try to find a match 
+	 * Entry is valid, let's try to find a match
 	 */
 
 	if (req_type == GET_NEXT) {
@@ -679,10 +679,10 @@ getMibstat(mibgroup_e grid, void *resp, size_t entrysize,
 	}
     }
     DEBUGMSGTL(("kernel_sunos5", "... result %d rc %d\n", result, rc));
-    
+
     if (result == FOUND || rc == 0 || rc == 1) {
 	/*
-	 * Entry has been found, deliver it 
+	 * Entry has been found, deliver it
 	 */
 	if (resp != NULL) {
 	    memcpy(resp, ep, entrysize);
@@ -711,7 +711,7 @@ getentry(req_e req_type, void *bufaddr, size_t len,
 {
     void *bp = bufaddr, **rp = resp;
     int previous_found = 0;
-    
+
     /*
      * Here we have to perform address arithmetic with pointer to void. Ugly...
      */
@@ -764,26 +764,26 @@ init_mibcache_element(mibcache * cp)
  * Get MIB-II statistics from the Solaris kernel.  It uses undocumented
  * interface to TCP/IP streams modules, which provides extended MIB-II for the
  * following groups: ip, icmp, tcp, udp, egp.
- 
- * 
- * Usage: groupname, subgroupname are from <inet/mib2.h>, 
+
+ *
+ * Usage: groupname, subgroupname are from <inet/mib2.h>,
  *        size%sizeof(statbuf) == 0,
  *        entrysize should be exact size of MIB-II entry,
  *        req_type:
  *                   GET_FIRST - get the first entry in the buffer
  *                   GET_EXACT - get exact match
  *                   GET_NEXT  - get next entry after the exact match
- * 
+ *
  * (*comp) is a compare function, provided by the caller, which gets arg as the
  * first argument and pointer to the current entry as th second. If compared,
  * should return 0 and found entry will be pointed by resp.
- * 
+ *
  * If search is successful and no more data to read, it returns 0,
  * if successful and there is more data -- 1,
  * if not found and end of data -- 2, any other errors -- < 0
  * (negative error numbers are pretty random).
- * 
- * NOTE: needs to be protected by a mutex in reentrant environment 
+ *
+ * NOTE: needs to be protected by a mutex in reentrant environment
  */
 
 static int
@@ -804,7 +804,7 @@ getmib(int groupname, int subgroupname, void *statbuf, size_t size,
 		groupname, subgroupname));
 
     /*
-     * Open the stream driver and push all MIB-related modules 
+     * Open the stream driver and push all MIB-related modules
      */
 
     if (sd == -2) {         /* First time */
@@ -836,7 +836,7 @@ getmib(int groupname, int subgroupname, void *statbuf, size_t size,
 
     strbuf.buf = buf;
     strbuf.maxlen = BUFSIZE;
-    
+
     tor->PRIM_type = T_OPTMGMT_REQ;
     tor->OPT_offset = sizeof(struct T_optmgmt_req);
     tor->OPT_length = sizeof(struct opthdr);
@@ -896,7 +896,7 @@ getmib(int groupname, int subgroupname, void *statbuf, size_t size,
 	    } while (rc == MOREDATA);
 	    continue;
 	}
-        
+
 	/*
 	 * Now when we found our stat, switch buffer to a caller-provided
 	 * one. Manipulating the size of it one can control performance,
@@ -923,7 +923,7 @@ getmib(int groupname, int subgroupname, void *statbuf, size_t size,
 		if (req_type == GET_NEXT && result == NEED_NEXT)
 		    /*
 		     * End of buffer, so "next" is the first item in the next
-		     * buffer  
+		     * buffer
 		     */
 		    req_type = GET_FIRST;
 		result = getentry(req_type, (void *) strbuf.buf, strbuf.len,
@@ -950,7 +950,7 @@ getmib(int groupname, int subgroupname, void *statbuf, size_t size,
     DEBUGMSGTL(("kernel_sunos5", "...... getmib returns %d\n", ret));
     return ret;
 }
-  
+
 /*
  * Get info for interfaces group. Mimics getmib interface as much as possible
  * to be substituted later if SunSoft decides to extend its mib2 interface.
@@ -1039,14 +1039,14 @@ getif(mib2_ifEntry_t *ifbuf, size_t size, req_e req_type,
 	if ((getKstatInt(NULL,ifrp->ifr_name, "ifspeed", &ifp->ifSpeed) == 0) &&
 	    (ifp->ifSpeed != 0)) {
 	    /*
-	     * check for SunOS patch with half implemented ifSpeed 
+	     * check for SunOS patch with half implemented ifSpeed
 	     */
 	    if (ifp->ifSpeed < 10000) {
                     ifp->ifSpeed *= 1000000;
 	    }
 	} else if (getKstatInt(NULL,ifrp->ifr_name, "ifSpeed", &ifp->ifSpeed) == 0) {
 	    /*
-	     * this is good 
+	     * this is good
 	     */
 	}
 
@@ -1117,16 +1117,16 @@ getif(mib2_ifEntry_t *ifbuf, size_t size, req_e req_type,
 		ret = -1;
 		goto Return;
 	    }
-            
+
 	    if (getKstatInt(NULL,ifrp->ifr_name, "rbytes", &ifp->ifInOctets) < 0) {
                     ifp->ifInOctets = ifp->ifInUcastPkts * 308; /* XXX */
 	    }
-            
+
 	    if (getKstatInt(NULL,ifrp->ifr_name, "opackets",&ifp->ifOutUcastPkts) < 0){
 		ret = -1;
 		goto Return;
 	    }
-            
+
 	    if (getKstatInt(NULL,ifrp->ifr_name, "obytes", &ifp->ifOutOctets) < 0) {
 		ifp->ifOutOctets = ifp->ifOutUcastPkts * 308;       /* XXX */
 	    }
@@ -1174,7 +1174,7 @@ getif(mib2_ifEntry_t *ifbuf, size_t size, req_e req_type,
 
     if ((req_type == GET_NEXT) && (result == NEED_NEXT)) {
             /*
-             * End of buffer, so "next" is the first item in the next buffer 
+             * End of buffer, so "next" is the first item in the next buffer
              */
             req_type = GET_FIRST;
     }
@@ -1182,7 +1182,7 @@ getif(mib2_ifEntry_t *ifbuf, size_t size, req_e req_type,
     result = getentry(req_type, (void *) ifbuf, size, sizeof(mib2_ifEntry_t),
 		      (void *)resp, comp, arg);
 
-    if ((result != FOUND) && (i == nentries) && 
+    if ((result != FOUND) && (i == nentries) &&
 	((char *)ifrp < (char *)ifconf.ifc_buf + ifconf.ifc_len)) {
 	/*
 	 * We reached the end of supplied buffer, but there is
@@ -1211,7 +1211,7 @@ getif(mib2_ifEntry_t *ifbuf, size_t size, req_e req_type,
 
 /*
  * Always TRUE. May be used as a comparison function in getMibstat
- * to obtain the whole table (GET_FIRST should be used) 
+ * to obtain the whole table (GET_FIRST should be used)
  */
 int
 Get_everything(void *x, void *y)
@@ -1238,7 +1238,7 @@ Name_cmp(void *ifrp, void *ep)
     } else {
 	return 1;
     }
-}	
+}
 
 #ifdef _STDC_COMPAT
 #ifdef __cplusplus

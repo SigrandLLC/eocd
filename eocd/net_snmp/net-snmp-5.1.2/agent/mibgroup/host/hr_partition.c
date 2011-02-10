@@ -83,11 +83,11 @@ init_hr_partition(void)
  * Arguments:
  * vp     IN      - pointer to variable entry that points here
  * name    IN/OUT  - IN/name requested, OUT/name found
- * length  IN/OUT  - length of IN/OUT oid's 
+ * length  IN/OUT  - length of IN/OUT oid's
  * exact   IN      - TRUE if an exact match was requested
  * var_len OUT     - length of variable or 0 if function returned
  * write_method
- * 
+ *
  */
 
 int
@@ -110,7 +110,7 @@ header_hrpartition(struct variable *vp,
     memcpy((char *) newname, (char *) vp->name,
            (int) vp->namelen * sizeof(oid));
     /*
-     * Find "next" partition entry 
+     * Find "next" partition entry
      */
 
     Init_HR_Disk();
@@ -233,7 +233,7 @@ var_hrpartition(struct variable * vp,
         return (u_char *) string;
     case HRPART_SIZE:
         /*
-         * XXX - based on single partition assumption 
+         * XXX - based on single partition assumption
          */
         long_return = Get_FSSize(HRP_savedName);
         return (u_char *) & long_return;

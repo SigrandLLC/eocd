@@ -14,6 +14,6 @@ extern int      smux_listen_sd;
 extern int      snmp_read_packet(int);
 
 /*
- * config file parsing routines 
+ * config file parsing routines
  */
 void            agentBoots_conf(char *, char *);

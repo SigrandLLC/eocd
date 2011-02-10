@@ -97,7 +97,7 @@ extern          "C" {
 }
 
     /*
-     * define a transform type if we're using the internal md5 support 
+     * define a transform type if we're using the internal md5 support
      */
 #ifdef USE_INTERNAL_MD5
 #define INTERNAL_MD5 1

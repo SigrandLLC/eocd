@@ -209,12 +209,12 @@ netsnmp_daemonize(int quit_immediately, int stderr_log)
 #ifndef WIN32
         else {
             /* Child. */
-            
+
             DEBUGMSGT(("daemonize","child continuing\n"));
 
             /* Avoid keeping any directory in use. */
             chdir("/");
-            
+
             if (!stderr_log) {
                 /*
                  * Close inherited file descriptors to avoid
@@ -223,7 +223,7 @@ netsnmp_daemonize(int quit_immediately, int stderr_log)
                 close(0);
                 close(1);
                 close(2);
-                
+
                 /*
                  * Redirect std{in,out,err} to /dev/null, just in
                  * case.
@@ -240,7 +240,7 @@ netsnmp_daemonize(int quit_immediately, int stderr_log)
 }
 
 /*
- * ********************************************* 
+ * *********************************************
  */
 #ifdef							WIN32
 #	define WIN32_LEAN_AND_MEAN
@@ -253,7 +253,7 @@ netsnmp_daemonize(int quit_immediately, int stderr_log)
 /*
  * MinGW defines WIN32, but has working dirent stuff.
  */
-#ifndef HAVE_DIRENT_H 
+#ifndef HAVE_DIRENT_H
 
 /*
  * The idea here is to read all the directory names into a string table
@@ -273,14 +273,14 @@ opendir(const char *filename)
     HANDLE          fh;
 
     /*
-     * check to see if filename is a directory 
+     * check to see if filename is a directory
      */
     if (stat(filename, &sbuf) < 0 || sbuf.st_mode & S_IFDIR == 0) {
         return NULL;
     }
 
     /*
-     * get the file system characteristics 
+     * get the file system characteristics
      */
     /*
      * if(GetFullPathName(filename, SNMP_MAXPATH, root, &dummy)) {
@@ -297,7 +297,7 @@ opendir(const char *filename)
      */
 
     /*
-     * Create the search pattern 
+     * Create the search pattern
      */
     strcpy(scanname, filename);
 
@@ -307,7 +307,7 @@ opendir(const char *filename)
         strcat(scanname, "*");
 
     /*
-     * do the FindFirstFile call 
+     * do the FindFirstFile call
      */
     fh = FindFirstFile(scanname, &FindData);
     if (fh == INVALID_HANDLE_VALUE) {
@@ -315,11 +315,11 @@ opendir(const char *filename)
     }
 
     /*
-     * Get us a DIR structure 
+     * Get us a DIR structure
      */
     p = (DIR *) malloc(sizeof(DIR));
     /*
-     * Newz(1303, p, 1, DIR); 
+     * Newz(1303, p, 1, DIR);
      */
     if (p == NULL)
         return NULL;
@@ -366,7 +366,7 @@ opendir(const char *filename)
         }
         strcpy(&p->start[idx], FindData.cFileName);
         /*
-         * if (downcase) 
+         * if (downcase)
          * *        strlwr(&p->start[idx]);
          */
         p->nfiles++;
@@ -391,19 +391,19 @@ readdir(DIR * dirp)
 
     if (dirp->curr) {
         /*
-         * first set up the structure to return 
+         * first set up the structure to return
          */
         len = strlen(dirp->curr);
         strcpy(dirp->dirstr.d_name, dirp->curr);
         dirp->dirstr.d_namlen = len;
 
         /*
-         * Fake an inode 
+         * Fake an inode
          */
         dirp->dirstr.d_ino = dummy++;
 
         /*
-         * Now set up for the nDllExport call to readdir 
+         * Now set up for the nDllExport call to readdir
          */
         dirp->curr += len + 1;
         if (dirp->curr >= (dirp->start + dirp->size)) {
@@ -416,7 +416,7 @@ readdir(DIR * dirp)
 }
 
 /*
- * free the memory allocated by opendir 
+ * free the memory allocated by opendir
  */
 int
 closedir(DIR * dirp)
@@ -464,12 +464,12 @@ get_myaddr(void)
     }
 
     /*
-     * if we are here, than we don't have host addr 
+     * if we are here, than we don't have host addr
      */
     hSock = socket(AF_INET, SOCK_DGRAM, 0);
     if (hSock != INVALID_SOCKET) {
         /*
-         * connect to any port and address 
+         * connect to any port and address
          */
         remote_in_addr.sin_family = AF_INET;
         remote_in_addr.sin_port = htons(IPPORT_ECHO);
@@ -479,7 +479,7 @@ get_myaddr(void)
                     sizeof(SOCKADDR));
         if (result != SOCKET_ERROR) {
             /*
-             * get local ip address 
+             * get local ip address
              */
             getsockname(hSock, (LPSOCKADDR) & in_addr,
                         (int FAR *) &nAddrSize);
@@ -499,7 +499,7 @@ get_uptime(void)
     PPERF_DATA_BLOCK perfdata = NULL;
 
     /*
-     * min requirement is one PERF_DATA_BLOCK plus one PERF_OBJECT_TYPE 
+     * min requirement is one PERF_DATA_BLOCK plus one PERF_OBJECT_TYPE
      */
     perfdata = (PPERF_DATA_BLOCK) malloc(buffersize);
 
@@ -511,12 +511,12 @@ get_uptime(void)
 
     /*
      * we can not rely on the return value since there is always more so
-     * we check the signature 
+     * we check the signature
      */
 
     if (wcsncmp(perfdata->Signature, L"PERF", 4) == 0) {
         /*
-         * signature ok, and all we need is in the in the PERF_DATA_BLOCK 
+         * signature ok, and all we need is in the in the PERF_DATA_BLOCK
          */
         return_value = (long) ((perfdata->PerfTime100nSec.QuadPart /
                                 (LONGLONG) 100000));
@@ -584,7 +584,7 @@ get_myaddr(void)
     /*
      * Cope with lots of interfaces and brokenness of ioctl SIOCGIFCONF on
      * some platforms; see W. R. Stevens, ``Unix Network Programming Volume
-     * I'', p.435.  
+     * I'', p.435.
      */
 
     for (i = 8;; i += 8) {
@@ -599,19 +599,19 @@ get_myaddr(void)
         if (ioctl(sd, SIOCGIFCONF, (char *) &ifc) < 0) {
             if (errno != EINVAL || lastlen != 0) {
                 /*
-                 * Something has gone genuinely wrong.  
+                 * Something has gone genuinely wrong.
                  */
                 free(buf);
                 close(sd);
                 return 0;
             }
             /*
-             * Otherwise, it could just be that the buffer is too small.  
+             * Otherwise, it could just be that the buffer is too small.
              */
         } else {
             if (ifc.ifc_len == lastlen) {
                 /*
-                 * The length is the same as the last time; we're done.  
+                 * The length is the same as the last time; we're done.
                  */
                 break;
             }
@@ -646,7 +646,7 @@ get_myaddr(void)
             && addr != LOOPBACK) {
             /*
              * I *really* don't understand why this is necessary.  Perhaps for
-             * some broken platform?  Leave it for now.  JBPN  
+             * some broken platform?  Leave it for now.  JBPN
              */
 #ifdef SYS_IOCTL_H_HAS_SIOCGIFADDR
             if (ioctl(sd, SIOCGIFADDR, (char *) ifrp) < 0) {
@@ -915,7 +915,7 @@ strcasestr(const char *haystack, const char *needle)
     int             tstch1, tstch2;
 
     /*
-     * printf("looking for '%s' in '%s'\n", needle, haystack); 
+     * printf("looking for '%s' in '%s'\n", needle, haystack);
      */
     if (cp1 && cp2 && *cp1 && *cp2)
         for (cp1 = haystack, cp2 = needle; *cp1;) {
@@ -923,11 +923,11 @@ strcasestr(const char *haystack, const char *needle)
             cp2 = needle;
             do {
                 /*
-                 * printf("T'%c' ", *cp1); 
+                 * printf("T'%c' ", *cp1);
                  */
                 if (!*cp2) {    /* found the needle */
                     /*
-                     * printf("\nfound '%s' in '%s'\n", needle, cx); 
+                     * printf("\nfound '%s' in '%s'\n", needle, cx);
                      */
                     return (char *) cx;
                 }
@@ -939,7 +939,7 @@ strcasestr(const char *haystack, const char *needle)
                 if (tstch1 != tstch2)
                     break;
                 /*
-                 * printf("M'%c' ", *cp1); 
+                 * printf("M'%c' ", *cp1);
                  */
                 cp1++;
                 cp2++;
@@ -949,7 +949,7 @@ strcasestr(const char *haystack, const char *needle)
                 cp1++;
         }
     /*
-     * printf("\n"); 
+     * printf("\n");
      */
     if (cp1 && *cp1)
         return (char *) cp1;
@@ -990,7 +990,7 @@ mkdirhier(const char *pathname, mode_t mode, int skiplast)
 #endif
 
     /*
-     * check to see if filename is a directory 
+     * check to see if filename is a directory
      */
     while (entry) {
         strcat(buf, "/");
@@ -1000,7 +1000,7 @@ mkdirhier(const char *pathname, mode_t mode, int skiplast)
             break;
         if (stat(buf, &sbuf) < 0) {
             /*
-             * DNE, make it 
+             * DNE, make it
              */
             snmp_log(LOG_INFO, "Creating directory: %s\n", buf);
 #ifdef WIN32
@@ -1014,11 +1014,11 @@ mkdirhier(const char *pathname, mode_t mode, int skiplast)
             }
         } else {
             /*
-             * exists, is it a file? 
+             * exists, is it a file?
              */
             if ((sbuf.st_mode & S_IFDIR) == 0) {
                 /*
-                 * ack! can't make a directory on top of a file 
+                 * ack! can't make a directory on top of a file
                  */
                 free(ourcopy);
                 return SNMPERR_GENERR;

@@ -8,13 +8,13 @@
 
                       All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the name of CMU not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 CMU DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -144,7 +144,7 @@ optProc(int argc, char *const *argv, int opt)
                 netsnmp_ds_toggle_boolean(NETSNMP_DS_APPLICATION_ID,
                                           NETSNMP_DS_WALK_TIME_RESULTS);
                 break;
-                
+
             default:
                 fprintf(stderr, "Unknown flag passed to -C: %c\n",
                         optarg[-1]);
@@ -174,11 +174,11 @@ main(int argc, char *argv[])
     struct timeval  tv1, tv2;
 
     netsnmp_ds_register_config(ASN_BOOLEAN, "snmpwalk", "includeRequested",
-			       NETSNMP_DS_APPLICATION_ID, 
+			       NETSNMP_DS_APPLICATION_ID,
 			       NETSNMP_DS_WALK_INCLUDE_REQUESTED);
 
     netsnmp_ds_register_config(ASN_BOOLEAN, "snmpwalk", "printStatistics",
-			       NETSNMP_DS_APPLICATION_ID, 
+			       NETSNMP_DS_APPLICATION_ID,
 			       NETSNMP_DS_WALK_PRINT_STATISTICS);
 
     netsnmp_ds_register_config(ASN_BOOLEAN, "snmpwalk", "dontCheckOrdering",
@@ -190,7 +190,7 @@ main(int argc, char *argv[])
 			       NETSNMP_DS_WALK_TIME_RESULTS);
 
     /*
-     * get the common command line arguments 
+     * get the common command line arguments
      */
     switch (arg = snmp_parse_args(argc, argv, &session, "C:", optProc)) {
     case -2:
@@ -203,11 +203,11 @@ main(int argc, char *argv[])
     }
 
     /*
-     * get the initial object and subtree 
+     * get the initial object and subtree
      */
     if (arg < argc) {
         /*
-         * specified on the command line 
+         * specified on the command line
          */
         rootlen = MAX_OID_LEN;
         if (snmp_parse_oid(argv[arg], root, &rootlen) == NULL) {
@@ -216,7 +216,7 @@ main(int argc, char *argv[])
         }
     } else {
         /*
-         * use default value 
+         * use default value
          */
         memmove(root, objid_mib, sizeof(objid_mib));
         rootlen = sizeof(objid_mib) / sizeof(oid);
@@ -225,12 +225,12 @@ main(int argc, char *argv[])
     SOCK_STARTUP;
 
     /*
-     * open an SNMP session 
+     * open an SNMP session
      */
     ss = snmp_open(&session);
     if (ss == NULL) {
         /*
-         * diagnose snmp_open errors with the input netsnmp_session pointer 
+         * diagnose snmp_open errors with the input netsnmp_session pointer
          */
         snmp_sess_perror("snmpwalk", &session);
         SOCK_CLEANUP;
@@ -238,7 +238,7 @@ main(int argc, char *argv[])
     }
 
     /*
-     * get first object to start walk 
+     * get first object to start walk
      */
     memmove(name, root, rootlen * sizeof(oid));
     name_length = rootlen;
@@ -257,19 +257,19 @@ main(int argc, char *argv[])
         gettimeofday(&tv1, NULL);
     while (running) {
         /*
-         * create PDU for GETNEXT request and add object name to request 
+         * create PDU for GETNEXT request and add object name to request
          */
         pdu = snmp_pdu_create(SNMP_MSG_GETNEXT);
         snmp_add_null_var(pdu, name, name_length);
 
         /*
-         * do the request 
+         * do the request
          */
         status = snmp_synch_response(ss, pdu, &response);
         if (status == STAT_SUCCESS) {
             if (response->errstat == SNMP_ERR_NOERROR) {
                 /*
-                 * check resulting variables 
+                 * check resulting variables
                  */
                 for (vars = response->variables; vars;
                      vars = vars->next_variable) {
@@ -277,7 +277,7 @@ main(int argc, char *argv[])
                         || (memcmp(root, vars->name, rootlen * sizeof(oid))
                             != 0)) {
                         /*
-                         * not part of this subtree 
+                         * not part of this subtree
                          */
                         running = 0;
                         continue;
@@ -288,7 +288,7 @@ main(int argc, char *argv[])
                         (vars->type != SNMP_NOSUCHOBJECT) &&
                         (vars->type != SNMP_NOSUCHINSTANCE)) {
                         /*
-                         * not an exception value 
+                         * not an exception value
                          */
                         if (check
                             && snmp_oid_compare(name, name_length,
@@ -308,13 +308,13 @@ main(int argc, char *argv[])
                         name_length = vars->name_length;
                     } else
                         /*
-                         * an exception value, so stop 
+                         * an exception value, so stop
                          */
                         running = 0;
                 }
             } else {
                 /*
-                 * error in response, print it 
+                 * error in response, print it
                  */
                 running = 0;
                 if (response->errstat == SNMP_ERR_NOSUCHNAME) {
@@ -357,7 +357,7 @@ main(int argc, char *argv[])
         /*
          * no printed successful results, which may mean we were
          * pointed at an only existing instance.  Attempt a GET, just
-         * for get measure. 
+         * for get measure.
          */
         snmp_get_and_print(ss, root, rootlen);
     }

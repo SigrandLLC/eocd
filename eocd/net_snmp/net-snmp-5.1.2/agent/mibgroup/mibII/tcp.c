@@ -18,7 +18,7 @@
 /*
  * these are undefed to remove a stupid warning on osf compilers
  * because they get redefined with a slightly different notation of the
- * same value.  -- Wes 
+ * same value.  -- Wes
  */
 #undef TCP_NODELAY
 #undef TCP_MAXSEG
@@ -81,7 +81,7 @@ int  hz = 1000;
 
 /*
  * Define the OID pointer to the top of the mib tree that we're
- * registering underneath, and the OID for the MIB module 
+ * registering underneath, and the OID for the MIB module
  */
 oid             tcp_oid[]               = { SNMP_OID_MIB2, 6 };
 oid             tcp_module_oid[]        = { SNMP_OID_MIB2, 49 };
@@ -200,7 +200,7 @@ tcp_handler(netsnmp_mib_handler          *handler,
 
 
     /*
-     * 
+     *
      *
      */
     DEBUGMSGTL(("mibII/tcpScalar", "Handler - mode %s\n",
@@ -295,7 +295,7 @@ tcp_handler(netsnmp_mib_handler          *handler,
 #ifdef HAVE_SYS_TCPIPSTATS_H
     /*
      * This actually reads statistics for *all* the groups together,
-     * so we need to isolate the TCP-specific bits.  
+     * so we need to isolate the TCP-specific bits.
      */
 #define tcpstat          tcpstat.tcpstat
 #endif
@@ -512,7 +512,7 @@ tcp_load(netsnmp_cache *cache, void *vmagic)
     unsigned int    ulen;
     int             ret;
     int             magic = (int) vmagic;
-    
+
     if ((fd = open_mib("/dev/ip", O_RDONLY, 0, NM_ASYNC_OFF)) < 0) {
         DEBUGMSGTL(("mibII/tcpScalar", "Failed to load TCP object %d (hpux11)\n", magic));
         return (-1);            /* error */

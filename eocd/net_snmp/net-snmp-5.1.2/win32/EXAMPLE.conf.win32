@@ -48,7 +48,7 @@
 # allow me to access it?"
 #
 # By default, the agent responds to the "public" community for read
-# only access, if run out of the box without any configuration file in 
+# only access, if run out of the box without any configuration file in
 # place.  The following examples show you other ways of configuring
 # the agent so that you can change the community names, and give
 # yourself write access as well.

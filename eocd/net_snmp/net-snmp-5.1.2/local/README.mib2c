@@ -25,7 +25,7 @@ REQUIREMENTS/INSTALLATION
 	mib2c requires the SNMP.pm Perl module.  As of this writing the
 latest version of the SNMP.pm module is 1.8.
 
-	The SNMP.pm module can be downloaded from CPAN at 
+	The SNMP.pm module can be downloaded from CPAN at
 
 http://www.cpan.org/modules/by-module/SNMP/
 
@@ -119,7 +119,7 @@ setenv MIBS MY-ITEM-MIB          # assumes csh
 mib2c itemNode
 
 Where, "itemNode" should be a node in the mib tree that you want to
-generate C code for.  Note, pick small pieces not large ones.  Yes, it 
+generate C code for.  Note, pick small pieces not large ones.  Yes, it
 will generate code for the entire mibII tree if you ask it to, in one
 very large mib file.
 
@@ -168,7 +168,7 @@ WARNING
 	As of this writing, the mib2c compiler is a bit outdated and needs
 some work.  Wes writes:
 --------------------------------------
-It already needs changing, because the architecture has changed in the 
+It already needs changing, because the architecture has changed in the
 3.6 line (though its backwards compatible, I'd prefer to generate
 code from newer models than older ones).
 --------------------------------------
@@ -196,7 +196,7 @@ unknown type:  INTEGER for prMin
 that does not support the SNMP.pm module version 1.8.  Get the latest
 version of the script.
 
-	If you get the error 
+	If you get the error
 
 Couldn't find mib reference: myEnterpriseOID
 

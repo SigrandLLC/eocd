@@ -35,7 +35,7 @@ public:
 class EOClist{
 private:
     __list *head;
-    __list *tail;    
+    __list *tail;
     __list *current;
     int size;
 
@@ -46,13 +46,13 @@ public:
     int head_current();
     int next();
     int add_first(EOCList_elem *d);
-    int add_last(EOCList_elem *d);    
+    int add_last(EOCList_elem *d);
     EOCList_elem *get_cur();
     EOCList_elem *get_first();
     EOCList_elem *get_tail();
     int del_cur();
     int del_first();
-    int del_last();    
+    int del_last();
     // iteration through list
 };
 

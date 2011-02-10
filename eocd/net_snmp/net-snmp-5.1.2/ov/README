@@ -9,7 +9,7 @@ If you install all these files properly, then do a 'ovstop', an
 seeing new icons appear for all ucd-snmp controlled packages.  If they
 don't appear immediately, its probably because OV's netmon process
 hasn't changed the symbol ID for it yet.  You can test a specific host
-by selecting it and then doing a 
+by selecting it and then doing a
 'Diagnose/Network Connectivity/Demand Poll' on it from ovw.
 
 oid_to_sym:      Translates sysObjectID results to OV icon types.

@@ -26,7 +26,7 @@ extern          "C" {
                                             int reuse);
     typedef int (Netsnmp_Iterator_Op) (void *iterator_ctx);
     typedef int (Netsnmp_Iterator_Data) (void *iterator_ctx,
-                                            const void *data);    
+                                            const void *data);
 
     void netsnmp_container_iterator_init(void);
 
@@ -41,7 +41,7 @@ extern          "C" {
         Netsnmp_Iterator_Ctx * cleanup_loop_ctx,
         Netsnmp_Iterator_Data * free_user_ctx,
         int sorted);
-    
+
     /*
      * set up optional callbacks/
      * NOTE: even though the first parameter is a generic netsnmp_container,

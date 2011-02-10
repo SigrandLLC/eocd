@@ -1,5 +1,5 @@
 /*
- * table.c 
+ * table.c
  */
 
 /* Portions of this file are subject to the following copyright(s).  See
@@ -42,7 +42,7 @@ static void     table_data_free_func(void *data);
  *
  *  This handler helps you implement a table by doing some of the
  *  processing for you.
- *  
+ *
  *  This handler truly shows the power of the new handler mechanism.
  *  By creating a table handler and injecting it into your calling
  *  chain, or by using the netsnmp_register_table() function to register your
@@ -56,7 +56,7 @@ static void     table_data_free_func(void *data);
  *  table_registeration_info structure that is passed to the table
  *  handler.  It contains the asn index types for the table as well as
  *  the minimum and maximum column that should be used.
- *  
+ *
  *  @{
  */
 
@@ -65,14 +65,14 @@ static void     table_data_free_func(void *data);
  *  chain.  When the handler gets called, it'll do processing and
  *  store it's information into the request->parent_data structure.
  *
- *  The table helper handler pulls out the column number and indexes from 
+ *  The table helper handler pulls out the column number and indexes from
  *  the request oid so that you don't have to do the complex work of
  *  parsing within your own code.
  *
  *  @param tabreq is a pointer to a netsnmp_table_registration_info struct.
  *	The table handler needs to know up front how your table is structured.
- *	A netsnmp_table_registeration_info structure that is 
- *	passed to the table handler should contain the asn index types for the 
+ *	A netsnmp_table_registeration_info structure that is
+ *	passed to the table handler should contain the asn index types for the
  *	table as well as the minimum and maximum column that should be used.
  *
  *  @return Returns a pointer to a netsnmp_mib_handler struct which contains
@@ -168,7 +168,7 @@ table_helper_handler(netsnmp_mib_handler *handler,
                  handler->handler_name, handler->myvoid, tbl_info->indexes);
 
         /*
-         * XXX-rks: unregister table? 
+         * XXX-rks: unregister table?
          */
         return SNMP_ERR_GENERR;
     }
@@ -177,14 +177,14 @@ table_helper_handler(netsnmp_mib_handler *handler,
                 handler->handler_name));
     DEBUGMSGOID(("helper:table", reginfo->rootoid, reginfo->rootoid_len));
     DEBUGMSG(("helper:table", "\n"));
-    
+
     /*
-     * if the agent request info has a state reference, then this is a 
+     * if the agent request info has a state reference, then this is a
      * later pass of a set request and we can skip all the lookup stuff.
      *
      * xxx-rks: this might break for handlers which only handle one varbind
      * at a time... those handlers should not save data by their handler_name
-     * in the netsnmp_agent_request_info. 
+     * in the netsnmp_agent_request_info.
      */
     if (netsnmp_agent_get_list_data(reqinfo, handler->next->handler_name)) {
         if (MODE_IS_SET(reqinfo->mode)) {
@@ -215,7 +215,7 @@ table_helper_handler(netsnmp_mib_handler *handler,
          * for RESERVE1 and GETS, only continue if we have at least
          * one valid request.
          */
-           
+
     /*
      * loop through requests
      */
@@ -233,11 +233,11 @@ table_helper_handler(netsnmp_mib_handler *handler,
         netsnmp_assert(request->status == SNMP_ERR_NOERROR);
 
         /*
-         * this should probably be handled further up 
+         * this should probably be handled further up
          */
         if ((reqinfo->mode == MODE_GET) && (var->type != ASN_NULL)) {
             /*
-             * valid request if ASN_NULL 
+             * valid request if ASN_NULL
              */
             DEBUGMSGTL(("helper:table",
                         "  GET var type is not ASN_NULL\n"));
@@ -275,14 +275,14 @@ table_helper_handler(netsnmp_mib_handler *handler,
         }
 
         /*
-         * check to make sure its in table range 
+         * check to make sure its in table range
          */
 
         out_of_range = 0;
         /*
-         * if our root oid is > var->name and this is not a GETNEXT, 
-         * then the oid is out of range. (only compare up to shorter 
-         * length) 
+         * if our root oid is > var->name and this is not a GETNEXT,
+         * then the oid is out of range. (only compare up to shorter
+         * length)
          */
         if (reginfo->rootoid_len > var->name_length)
             tmp_len = var->name_length;
@@ -301,8 +301,8 @@ table_helper_handler(netsnmp_mib_handler *handler,
             }
         }
         /*
-         * if var->name is longer than the root, make sure it is 
-         * table.1 (table.ENTRY).  
+         * if var->name is longer than the root, make sure it is
+         * table.1 (table.ENTRY).
          */
         else if ((var->name_length > reginfo->rootoid_len) &&
                  (var->name[reginfo->rootoid_len] != 1)) {
@@ -316,10 +316,10 @@ table_helper_handler(netsnmp_mib_handler *handler,
             }
         }
         /*
-         * if it is not in range, then mark it in the request list 
-         * because we can't process it. If the request is not a GETNEXT 
+         * if it is not in range, then mark it in the request list
+         * because we can't process it. If the request is not a GETNEXT
          * then set the error to NOSUCHOBJECT so nobody else wastes time
-         * trying to process it.  
+         * trying to process it.
          */
         if (out_of_range) {
             DEBUGMSGTL(("helper:table", "  Not processed: "));
@@ -338,7 +338,7 @@ table_helper_handler(netsnmp_mib_handler *handler,
 
 
         /*
-         * Check column ranges; set-up to pull out indexes from OID. 
+         * Check column ranges; set-up to pull out indexes from OID.
          */
 
         incomplete = 0;
@@ -359,7 +359,7 @@ table_helper_handler(netsnmp_mib_handler *handler,
             if (var->name[oid_column_pos] < tbl_info->min_column) {
                 if (reqinfo->mode == MODE_GETNEXT) {
                     /*
-                     * fix column, truncate useless index info 
+                     * fix column, truncate useless index info
                      */
                     var->name_length = oid_column_pos;
                     tbl_req_info->colnum = tbl_info->min_column;
@@ -371,7 +371,7 @@ table_helper_handler(netsnmp_mib_handler *handler,
             if (out_of_range) {
                 /*
                  * this is out of range...  remove from requests, free
-                 * memory 
+                 * memory
                  */
                 DEBUGMSGTL(("helper:table",
                             "  oid is out of range. Not processed: "));
@@ -388,7 +388,7 @@ table_helper_handler(netsnmp_mib_handler *handler,
                 continue;
             }
             /*
-             * use column verification 
+             * use column verification
              */
             else if (tbl_info->valid_columns) {
                 tbl_req_info->colnum =
@@ -398,13 +398,13 @@ table_helper_handler(netsnmp_mib_handler *handler,
                     continue;
                 if (tbl_req_info->colnum != var->name[oid_column_pos]) {
                     /*
-                     * different column! truncate useless index info 
+                     * different column! truncate useless index info
                      */
                     var->name_length = oid_column_pos;
                 }
             }
             /*
-             * var->name_length may have changed - check again 
+             * var->name_length may have changed - check again
              */
             if (var->name_length <= oid_column_pos) { /** none available */
                 tbl_req_info->index_oid_len = 0;
@@ -458,7 +458,7 @@ table_helper_handler(netsnmp_mib_handler *handler,
              ++tmp_idx, vb = vb->next_variable) {
             if (incomplete && tmp_len) {
                 /*
-                 * incomplete/illegal OID, set up dummy 0 to parse 
+                 * incomplete/illegal OID, set up dummy 0 to parse
                  */
                 DEBUGMSGTL(("helper:table",
                             "  oid indexes not complete: "));
@@ -466,7 +466,7 @@ table_helper_handler(netsnmp_mib_handler *handler,
                 DEBUGMSG(("helper:table", "\n"));
 
                 /*
-                 * no sense in trying anymore if this is a GET/SET. 
+                 * no sense in trying anymore if this is a GET/SET.
                  *
                  * Reject requests of the form 'myObject'   (no instance)
                  */
@@ -480,7 +480,7 @@ table_helper_handler(netsnmp_mib_handler *handler,
                 break;
             }
             /*
-             * try and parse current index 
+             * try and parse current index
              */
             if (parse_one_oid_index(&tmp_name, &tmp_len,
                                     vb, 1) != SNMPERR_SUCCESS) {
@@ -489,7 +489,7 @@ table_helper_handler(netsnmp_mib_handler *handler,
                                  * sorry */
             } else {
                 /*
-                 * do not count incomplete indexes 
+                 * do not count incomplete indexes
                  */
                 if (incomplete)
                     continue;
@@ -552,14 +552,14 @@ table_helper_handler(netsnmp_mib_handler *handler,
             continue;
         }
         netsnmp_assert(request->status == SNMP_ERR_NOERROR);
-        
+
         ++need_processing;
 
     }                           /* for each request */
     }
 
     /*
-     * * call our child access function 
+     * * call our child access function
      */
     if (need_processing)
         status =
@@ -689,12 +689,12 @@ netsnmp_update_indexes_from_variable_list(netsnmp_table_request_info *tri)
 }
 
 /**
- * checks the original request against the current data being passed in if 
+ * checks the original request against the current data being passed in if
  * its greater than the request oid but less than the current valid
  * return, set the current valid return to the new value.
- * 
+ *
  * returns 1 if outvar was replaced with the oid from newvar (success).
- * returns 0 if not. 
+ * returns 0 if not.
  */
 int
 netsnmp_check_getnext_reply(netsnmp_request_info *request,
@@ -709,7 +709,7 @@ netsnmp_check_getnext_reply(netsnmp_request_info *request,
     build_oid_noalloc(myname, MAX_OID_LEN, &myname_len,
                       prefix, prefix_len, newvar);
     /*
-     * is the build of the new indexes less than our current result 
+     * is the build of the new indexes less than our current result
      */
     if ((!(*outvar) || snmp_oid_compare(myname + prefix_len,
                                         myname_len - prefix_len,
@@ -717,13 +717,13 @@ netsnmp_check_getnext_reply(netsnmp_request_info *request,
                                         (*outvar)->name_length -
                                         prefix_len) < 0)) {
         /*
-         * and greater than the requested oid 
+         * and greater than the requested oid
          */
         if (snmp_oid_compare(myname, myname_len,
                              request->requestvb->name,
                              request->requestvb->name_length) > 0) {
             /*
-             * the new result must be better than the old 
+             * the new result must be better than the old
              */
             if (!*outvar)
                 *outvar = snmp_clone_varbind(newvar);
@@ -741,7 +741,7 @@ netsnmp_check_getnext_reply(netsnmp_request_info *request,
 /** @} */
 
 /*
- * internal routines 
+ * internal routines
  */
 void
 table_data_free_func(void *data)
@@ -825,13 +825,13 @@ netsnmp_closest_column(unsigned int current,
             /** skip anything less than current*/
             for (idx = 0; valid_columns->details.list[idx] < current; ++idx)
                 ;
-            
+
             /** check for exact match */
             if (current == valid_columns->details.list[idx]) {
                 closest = current;
                 break;      /* can not get any closer! */
             }
-            
+
             /** list[idx] > current; is it < closest? */
             if ((valid_columns->details.list[idx] < closest) ||
                 (0 == closest))
@@ -848,15 +848,15 @@ netsnmp_closest_column(unsigned int current,
  * your module's initialize function, it takes a variable index parameter list
  * for example: the table_info structure is followed by two integer index types
  * netsnmp_table_helper_add_indexes(
- *                  table_info,   
- *	            ASN_INTEGER,  
- *		    ASN_INTEGER,  
+ *                  table_info,
+ *	            ASN_INTEGER,
+ *		    ASN_INTEGER,
  *		    0);
  *
  * @param tinfo is a pointer to a netsnmp_table_registration_info struct.
  *	The table handler needs to know up front how your table is structured.
- *	A netsnmp_table_registeration_info structure that is 
- *	passed to the table handler should contain the asn index types for the 
+ *	A netsnmp_table_registeration_info structure that is
+ *	passed to the table handler should contain the asn index types for the
  *	table as well as the minimum and maximum column that should be used.
  *
  * @return void
@@ -902,7 +902,7 @@ netsnmp_table_get_or_create_row_stash(netsnmp_agent_request_info *reqinfo,
 
     if (!stashp) {
         /*
-         * hasn't be created yet.  we create it here. 
+         * hasn't be created yet.  we create it here.
          */
         stashp = SNMP_MALLOC_TYPEDEF(netsnmp_oid_stash_node *);
 
@@ -911,7 +911,7 @@ netsnmp_table_get_or_create_row_stash(netsnmp_agent_request_info *reqinfo,
 
         netsnmp_agent_add_list_data(reqinfo,
                                     /*
-                                     * XXX: free: wrong 
+                                     * XXX: free: wrong
                                      */
                                     netsnmp_create_data_list(storage_name,
                                                              stashp,

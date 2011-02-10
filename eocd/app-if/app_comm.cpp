@@ -45,7 +45,7 @@ int app_comm::
 wait(int sec)
 {
     int count=0;
-    struct timeval timeout;  /* Timeout for select */	
+    struct timeval timeout;  /* Timeout for select */
 
     timeout.tv_sec = sec;
     timeout.tv_usec = 0;
@@ -68,12 +68,12 @@ _send(int fd,char *buf,size_t size)
 {
     size_t nsize;
     if( (nsize=::send(fd,buf,size,0)) != size ){
-		//        PDEBUG(DERR,"error: %d",nsize); 
+		//        PDEBUG(DERR,"error: %d",nsize);
         return -EAGAIN;
     }
 
     return 0;
-}	
+}
 
 ssize_t app_comm::
 _recv(int fd,char *&buf)
@@ -81,7 +81,7 @@ _recv(int fd,char *&buf)
     char *frame = new char[BLOCK_SIZE];
     int frame_len;
     int ret;
-    
+
     if( (frame_len = ::recv(fd,frame,BLOCK_SIZE,MSG_PEEK|MSG_DONTWAIT) ) <= 0 ){
 		delete[] frame;
 		return -EAGAIN;

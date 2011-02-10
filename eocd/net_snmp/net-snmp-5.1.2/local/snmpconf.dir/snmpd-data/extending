@@ -24,7 +24,7 @@ info	 See the snmpd.conf manual page for further information.
 info	 #
 info	 Consider using "pass_persist" for a performance increase.
 question 1 The OID where the script should take control of
-question 2 The path to the program that should be called 
+question 2 The path to the program that should be called
 
 token pass_persist
 info	 Run a persistant process that intepretes the request for an entire tree.
@@ -50,7 +50,7 @@ info  arguments: [snmpcmd args] host oid [remoteoid]
 question 1 Enter the "snmpcmd" arguments that specify how to talk to the remote host
 question 2 The host you want to pass the requests to
 qusetion 3 The oid that we should pass beyond
-question 4 The oid of the remote site that we should talk to if different from $3 
+question 4 The oid of the remote site that we should talk to if different from $3
 
 token	sh
 info	run a simple command using system()

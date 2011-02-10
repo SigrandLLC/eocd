@@ -1,5 +1,5 @@
 /*
- * testhandler.h 
+ * testhandler.h
  */
 #ifndef NETSNMP_INSTANCE_H
 #define NETSNMP_INSTANCE_H
@@ -22,7 +22,7 @@ extern "C" {
 
 int             netsnmp_register_instance(netsnmp_handler_registration
                                           *reginfo);
-int            
+int
 netsnmp_register_read_only_instance(netsnmp_handler_registration *reginfo);
 
 #define INSTANCE_HANDLER_NAME "instance"

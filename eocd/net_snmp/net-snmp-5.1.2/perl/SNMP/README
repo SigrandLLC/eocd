@@ -123,25 +123,25 @@ make install
 
 Win32 (MSVC++)
 
-This section covers installation of the Perl modules for Microsoft Visual 
-C++ 6.0 and Microsoft Microsoft Development Environment 2003/2003 
+This section covers installation of the Perl modules for Microsoft Visual
+C++ 6.0 and Microsoft Microsoft Development Environment 2003/2003
 (MSVC 7.0/7.1).  See the following sections for Cygwin and MinGW.
 
-ActiveState Perl is required.  
+ActiveState Perl is required.
 
-Note: With ActiveState Perl (currently at 5.8.2 build 808) and possibly other 
-      versions of Perl on Windows, if a Perl script modifies a system 
-      environment variable and then calls a C function, the C function will 
+Note: With ActiveState Perl (currently at 5.8.2 build 808) and possibly other
+      versions of Perl on Windows, if a Perl script modifies a system
+      environment variable and then calls a C function, the C function will
       not see the new environment variable.  This problem can be seen with the
-      failure of test #3 in the SNMP conf test (perl/SNMP/t/conf.t).  The 
-      change to the SNMPCONFPATH env variable is not seen by the calls to the 
+      failure of test #3 in the SNMP conf test (perl/SNMP/t/conf.t).  The
+      change to the SNMPCONFPATH env variable is not seen by the calls to the
       C SNMP module.
-      
+
 Automatic building / testing with nmakeperl.bat:
 
 1.  Ensure a static version of Net-SNMP has been compiled and installed.  Also
-    ensure the DLL version of snmplib has been compiled and installed.  The 
-    Perl modules will not function correctly without a shared snmplib library 
+    ensure the DLL version of snmplib has been compiled and installed.  The
+    Perl modules will not function correctly without a shared snmplib library
     or DLL.
 
 2.  Install the regex win32 package (gnu_regex.exe).  It is available from
@@ -167,7 +167,7 @@ Automatic building / testing with nmakeperl.bat:
 
 4.  Using a command prompt window, cd to the source base directory.
 
-5.  Invoke win32\nmakeperl.bat to build the Perl SNMP modules.  If you see 
+5.  Invoke win32\nmakeperl.bat to build the Perl SNMP modules.  If you see
     errors, review the "nmake.out" file first.  If no errors there,
     then the modules built correctly, but the tests did not rigourously
     prove the mettle of the modules.  Review "nmaketest.out".  If the
@@ -183,8 +183,8 @@ Automatic building / testing with nmakeperl.bat:
 Manual building / testing:
 
 1.  Ensure a static version of Net-SNMP has been compiled and installed.  Also
-    ensure the DLL version of snmplib has been compiled and installed.  The 
-    Perl modules will not function correctly without a shared snmplib library 
+    ensure the DLL version of snmplib has been compiled and installed.  The
+    Perl modules will not function correctly without a shared snmplib library
     or DLL.
 
 2.  Install the regex win32 package (gnu_regex.exe).  It is available from
@@ -210,7 +210,7 @@ Manual building / testing:
 
 3.  Using a command prompt window, cd to the perl directory.
 
-5.  Type: 
+5.  Type:
 
       perl Makefile.PL CAPI=TRUE -NET-SNMP-IN-SOURCE=TRUE
 
@@ -219,27 +219,27 @@ Manual building / testing:
       perl Makefile.PL CAPI=TRUE -NET-SNMP-IN-SOURCE=TRUE -NET-SNMP-DEBUG=TRUE
 
        to compile against the DEBUG version of Net-SNMP.
- 
+
       nmake
       nmake test
       nmake install
 
-      Note: The --NET-SNMP-IN-SOURCE=TRUE causes the Makefile to use the 
+      Note: The --NET-SNMP-IN-SOURCE=TRUE causes the Makefile to use the
             library files from the installed Net-SNMP directory.  To specify the
             installed Net-SNMP directory, use:
 
             perl Makefile.PL CAPI=TRUE -NET-SNMP-PATH="c:\usr"
 
-            Note: -NET-SNMP-DEBUG has no effect while compiling against an 
+            Note: -NET-SNMP-DEBUG has no effect while compiling against an
                   installed copy of Net-SNMP.
 
-      Note: To include OpenSSL, see the net-snmp/README.win32 to compile 
+      Note: To include OpenSSL, see the net-snmp/README.win32 to compile
             libsnmp with libeay32 and see that libeay.lib is in the lib folder,
-            or in the lib folder of the installed Net-SNMP if using 
+            or in the lib folder of the installed Net-SNMP if using
             -NET-SNMP-PATH.  For example, c:\usr\lib
 
-Note:  'nmake test' will automatically start and stop the agent(snmpd) and trap 
-       receiver (snmptrapd) while testing the SNMP module.  
+Note:  'nmake test' will automatically start and stop the agent(snmpd) and trap
+       receiver (snmptrapd) while testing the SNMP module.
 
 
 Win32 (Cygwin):
@@ -251,7 +251,7 @@ make test
 make install
 
 If you get an error saying your system can't compile, you are probably missing
-the regex library.  Install regex from 
+the regex library.  Install regex from
 http://mirrors.sunsite.dk/cygwin/release/regex/regex-4.4-2-src.tar.bz2
 
 
@@ -260,7 +260,7 @@ Win32 (MinGW):
 Note:  As of February 25th, 2004, the MinGW build of Net-SNMP does not
        compile the DLL version of libsnmp.  Some modules will not function
        correctly without a shared library / DLL.  The OID module does not
-       appear to work at all without the DLL, and some parts of other 
+       appear to work at all without the DLL, and some parts of other
        modules may not work.  For example, sharing configurations between
        modules which is why the SNMP conf test fails.
 
@@ -268,21 +268,21 @@ These directions are for MinGW 3.1.0 with MSYS 1.0.9 and ActiveState Perl.
 Compiling the Perl modules using a MinGW built Perl environment has not
 been tested.
 
-Note: With ActiveState Perl (currently at 5.8.2 build 808) and possibly other 
-      versions of Perl on Windows, if a Perl script modifies a system 
-      environment variable and then calls a C function, the C function will 
+Note: With ActiveState Perl (currently at 5.8.2 build 808) and possibly other
+      versions of Perl on Windows, if a Perl script modifies a system
+      environment variable and then calls a C function, the C function will
       not see the new environment variable.  This problem can be seen with the
-      failure of test #3 in the SNMP conf test (perl/SNMP/t/conf.t).  The 
-      change to the SNMPCONFPATH env variable is not seen by the calls to the 
+      failure of test #3 in the SNMP conf test (perl/SNMP/t/conf.t).  The
+      change to the SNMPCONFPATH env variable is not seen by the calls to the
       C SNMP module.
 
-The main Net-SNMP package must be compiled with the regex library.  
+The main Net-SNMP package must be compiled with the regex library.
 See Net-SNMP README.win32 for compiling with MinGW.
 
 The following additional software is required:
 
  dmake:
- http://www.cpan.org/authors/id/GSAR/dmake-4.1pl1-win32.zip  
+ http://www.cpan.org/authors/id/GSAR/dmake-4.1pl1-win32.zip
 
  ExtUtils-FakeConfig:
  http://search.cpan.org/~mbarbon/ExtUtils-FakeConfig-0.05/
@@ -294,33 +294,33 @@ Note:  A PPM package is available from ActiveState for ExtUtils-FakeConfig, but
 Installing DMAKE and ExtUtils-FakeConfig:
 -----------------------------------------
 
-1.  Install DMAKE as described in the README.NOW contained in the DMAKE .ZIP 
+1.  Install DMAKE as described in the README.NOW contained in the DMAKE .ZIP
     file ensuring the DMAKE program can be found in the system path.
 
 2.  Extract ExtUtils-FakeConfig-0.05.zip to a temporary folder.
 
 3.  Add the MinGW bin folder to your system path.
 
-4.  Open a Windows command prompt (cmd) and cd into ExtUtils-FakeConfig-0.05 
+4.  Open a Windows command prompt (cmd) and cd into ExtUtils-FakeConfig-0.05
     and typet he following to build and install the ExtUtils-FakeConfig module:
 
     perl Makefile.PL
     dmake
     dmake install
 
-5.  A Perl import library needs to be created using the ExtUtils-FakeConfig 
-    make_implib.pl script.  
+5.  A Perl import library needs to be created using the ExtUtils-FakeConfig
+    make_implib.pl script.
 
     For ActiveState Perl 5.6.x installed to c:\Perl, type the following on one
     line:
 
-      perl script/make_implib.pl --output-dir=C:/Perl/lib/CORE 
+      perl script/make_implib.pl --output-dir=C:/Perl/lib/CORE
         --output-lib=libperl56.a --target=mingw c:/Perl/bin/Perl56.dll
 
-    For ActiveState Perl 5.8.x installed to c:\Perl, type the following on one 
+    For ActiveState Perl 5.8.x installed to c:\Perl, type the following on one
     line:
 
-      perl script/make_implib.pl --output-dir=C:/Perl/lib/CORE 
+      perl script/make_implib.pl --output-dir=C:/Perl/lib/CORE
         --output-lib=libperl58.a --target=mingw c:/Perl/bin/Perl58.dll
 
 
@@ -329,20 +329,20 @@ Building the Perl module:
 
 1.  Complete the section titled 'Installing DMAKE and ExtUtils-FakeConfig'
 
-2.  Open an MSYS shell and cd into the net-snmp/Perl folder and type the 
+2.  Open an MSYS shell and cd into the net-snmp/Perl folder and type the
     following on one line:
 
       perl -MConfig_m Makefile.PL -NET-SNMP-IN-SOURCE=true DEFINE=-DMINGW_PERL
 
-3.  Open a Windows command prompt (cmd) and cd into the net-snmp/perl folder 
+3.  Open a Windows command prompt (cmd) and cd into the net-snmp/perl folder
     and type:
 
       dmake
       dmake test
       dmake install
 
-    Note:  'dmake test' will automatically start and stop the agent(snmpd) and 
-           trap receiver (snmptrapd) while testing the SNMP module.  
+    Note:  'dmake test' will automatically start and stop the agent(snmpd) and
+           trap receiver (snmptrapd) while testing the SNMP module.
 
 4.  Remove the MinGW bin folder to your system path if it was not already in
     your path for step 3 of 'Installing DMAKE and ExtUtils-FakeConfig'.
@@ -423,9 +423,9 @@ public:
                methods untranslated (i.e. dotted-decimal).  Setting the
                UseLongNames value for the session is highly recommended.
  BestGuess   - defaults to the value of SNMP::best_guess at time of session
-               creation. this setting controls how <tags> are parsed.  setting 
-               to 0 causes a regular lookup.  setting to 1 causes a regular 
-               expression match (defined as -Ib in snmpcmd) and setting to 2 
+               creation. this setting controls how <tags> are parsed.  setting
+               to 0 causes a regular lookup.  setting to 1 causes a regular
+               expression match (defined as -Ib in snmpcmd) and setting to 2
                causes a random access lookup (defined as -IR in snmpcmd).
  ErrorStr    - read-only, holds the error message assoc. w/ last request
  ErrorNum    - read-only, holds the snmp_err or status of last request
@@ -626,11 +626,11 @@ SNMP package variables and functions:
                         OID's, instead of translating them.  Also setting
                         $SNMP::use_long_names to non-zero is highly recommended.
 
- $SNMP::best_guess    - default '0'.  this setting controls how <tags> are 
-                        parsed.  setting to 0 causes a regular lookup.  setting 
-                        to 1 causes a regular expression match (defined as -Ib 
-                        in snmpcmd) and setting to 2 causes a random access 
-                        lookup (defined as -IR in snmpcmd).  can also be set 
+ $SNMP::best_guess    - default '0'.  this setting controls how <tags> are
+                        parsed.  setting to 0 causes a regular lookup.  setting
+                        to 1 causes a regular expression match (defined as -Ib
+                        in snmpcmd) and setting to 2 causes a random access
+                        lookup (defined as -IR in snmpcmd).  can also be set
                         on a per session basis (see BestGuess)
 
  $SNMP::save_descriptions - default '0',set non-zero to have mib parser save
@@ -714,19 +714,19 @@ SNMP package variables and functions:
 
  &SNMP::unloadModules(<mod>,...) - *Not Implemented*
 
- &SNMP::translateObj(<var>[,arg,[arg]]) - will convert a text obj tag to an 
-                       OID and vice-versa. Any iid suffix is retained 
-                       numerically.  Default behaviour when converting a 
-                       numeric OID to text form is to return leaf identifier 
-                       only (e.g.,'sysDescr') but when $SNMP::use_long_names 
-                       is non-zero or a non-zero second arg is supplied it 
-                       will return a longer textual identifier.  An optional 
-                       third argument of non-zero will cause the module name 
-                       to be prepended to the text name (e.g. 
-                       'SNMPv2-MIB::sysDescr').  When converting a text obj, 
-                       the $SNMP::best_guess option is used.  If no Mib is 
-                       loaded when called and $SNMP::auto_init_mib is enabled 
-                       then the Mib will be loaded. Will return 'undef' upon 
+ &SNMP::translateObj(<var>[,arg,[arg]]) - will convert a text obj tag to an
+                       OID and vice-versa. Any iid suffix is retained
+                       numerically.  Default behaviour when converting a
+                       numeric OID to text form is to return leaf identifier
+                       only (e.g.,'sysDescr') but when $SNMP::use_long_names
+                       is non-zero or a non-zero second arg is supplied it
+                       will return a longer textual identifier.  An optional
+                       third argument of non-zero will cause the module name
+                       to be prepended to the text name (e.g.
+                       'SNMPv2-MIB::sysDescr').  When converting a text obj,
+                       the $SNMP::best_guess option is used.  If no Mib is
+                       loaded when called and $SNMP::auto_init_mib is enabled
+                       then the Mib will be loaded. Will return 'undef' upon
                        failure.
 
  &SNMP::getType(<var>) - return SNMP data type for given textual identifier

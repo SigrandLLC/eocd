@@ -26,7 +26,7 @@
 #define RATE_WIDTH 6
 #define ANX_WIDTH 4
 #define TCPAM_WIDTH 9
-#define PWR_WIDTH 4 
+#define PWR_WIDTH 4
 #define COMPAT_WIDTH 9
 
 #define table_error(fmt,args...) { \
@@ -45,7 +45,7 @@
 			__FUNCTION__,ret,err_strings[ret - 1]); \
 	table_error_fmt(str); \
 }
-	
+
 void table_error_fmt(char *str);
 //void table_error_fmt(int ret,char *chan);
 

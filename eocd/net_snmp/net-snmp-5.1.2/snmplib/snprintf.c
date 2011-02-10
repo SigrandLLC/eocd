@@ -35,9 +35,9 @@
  *    original.  Also, there is now a builtin-test, just compile with:
  *           gcc -DTEST_SNPRINTF -o snprintf snprintf.c -lm
  *    and run snprintf for results.
- * 
+ *
  *  Thomas Roessler <roessler@guug.de> 01/27/98 for mutt 0.89i
- *    The PGP code was using unsigned hexadecimal formats. 
+ *    The PGP code was using unsigned hexadecimal formats.
  *    Unfortunately, unsigned formats simply didn't work.
  *
  *  Michael Elkins <me@cs.hmc.edu> 03/05/98 for mutt 0.90.8
@@ -109,7 +109,7 @@ static void     dopr_outch(char *buffer, size_t * currlen, size_t maxlen,
  */
 
 /*
- * format read states 
+ * format read states
  */
 #define DP_S_DEFAULT 0
 #define DP_S_FLAGS   1
@@ -121,7 +121,7 @@ static void     dopr_outch(char *buffer, size_t * currlen, size_t maxlen,
 #define DP_S_DONE    7
 
 /*
- * format flags - Bits 
+ * format flags - Bits
  */
 #define DP_F_MINUS 	(1 << 0)
 #define DP_F_PLUS  	(1 << 1)
@@ -132,7 +132,7 @@ static void     dopr_outch(char *buffer, size_t * currlen, size_t maxlen,
 #define DP_F_UNSIGNED 	(1 << 6)
 
 /*
- * Conversion Flags 
+ * Conversion Flags
  */
 #define DP_C_SHORT   1
 #define DP_C_LONG    2
@@ -232,7 +232,7 @@ dopr(char *buffer, size_t maxlen, const char *format, va_list args)
             break;
         case DP_S_MOD:
             /*
-             * Currently, we don't support Long Long, bummer 
+             * Currently, we don't support Long Long, bummer
              */
             switch (ch) {
             case 'h':
@@ -306,7 +306,7 @@ dopr(char *buffer, size_t maxlen, const char *format, va_list args)
                 else
                     fvalue = va_arg(args, double);
                 /*
-                 * um, floating point? 
+                 * um, floating point?
                  */
                 fmtfp(buffer, &currlen, maxlen, fvalue, min, max, flags);
                 break;
@@ -361,13 +361,13 @@ dopr(char *buffer, size_t maxlen, const char *format, va_list args)
                 break;
             case 'w':
                 /*
-                 * not supported yet, treat as next char 
+                 * not supported yet, treat as next char
                  */
                 ch = *format++;
                 break;
             default:
                 /*
-                 * Unknown, skip 
+                 * Unknown, skip
                  */
                 break;
             }
@@ -380,7 +380,7 @@ dopr(char *buffer, size_t maxlen, const char *format, va_list args)
             break;
         default:
             /*
-             * hmm? 
+             * hmm?
              */
             break;              /* some picky compilers need this */
         }
@@ -426,7 +426,7 @@ fmtstr(char *buffer, size_t * currlen, size_t maxlen,
 }
 
 /*
- * Have to handle DP_F_NUM (ie 0x and 0 alternates) 
+ * Have to handle DP_F_NUM (ie 0x and 0 alternates)
  */
 
 static void
@@ -488,7 +488,7 @@ fmtint(char *buffer, size_t * currlen, size_t maxlen,
 #endif
 
     /*
-     * Spaces 
+     * Spaces
      */
     while (spadlen > 0) {
         dopr_outch(buffer, currlen, maxlen, ' ');
@@ -496,13 +496,13 @@ fmtint(char *buffer, size_t * currlen, size_t maxlen,
     }
 
     /*
-     * Sign 
+     * Sign
      */
     if (signvalue)
         dopr_outch(buffer, currlen, maxlen, signvalue);
 
     /*
-     * Zeros 
+     * Zeros
      */
     if (zpadlen > 0) {
         while (zpadlen > 0) {
@@ -512,13 +512,13 @@ fmtint(char *buffer, size_t * currlen, size_t maxlen,
     }
 
     /*
-     * Digits 
+     * Digits
      */
     while (place > 0)
         dopr_outch(buffer, currlen, maxlen, convert[--place]);
 
     /*
-     * Left Justified spaces 
+     * Left Justified spaces
      */
     while (spadlen < 0) {
         dopr_outch(buffer, currlen, maxlen, ' ');
@@ -603,7 +603,7 @@ fmtfp(char *buffer, size_t * currlen, size_t maxlen,
     intpart = ufvalue;
 
     /*
-     * Sorry, we only support 9 digits past the decimal because of our 
+     * Sorry, we only support 9 digits past the decimal because of our
      * conversion method
      */
     if (max > 9)
@@ -625,7 +625,7 @@ fmtfp(char *buffer, size_t * currlen, size_t maxlen,
 #endif
 
     /*
-     * Convert integer part 
+     * Convert integer part
      */
     do {
         iconvert[iplace++] =
@@ -637,7 +637,7 @@ fmtfp(char *buffer, size_t * currlen, size_t maxlen,
     iconvert[iplace] = 0;
 
     /*
-     * Convert fractional part 
+     * Convert fractional part
      */
     do {
         fconvert[fplace++] =
@@ -650,7 +650,7 @@ fmtfp(char *buffer, size_t * currlen, size_t maxlen,
     fconvert[fplace] = 0;
 
     /*
-     * -1 for decimal point, another -1 if we are printing a sign 
+     * -1 for decimal point, another -1 if we are printing a sign
      */
     padlen = min - iplace - max - 1 - ((signvalue) ? 1 : 0);
     zpadlen = max - fplace;
@@ -723,7 +723,7 @@ vsnprintf(char *str, size_t count, const char *fmt, va_list args)
 
 #ifndef HAVE_SNPRINTF
 /*
- * VARARGS3 
+ * VARARGS3
  */
 #ifdef HAVE_STDARGS
 int

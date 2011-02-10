@@ -286,7 +286,7 @@ test_hashindex(void)
  * Returns:
  *	Number of failures.
  *
- * Test of LCD Engine ID and Time List.	
+ * Test of LCD Engine ID and Time List.
  */
 int
 test_etime(void)

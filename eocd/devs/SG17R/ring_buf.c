@@ -37,7 +37,7 @@ struct ring_buf *rbuf_init()
 {
     struct ring_buf *r = (struct ring_buf *)malloc(sizeof(struct ring_buf));
     int i;
-    
+
     if( !r )
 	return NULL;
     r->head = r->tail = 0;
@@ -49,7 +49,7 @@ struct ring_buf *rbuf_init()
 
 void rbuf_free(struct ring_buf *r)
 {
-    int i,j;    
+    int i,j;
     for(i=0;i<RING_SIZE;i++){
 	rbuf_free_buf(&r->rb[i]);
     }

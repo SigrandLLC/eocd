@@ -13,7 +13,7 @@ class EOCLog_config{
 
 
 class EOCLog{
-        
+
 public:
     void print(int,char*);
 }
@@ -23,7 +23,7 @@ void
 EOCLog::print(int facility,char* s)
 {
     char sfacility[256];
-    
+
     switch( facility ){
     case LOG_ERR:
 	sfacility = strdup("Error");
@@ -34,7 +34,7 @@ EOCLog::print(int facility,char* s)
     default:
 	sfacility = strdup("Default");
     }
-    
+
     printf("%s %s\n",sfacility,s);
 }
 

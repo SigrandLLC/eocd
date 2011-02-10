@@ -23,11 +23,11 @@
 typedef struct netsnmp_pkcs_slot_session_s {
     CK_SLOT_ID        sid;
     CK_SESSION_HANDLE hdl;
-} netsnmp_pkcs_slot_session; 
+} netsnmp_pkcs_slot_session;
 
 typedef struct netsnmp_pkcs_slot_info_s {
     int count;
-    netsnmp_pkcs_slot_session *pSession; 
+    netsnmp_pkcs_slot_session *pSession;
 } netsnmp_pkcs_slot_info;
 
 static CK_RV get_session_handle(CK_MECHANISM_TYPE, CK_FLAGS,\
@@ -60,7 +60,7 @@ pkcs_init(void)
     /* Get slot count */
     rv = C_GetSlotList(1, NULL_PTR, &slotcount);
     if (rv != CKR_OK || slotcount == 0) {
-        DEBUGMSGTL(("pkcs_init", "C_GetSlotList failed: %s", 
+        DEBUGMSGTL(("pkcs_init", "C_GetSlotList failed: %s",
                 pkcserr_string(rv)));
         QUITFUN(SNMPERR_GENERR, pkcs_init_quit);
     }
@@ -73,13 +73,13 @@ pkcs_init(void)
     if (pSlotList == NULL_PTR ||
         pSlot == NULL_PTR ||
         pSlot->pSession == NULL_PTR) {
-        DEBUGMSGTL(("pkcs_init","malloc failed.")); 
+        DEBUGMSGTL(("pkcs_init","malloc failed."));
         QUITFUN(SNMPERR_GENERR, pkcs_init_quit);
     }
 
     /* Get the list of slots */
     if ((rv = C_GetSlotList(1, pSlotList, &slotcount)) != CKR_OK) {
-        DEBUGMSGTL(("pkcs_init", "C_GetSlotList failed: %s", 
+        DEBUGMSGTL(("pkcs_init", "C_GetSlotList failed: %s",
                 pkcserr_string(rv)));
         QUITFUN(SNMPERR_GENERR, pkcs_init_quit);
     }
@@ -87,7 +87,7 @@ pkcs_init(void)
     /* initialize Slots structure */
     pSlot->count = slotcount;
     for (i = 0, tmp = pSlot->pSession; i < slotcount; i++, tmp++) {
-        tmp->sid = pSlotList[i]; 
+        tmp->sid = pSlotList[i];
         tmp->hdl = NULL;
     }
 
@@ -150,7 +150,7 @@ get_session_handle(CK_MECHANISM_TYPE mech_type, CK_FLAGS flag,
     CK_MECHANISM_INFO info;
     netsnmp_pkcs_slot_session       *p = NULL;
     int               i, slotcount = 0;
-            
+
     if (pSlot) {
         slotcount = pSlot->count;
         p = pSlot->pSession;
@@ -173,7 +173,7 @@ get_session_handle(CK_MECHANISM_TYPE mech_type, CK_FLAGS flag,
     /* Show error if no matching mechanism found */
     if (i == slotcount) {
         DEBUGMSGTL(("pkcs_init","No cryptographic provider for %s",
-                mech_type)); 
+                mech_type));
         return CKR_SESSION_HANDLE_INVALID;
     }
 
@@ -216,7 +216,7 @@ pkcs_sign(CK_MECHANISM_TYPE mech_type, u_char * key, u_int keylen,
           u_char * msg, u_int msglen, u_char * mac, size_t * maclen)
 {
     /*
-     * Key template 
+     * Key template
      */
     CK_OBJECT_CLASS class = CKO_SECRET_KEY;
     CK_KEY_TYPE keytype = CKK_GENERIC_SECRET;
@@ -306,7 +306,7 @@ pkcs_digest(CK_MECHANISM_TYPE mech_type, u_char * msg, u_int msglen,
 }
 
 /*
- * encrypt plaintext into ciphertext using key and iv.   
+ * encrypt plaintext into ciphertext using key and iv.
  */
 int
 pkcs_encrpyt(CK_MECHANISM_TYPE mech_type, u_char * key, u_int keylen,
@@ -317,7 +317,7 @@ pkcs_encrpyt(CK_MECHANISM_TYPE mech_type, u_char * key, u_int keylen,
     int                rval = SNMPERR_SUCCESS;
     int                pad_size, offset;
     /*
-     * Key template 
+     * Key template
      */
     CK_OBJECT_CLASS class = CKO_SECRET_KEY;
     CK_KEY_TYPE keytype = CKK_DES;
@@ -330,7 +330,7 @@ pkcs_encrpyt(CK_MECHANISM_TYPE mech_type, u_char * key, u_int keylen,
         {CKA_KEY_TYPE, &keytype, sizeof (keytype)},
         {CKA_ENCRYPT, &truevalue, sizeof (truevalue)},
         {CKA_TOKEN, &falsevalue, sizeof (falsevalue)},
-        {CKA_VALUE, key, keylen} 
+        {CKA_VALUE, key, keylen}
     };
 
     CK_SESSION_HANDLE hSession;
@@ -362,7 +362,7 @@ pkcs_encrpyt(CK_MECHANISM_TYPE mech_type, u_char * key, u_int keylen,
     pad_size = BYTESIZE(SNMP_TRANS_PRIVLEN_1DES);
 
     if (ptlen + pad_size - ptlen % pad_size > *ctlen) {
-        QUITFUN(SNMPERR_GENERR, pkcs_encrypt_quit);    
+        QUITFUN(SNMPERR_GENERR, pkcs_encrypt_quit);
     }
 
     for (offset = 0; offset < ptlen; offset += pad_size) {
@@ -386,7 +386,7 @@ pkcs_encrpyt(CK_MECHANISM_TYPE mech_type, u_char * key, u_int keylen,
     return rval;
 }
 
-/* 
+/*
  * decrypt ciphertext into plaintext using key and iv.
  */
 int
@@ -397,7 +397,7 @@ pkcs_decrpyt(CK_MECHANISM_TYPE mech_type, u_char * key, u_int keylen,
 {
     int            rval = SNMPERR_SUCCESS;
     /*
-     * Key template 
+     * Key template
      */
     CK_OBJECT_CLASS class = CKO_SECRET_KEY;
     CK_KEY_TYPE keytype = CKK_DES;
@@ -501,9 +501,9 @@ pkcs_generate_Ku(CK_MECHANISM_TYPE mech_type, u_char * passphrase, u_int pplen,
   pkcs_generate_Ku_quit:
     return rval;
 }
-   
+
 /*
- * pkcserr_stringor: returns a string representation of the given 
+ * pkcserr_stringor: returns a string representation of the given
  * return code.
  */
 static char *

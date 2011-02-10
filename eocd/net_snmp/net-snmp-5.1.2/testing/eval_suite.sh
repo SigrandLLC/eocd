@@ -39,7 +39,7 @@
 #
 #	% eval_oneprogram.sh -h
 #
-# 
+#
 # MISSING TESTS ARE NOTED
 #
 # If an executable is found MISSING, a note is printed to that effect
@@ -53,12 +53,12 @@
 #	with a given test.  One could prepare the environment, the other
 #	could clean up the environment after running the test.  This could
 #	help when testing large subsystems that might require legitimately
-#	building or changing things such that the testable item may be 
+#	building or changing things such that the testable item may be
 #	accessed in the first place (eg). ...
 #
 
 
-#------------------------------------ -o- 
+#------------------------------------ -o-
 # Usage mess.  (No, it works.)
 #
 USAGE="Usage: `basename $0` [-h][<args_for_getresults>]"
@@ -73,7 +73,7 @@ exit 0
 
 
 
-#------------------------------------ -o- 
+#------------------------------------ -o-
 # Globals.
 #
 PROGRAM=
@@ -103,7 +103,7 @@ TESTLIST="`cat $TESTLISTFILE | sed 's/$/   ===/'`"
 
 
 
-#------------------------------------ -o- 
+#------------------------------------ -o-
 # Run all tests in the testlist.  For each test do the following:
 #
 #	1) Note whether the test is SKIPPED or MISSING.
@@ -170,7 +170,7 @@ while [ -n "$1" ] ; do
 	[ -z "$success_count" ] && success_count=0
 
 
-	
+
 	#
 	# Output best-effort results of the test  -OR-  a fully successful run.
 	#
@@ -180,7 +180,7 @@ while [ -n "$1" ] ; do
 		echo
 		echo $PROGRAM PASSED		# Successful, fully, completed
 		echo
-		
+
 		true
 	} || {
 		TESTFAILURE=`expr $TESTFAILURE + 1`
@@ -201,7 +201,7 @@ done  # endwhile
 
 
 
-#------------------------------------ -o- 
+#------------------------------------ -o-
 # Cleanup, exit.
 #
 rm -f $TMPFILE

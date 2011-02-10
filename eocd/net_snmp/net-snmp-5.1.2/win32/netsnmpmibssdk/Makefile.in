@@ -5,9 +5,9 @@ INTDIR=
 
 !IF "$(OS)" == "Windows_NT"
 NULL=
-!ELSE 
+!ELSE
 NULL=nul
-!ENDIF 
+!ENDIF
 
 !IF  "$(CFG)" == "release"
 
@@ -91,45 +91,45 @@ CLEAN :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "." /I ".." /I "..\..\snmplib" /I "..\.." /I "..\..\include" /I "..\..\agent" /I "..\..\agent\mibgroup" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "HAVE_WIN32_PLATFORM_SDK" /Fp"$(INTDIR)\netsnmpmibssdk.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "." /I ".." /I "..\..\snmplib" /I "..\.." /I "..\..\include" /I "..\..\agent" /I "..\..\agent\mibgroup" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "HAVE_WIN32_PLATFORM_SDK" /Fp"$(INTDIR)\netsnmpmibssdk.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cpp{$(INTDIR)}.obj::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cxx{$(INTDIR)}.obj::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .c{$(INTDIR)}.sbr::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cpp{$(INTDIR)}.sbr::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cxx{$(INTDIR)}.sbr::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 RSC=rc.exe
 BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(INTDIR)\netsnmpmibssdk.bsc" 
+BSC32_FLAGS=/nologo /o"$(INTDIR)\netsnmpmibssdk.bsc"
 BSC32_SBRS= \
-	
+
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"..\lib\$(OUTDIR)\netsnmpmibs.lib" 
+LIB32_FLAGS=/nologo /out:"..\lib\$(OUTDIR)\netsnmpmibs.lib"
 LIB32_OBJS= \
 	"$(INTDIR)\setSerialNo.obj" \
 	"$(INTDIR)\snmp_mib.obj" \
@@ -285,45 +285,45 @@ CLEAN :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "." /I ".." /I "..\..\snmplib" /I "..\.." /I "..\..\include" /I "..\..\agent" /I "..\..\agent\mibgroup" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "HAVE_WIN32_PLATFORM_SDK" /Fp"$(INTDIR)\netsnmpmibssdk.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "." /I ".." /I "..\..\snmplib" /I "..\.." /I "..\..\include" /I "..\..\agent" /I "..\..\agent\mibgroup" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "HAVE_WIN32_PLATFORM_SDK" /Fp"$(INTDIR)\netsnmpmibssdk.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cpp{$(INTDIR)}.obj::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cxx{$(INTDIR)}.obj::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .c{$(INTDIR)}.sbr::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cpp{$(INTDIR)}.sbr::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cxx{$(INTDIR)}.sbr::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 RSC=rc.exe
 BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(INTDIR)\netsnmpmibssdk.bsc" 
+BSC32_FLAGS=/nologo /o"$(INTDIR)\netsnmpmibssdk.bsc"
 BSC32_SBRS= \
-	
+
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"..\lib\$(OUTDIR)\netsnmpmibs.lib" 
+LIB32_FLAGS=/nologo /out:"..\lib\$(OUTDIR)\netsnmpmibs.lib"
 LIB32_OBJS= \
 	"$(INTDIR)\setSerialNo.obj" \
 	"$(INTDIR)\snmp_mib.obj" \
@@ -396,16 +396,16 @@ LIB32_OBJS= \
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
 <<
 
-!ENDIF 
+!ENDIF
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
 !IF EXISTS("netsnmpmibssdk.dep")
 !INCLUDE "netsnmpmibssdk.dep"
-!ELSE 
+!ELSE
 !MESSAGE Warning: cannot find "netsnmpmibssdk.dep"
-!ENDIF 
-!ENDIF 
+!ENDIF
+!ENDIF
 
 
 !IF "$(CFG)" == "release" || "$(CFG)" == "debug"
@@ -800,6 +800,6 @@ SOURCE=..\..\agent\mibgroup\util_funcs.c
 
 
 
-!ENDIF 
+!ENDIF
 
 

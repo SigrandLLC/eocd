@@ -46,7 +46,7 @@ PERFORMANCE OF THIS SOFTWARE.
     struct variable;
 
     /*
-     * Function pointer called by the master agent for writes. 
+     * Function pointer called by the master agent for writes.
      */
     typedef int     (WriteMethod) (int action,
                                    u_char * var_val,
@@ -56,7 +56,7 @@ PERFORMANCE OF THIS SOFTWARE.
                                    oid * name, size_t length);
 
     /*
-     * Function pointer called by the master agent for mib information retrieval 
+     * Function pointer called by the master agent for mib information retrieval
      */
     typedef u_char *(FindVarMethod) (struct variable * vp,
                                      oid * name,
@@ -66,7 +66,7 @@ PERFORMANCE OF THIS SOFTWARE.
                                      WriteMethod ** write_method);
 
     /*
-     * Function pointer called by the master agent for setting up subagent requests 
+     * Function pointer called by the master agent for setting up subagent requests
      */
     typedef int     (AddVarMethod) (netsnmp_agent_session *asp,
                                     netsnmp_variable_list * vbp);
@@ -86,7 +86,7 @@ PERFORMANCE OF THIS SOFTWARE.
         u_char          magic;  /* passed to function as a hint */
         char            type;   /* type of variable */
         /*
-         * See important comment in snmp_vars.c relating to acl 
+         * See important comment in snmp_vars.c relating to acl
          */
         u_short         acl;    /* access control list for variable */
         FindVarMethod  *findVar;        /* function that finds variable */
@@ -108,7 +108,7 @@ PERFORMANCE OF THIS SOFTWARE.
 #endif
 
     /*
-     * fail overloads non-negative integer value. it must be -1 ! 
+     * fail overloads non-negative integer value. it must be -1 !
      */
 #define MATCH_FAILED	(-1)
 #define MATCH_SUCCEEDED	0

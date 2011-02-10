@@ -12,13 +12,13 @@
 
                       All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the name of CMU not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 CMU DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -167,7 +167,7 @@ collect(netsnmp_session * ss, netsnmp_pdu *pdu,
 
     while (running) {
         /*
-         * gotta catch em all, gotta catch em all! 
+         * gotta catch em all, gotta catch em all!
          */
         status = snmp_synch_response(ss, pdu, &response);
         if (status != STAT_SUCCESS || !response) {
@@ -182,19 +182,19 @@ collect(netsnmp_session * ss, netsnmp_pdu *pdu,
             running = 0;
         else {
             /*
-             * get response 
+             * get response
              */
             *vlpp = response->variables;
             (*vlpp)->next_variable = NULL;      /* shouldn't be any, but just in case */
 
             /*
-             * create the next request 
+             * create the next request
              */
             pdu = snmp_pdu_create(SNMP_MSG_GETNEXT);
             snmp_add_null_var(pdu, (*vlpp)->name, (*vlpp)->name_length);
 
             /*
-             * finish loop setup 
+             * finish loop setup
              */
             vlpp = &((*vlpp)->next_variable);
             response->variables = NULL; /* ahh, forget about it */
@@ -227,7 +227,7 @@ main(int argc, char *argv[])
     int             count = 0;
 
     /*
-     * get the common command line arguments 
+     * get the common command line arguments
      */
     switch (arg = snmp_parse_args(argc, argv, &session, "C:", optProc)) {
     case -2:
@@ -247,7 +247,7 @@ main(int argc, char *argv[])
     ss = snmp_open(&session);
     if (ss == NULL) {
         /*
-         * diagnose snmp_open errors with the input netsnmp_session pointer 
+         * diagnose snmp_open errors with the input netsnmp_session pointer
          */
         snmp_sess_perror("snmpget", &session);
         SOCK_CLEANUP;
@@ -323,7 +323,7 @@ main(int argc, char *argv[])
         size_t          units = 0;
         /*
          * the host resources mib must not be supported.  Lets try the
-         * UCD-SNMP-MIB and its dskTable 
+         * UCD-SNMP-MIB and its dskTable
          */
 
         pdu = snmp_pdu_create(SNMP_MSG_GETNEXT);

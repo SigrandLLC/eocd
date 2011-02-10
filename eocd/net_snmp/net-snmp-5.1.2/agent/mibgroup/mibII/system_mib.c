@@ -134,7 +134,7 @@ system_parse_config_sysloc(const char *token, char *cptr)
         if (sysLocationSet < 0) {
             /*
              * This is bogus (and shouldn't happen anyway) -- the sysLocation
-             * is already configured read-only.  
+             * is already configured read-only.
              */
             snmp_log(LOG_WARNING,
                      "ignoring attempted override of read-only sysLocation.0\n");
@@ -147,12 +147,12 @@ system_parse_config_sysloc(const char *token, char *cptr)
             /*
              * This is bogus (and shouldn't happen anyway) -- we already read a
              * persistent value of sysLocation, which we should ignore in
-             * favour of this one.  
+             * favour of this one.
              */
             snmp_log(LOG_WARNING,
                      "ignoring attempted override of read-only sysLocation.0\n");
             /*
-             * Fall through and copy in this value.  
+             * Fall through and copy in this value.
              */
         }
         sysLocationSet = -1;
@@ -181,7 +181,7 @@ system_parse_config_syscon(const char *token, char *cptr)
         if (sysContactSet < 0) {
             /*
              * This is bogus (and shouldn't happen anyway) -- the sysContact
-             * is already configured read-only.  
+             * is already configured read-only.
              */
             snmp_log(LOG_WARNING,
                      "ignoring attempted override of read-only sysContact.0\n");
@@ -194,12 +194,12 @@ system_parse_config_syscon(const char *token, char *cptr)
             /*
              * This is bogus (and shouldn't happen anyway) -- we already read a
              * persistent value of sysContact, which we should ignore in favour
-             * of this one.  
+             * of this one.
              */
             snmp_log(LOG_WARNING,
                      "ignoring attempted override of read-only sysContact.0\n");
             /*
-             * Fall through and copy in this value.  
+             * Fall through and copy in this value.
              */
         }
         sysContactSet = -1;
@@ -228,7 +228,7 @@ system_parse_config_sysname(const char *token, char *cptr)
         if (sysNameSet < 0) {
             /*
              * This is bogus (and shouldn't happen anyway) -- the sysName
-             * is already configured read-only.  
+             * is already configured read-only.
              */
             snmp_log(LOG_WARNING,
                      "ignoring attempted override of read-only sysName.0\n");
@@ -241,12 +241,12 @@ system_parse_config_sysname(const char *token, char *cptr)
             /*
              * This is bogus (and shouldn't happen anyway) -- we already read a
              * persistent value of sysName, which we should ignore in favour
-             * of this one.  
+             * of this one.
              */
             snmp_log(LOG_WARNING,
                      "ignoring attempted override of read-only sysName.0\n");
             /*
-             * Fall through and copy in this value.  
+             * Fall through and copy in this value.
              */
         }
         sysNameSet = -1;
@@ -291,7 +291,7 @@ void system_parse_config_sysObjectID(const char *token, char *cptr)
 
 /*
  * define the structure we're going to ask the agent to register our
- * information at 
+ * information at
  */
 struct variable1 system_variables[] = {
     {VERSION_DESCR, ASN_OCTET_STR, RONLY, var_system, 1, {1}},
@@ -305,7 +305,7 @@ struct variable1 system_variables[] = {
 };
 /*
  * Define the OID pointer to the top of the mib tree that we're
- * registering underneath 
+ * registering underneath
  */
 oid             system_variables_oid[] = { SNMP_OID_MIB2, 1 };
 oid             system_module_oid[] = { SNMP_OID_SNMPMODULES, 1 };
@@ -352,11 +352,11 @@ init_system_mib(void)
     struct extensible extmp;
 
     /*
-     * set default values of system stuff 
+     * set default values of system stuff
      */
     sprintf(extmp.command, "%s -a", UNAMEPROG);
     /*
-     * setup defaults 
+     * setup defaults
      */
     extmp.type = EXECPROC;
     extmp.next = NULL;
@@ -378,7 +378,7 @@ init_system_mib(void)
 #if HAVE_EXECV
     sprintf(extmp.command, "%s -n", UNAMEPROG);
     /*
-     * setup defaults 
+     * setup defaults
      */
     extmp.type = EXECPROC;
     extmp.next = NULL;
@@ -396,7 +396,7 @@ init_system_mib(void)
     sysObjectIDLength = OID_LENGTH(version_sysoid);
 
     /*
-     * register ourselves with the agent to handle our mib tree 
+     * register ourselves with the agent to handle our mib tree
      */
     REGISTER_MIB("mibII/system", system_variables, variable1,
                  system_variables_oid);
@@ -408,7 +408,7 @@ init_system_mib(void)
     sysContactSet = sysLocationSet = sysNameSet = 0;
 
     /*
-     * register our config handlers 
+     * register our config handlers
      */
     snmpd_register_config_handler("sysdescr",
                                   system_parse_config_sysdescr, NULL,
@@ -565,7 +565,7 @@ writeSystem(int action,
         }
         if (setvar != NULL && *setvar < 0) {
             /*
-             * The object is set in a read-only configuration file.  
+             * The object is set in a read-only configuration file.
              */
             return SNMP_ERR_NOTWRITABLE;
         }
@@ -574,14 +574,14 @@ writeSystem(int action,
     case RESERVE2:             /* Allocate memory and similar resources */
 
         /*
-         * Using static strings, so nothing needs to be done 
+         * Using static strings, so nothing needs to be done
          */
         break;
 
     case ACTION:               /* Perform the SET action (if reversible) */
 
         /*
-         * Save the old value, in case of UNDO 
+         * Save the old value, in case of UNDO
          */
         strcpy(oldbuf, buf);
         memcpy(buf, var_val, var_val_len);
@@ -607,7 +607,7 @@ writeSystem(int action,
     case FREE:                 /* Free any resources allocated */
 
         /*
-         * No resources have been allocated, but "empty" the 'oldbuf' 
+         * No resources have been allocated, but "empty" the 'oldbuf'
          */
         oldbuf[0] = 0;
         break;

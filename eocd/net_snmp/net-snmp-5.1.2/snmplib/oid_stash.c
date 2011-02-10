@@ -103,7 +103,7 @@ netsnmp_oid_stash_add_data(netsnmp_oid_stash_node **root,
         tmpp = curnode->children[lookup[i] % curnode->children_size];
         if (!tmpp) {
             /*
-             * no child in array at all 
+             * no child in array at all
              */
             tmpp = curnode->children[lookup[i] % curnode->children_size] =
                 netsnmp_oid_stash_create_node();
@@ -118,7 +118,7 @@ netsnmp_oid_stash_add_data(netsnmp_oid_stash_node **root,
                 tmpp = loopp;
             } else {
                 /*
-                 * none exists.  Create it 
+                 * none exists.  Create it
                  */
                 loopp = netsnmp_oid_stash_create_node();
                 loopp->value = lookup[i];
@@ -130,13 +130,13 @@ netsnmp_oid_stash_add_data(netsnmp_oid_stash_node **root,
                 tmpp = loopp;
             }
             /*
-             * tmpp now points to the proper node 
+             * tmpp now points to the proper node
              */
         }
         curnode = tmpp;
     }
     /*
-     * tmpp now points to the exact match 
+     * tmpp now points to the exact match
      */
     if (curnode->thedata)
         return SNMPERR_GENERR;
@@ -303,10 +303,10 @@ netsnmp_oid_stash_store_all(int majorID, int minorID,
                             void *serverarg, void *clientarg) {
     oid oidbase[MAX_OID_LEN];
     netsnmp_oid_stash_save_info *sinfo;
-    
+
     if (!clientarg)
         return SNMP_ERR_NOERROR;
-    
+
     sinfo = clientarg;
     netsnmp_oid_stash_store(*(sinfo->root), sinfo->token, sinfo->dumpfn,
                             oidbase,0);
@@ -336,10 +336,10 @@ netsnmp_oid_stash_store(netsnmp_oid_stash_node *root,
     char buf[SNMP_MAXBUF];
     netsnmp_oid_stash_node *tmpp;
     char *cp;
-    char *appname = netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID, 
+    char *appname = netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID,
                                           NETSNMP_DS_LIB_APPTYPE);
     int i;
-    
+
     if (!tokenname || !root || !curoid || !dumpfn)
         return;
 
@@ -368,7 +368,7 @@ netsnmp_oid_stash_store(netsnmp_oid_stash_node *root,
     @param root The top of the tree
     @param prefix a character string prefix printed to the beginning of each line.
 */
-void 
+void
 oid_stash_dump(netsnmp_oid_stash_node *root, char *prefix)
 {
     char            myprefix[MAX_OID_LEN * 4];

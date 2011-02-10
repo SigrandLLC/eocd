@@ -117,14 +117,14 @@ real_init_master(void)
         if (cp2 != NULL) {
             cp1 = cp2+1;
 	}
-    
+
         if (sess.peername[0] == '/') {
 #ifdef SNMP_TRANSPORT_UNIX_DOMAIN
             /*
              *  If this is a Unix pathname,
              *  try and create the directory first.
              */
-            agentx_dir_perm = netsnmp_ds_get_int(NETSNMP_DS_APPLICATION_ID, 
+            agentx_dir_perm = netsnmp_ds_get_int(NETSNMP_DS_APPLICATION_ID,
                                                  NETSNMP_DS_AGENT_X_DIR_PERM);
             if (agentx_dir_perm == 0)
                 agentx_dir_perm = AGENT_DIRECTORY_MODE;
@@ -139,7 +139,7 @@ real_init_master(void)
                                    &sess);
 #endif
         }
-    
+
         /*
          *  Otherwise, let 'snmp_open' interpret the string.
          */
@@ -148,7 +148,7 @@ real_init_master(void)
         sess.callback = handle_master_agentx_packet;
         session = snmp_open_ex(&sess, NULL, agentx_parse, NULL, NULL,
                                agentx_realloc_build, agentx_check_packet);
-    
+
         if (session == NULL && sess.s_errno == EADDRINUSE) {
             /*
              * Could be a left-over socket (now deleted)
@@ -157,10 +157,10 @@ real_init_master(void)
             session = snmp_open_ex(&sess, NULL, agentx_parse, NULL, NULL,
                                    agentx_realloc_build, agentx_check_packet);
         }
-    
+
         if (session == NULL) {
             /*
-             * diagnose snmp_open errors with the input netsnmp_session pointer 
+             * diagnose snmp_open errors with the input netsnmp_session pointer
              */
             if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, NETSNMP_DS_AGENT_NO_ROOT_ACCESS)) {
                 snmp_sess_perror
@@ -178,11 +178,11 @@ real_init_master(void)
     /*
      * Apply any settings to the ownership/permissions of the AgentX socket
      */
-    agentx_sock_perm = netsnmp_ds_get_int(NETSNMP_DS_APPLICATION_ID, 
+    agentx_sock_perm = netsnmp_ds_get_int(NETSNMP_DS_APPLICATION_ID,
                                           NETSNMP_DS_AGENT_X_SOCK_PERM);
-    agentx_sock_user = netsnmp_ds_get_int(NETSNMP_DS_APPLICATION_ID, 
+    agentx_sock_user = netsnmp_ds_get_int(NETSNMP_DS_APPLICATION_ID,
                                           NETSNMP_DS_AGENT_X_SOCK_USER);
-    agentx_sock_group = netsnmp_ds_get_int(NETSNMP_DS_APPLICATION_ID, 
+    agentx_sock_group = netsnmp_ds_get_int(NETSNMP_DS_APPLICATION_ID,
                                           NETSNMP_DS_AGENT_X_SOCK_GROUP);
 
     if (agentx_sock_perm != 0)
@@ -243,7 +243,7 @@ agentx_got_response(int operation,
              * This is a bit sledgehammer because the other sessions on this
              * transport may be okay (e.g. some thread in the subagent has
              * wedged, but the others are alright).  OTOH the overwhelming
-             * probability is that the whole agent has died somehow.  
+             * probability is that the whole agent has died somehow.
              */
 
             if (s != NULL) {
@@ -288,7 +288,7 @@ agentx_got_response(int operation,
 
     case NETSNMP_CALLBACK_OP_RECEIVED_MESSAGE:
         /*
-         * This session is alive 
+         * This session is alive
          */
         CLEAR_SNMP_STRIKE_FLAGS(session->flags);
         break;
@@ -313,7 +313,7 @@ agentx_got_response(int operation,
         if (cache->reqinfo->mode == MODE_GETNEXT) {
             /*
              * grr...  got back an actual error for a getnext.
-             * Replace error with NULL and change the rest to retry 
+             * Replace error with NULL and change the rest to retry
              */
             for (request = requests, i = 1; request;
                  request = request->next, i++) {
@@ -333,7 +333,7 @@ agentx_got_response(int operation,
                  request = request->next, i++) {
                 if (request->index == pdu->errindex) {
                     /*
-                     * mark this one as the one generating the error 
+                     * mark this one as the one generating the error
                      */
                     netsnmp_set_request_error(cache->reqinfo, request,
                                               pdu->errstat);
@@ -343,7 +343,7 @@ agentx_got_response(int operation,
             }
             if (!ret) {
                 /*
-                 * ack, unknown, mark the first one 
+                 * ack, unknown, mark the first one
                  */
                 netsnmp_set_request_error(cache->reqinfo, request,
                                           SNMP_ERR_GENERR);
@@ -356,7 +356,7 @@ agentx_got_response(int operation,
                cache->reqinfo->mode == MODE_GETNEXT ||
                cache->reqinfo->mode == MODE_GETBULK) {
         /*
-         * Replace varbinds for data request types, but not SETs.  
+         * Replace varbinds for data request types, but not SETs.
          */
         DEBUGMSGTL(("agentx/master",
                     "agentx_got_response() beginning...\n"));
@@ -376,7 +376,7 @@ agentx_got_response(int operation,
             }
 
             /*
-             * update the oid in the original request 
+             * update the oid in the original request
              */
             if (var->type != SNMP_ENDOFMIBVIEW) {
                 snmp_set_var_typed_value(request->requestvb, var->type,
@@ -390,7 +390,7 @@ agentx_got_response(int operation,
         if (request || var) {
             /*
              * ack, this is bad.  The # of varbinds don't match and
-             * there is no way to fix the problem 
+             * there is no way to fix the problem
              */
             snmp_log(LOG_ERR,
                      "response to agentx request illegal.  We're screwed.\n");
@@ -402,7 +402,7 @@ agentx_got_response(int operation,
             netsnmp_bulk_to_next_fix_requests(requests);
     } else {
         /*
-         * mark set requests as handled 
+         * mark set requests as handled
          */
         for (request = requests; request; request = request->next) {
             request->delegated = REQUEST_IS_NOT_DELEGATED;
@@ -443,7 +443,7 @@ agentx_master_handler(netsnmp_mib_handler *handler,
                 reqinfo->mode));
 
     /*
-     * build a new pdu based on the pdu type coming in 
+     * build a new pdu based on the pdu type coming in
      */
     switch (reqinfo->mode) {
     case MODE_GET:
@@ -465,7 +465,7 @@ agentx_master_handler(netsnmp_mib_handler *handler,
     case MODE_SET_RESERVE2:
         /*
          * don't do anything here for AgentX.  Assume all is fine
-         * and go on since AgentX only has one test phase. 
+         * and go on since AgentX only has one test phase.
          */
         return SNMP_ERR_NOERROR;
 
@@ -504,13 +504,13 @@ agentx_master_handler(netsnmp_mib_handler *handler,
 
         size_t nlen = request->requestvb->name_length;
         oid   *nptr = request->requestvb->name;
-        
+
         DEBUGMSGTL(("agentx/master","request for variable ("));
         DEBUGMSGOID(("agentx/master", nptr, nlen));
         DEBUGMSG(("agentx/master", ")\n"));
-        
+
         /*
-         * loop through all the requests and create agentx ones out of them 
+         * loop through all the requests and create agentx ones out of them
          */
 
         if (reqinfo->mode == MODE_GETNEXT || reqinfo->mode == MODE_GETBULK) {
@@ -559,7 +559,7 @@ agentx_master_handler(netsnmp_mib_handler *handler,
         }
 
         /*
-         * mark the request as delayed 
+         * mark the request as delayed
          */
         if (pdu->command != AGENTX_MSG_CLEANUPSET)
             request->delegated = REQUEST_IS_DELEGATED;
@@ -567,7 +567,7 @@ agentx_master_handler(netsnmp_mib_handler *handler,
             request->delegated = REQUEST_IS_NOT_DELEGATED;
 
         /*
-         * next... 
+         * next...
          */
         request = request->next;
     }

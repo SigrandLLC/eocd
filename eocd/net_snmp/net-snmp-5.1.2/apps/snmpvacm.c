@@ -183,13 +183,13 @@ view_oid(oid * it, size_t * len, const char *viewName, char *viewSubtree)
     for (i = 0; i < (int) strlen(viewName); i++)
         it[itIndex++] = viewName[i];
 
-    
+
     it[itIndex++] = c_oid_length;
     for (i = 0; i < (int) c_oid_length; i++)
         it[itIndex++] = c_oid[i];
 
     /*
-     * sprint_objid(c_oid, it, *len); 
+     * sprint_objid(c_oid, it, *len);
      */
 }
 
@@ -246,7 +246,7 @@ main(int argc, char *argv[])
 
 
     /*
-     * get the common command line arguments 
+     * get the common command line arguments
      */
     switch (arg = snmp_parse_args(argc, argv, &session, "C:", optProc)) {
     case -2:
@@ -262,22 +262,22 @@ main(int argc, char *argv[])
     SOCK_STARTUP;
 
     /*
-     * open an SNMP session 
+     * open an SNMP session
      */
     /*
-     * Note:  this wil obtain the engineID needed below 
+     * Note:  this wil obtain the engineID needed below
      */
     ss = snmp_open(&session);
     if (ss == NULL) {
         /*
-         * diagnose snmp_open errors with the input netsnmp_session pointer 
+         * diagnose snmp_open errors with the input netsnmp_session pointer
          */
         snmp_sess_perror("snmpvacm", &session);
         exit(1);
     }
 
     /*
-     * create PDU for SET request and add object names and values to request 
+     * create PDU for SET request and add object names and values to request
      */
     pdu = snmp_pdu_create(SNMP_MSG_SET);
 
@@ -536,7 +536,7 @@ main(int argc, char *argv[])
     }
 
     /*
-     * do the request 
+     * do the request
      */
     status = snmp_synch_response(ss, pdu, &response);
     if (status == STAT_SUCCESS) {

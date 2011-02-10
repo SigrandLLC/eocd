@@ -3,17 +3,17 @@
 .\" that may apply:
 .\"/***********************************************************
 .\" 	Copyright 1988, 1989 by Carnegie Mellon University
-.\" 
+.\"
 .\"                       All Rights Reserved
-.\" 
-.\" Permission to use, copy, modify, and distribute this software and its 
-.\" documentation for any purpose and without fee is hereby granted, 
+.\"
+.\" Permission to use, copy, modify, and distribute this software and its
+.\" documentation for any purpose and without fee is hereby granted,
 .\" provided that the above copyright notice appear in all copies and that
-.\" both that copyright notice and this permission notice appear in 
+.\" both that copyright notice and this permission notice appear in
 .\" supporting documentation, and that the name of CMU not be
 .\" used in advertising or publicity pertaining to distribution of the
-.\" software without specific, written prior permission.  
-.\" 
+.\" software without specific, written prior permission.
+.\"
 .\" CMU DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 .\" ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
 .\" CMU BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
@@ -38,7 +38,7 @@ snmpcmd - commands to communicate with a network entity using SNMP Requests.
 This manual page describes the common options for the SNMP commands:
 .BR snmpbulkget ", " snmpbulkwalk ", "  snmpdelta ", " snmpget ", "
 .BR snmpgetnext ", " snmpnetstat ", " snmpset ", " snmpstatus ", "
-.BR snmptable ", " snmptest ", " snmptrap ", 
+.BR snmptable ", " snmptest ", " snmptrap ",
 .BR " snmpdf", " snmpusm ", " snmpwalk ".  "
 The command line applications use the SNMP protocol to communicate
 with an SNMP capable network entity, an agent.  Individual
@@ -95,8 +95,8 @@ Display a list of configuration file directives understood by the
 command and then exit.
 .TP
 .BI -I " [brRhu]"
-Specifies input parsing options. See 
-.B INPUT OPTIONS 
+Specifies input parsing options. See
+.B INPUT OPTIONS
 below.
 .TP
 .BI -l " secLevel"
@@ -108,8 +108,8 @@ Overrides the defSecurityLevel token in the
 file.
 .TP
 .BI -L " [eEfFoOsS]"
-Specifies output logging options. See 
-.B LOGGING OPTIONS 
+Specifies output logging options. See
+.B LOGGING OPTIONS
 below.
 .TP
 .BI -m " MIBLIST"
@@ -124,16 +124,16 @@ if it were a MIB file.
 .IP
 If the
 .I MIBLIST
-has a leading '+', then the listed MIB modules are loaded in 
+has a leading '+', then the listed MIB modules are loaded in
 addition to MIB modules specified in the environment variable MIBS.
 .IP
 If a
 .I mibfile
 token is specified in the
 .I snmp.conf file,
-the 
+the
 .I -m MIB
-option overrides the 
+option overrides the
 .I mibfile
 token.
 .TP
@@ -141,14 +141,14 @@ token.
 Specifies a colon separated list of directories to search for MIBs.
 This overrides the environment variable MIBDIRS.
 .IP
-If 
+If
 .I DIRLIST
 has a leading '+', then the given directories are added to the list
 of MIB directories.  Without the leading '+', the
 given directory list overrides the list specified with the
 environment variable MIBDIRS. Note that the directories listed at the
 end of the list have precedence over directories at the beginning
-of the list. 
+of the list.
 .IP
 If no value is specified for the environment variable MIBDIRS,
 then the command will still search a default mib directory,
@@ -172,10 +172,10 @@ Set the destination contextName used for SNMPv3 messages.  The default
 contextName is the empty string "".  Overrides the defContext token
 in the
 .I snmp.conf
-file. 
+file.
 .TP
 .BI -O " [abeEfnqQsStTuUvxX]"
-Specifies output printing options. See 
+Specifies output printing options. See
 .B OUTPUT OPTIONS
 below.
 .TP
@@ -259,7 +259,7 @@ IPv4-address[:port]
 pathname
 .IP "ipx" 28
 [network]:node[/port]
-.TP 28 
+.TP 28
 .IR "" "aal5pvc " or " pvc"
 [interface.][VPI.]VCI
 .IP "udp6 or udpv6 or udpipv6" 28
@@ -300,7 +300,7 @@ on port
 using TCP/IPv4 and perform query over that connection.
 .TP 24
 .IR "ipx::00D0B7AAE308"
-perform query using IPX datagrams to node number 
+perform query using IPX datagrams to node number
 .I 00D0B7AAE308
 on the default network, and using the default IPX port of 36879 (900F
 hexadecimal), as suggested in RFC 1906.
@@ -314,7 +314,7 @@ on network number
 .IR 0AE43409 .
 .TP 24
 .IR "unix:/tmp/local-agent"
-connect to the Unix domain socket 
+connect to the Unix domain socket
 .IR /tmp/local-agent ,
 and perform the query over that connection.
 .TP 24
@@ -346,7 +346,7 @@ perform the query using UDP/IPv6 datagrams to port 161 at address
 .TP 24
 .IR "tcpipv6:[::1]:1611"
 connect to port 1611 on the local host
-.IR "" ( ::1 
+.IR "" ( ::1
 in IPv6 parlance) using TCP/IPv6 and perform query over that connection.
 .PP
 Note that not all the transport domains listed above will always be
@@ -405,7 +405,7 @@ Can be also set with the configuration token "mibAllowUnderline".
 .B "-PR"
 Replace MIB objects using the last read MIB file.
 The parser will replace MIB objects in its hierarchy whenever
-it sees a sub-identifier and name match.  
+it sees a sub-identifier and name match.
 .B WARNING:
 Setting this option may result in an incorrect hierarchy.
 Can be also set with the configuration token "mibReplaceWithLatest".
@@ -419,7 +419,7 @@ The default output looks as follows:
 .br
 snmpget -c public -v 1 localhost system.sysUpTime.0
 .br
-SNMPv2-MIB::sysUpTime.0 = Timeticks: (14096763) 1 day, 15:09:27.63        
+SNMPv2-MIB::sysUpTime.0 = Timeticks: (14096763) 1 day, 15:09:27.63
 .TP
 .B -Oq
 Removes the equal sign and type information:
@@ -757,7 +757,7 @@ Agent configuration file. See
 .IR snmpd.conf(5) .
 .IP SYSCONFDIR/snmp/snmp.conf
 .IP ~/.snmp/snmp.conf
-Application configuration files. See 
+Application configuration files. See
 .IR snmp.conf(5) .
 
 .SH "SEE ALSO"

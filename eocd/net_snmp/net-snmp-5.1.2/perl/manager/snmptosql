@@ -114,7 +114,7 @@ nexthost: while (  $hostrow = $cursor->fetchrow_hashref ) {
 	print STDERR "\n";
     }
 
-    my $sess = new SNMP::Session (  DestHost => $host, 
+    my $sess = new SNMP::Session (  DestHost => $host,
 				    UseSprintValue => 1,
 				    %authvals );
     print STDERR "Sess ($host): $sess, ref=" . ref($sess). "\n" if ($verbose);
@@ -130,7 +130,7 @@ nexthost: while (  $hostrow = $cursor->fetchrow_hashref ) {
     my $versiontag = $sess->get('versionTag.0');
     my $sysuptime = $sess->get('sysUpTime.0');
 
-    if ($sysDescr eq "" || $sysId eq "" || $versiontag eq "" || 
+    if ($sysDescr eq "" || $sysId eq "" || $versiontag eq "" ||
 	$sysuptime eq "") {
 	hosterror("$host","Problem collecting basic info");
 	next;
@@ -167,8 +167,8 @@ nexthost: while (  $hostrow = $cursor->fetchrow_hashref ) {
 	if ($tablelist->{'keephistory'} > 0) {
 	    setuptable($dbh, $tablelist->{tablename}, $delete, "hist");
 	}
-	
-	$var = 
+
+	$var =
 	    new SNMP::Varbind([SNMP::translateObj($tablelist->{'tablename'})]);
 	my $void = SNMP::translateObj($tablelist->{'tablename'});
 	my $val = $sess->getnext($var);
@@ -223,7 +223,7 @@ nexthost: while (  $hostrow = $cursor->fetchrow_hashref ) {
 		    $cmd .= "$h = '$vals{$h}', ";
 		}
 		$cmd .= " updated = NULL where (host = '$host' and oidindex = '$id')";
-		
+
 	    } else {
 		$cmd = "insert into $tablelist->{'tablename'}(host, oidindex, " . join(", ",keys(%vals)) .
 		    ") values('$host', '$id', '" .
@@ -235,20 +235,20 @@ nexthost: while (  $hostrow = $cursor->fetchrow_hashref ) {
 		or warn "\nnot ok: $cmd => $DBI::errstr\n" if ($doit);
 
 	    if ($tablelist->{'keephistory'} > 0) {
-		$cmd = "insert into $tablelist->{'tablename'}hist (host, oidindex, sysUpTime, " 
+		$cmd = "insert into $tablelist->{'tablename'}hist (host, oidindex, sysUpTime, "
 		    . join(", ",keys(%vals))
 		    . ") values('$host', '$id', $sysuptime, '"
 		    . join("', '",values(%vals)). "')";
 		print STDERR "  $cmd\n" if ($verbose);
 		$dbh->do("$cmd")
 		    or warn "\nnot ok: $cmd -> $DBI::errstr\n" if ($doit);
-		
+
 	    }
 
-	    my $newerr = 
+	    my $newerr =
 		checkrowforerrors($tablelist->{'tablename'}, $host, $id);
 	    if ($newerr->{retval} != $olderr->{retval}) {
-		 logerror($host, $newerr->{retval}, $newerr->{errfield}, 
+		 logerror($host, $newerr->{retval}, $newerr->{errfield},
 			  $newerr->{errvalue});
 	     }
 	} # snmp loop
@@ -312,7 +312,7 @@ sub setuptable {
 
     print STDERR "show tables like $mib->{label}$suffix: $ret\n" if($verbose);
     print STDERR " creating table for $mibnode ($mib->{label}$suffix)\n" if ($verbose);
-    
+
     $cmd = "create table $mib->{label}$suffix (id integer auto_increment primary key, host varchar(32) not null, oidindex varchar(32) not null";
     foreach $j (sort { $a->{'subID'} <=> $b->{'subID'} } @$children) {
 	if (!defined($conversions{$j->{type}})) {
@@ -350,10 +350,10 @@ sub getoncall {
 	      if ($row->{'days'} eq "*" ||
 		  (defined($dayscon{$i}) && $dayscon{$i} == $now[6]) ||
 		  (defined($dayscon{$two[0]}) && defined($dayscon{$two[1]}) &&
-		   (($dayscon{$two[0]} <= $now[6] && 
+		   (($dayscon{$two[0]} <= $now[6] &&
 		     $dayscon{$two[1]} >= $now[6]) ||
 		    (($dayscon{$two[0]} > $dayscon{$two[1]}) &&
-		     ($dayscon{$two[0]} <= $now[6] || 
+		     ($dayscon{$two[0]} <= $now[6] ||
 		      $dayscon{$two[1]} >= $now[6]))))) {
 		  # we hit a valid day range
 		  print STDERR "    hit it $row->{'email'} $now[6]\t($i)\t$row->{'days'}\n"
@@ -362,7 +362,7 @@ sub getoncall {
 	      } else {
 		  print STDERR "not hit it $row->{'email'} $now[6]\t($i)\t$row->{'days'}\n"
 		      if ($verbose);
-	      }	      
+	      }
 	  }
       }
     }
@@ -429,7 +429,7 @@ sub checkrowforerrors {
 	$lastres = $error->{$expressions->{returnfield}[$i]};
 	$lastfield = $expressions->{returnfield}[$i];
     }
-    return {'retval', 0, 
+    return {'retval', 0,
 	    'errfield', $lastfield,
 	    'errvalue', $lastres};
 }
@@ -439,7 +439,7 @@ sub logerror {
     my $groups = getcursor("SELECT distinct groupname FROM hosttables where host = '$host'");
     my ($group, $person);
     my $msg = (($err) ? "error" : "normal");
-		    
+
     my @people = getoncallforhost($host);
     $msg = "$msg: $host";
     $msg .= " $field = $result" if ($field || $result);
@@ -478,7 +478,7 @@ sub hosterror {
     my %mailed;
 
     return if (isbadhost($host)); # only send out a message once.
-		    
+
     $dbh->do("insert into hosterrors(host, errormsg) values('$host','$error');");
     my @people = getoncallforhost($host);
     mailusers("No Response from $host", "$host: $error", @people);

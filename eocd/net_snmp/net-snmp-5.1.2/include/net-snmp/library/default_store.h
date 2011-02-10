@@ -26,10 +26,10 @@ extern          "C" {
 #define NETSNMP_DS_MAX_SUBIDS 32        /* needs to be a multiple of 8 */
 
     /*
-     * begin storage definitions 
+     * begin storage definitions
      */
 /**
- * @def NETSNMP_DS_LIBRARY_ID These definitions correspond with the "storid" argument to the API 
+ * @def NETSNMP_DS_LIBRARY_ID These definitions correspond with the "storid" argument to the API
  */
 #define NETSNMP_DS_LIBRARY_ID     0
 #define NETSNMP_DS_APPLICATION_ID 1
@@ -37,10 +37,10 @@ extern          "C" {
 
     /*
      * These definitions correspond with the "which" argument to the API,
-     * when the storeid argument is NETSNMP_DS_LIBRARY_ID 
+     * when the storeid argument is NETSNMP_DS_LIBRARY_ID
      */
     /*
-     * library booleans 
+     * library booleans
      */
 #define NETSNMP_DS_LIB_MIB_ERRORS          0
 #define NETSNMP_DS_LIB_SAVE_MIB_DESCRS     1
@@ -70,13 +70,13 @@ extern          "C" {
 #define NETSNMP_DS_LIB_READ_UCD_STYLE_OID  25   /* require top-level OIDs to be prefixed with a dot */
 #define NETSNMP_DS_LIB_HAVE_READ_PREMIB_CONFIG 26       /* have the pre-mib parsing config tokens been processed */
 #define NETSNMP_DS_LIB_HAVE_READ_CONFIG    27   /* have the config tokens been processed */
-#define NETSNMP_DS_LIB_QUICKE_PRINT        28   
+#define NETSNMP_DS_LIB_QUICKE_PRINT        28
 #define NETSNMP_DS_LIB_DONT_PRINT_UNITS    29 /* don't print UNITS suffix */
 #define NETSNMP_DS_LIB_NO_DISPLAY_HINT     30 /* don't apply DISPLAY-HINTs */
 #define NETSNMP_DS_LIB_16BIT_IDS           31   /* restrict requestIDs, etc to 16-bit values */
 
     /*
-     * library integers 
+     * library integers
      */
 #define NETSNMP_DS_LIB_MIB_WARNINGS  0
 #define NETSNMP_DS_LIB_SECLEVEL      1
@@ -87,7 +87,7 @@ extern          "C" {
 #define NETSNMP_DS_LIB_STRING_OUTPUT_FORMAT 5
 
     /*
-     * special meanings for the default SNMP version slot (NETSNMP_DS_LIB_SNMPVERSION) 
+     * special meanings for the default SNMP version slot (NETSNMP_DS_LIB_SNMPVERSION)
      */
 #define NETSNMP_DS_SNMP_VERSION_1    128        /* bogus */
 #define NETSNMP_DS_SNMP_VERSION_2c   1  /* real */
@@ -95,7 +95,7 @@ extern          "C" {
 
 
     /*
-     * library strings 
+     * library strings
      */
 #define NETSNMP_DS_LIB_SECNAME           0
 #define NETSNMP_DS_LIB_CONTEXT           1
@@ -115,7 +115,7 @@ extern          "C" {
 #define NETSNMP_DS_LIB_TEMP_FILE_PATTERN 15
 
     /*
-     * end storage definitions 
+     * end storage definitions
      */
 
     int             netsnmp_ds_set_boolean(int storeid, int which, int value);

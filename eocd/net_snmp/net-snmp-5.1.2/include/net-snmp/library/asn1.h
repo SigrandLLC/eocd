@@ -19,13 +19,13 @@ extern          "C" {
 
                       All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the name of CMU not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 CMU DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -100,16 +100,16 @@ SOFTWARE.
      * in one or more octets. The high order bit of each following octet
      * indicates if the value is encoded in additional octets. A high order
      * bit of zero, indicates the last. For this "hack", only one octet
-     * will be used for the value. 
+     * will be used for the value.
      */
 
     /*
-     * first octet of the tag 
+     * first octet of the tag
      */
 #define ASN_OPAQUE_TAG1 (ASN_CONTEXT | ASN_EXTENSION_ID)
     /*
      * base value for the second octet of the tag - the
-     * second octet was the value for the tag 
+     * second octet was the value for the tag
      */
 #define ASN_OPAQUE_TAG2 ((u_char)0x30)
 
@@ -118,7 +118,7 @@ SOFTWARE.
     /*
      * All the ASN.1 types for SNMP "should have been" defined in this file,
      * but they were not. (They are defined in snmp_impl.h)  Thus, the tag for
-     * Opaque and Counter64 is defined, again, here with a different names. 
+     * Opaque and Counter64 is defined, again, here with a different names.
      */
 #define ASN_APP_OPAQUE (ASN_APPLICATION | 4)
 #define ASN_APP_COUNTER64 (ASN_APPLICATION | 6)
@@ -129,47 +129,47 @@ SOFTWARE.
 #define ASN_APP_UNION (ASN_PRIVATE | 1) /* or ASN_PRIV_UNION ? */
 
     /*
-     * value for Counter64 
+     * value for Counter64
      */
 #define ASN_OPAQUE_COUNTER64 (ASN_OPAQUE_TAG2 + ASN_APP_COUNTER64)
     /*
-     * max size of BER encoding of Counter64 
+     * max size of BER encoding of Counter64
      */
 #define ASN_OPAQUE_COUNTER64_MX_BER_LEN 12
 
     /*
-     * value for Float 
+     * value for Float
      */
 #define ASN_OPAQUE_FLOAT (ASN_OPAQUE_TAG2 + ASN_APP_FLOAT)
     /*
-     * size of BER encoding of Float 
+     * size of BER encoding of Float
      */
 #define ASN_OPAQUE_FLOAT_BER_LEN 7
 
     /*
-     * value for Double 
+     * value for Double
      */
 #define ASN_OPAQUE_DOUBLE (ASN_OPAQUE_TAG2 + ASN_APP_DOUBLE)
     /*
-     * size of BER encoding of Double 
+     * size of BER encoding of Double
      */
 #define ASN_OPAQUE_DOUBLE_BER_LEN 11
 
     /*
-     * value for Integer64 
+     * value for Integer64
      */
 #define ASN_OPAQUE_I64 (ASN_OPAQUE_TAG2 + ASN_APP_I64)
     /*
-     * max size of BER encoding of Integer64 
+     * max size of BER encoding of Integer64
      */
 #define ASN_OPAQUE_I64_MX_BER_LEN 11
 
     /*
-     * value for Unsigned64 
+     * value for Unsigned64
      */
 #define ASN_OPAQUE_U64 (ASN_OPAQUE_TAG2 + ASN_APP_U64)
     /*
-     * max size of BER encoding of Unsigned64 
+     * max size of BER encoding of Unsigned64
      */
 #define ASN_OPAQUE_U64_MX_BER_LEN 12
 
@@ -235,36 +235,36 @@ SOFTWARE.
 #ifdef USE_REVERSE_ASNENCODING
 
     /*
-     * Re-allocator function for below.  
+     * Re-allocator function for below.
      */
 
     int             asn_realloc(u_char **, size_t *);
 
     /*
      * Re-allocating reverse ASN.1 encoder functions.  Synopsis:
-     * 
+     *
      * u_char *buf = (u_char*)malloc(100);
      * u_char type = (ASN_UNIVERSAL | ASN_PRIMITIVE | ASN_INTEGER);
      * size_t buf_len = 100, offset = 0;
      * long data = 12345;
      * int allow_realloc = 1;
-     * 
+     *
      * if (asn_realloc_rbuild_int(&buf, &buf_len, &offset, allow_realloc,
      * type, &data, sizeof(long)) == 0) {
      * error;
      * }
-     * 
+     *
      * NOTE WELL: after calling one of these functions with allow_realloc
      * non-zero, buf might have moved, buf_len might have grown and
      * offset will have increased by the size of the encoded data.
      * You should **NEVER** do something like this:
-     * 
+     *
      * u_char *buf = (u_char *)malloc(100), *ptr;
      * u_char type = (ASN_UNIVERSAL | ASN_PRIMITIVE | ASN_INTEGER);
      * size_t buf_len = 100, offset = 0;
      * long data1 = 1234, data2 = 5678;
      * int rc = 0, allow_realloc = 1;
-     * 
+     *
      * rc  = asn_realloc_rbuild_int(&buf, &buf_len, &offset, allow_realloc,
      * type, &data1, sizeof(long));
      * ptr = buf[buf_len - offset];   / * points at encoding of data1 * /
@@ -274,19 +274,19 @@ SOFTWARE.
      * rc  = asn_realloc_rbuild_int(&buf, &buf_len, &offset, allow_realloc,
      * type, &data2, sizeof(long));
      * make use of ptr here;
-     * 
-     * 
+     *
+     *
      * ptr is **INVALID** at this point.  In general, you should store the
      * offset value and compute pointers when you need them:
-     * 
-     * 
-     * 
+     *
+     *
+     *
      * u_char *buf = (u_char *)malloc(100), *ptr;
      * u_char type = (ASN_UNIVERSAL | ASN_PRIMITIVE | ASN_INTEGER);
      * size_t buf_len = 100, offset = 0, ptr_offset;
      * long data1 = 1234, data2 = 5678;
      * int rc = 0, allow_realloc = 1;
-     * 
+     *
      * rc  = asn_realloc_rbuild_int(&buf, &buf_len, &offset, allow_realloc,
      * type, &data1, sizeof(long));
      * ptr_offset = offset;
@@ -297,51 +297,51 @@ SOFTWARE.
      * type, &data2, sizeof(long));
      * ptr = buf + buf_len - ptr_offset
      * make use of ptr here;
-     * 
-     * 
-     * 
+     *
+     *
+     *
      * Here, you can see that ptr will be a valid pointer even if the block of
      * memory has been moved, as it may well have been.  Plenty of examples of
      * usage all over asn1.c, snmp_api.c, snmpusm.c.
-     * 
+     *
      * The other thing you should **NEVER** do is to pass a pointer to a buffer
      * on the stack as the first argument when allow_realloc is non-zero, unless
      * you really know what you are doing and your machine/compiler allows you to
      * free non-heap memory.  There are rumours that such things exist, but many
      * consider them no more than the wild tales of a fool.
-     * 
+     *
      * Of course, you can pass allow_realloc as zero, to indicate that you do not
      * wish the packet buffer to be reallocated for some reason; perhaps because
      * it is on the stack.  This may be useful to emulate the functionality of
      * the old API:
-     * 
+     *
      * u_char my_static_buffer[100], *cp = NULL;
      * size_t my_static_buffer_len = 100;
      * float my_pi = (float)22/(float)7;
-     * 
+     *
      * cp = asn_rbuild_float(my_static_buffer, &my_static_buffer_len,
      * ASN_OPAQUE_FLOAT, &my_pi, sizeof(float));
      * if (cp == NULL) {
      * error;
      * }
-     * 
-     * 
+     *
+     *
      * IS EQUIVALENT TO:
-     * 
-     * 
+     *
+     *
      * u_char my_static_buffer[100];
      * size_t my_static_buffer_len = 100, my_offset = 0;
      * float my_pi = (float)22/(float)7;
      * int rc = 0;
-     * 
+     *
      * rc = asn_realloc_rbuild_float(&my_static_buffer, &my_static_buffer_len,
      * &my_offset, 0,
      * ASN_OPAQUE_FLOAT, &my_pi, sizeof(float));
      * if (rc == 0) {
      * error;
      * }
-     * 
-     * 
+     *
+     *
      */
 
 

@@ -2,7 +2,7 @@
 .ad l
 .nh
 .SH NAME
-old_api: Calls mib module code written in the old style of code. \- This is a backwards compatilibity module that allows code written in the old API to be run under the new handler based architecture.  
+old_api: Calls mib module code written in the old style of code. \- This is a backwards compatilibity module that allows code written in the old API to be run under the new handler based architecture.
 
 .PP
 .SS "Functions"
@@ -26,10 +26,10 @@ old_api: Calls mib module code written in the old style of code. \- This is a ba
 .RI "\fIimplements the old_api handler \fP"
 .in -1c
 .SH "Detailed Description"
-.PP 
-This is a backwards compatilibity module that allows code written in the old API to be run under the new handler based architecture. Use it by calling \fBnetsnmp_register_old_api()\fP. 
+.PP
+This is a backwards compatilibity module that allows code written in the old API to be run under the new handler based architecture. Use it by calling \fBnetsnmp_register_old_api()\fP.
 .SH "Function Documentation"
-.PP 
+.PP
 .SS "\fBnetsnmp_mib_handler\fP* get_old_api_handler (void)"
 .PP
 returns a old_api handler that should be the final calling handler. Don't use this function. Use the \fBnetsnmp_register_old_api()\fP function instead. Definition at line 40 of file old_api.c.

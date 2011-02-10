@@ -98,7 +98,7 @@ SOFTWARE.
  *	*psid		(O)   Community string.
  *	*slen		(O)   Length of community string.
  *	*version	(O)   Message version.
- *      
+ *
  * Returns:
  *	Pointer to the remainder of data.
  *
@@ -138,7 +138,7 @@ snmp_comstr_parse(u_char * data,
     }
 
     /*
-     * second field is the community string for SNMPv1 & SNMPv2c 
+     * second field is the community string for SNMPv1 & SNMPv2c
      */
     DEBUGDUMPHEADER("recv", "community string");
     data = asn_parse_string(data, length, &type, psid, slen);
@@ -165,7 +165,7 @@ snmp_comstr_parse(u_char * data,
  *	*slen
  *	*version
  *	 messagelen
- *      
+ *
  * Returns:
  *	Pointer into 'data' after built section.
  *

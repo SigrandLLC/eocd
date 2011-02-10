@@ -333,11 +333,11 @@ parse_storage_config(const char *token, char *cptr)
  * Arguments:
  * vp     IN      - pointer to variable entry that points here
  * name    IN/OUT  - IN/name requested, OUT/name found
- * length  IN/OUT  - length of IN/OUT oid's 
+ * length  IN/OUT  - length of IN/OUT oid's
  * exact   IN      - TRUE if an exact match was requested
  * var_len OUT     - length of variable or 0 if function returned
  * write_method
- * 
+ *
  */
 
 int
@@ -387,7 +387,7 @@ header_hrstoreEntry(struct variable *vp,
     memcpy((char *) newname, (char *) vp->name,
            (int) vp->namelen * sizeof(oid));
     /*
-     * Find "next" storage entry 
+     * Find "next" storage entry
      */
 
     Init_HR_Store();
@@ -403,7 +403,7 @@ header_hrstoreEntry(struct variable *vp,
         if (exact && (result == 0)) {
             LowIndex = storage_idx;
             /*
-             * Save storage status information 
+             * Save storage status information
              */
             break;
         }
@@ -411,7 +411,7 @@ header_hrstoreEntry(struct variable *vp,
             (LowIndex == -1 || storage_idx < LowIndex)) {
             LowIndex = storage_idx;
             /*
-             * Save storage status information 
+             * Save storage status information
              */
 #ifdef HRSTORE_MONOTONICALLY_INCREASING
             break;
@@ -821,7 +821,7 @@ Get_Next_HR_Store(void)
     }
 
     /*
-     * File-based storage 
+     * File-based storage
      */
     HRS_index = Get_Next_HR_FileSys();
 

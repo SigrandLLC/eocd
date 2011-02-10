@@ -23,7 +23,7 @@ use SNMP;
 use NetSNMP::default_store(':all');
 
 # should be 0, as it's un-initialized
-$myint = netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID, 
+$myint = netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID,
 			    NETSNMP_DS_LIB_NUMERIC_TIMETICKS);
 
 ok($myint == 0);

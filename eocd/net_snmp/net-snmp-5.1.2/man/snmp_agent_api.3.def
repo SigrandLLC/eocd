@@ -87,7 +87,7 @@ against at least the four libraries listed above.
 .SH FUNCTIONS
 .PP This is a brief description of the functions called above and
 where to find out more information on them.  It is certainly not a
-complete list of what is available within all the net-snmp libraries. 
+complete list of what is available within all the net-snmp libraries.
 .IP "snmp_enable_stderrlog()"
 Logs error output from the SNMP agent to the standard error stream.
 .IP "netsnmp_ds_set_boolean()"
@@ -98,7 +98,7 @@ about this API.
 .IP "init_agent(char *name)"
 Initializes the embedded agent.  This should be called before the
 .BR "init_snmp()"
-call.  
+call.
 .I name
 is used to dictate what .conf file to read when
 .BR "init_snmp()"
@@ -114,13 +114,13 @@ control, for instance.   Please see the
 .IR read_config(3) ", " snmp_config(5) ", and " snmpd.conf(5)
 manual pages for further details on this subject.
 .IP "init_master_agent(void)"
-Initializes the master agent and causes it to listen for SNMP requests 
+Initializes the master agent and causes it to listen for SNMP requests
 on its default UDP port of 161.
 .IP "agent_check_and_process(int block)"
 This checks for packets arriving on the SNMP port and processes them
-if some are found.  If 
+if some are found.  If
 .I block
-is non-zero, the function call will block until a packet arrives or an 
+is non-zero, the function call will block until a packet arrives or an
 alarm must be run (see
 .IR snmp_alarm(3) ).
 The return value from this function is a positive integer if packets

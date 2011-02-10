@@ -34,7 +34,7 @@ to add logic necessary to obtain information from the
 operating system or application to complete the module.
 .PP
 MIBNODE is the top level mib node you want to generate code for.
-You must give mib2c a mib node (e.g., ifTable), not a mib file 
+You must give mib2c a mib node (e.g., ifTable), not a mib file
 on the command line.  (this is the most common mistake).
 .PP
 The mib2c tool accepts both SMIv1 and SMIv2 MIBs.
@@ -79,16 +79,16 @@ Running mib2c without the -c CONFIGFILE option will display
 a description of the valid values for CONFIGFILE, that is,
 the available config files, including new ones that you might
 author.
-.IP 
+.IP
 For example,
-.IP 
+.IP
 % mib2c ifTable
-.IP 
+.IP
 will display a description of the currently available values
 for CONFIGFILE.
-.IP 
+.IP
 The following values are supported for CONFIGFILE:
-.IP 
+.IP
 mib2c.scalar.conf
 .br
 mib2c.int_watch.conf
@@ -102,18 +102,18 @@ mib2c.array-user.conf
 mib2c.column_defines.conf
 .br
 mib2c.column_enums.conf
-.IP 
+.IP
 GENERATING CODE FOR SCALAR OBJECTS:
-.IP 
+.IP
 If you're writing code for some scalars, run:
 
 	mib2c -c mib2c.scalar.conf MIBNODE
-.IP 
+.IP
 If you want to magically "tie" integer variables to integer
 scalars, use:
 
 	mib2c -c mib2c.int_watch.conf MIBNODE
-.IP 
+.IP
 GENERATING CODE FOR TABLES:
 
 If your table data is kept somewhere else (e.g. it's in the

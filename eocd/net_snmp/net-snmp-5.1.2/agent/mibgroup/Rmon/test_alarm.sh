@@ -75,7 +75,7 @@ snmpset $COMPAR alarmStatus.$ALRIND i 4
 snmpset $COMPAR eventStatus.$EVNIND i 4
 snmpset $COMPAR etherStatsStatus.$ETHIND i 4
 snmpwalk $COMPAR rmon
-	
+
 echo " "
 echo "Goodbye, I'm a gonner"
 echo " "

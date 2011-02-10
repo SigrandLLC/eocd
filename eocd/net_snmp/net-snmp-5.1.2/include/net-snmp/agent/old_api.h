@@ -13,7 +13,7 @@ typedef struct netsnmp_old_api_info_s {
     size_t          numvars;
 
     /*
-     * old stuff 
+     * old stuff
      */
     netsnmp_session *ss;
     int             flags;
@@ -39,7 +39,7 @@ int             netsnmp_register_old_api(const char *moduleName,
 Netsnmp_Node_Handler netsnmp_old_api_helper;
 
 /*
- * really shouldn't be used 
+ * really shouldn't be used
  */
 netsnmp_agent_session *netsnmp_get_current_agent_session(void);
 

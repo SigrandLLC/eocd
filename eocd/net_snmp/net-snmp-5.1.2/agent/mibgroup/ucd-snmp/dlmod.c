@@ -64,7 +64,7 @@ init_dlmod(void)
     REGISTER_MIB("dlmod", dlmod_variables, variable4, dlmod_variables_oid);
 
     /*
-     * TODO: REGISTER_SYSOR_ENTRY 
+     * TODO: REGISTER_SYSOR_ENTRY
      */
 
     DEBUGMSGTL(("dlmod", "register mib\n"));
@@ -239,7 +239,7 @@ dlmod_parse_config(const char *token, char *cptr)
         return;
     }
     /*
-     * remove comments 
+     * remove comments
      */
     *(cptr + strcspn(cptr, "#;\r\n")) = '\0';
 
@@ -248,7 +248,7 @@ dlmod_parse_config(const char *token, char *cptr)
         return;
 
     /*
-     * dynamic module name 
+     * dynamic module name
      */
     dlm_name = strtok(cptr, "\t ");
     if (dlm_name == NULL) {
@@ -259,7 +259,7 @@ dlmod_parse_config(const char *token, char *cptr)
     strncpy(dlm->name, dlm_name, sizeof(dlm->name));
 
     /*
-     * dynamic module path 
+     * dynamic module path
      */
     dlm_path = strtok(NULL, "\t ");
     if (dlm_path)
@@ -293,7 +293,7 @@ dlmod_free_config(void)
  * Arguments:
  * vp     IN      - pointer to variable entry that points here
  * name    IN/OUT  - IN/name requested, OUT/name found
- * length  IN/OUT  - length of IN/OUT oid's 
+ * length  IN/OUT  - length of IN/OUT oid's
  * exact   IN      - TRUE if an exact match was requested
  * var_len OUT     - length of variable or 0 if function returned
  * write_method
@@ -336,7 +336,7 @@ var_dlmod(struct variable * vp,
 {
 
     /*
-     * variables we may use later 
+     * variables we may use later
      */
 
     *write_method = 0;          /* assume it isnt writable for the time being */
@@ -348,7 +348,7 @@ var_dlmod(struct variable * vp,
         return 0;
 
     /*
-     * this is where we do the value assignments for the mib results. 
+     * this is where we do the value assignments for the mib results.
      */
     switch (vp->magic) {
     case DLMODNEXTINDEX:
@@ -367,11 +367,11 @@ var_dlmod(struct variable * vp,
  * Arguments:
  * vp     IN      - pointer to variable entry that points here
  * name    IN/OUT  - IN/name requested, OUT/name found
- * length  IN/OUT  - length of IN/OUT oid's 
+ * length  IN/OUT  - length of IN/OUT oid's
  * exact   IN      - TRUE if an exact match was requested
  * var_len OUT     - length of variable or 0 if function returned
  * write_method
- * 
+ *
  */
 
 
@@ -429,7 +429,7 @@ var_dlmodEntry(struct variable * vp,
                int exact, size_t * var_len, WriteMethod ** write_method)
 {
     /*
-     * variables we may use later 
+     * variables we may use later
      */
     struct dlmod   *dlm;
 
@@ -442,7 +442,7 @@ var_dlmodEntry(struct variable * vp,
         return 0;
 
     /*
-     * this is where we do the value assignments for the mib results. 
+     * this is where we do the value assignments for the mib results.
      */
     switch (vp->magic) {
     case DLMODNAME:
@@ -529,7 +529,7 @@ write_dlmodStatus(int action,
                   u_char * statP, oid * name, size_t name_len)
 {
     /*
-     * variables we may use later 
+     * variables we may use later
      */
     struct dlmod   *dlm;
 
@@ -543,8 +543,8 @@ write_dlmodStatus(int action,
     }
     if (action == COMMIT) {
         /*
-         * object identifier in form .1.3.6.1.4.1.2021.13.14.2.1.4.x 
-         * where X is index with offset 12 
+         * object identifier in form .1.3.6.1.4.1.2021.13.14.2.1.4.x
+         * where X is index with offset 12
          */
 
         dlm = dlmod_get_by_index(name[12]);

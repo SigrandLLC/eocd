@@ -80,7 +80,7 @@ static netsnmp_tdomain udp6Domain;
 
 /*
  * Return a string representing the address in data, or else the "far end"
- * address if data is NULL.  
+ * address if data is NULL.
  */
 
 static char *
@@ -111,9 +111,9 @@ netsnmp_udp6_fmtaddr(netsnmp_transport *t, void *data, int len)
 
 
 /*
- * You can write something into opaque that will subsequently get passed back 
+ * You can write something into opaque that will subsequently get passed back
  * to your send function if you like.  For instance, you might want to
- * remember where a PDU came from, so that you can send a reply there...  
+ * remember where a PDU came from, so that you can send a reply there...
  */
 
 static int
@@ -213,7 +213,7 @@ netsnmp_udp6_close(netsnmp_transport *t)
 /*
  * Open a UDP/IPv6-based transport for SNMP.  Local is TRUE if addr is the
  * local address to bind to (i.e. this is a server-type session); otherwise
- * addr is the remote address to send things to.  
+ * addr is the remote address to send things to.
  */
 
 netsnmp_transport *
@@ -254,7 +254,7 @@ netsnmp_udp6_transport(struct sockaddr_in6 *addr, int local)
      * Try to set the send and receive buffers to a reasonably large value, so
      * that we can send and receive big PDUs (defaults to 8192 bytes (!) on
      * Solaris, for instance).  Don't worry too much about errors -- just
-     * plough on regardless.  
+     * plough on regardless.
      */
 
 #ifdef  SO_SNDBUF
@@ -284,7 +284,7 @@ netsnmp_udp6_transport(struct sockaddr_in6 *addr, int local)
 	  int one=1;
 	  if (setsockopt(t->sock, IPPROTO_IPV6, IPV6_V6ONLY, (char *)&one, sizeof(one)) != 0) {
 	    DEBUGMSGTL(("netsnmp_udp6", "couldn't set IPV6_V6ONLY to %d bytes: %s\n", one, strerror(errno)));
-	  } 
+	  }
 	}
 #endif
 
@@ -334,7 +334,7 @@ netsnmp_udp6_transport(struct sockaddr_in6 *addr, int local)
     }
 
     /*
-     * 16-bit length field, 8 byte UDP header, 40 byte IPv6 header.  
+     * 16-bit length field, 8 byte UDP header, 40 byte IPv6 header.
      */
 
     t->msgMaxSize = 0xffff - 8 - 40;
@@ -379,9 +379,9 @@ netsnmp_sockaddr_in6(struct sockaddr_in6 *addr,
 
     if (remote_port > 0) {
         addr->sin6_port = htons(remote_port);
-    } else if (netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID, 
+    } else if (netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID,
 				  NETSNMP_DS_LIB_DEFAULT_PORT) > 0) {
-        addr->sin6_port = htons(netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID, 
+        addr->sin6_port = htons(netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID,
 						 NETSNMP_DS_LIB_DEFAULT_PORT));
     } else {
         addr->sin6_port = htons(SNMP_PORT);
@@ -390,7 +390,7 @@ netsnmp_sockaddr_in6(struct sockaddr_in6 *addr,
     if (inpeername != NULL) {
         /*
          * Duplicate the peername because we might want to mank around with
-         * it.  
+         * it.
          */
 
         peername = strdup(inpeername);
@@ -401,7 +401,7 @@ netsnmp_sockaddr_in6(struct sockaddr_in6 *addr,
         for (cp = peername; *cp && isdigit((int) *cp); cp++);
         if (!*cp && atoi(peername) != 0) {
             /*
-             * Okay, it looks like JUST a port number.  
+             * Okay, it looks like JUST a port number.
              */
             DEBUGMSGTL(("netsnmp_sockaddr_in6", "totally numeric: %d\n",
                         atoi(peername)));
@@ -411,7 +411,7 @@ netsnmp_sockaddr_in6(struct sockaddr_in6 *addr,
 
         /*
          * See if it is an IPv6 address, which covered with square brankets
-         * with an appended :port.  
+         * with an appended :port.
          */
         if (*peername == '[') {
             cp = strchr(peername, ']');
@@ -501,7 +501,7 @@ netsnmp_sockaddr_in6(struct sockaddr_in6 *addr,
         }
 
         /*
-         * See if it is JUST an IPv6 address.  
+         * See if it is JUST an IPv6 address.
          */
         if (inet_pton(AF_INET6, peername, (void *) &(addr->sin6_addr))) {
             DEBUGMSGTL(("netsnmp_sockaddr_in6", "just IPv6 address\n"));
@@ -510,7 +510,7 @@ netsnmp_sockaddr_in6(struct sockaddr_in6 *addr,
 
         /*
          * Well, it must be a hostname then, possibly with an appended :port.
-         * Sort that out first.  
+         * Sort that out first.
          */
 
         cp = strrchr(peername, ':');
@@ -524,14 +524,14 @@ netsnmp_sockaddr_in6(struct sockaddr_in6 *addr,
             } else {
                 /*
                  * No idea, looks bogus but we might as well pass the full thing to
-                 * the name resolver below.  
+                 * the name resolver below.
                  */
                 *cp = ':';
                 DEBUGMSGTL(("netsnmp_sockaddr_in6",
                             "hostname(?) with embedded ':'?\n"));
             }
             /*
-             * Fall through.  
+             * Fall through.
              */
         }
 #if HAVE_GETADDRINFO
@@ -589,7 +589,7 @@ netsnmp_sockaddr_in6(struct sockaddr_in6 *addr,
         }
 #else                           /*HAVE_GETHOSTBYNAME */
         /*
-         * There is no name resolving function available.  
+         * There is no name resolving function available.
          */
         snmp_log(LOG_ERR,
                  "no getaddrinfo()/getipnodebyname()/gethostbyname()\n");
@@ -613,13 +613,13 @@ netsnmp_sockaddr_in6(struct sockaddr_in6 *addr,
 /*
  * int
  * inet_make_mask_addr( int pf, void *dst, int masklength )
- *      convert from bit length specified masklength to network format, 
+ *      convert from bit length specified masklength to network format,
  *      which fills 1 from until specified bit length.
- *      dst is usally the structer of sockaddr_in or sockaddr_in6. 
+ *      dst is usally the structer of sockaddr_in or sockaddr_in6.
  *      makelength must be an interger from 0 to 32 if pf is PF_INET,
  *      or from 0 to 128 if pf is PF_INET6.
  * return:
- *      0 if the input data, masklength was valid for 
+ *      0 if the input data, masklength was valid for
  *      the specified protocol family.
  *      -1 if the the input data wasn't valid.
  */
@@ -679,9 +679,9 @@ inet_make_mask_addr(int pf, void *dst, int masklength)
 /*
  * int
  * inet_addr_complement( int pf, void *src, void *dst )
- *      convert from src to dst, which all bits 
+ *      convert from src to dst, which all bits
  *      are bit-compliment of src.
- *      Src, dst are ususally sockaddr_in or sockaddr_in6.  
+ *      Src, dst are ususally sockaddr_in or sockaddr_in6.
  * return:
  *      0 if the input data src and dst have the same size
  *      -1 if the the input data wasn't valid.
@@ -716,9 +716,9 @@ inet_addr_complement(int pf, void *src, void *dst)
 
 /*
  * int
- * inet_addr_and( int pf, void *src1, void *src2, void *dst) 
+ * inet_addr_and( int pf, void *src1, void *src2, void *dst)
  *      take AND operation on src1 and src2, and output the result to dst.
- *      Src1, src2, and dst are ususally sockaddr_in or sockaddr_in6.  
+ *      Src1, src2, and dst are ususally sockaddr_in or sockaddr_in6.
  * return:
  *      0 if the input data src and dst have the same size
  *      -1 if the the input data are not the same size
@@ -755,17 +755,17 @@ inet_addr_and(int pf, void *src1, void *src2, void *dst)
 
 /*
  * int
- * inet_addrs_consistence (int pf, void *net, void *mask ) 
+ * inet_addrs_consistence (int pf, void *net, void *mask )
  *      This function checks if the network address net is consistent
  *      with the netmask address, mask.
- *      Net and mask are ususally sockaddr_in or sockaddr_in6.  
+ *      Net and mask are ususally sockaddr_in or sockaddr_in6.
  * Note:
  *      Must spefiey protocol family in pf.
  * return:
  *      0 if there is no consistence with address "net" and "mask".
- *      -1 if network address is inconsistent with netmask address, for 
- *      instance, network address is 192.168.0.128 in spite of netmask, 
- *      which is 255.255.255.0. 
+ *      -1 if network address is inconsistent with netmask address, for
+ *      instance, network address is 192.168.0.128 in spite of netmask,
+ *      which is 255.255.255.0.
  *      The case that the size of net and mask are different also returns -1.
  */
 
@@ -835,18 +835,18 @@ inet_addrs_consistence(int pf, void *net, void *mask)
 
 /*
  * int
- * masked_address_are_equal (pf, from, mask, network) 
+ * masked_address_are_equal (pf, from, mask, network)
  *      This function takes AND operation on address "from" and "mask",
- *      and check the result is equal to address "network". 
- *      From, net and mask are ususally sockaddr_in or sockaddr_in6.  
+ *      and check the result is equal to address "network".
+ *      From, net and mask are ususally sockaddr_in or sockaddr_in6.
  * Note:
  *      Must spefiey protocol family in pf.
  * return:
- *      0 if address "from" masked by address "mask" is eqaul to 
- *      address "network". 
- *      -1 if address "from" masked by address "mask" isn't eqaul to 
- *      address "network". For instance, address "from" is 
- *       192.168.0.129 and "mask" is 255.255.255.128. Then, masked 
+ *      0 if address "from" masked by address "mask" is eqaul to
+ *      address "network".
+ *      -1 if address "from" masked by address "mask" isn't eqaul to
+ *      address "network". For instance, address "from" is
+ *       192.168.0.129 and "mask" is 255.255.255.128. Then, masked
  *      address is 192.168.0.128. If address "network" is 192.168.0.128,
  *      return 0, otherwise -1.
  *      Also retunn -1 if each address family of from, mask, network
@@ -906,7 +906,7 @@ masked_address_are_equal(int af, struct sockaddr_storage *from,
 
 /*
  * The following functions provide the "com2sec6" configuration token
- * functionality for compatibility.  
+ * functionality for compatibility.
  */
 
 #define EXAMPLE_NETWORK       "NETWORK"
@@ -957,7 +957,7 @@ netsnmp_udp6_parse_security(const char *token, char *param)
 
 
     /*
-     * Get security, source address/netmask and community strings.  
+     * Get security, source address/netmask and community strings.
      */
     cp = copy_nword(param, secName, sizeof(secName));
     if (secName[0] == '\0') {
@@ -992,19 +992,19 @@ netsnmp_udp6_parse_security(const char *token, char *param)
     }
 
     /*
-     * Process the source address/netmask string.  
+     * Process the source address/netmask string.
      */
     cp = strchr(source, '/');
     if (cp != NULL) {
         /*
-         * Mask given.  
+         * Mask given.
          */
         *cp = '\0';
         strmask = cp + 1;
     }
 
     /*
-     * Deal with the network part first.  
+     * Deal with the network part first.
      */
     if ((strcmp(source, "default") == 0) || (strcmp(source, "::") == 0)) {
         strnetwork = strdup("0::0");
@@ -1020,7 +1020,7 @@ netsnmp_udp6_parse_security(const char *token, char *param)
         }
         /*
          * Everything is okay.  Copy the parameters to the structure allocated
-         * above and add it to END of the list.  
+         * above and add it to END of the list.
          */
         if (strmask != NULL && strnetwork != NULL) {
             DEBUGMSGTL(("netsnmp_udp6_parse_security",
@@ -1042,7 +1042,7 @@ netsnmp_udp6_parse_security(const char *token, char *param)
 
     } else {
         /*
-         * Try interpreting as IPv6 address.  
+         * Try interpreting as IPv6 address.
          */
         if (inet_pton(AF_INET6, source, &net.sin6_addr) == 1) {
             if (strmask == NULL || *strmask == '\0') {
@@ -1063,7 +1063,7 @@ netsnmp_udp6_parse_security(const char *token, char *param)
                 }
             }
             /*
-             * Check that the network and mask are consistent.  
+             * Check that the network and mask are consistent.
              */
             if (inet_addrs_consistence
                 (PF_INET6, &net.sin6_addr, &mask.sin6_addr) != 0) {
@@ -1079,7 +1079,7 @@ netsnmp_udp6_parse_security(const char *token, char *param)
 
             /*
              * Everything is okay.  Copy the parameters to the structure allocated
-             * above and add it to END of the list.  
+             * above and add it to END of the list.
              */
             if (strmask != NULL && strnetwork != NULL) {
                 DEBUGMSGTL(("netsnmp_udp6_parse_security",
@@ -1104,7 +1104,7 @@ netsnmp_udp6_parse_security(const char *token, char *param)
         } else {
 
             /*
-             * Nope, Must be a hostname.  
+             * Nope, Must be a hostname.
              */
             struct addrinfo hints, *ai, *res;
             char            hbuf[NI_MAXHOST];
@@ -1135,7 +1135,7 @@ netsnmp_udp6_parse_security(const char *token, char *param)
 
                 /*
                  * Everything is okay.  Copy the parameters to the structure allocated
-                 * above and add it to END of the list.  
+                 * above and add it to END of the list.
                  */
                 DEBUGMSGTL(("netsnmp_udp6_parse_security",
                             "<\"%s\", %s> => \"%s\"\n", community, hbuf,
@@ -1156,7 +1156,7 @@ netsnmp_udp6_parse_security(const char *token, char *param)
         }
 
         /*
-         * free(strnetwork); 
+         * free(strnetwork);
          */
     }
 }
@@ -1185,10 +1185,10 @@ netsnmp_udp6_agent_config_tokens_register(void)
 
 
 /*
- * Return 0 if there are no com2sec entries, or return 1 if there ARE com2sec 
+ * Return 0 if there are no com2sec entries, or return 1 if there ARE com2sec
  * entries.  On return, if a com2sec entry matched the passed parameters,
  * then *secName points at the appropriate security name, or is NULL if the
- * parameters did not match any com2sec entry.  
+ * parameters did not match any com2sec entry.
  */
 
 int
@@ -1203,7 +1203,7 @@ netsnmp_udp6_getSecName(void *opaque, int olength,
 
     /*
      * Special case if there are NO entries (as opposed to no MATCHING
-     * entries).  
+     * entries).
      */
 
     if (com2Sec6List == NULL) {
@@ -1215,8 +1215,8 @@ netsnmp_udp6_getSecName(void *opaque, int olength,
     }
 
     /*
-     * If there is no IPv6 source address, 
-     * then there can be no valid security name.  
+     * If there is no IPv6 source address,
+     * then there can be no valid security name.
      */
 
     if (opaque == NULL || olength != sizeof(struct sockaddr_in6)
@@ -1280,11 +1280,11 @@ netsnmp_udp6_create_tstring(const char *string, int local)
 
 /*
  * See:
- * 
+ *
  * http://www.ietf.org/internet-drafts/draft-ietf-ops-taddress-mib-01.txt
- * 
+ *
  * (or newer equivalent) for details of the TC which we are using for
- * the mapping here.  
+ * the mapping here.
  */
 
 netsnmp_transport *

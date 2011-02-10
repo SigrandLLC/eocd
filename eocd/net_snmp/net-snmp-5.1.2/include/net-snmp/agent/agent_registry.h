@@ -3,7 +3,7 @@
 
 /***********************************************************************/
 /*
- * new version2 agent handler API structures 
+ * new version2 agent handler API structures
  */
 /***********************************************************************/
 
@@ -15,12 +15,12 @@ extern          "C" {
 
 /***********************************************************************/
     /*
-     * requests api definitions 
+     * requests api definitions
      */
 /***********************************************************************/
 
     /*
-     * the structure of parameters passed to registered ACM modules 
+     * the structure of parameters passed to registered ACM modules
      */
 struct view_parameters {
     netsnmp_pdu    *pdu;
@@ -66,7 +66,7 @@ netsnmp_subtree *netsnmp_subtree_find_prev(oid *, size_t,netsnmp_subtree *,
 
 netsnmp_subtree *netsnmp_subtree_find_first(const char *context_name);
 
-netsnmp_session *get_session_for_oid	   (oid *, size_t, 
+netsnmp_session *get_session_for_oid	   (oid *, size_t,
 					    const char *context_name);
 
 subtree_context_cache *get_top_context_cache(void);
@@ -90,7 +90,7 @@ int             register_mib_priority	   (const char *, struct variable *,
 					    int);
 
 int             register_mib_range	   (const char *, struct variable *,
-					    size_t, size_t, oid *, size_t, 
+					    size_t, size_t, oid *, size_t,
 					    int, int, oid, netsnmp_session *);
 
 int		register_mib_context	   (const char *, struct variable *,
@@ -99,7 +99,7 @@ int		register_mib_context	   (const char *, struct variable *,
 					    const char *, int, int);
 
 int	netsnmp_register_mib_table_row	   (const char *, struct variable *,
-					    size_t, size_t, oid *, size_t, 
+					    size_t, size_t, oid *, size_t,
 					    int, int, netsnmp_session *,
 					    const char *, int, int);
 
@@ -116,9 +116,9 @@ int     netsnmp_unregister_mib_table_row   (oid *mibloc, size_t mibloclen,
 					    oid range_ubound,
 					    const char *context);
 
-int             compare_tree		   (const oid *, size_t, 
+int             compare_tree		   (const oid *, size_t,
 					    const oid *, size_t);
-int             in_a_view		   (oid *, size_t *, 
+int             in_a_view		   (oid *, size_t *,
 					    netsnmp_pdu *, int);
 int             check_access		   (netsnmp_pdu *pdu);
 int             netsnmp_acm_check_subtree  (netsnmp_pdu *, oid *, size_t);
@@ -127,12 +127,12 @@ void            register_mib_detach	   (void);
 
 /*
  * REGISTER_MIB(): This macro simply loads register_mib with less pain:
- * 
+ *
  * descr:   A short description of the mib group being loaded.
  * var:     The variable structure to load.
  * vartype: The variable structure used to define it (variable[2, 4, ...])
  * theoid:  An *initialized* *exact length* oid pointer.
- *          (sizeof(theoid) *must* return the number of elements!) 
+ *          (sizeof(theoid) *must* return the number of elements!)
  */
 
 #define REGISTER_MIB(descr, var, vartype, theoid)                      \
@@ -184,7 +184,7 @@ int             unregister_signal(int);
 
 
 /*
- * internal API.  Don't use this.  Use netsnmp_register_handler instead 
+ * internal API.  Don't use this.  Use netsnmp_register_handler instead
  */
 
 struct netsnmp_handler_registration_s;

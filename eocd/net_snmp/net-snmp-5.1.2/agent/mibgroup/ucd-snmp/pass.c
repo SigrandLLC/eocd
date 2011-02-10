@@ -40,11 +40,11 @@ struct extensible *passthrus = NULL;
 int             numpassthrus = 0;
 
 /*
- * the relocatable extensible commands variables 
+ * the relocatable extensible commands variables
  */
 struct variable2 extensible_passthru_variables[] = {
     /*
-     * bogus entry.  Only some of it is actually used. 
+     * bogus entry.  Only some of it is actually used.
      */
     {MIBINDEX, ASN_INTEGER, RWRITE, var_extensible_pass, 0, {MIBINDEX}},
 };
@@ -70,20 +70,20 @@ snmp_oid_min_compare(const oid * in_name1,
     register const oid *name2 = in_name2;
 
     /*
-     * len = minimum of len1 and len2 
+     * len = minimum of len1 and len2
      */
     if (len1 < len2)
         len = len1;
     else
         len = len2;
     /*
-     * find first non-matching OID 
+     * find first non-matching OID
      */
     while (len-- > 0) {
         /*
          * these must be done in seperate comparisons, since
          * subtracting them and using that result has problems with
-         * subids > 2^31. 
+         * subids > 2^31.
          */
         if (*(name1) < *(name2))
             return -1;
@@ -91,7 +91,7 @@ snmp_oid_min_compare(const oid * in_name1,
             return 1;
     }
     /*
-     * both OIDs equal up to length of shorter OID 
+     * both OIDs equal up to length of shorter OID
      */
 
     return 0;
@@ -99,7 +99,7 @@ snmp_oid_min_compare(const oid * in_name1,
 
 
 /*
- * This is also called from pass_persist.c 
+ * This is also called from pass_persist.c
  */
 int
 asc2bin(char *p)
@@ -120,7 +120,7 @@ asc2bin(char *p)
 }
 
 /*
- * This is also called from pass_persist.c 
+ * This is also called from pass_persist.c
  */
 int
 bin2asc(char *p, size_t n)
@@ -182,7 +182,7 @@ pass_parse_config(const char *token, char *cptr)
     while (isdigit(*cptr) || *cptr == '.')
         cptr++;
     /*
-     * name 
+     * name
      */
     cptr = skip_white(cptr);
     if (cptr == NULL) {
@@ -203,7 +203,7 @@ pass_parse_config(const char *token, char *cptr)
                  1, (*ppass)->miboid, (*ppass)->miblen);
 
     /*
-     * argggg -- pasthrus must be sorted 
+     * argggg -- pasthrus must be sorted
      */
     if (numpassthrus > 1) {
         etmp = (struct extensible **)
@@ -266,7 +266,7 @@ var_extensible_pass(struct variable *vp,
                                      passthru->miboid, passthru->miblen);
         if ((exact && rtest == 0) || (!exact && rtest <= 0)) {
             /*
-             * setup args 
+             * setup args
              */
             if (passthru->miblen >= *length || rtest < 0)
                 sprint_mib_oid(buf, passthru->miboid, passthru->miblen);
@@ -282,7 +282,7 @@ var_extensible_pass(struct variable *vp,
             DEBUGMSGTL(("ucd-snmp/pass", "pass-running:  %s\n",
                         passthru->command));
             /*
-             * valid call.  Exec and get output 
+             * valid call.  Exec and get output
              */
             if ((fd = get_exec_output(passthru)) != -1) {
                 file = fdopen(fd, "r");
@@ -302,14 +302,14 @@ var_extensible_pass(struct variable *vp,
                 newlen = parse_miboid(buf, newname);
 
                 /*
-                 * its good, so copy onto name/length 
+                 * its good, so copy onto name/length
                  */
                 memcpy((char *) name, (char *) newname,
                        (int) newlen * sizeof(oid));
                 *length = newlen;
 
                 /*
-                 * set up return pointer for setable stuff 
+                 * set up return pointer for setable stuff
                  */
                 *write_method = setPass;
 
@@ -324,7 +324,7 @@ var_extensible_pass(struct variable *vp,
                 wait_on_exec(passthru);
 
                 /*
-                 * buf contains the return type, and buf2 contains the data 
+                 * buf contains the return type, and buf2 contains the data
                  */
                 if (!strncasecmp(buf, "string", 6)) {
                     buf2[strlen(buf2) - 1] = 0; /* zap the linefeed */
@@ -418,7 +418,7 @@ setPass(int action,
             if (action != ACTION)
                 return SNMP_ERR_NOERROR;
             /*
-             * setup args 
+             * setup args
              */
             if (passthru->miblen >= name_len || rtest < 0)
                 sprint_mib_oid(buf, passthru->miboid, passthru->miblen);

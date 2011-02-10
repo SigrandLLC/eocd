@@ -11,7 +11,7 @@
 
 #ifndef hpux11
 /*
- * hpux specific 
+ * hpux specific
  */
 #define MIB_IPCOUNTER_SYMBOL "MIB_ipcounter"
 #define MIB_TCPCOUNTER_SYMBOL "MIB_tcpcounter"
@@ -56,7 +56,7 @@
 #endif
 
 /*
- * ARP_Scan_Next needs a 4th ifIndex argument 
+ * ARP_Scan_Next needs a 4th ifIndex argument
  */
 #define ARP_SCAN_FOUR_ARGUMENTS
 

@@ -15,7 +15,7 @@ extern WriteMethod save_persistent;
 #include "mibdefs.h"
 
 /*
- * Version info mib 
+ * Version info mib
  */
 #define VERTAG 2
 #define VERDATE 3

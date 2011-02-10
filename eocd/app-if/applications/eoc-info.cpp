@@ -86,7 +86,7 @@ for(int i=0; i< chan_cnt; i++){
 }
 printf("\n");
 */
-	
+
 	if( ifname ){ // Channel name was specified
 		channel_info_t info;
 		switch( output ){
@@ -102,7 +102,7 @@ printf("\n");
 			print_error(output,"No channels served");
 			exit(0);
 		}
-		
+
 		bool found = false;
 		int index = -1;
 		for(int i=0;i<chan_cnt;i++){
@@ -138,7 +138,7 @@ printf("\n");
 			init_chan_info(channels[index],info);
 			if( accum_channel(cli,info,output,BCAST) )
 				exit(0);
-			// printf("table_channels(&info,1);\n");				
+			// printf("table_channels(&info,1);\n");
 			table_channels(&info,1);
 		}else{
 			init_chan_info(channels[index],info);
@@ -180,11 +180,11 @@ printf("\n");
 				print_error(output,"No channels served");
 				exit(0);
 			}
-		
+
 			if( output == JSON ){
 				channel_info_t info;
 				init_chan_info(channels[0],info);
-				info.tbl_type = TBL_FULL;				
+				info.tbl_type = TBL_FULL;
 				if( accum_channel(cli,info,output) )
 					exit(0);
 				json_channel(0,info);
@@ -217,7 +217,7 @@ process_profile(app_comm_cli &cli)
 		json_flush();
 		return;
 	}
-	
+
 	if(profname){
 		accum_profiles(cli,info,output,profname);
 	}else{
@@ -248,7 +248,7 @@ main(int argc, char *argv[] )
 		{"base",0, 0, 'b'},
 		{"relative",0, 0, 'r'},
 		{"sensors", 0, 0, 's'},
-		{"sens-full", 0, 0, 'v'},		
+		{"sens-full", 0, 0, 'v'},
 		{"ints15min", 0, 0, 'm'},
 		{"ints1day", 0, 0, 'd'},
 		{"help", 0, 0, 'h'},
@@ -315,7 +315,7 @@ main(int argc, char *argv[] )
 			break;
 		case 'd':
 			ttype = INT1D;
-			break;		
+			break;
 		case 'a':
 			reset_rel = true;
 			break;
@@ -326,7 +326,7 @@ main(int argc, char *argv[] )
 			break;
 		}
     }
-    
+
 	switch( obj ){
 	case NONE:
 		obj = CHANNEL;

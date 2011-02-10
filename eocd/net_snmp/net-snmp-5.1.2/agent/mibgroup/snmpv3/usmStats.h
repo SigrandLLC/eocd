@@ -9,14 +9,14 @@
 #define _MIBGROUP_USMSTATS_H
 
 /*
- * we use header_generic and checkmib from the util_funcs module 
+ * we use header_generic and checkmib from the util_funcs module
  */
 
 config_require(util_funcs)
 config_add_mib(SNMP-USER-BASED-SM-MIB)
 
     /*
-     * Magic number definitions: 
+     * Magic number definitions:
      */
 #define   USMSTATSUNSUPPORTEDSECLEVELS  0
 #define   USMSTATSNOTINTIMEWINDOWS      1
@@ -25,7 +25,7 @@ config_add_mib(SNMP-USER-BASED-SM-MIB)
 #define   USMSTATSWRONGDIGESTS          4
 #define   USMSTATSDECRYPTIONERRORS      5
     /*
-     * function definitions 
+     * function definitions
      */
      extern void     init_usmStats(void);
      extern FindVarMethod var_usmStats;

@@ -1,9 +1,9 @@
-/**  
+/**
  *  This file implements the snmpSetSerialNo TestAndIncr counter
  */
 
 /*
- * start be including the appropriate header files 
+ * start be including the appropriate header files
  */
 #include <net-snmp/net-snmp-config.h>
 #include <net-snmp/net-snmp-includes.h>
@@ -12,15 +12,15 @@
 #include "setSerialNo.h"
 
 /*
- * Then, we declare the variables we want to be accessed 
+ * Then, we declare the variables we want to be accessed
  */
 static long     setserialno = 0;        /* default value */
 
 /*
- * our initialization routine, automatically called by the agent 
+ * our initialization routine, automatically called by the agent
  */
 /*
- * (to get called, the function name must match init_FILENAME() 
+ * (to get called, the function name must match init_FILENAME()
  */
 void
 init_setSerialNo(void)
@@ -30,7 +30,7 @@ init_setSerialNo(void)
 
     /*
      * a debugging statement.  Run the agent with -Dscalar_int to see
-     * the output of this debugging statement. 
+     * the output of this debugging statement.
      */
     DEBUGMSGTL(("snmpSetSerialNo",
                 "Initalizing SnmpSetSerialNo to %d\n", setserialno));
@@ -47,7 +47,7 @@ init_setSerialNo(void)
 /*
  * additional support for the given node.  Everything else (value
  * retrival, undo support, etc) is handled by the instance helper for
- * us. 
+ * us.
  */
 int
 netsnmp_setserialno_handler(netsnmp_mib_handler *handler,
@@ -58,7 +58,7 @@ netsnmp_setserialno_handler(netsnmp_mib_handler *handler,
     switch (reqinfo->mode) {
     case MODE_SET_RESERVE1:
         /*
-         * the set value must be exactly the same as the current value 
+         * the set value must be exactly the same as the current value
          */
         if (*(requests->requestvb->val.integer) != setserialno)
             netsnmp_set_request_error(reqinfo, requests,
@@ -67,7 +67,7 @@ netsnmp_setserialno_handler(netsnmp_mib_handler *handler,
 
     case MODE_SET_ACTION:
         /*
-         * we actually increment the value once when it's set. 
+         * we actually increment the value once when it's set.
          */
         setserialno++;
         break;

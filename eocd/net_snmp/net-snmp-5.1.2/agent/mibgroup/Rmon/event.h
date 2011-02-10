@@ -24,7 +24,7 @@
 config_require(util_funcs)
 
     /*
-     * function prototypes 
+     * function prototypes
      */
      void            init_event(void);
 

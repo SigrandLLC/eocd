@@ -148,7 +148,7 @@ handle_long_opt(const char *myoptarg)
 {
     char           *cp, *cp2;
     /*
-     * else it's a long option, so process it like name=value 
+     * else it's a long option, so process it like name=value
      */
     cp = malloc(strlen(myoptarg) + 3);
     strcpy(cp, myoptarg);
@@ -159,12 +159,12 @@ handle_long_opt(const char *myoptarg)
          * can tell.  Give them a '1' as the argument (which
          * works for boolean tokens and a few others) and let
          * them suffer from there if it's not what they
-         * wanted 
+         * wanted
          */
         strcat(cp, " 1");
     } else {
         /*
-         * replace the '=' with a ' ' 
+         * replace the '=' with a ' '
          */
         if (cp2)
             *cp2 = ' ';
@@ -177,7 +177,7 @@ extern int      snmpv3_options(char *optarg, netsnmp_session * session,
                                char **Apsz, char **Xpsz, int argc,
                                char *const *argv);
 int
-snmp_parse_args(int argc, char **argv, netsnmp_session *session, 
+snmp_parse_args(int argc, char **argv, netsnmp_session *session,
 		const char *localOpts, void (*proc)(int, char *const *, int))
 {
     static char	   *sensitive[4] = { NULL, NULL, NULL, NULL };
@@ -190,7 +190,7 @@ snmp_parse_args(int argc, char **argv, netsnmp_session *session,
     int            logopt = 0;
 
     /*
-     * initialize session to default values 
+     * initialize session to default values
      */
     snmp_sess_init(session);
     strcpy(Opts, "Y:VhHm:M:O:I:P:D:dv:r:t:c:Z:e:E:n:u:l:x:X:a:A:p:T:-:3:s:S:L:");
@@ -206,7 +206,7 @@ snmp_parse_args(int argc, char **argv, netsnmp_session *session,
     }
 
     /*
-     * get the options 
+     * get the options
      */
     DEBUGMSGTL(("snmp_parse_args", "starting: %d/%d\n", optind, argc));
     for (arg = 0; arg < argc; arg++) {
@@ -260,7 +260,7 @@ snmp_parse_args(int argc, char **argv, netsnmp_session *session,
         case 'O':
             cp = snmp_out_toggle_options(optarg);
             if (cp != NULL) {
-                fprintf(stderr, "Unknown output option passed to -O: %c.\n", 
+                fprintf(stderr, "Unknown output option passed to -O: %c.\n",
 			*cp);
                 return (-1);
             }
@@ -292,7 +292,7 @@ snmp_parse_args(int argc, char **argv, netsnmp_session *session,
             break;
 
         case 'd':
-            netsnmp_ds_set_boolean(NETSNMP_DS_LIBRARY_ID, 
+            netsnmp_ds_set_boolean(NETSNMP_DS_LIBRARY_ID,
 				   NETSNMP_DS_LIB_DUMP_PACKET, 1);
             break;
 
@@ -380,7 +380,7 @@ snmp_parse_args(int argc, char **argv, netsnmp_session *session,
             if (cp && *(++cp) && isdigit(*cp))
                 session->engineTime = strtoul(cp, NULL, 10);
             /*
-             * Handle previous '-Z boot time' syntax 
+             * Handle previous '-Z boot time' syntax
              */
             else if ((optind < argc) && isdigit(argv[optind][0]))
                 session->engineTime = strtoul(argv[optind], NULL, 10);
@@ -560,17 +560,17 @@ snmp_parse_args(int argc, char **argv, netsnmp_session *session,
     init_snmp("snmpapp");
 
     /*
-     * session default version 
+     * session default version
      */
     if (session->version == SNMP_DEFAULT_VERSION) {
         /*
-         * run time default version 
+         * run time default version
          */
-        session->version = netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID, 
+        session->version = netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID,
 					      NETSNMP_DS_LIB_SNMPVERSION);
 
         /*
-         * compile time default version 
+         * compile time default version
          */
         if (!session->version) {
             switch (DEFAULT_SNMP_VERSION) {
@@ -593,13 +593,13 @@ snmp_parse_args(int argc, char **argv, netsnmp_session *session,
     }
 
     /*
-     * make master key from pass phrases 
+     * make master key from pass phrases
      */
     if (Apsz) {
         session->securityAuthKeyLen = USM_AUTH_KU_LEN;
         if (session->securityAuthProto == NULL) {
             /*
-             * get .conf set default 
+             * get .conf set default
              */
             const oid      *def =
                 get_default_authtype(&session->securityAuthProtoLen);
@@ -608,7 +608,7 @@ snmp_parse_args(int argc, char **argv, netsnmp_session *session,
         }
         if (session->securityAuthProto == NULL) {
             /*
-             * assume MD5 
+             * assume MD5
              */
             session->securityAuthProto =
                 snmp_duplicate_objid(usmHMACMD5AuthProtocol,
@@ -630,7 +630,7 @@ snmp_parse_args(int argc, char **argv, netsnmp_session *session,
         session->securityPrivKeyLen = USM_PRIV_KU_LEN;
         if (session->securityPrivProto == NULL) {
             /*
-             * get .conf set default 
+             * get .conf set default
              */
             const oid      *def =
                 get_default_privtype(&session->securityPrivProtoLen);
@@ -639,7 +639,7 @@ snmp_parse_args(int argc, char **argv, netsnmp_session *session,
         }
         if (session->securityPrivProto == NULL) {
             /*
-             * assume DES 
+             * assume DES
              */
             session->securityPrivProto =
                 snmp_duplicate_objid(usmDESPrivProtocol,
@@ -658,7 +658,7 @@ snmp_parse_args(int argc, char **argv, netsnmp_session *session,
         }
     }
     /*
-     * get the hostname 
+     * get the hostname
      */
     if (optind == argc) {
         fprintf(stderr, "No hostname specified.\n");
@@ -668,13 +668,13 @@ snmp_parse_args(int argc, char **argv, netsnmp_session *session,
 
     /*
      * If v1 or v2c, check community has been set, either by a -c option above,
-     * or via a default token somewhere.  
+     * or via a default token somewhere.
      */
 
     if (session->version == SNMP_VERSION_1 ||
 	session->version == SNMP_VERSION_2c) {
         if (Cpsz == NULL) {
-            Cpsz = netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID, 
+            Cpsz = netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID,
 					 NETSNMP_DS_LIB_COMMUNITY);
 	    if (Cpsz == NULL) {
 		fprintf(stderr, "No community name specified.\n");

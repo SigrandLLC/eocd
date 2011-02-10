@@ -3,7 +3,7 @@
  * ERRORFLAG:  A binary flag to signal an error condition.
  * Also used as exit code.
  * ERRORMSG:  A text message describing what caused the above condition,
- * Also used as the single line return message from programs 
+ * Also used as the single line return message from programs
  */
 
 #define MIBINDEX 1

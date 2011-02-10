@@ -20,5 +20,5 @@ typedef EOC_scheduler::sched_state sched_state;
 
 // Poller Request handler prototype
 typedef EOC_msg *(*request_handler_t)(sched_state stat,sched_elem el,EOC_config *cfg);
- 
+
 #endif

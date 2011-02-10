@@ -50,7 +50,7 @@ typedef struct {
 	u8 currCondDown :1;
 	u8 worstCaseDown :1;
 	u8 currCondUp :1;
-	u8 worstCaseUp :1;	
+	u8 worstCaseUp :1;
 } targ_marg_t;
 
 // Perfomance & status characteristics
@@ -61,7 +61,7 @@ typedef struct{
     u32 losws;
     u32 uas;
 } perf_stat_t;
-		    
+
 
 
 #endif

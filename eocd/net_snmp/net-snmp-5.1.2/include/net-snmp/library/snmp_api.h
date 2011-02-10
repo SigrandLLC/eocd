@@ -13,7 +13,7 @@
 
 /*
  * @file snmp_api.h - API for access to snmp.
- * 
+ *
  * @addtogroup library
  *
  * Caution: when using this library in a multi-threaded application,
@@ -71,7 +71,7 @@ struct netsnmp_transport_s;
     * Typedefs the snmp_pdu struct into netsnmp_pdu */
 /** @struct snmp_pdu
  * The snmp protocol data unit.
- */	
+ */
 typedef struct snmp_pdu {
 
     /*
@@ -79,10 +79,10 @@ typedef struct snmp_pdu {
      */
     /** snmp version */
     long            version;
-    /** Type of this PDU */	
+    /** Type of this PDU */
     int             command;
     /** Request id - note: not incremented on retries */
-    long            reqid;  
+    long            reqid;
     /** Message id for V3 messages note: incremented for each retry */
     long            msgid;
     /** Unique ID for incoming transactions */
@@ -92,26 +92,26 @@ typedef struct snmp_pdu {
     /** Error status (non_repeaters in GetBulk) */
     long            errstat;
     /** Error index (max_repetitions in GetBulk) */
-    long            errindex;       
+    long            errindex;
     /** Uptime */
-    u_long          time;   
+    u_long          time;
     u_long          flags;
 
     int             securityModel;
     /** noAuthNoPriv, authNoPriv, authPriv */
-    int             securityLevel;  
+    int             securityLevel;
     int             msgParseModel;
 
     /**
      * Transport-specific opaque data.  This replaces the IP-centric address
-     * field.  
+     * field.
      */
-    
+
     void           *transport_data;
     int             transport_data_length;
 
     /**
-     * The actual transport domain.  This SHOULD NOT BE FREE()D.  
+     * The actual transport domain.  This SHOULD NOT BE FREE()D.
      */
 
     const oid      *tDomain;
@@ -126,20 +126,20 @@ typedef struct snmp_pdu {
     /** community for outgoing requests. */
     u_char         *community;
     /** length of community name. */
-    size_t          community_len;  
+    size_t          community_len;
 
     /*
      * Trap information
      */
     /** System OID */
-    oid            *enterprise;     
+    oid            *enterprise;
     size_t          enterprise_length;
     /** trap type */
     long            trap_type;
     /** specific type */
     long            specific_type;
     /** This is ONLY used for v1 TRAPs  */
-    unsigned char   agent_addr[4];  
+    unsigned char   agent_addr[4];
 
     /*
      *  SNMPv3 fields
@@ -147,7 +147,7 @@ typedef struct snmp_pdu {
     /** context snmpEngineID */
     u_char         *contextEngineID;
     /** Length of contextEngineID */
-    size_t          contextEngineIDLen;     
+    size_t          contextEngineIDLen;
     /** authoritative contextName */
     char           *contextName;
     /** Length of contextName */
@@ -155,19 +155,19 @@ typedef struct snmp_pdu {
     /** authoritative snmpEngineID for security */
     u_char         *securityEngineID;
     /** Length of securityEngineID */
-    size_t          securityEngineIDLen;    
+    size_t          securityEngineIDLen;
     /** on behalf of this principal */
     char           *securityName;
     /** Length of securityName. */
-    size_t          securityNameLen;        
-    
+    size_t          securityNameLen;
+
     /*
      * AgentX fields
      *      (also uses SNMPv1 community field)
      */
     int             priority;
     int             range_subid;
-    
+
     void           *securityStateRef;
 } netsnmp_pdu;
 
@@ -193,7 +193,7 @@ struct snmp_session {
     /** Number of retries before timeout. */
     int             retries;
     /** Number of uS until first timeout, then exponential backoff */
-    long            timeout;        
+    long            timeout;
     u_long          flags;
     struct snmp_session *subsession;
     struct snmp_session *next;
@@ -203,23 +203,23 @@ struct snmp_session {
     /** UDP port number of peer. */
     u_short         remote_port;
     /** My UDP port number, 0 for default, picked randomly */
-    u_short         local_port;     
+    u_short         local_port;
     /**
-     * Authentication function or NULL if null authentication is used 
+     * Authentication function or NULL if null authentication is used
      */
     u_char         *(*authenticator) (u_char *, size_t *, u_char *, size_t);
     /** Function to interpret incoming data */
-    netsnmp_callback callback;      
+    netsnmp_callback callback;
     /**
-     * Pointer to data that the callback function may consider important 
+     * Pointer to data that the callback function may consider important
      */
     void           *callback_magic;
     /** copy of system errno */
     int             s_errno;
     /** copy of library errno */
-    int             s_snmp_errno;   
+    int             s_snmp_errno;
     /** Session id - AgentX only */
-    long            sessid; 
+    long            sessid;
 
     /*
      * SNMPv1 & SNMPv2c fields
@@ -227,11 +227,11 @@ struct snmp_session {
     /** community for outgoing requests. */
     u_char         *community;
     /** Length of community name. */
-    size_t          community_len;  
+    size_t          community_len;
     /**  Largest message to try to receive.  */
     size_t          rcvMsgMaxSize;
     /**  Largest message to try to send.  */
-    size_t          sndMsgMaxSize;  
+    size_t          sndMsgMaxSize;
 
     /*
      * SNMPv3 fields
@@ -241,7 +241,7 @@ struct snmp_session {
     /** authoritative snmpEngineID */
     u_char         *contextEngineID;
     /** Length of contextEngineID */
-    size_t          contextEngineIDLen;     
+    size_t          contextEngineIDLen;
     /** initial engineBoots for remote engine */
     u_int           engineBoots;
     /** initial engineTime for remote engine */
@@ -253,7 +253,7 @@ struct snmp_session {
     /** authoritative snmpEngineID */
     u_char         *securityEngineID;
     /** Length of contextEngineID */
-    size_t          securityEngineIDLen;    
+    size_t          securityEngineIDLen;
     /** on behalf of this principal */
     char           *securityName;
     /** Length of securityName. */
@@ -263,7 +263,7 @@ struct snmp_session {
     /** Length of auth protocol oid */
     size_t          securityAuthProtoLen;
     /** Ku for auth protocol XXX */
-    u_char          securityAuthKey[USM_AUTH_KU_LEN];       
+    u_char          securityAuthKey[USM_AUTH_KU_LEN];
     /** Length of Ku for auth protocol */
     size_t          securityAuthKeyLen;
     /** priv protocol oid */
@@ -271,21 +271,21 @@ struct snmp_session {
     /** Length of priv protocol oid */
     size_t          securityPrivProtoLen;
     /** Ku for privacy protocol XXX */
-    u_char          securityPrivKey[USM_PRIV_KU_LEN];       
+    u_char          securityPrivKey[USM_PRIV_KU_LEN];
     /** Length of Ku for priv protocol */
     size_t          securityPrivKeyLen;
     /** snmp security model, v1, v2c, usm */
     int             securityModel;
     /** noAuthNoPriv, authNoPriv, authPriv */
-    int             securityLevel;  
-    
+    int             securityLevel;
+
     /**
-     * security module specific 
+     * security module specific
      */
     void           *securityInfo;
 
     /**
-     * use as you want data 
+     * use as you want data
      */
     void           *myvoid;
 };
@@ -345,19 +345,19 @@ typedef struct request_list {
 #define SNMP_SEC_PARAM_BUF_SIZE    256
 
     /*
-     * set to one to ignore unauthenticated Reports 
+     * set to one to ignore unauthenticated Reports
      */
 #define SNMPV3_IGNORE_UNAUTH_REPORTS 0
 
     /*
-     * authoritative engine definitions 
+     * authoritative engine definitions
      */
 #define SNMP_SESS_NONAUTHORITATIVE 0    /* should be 0 to default to this */
 #define SNMP_SESS_AUTHORITATIVE    1    /* don't learn engineIDs */
 #define SNMP_SESS_UNKNOWNAUTH      2    /* sometimes (like NRs) */
 
     /*
-     * to determine type of Report from varbind_list 
+     * to determine type of Report from varbind_list
      */
 #define REPORT_STATS_LEN 9
 #define REPORT_snmpUnknownSecurityModels_NUM 1
@@ -479,7 +479,7 @@ typedef union {
    float          *floatVal;
    double         *doubleVal;
    /*
-    * t_union *unionVal; 
+    * t_union *unionVal;
     */
 #endif                          /* OPAQUE_SPECIAL_TYPES */
 } netsnmp_vardata;
@@ -491,25 +491,25 @@ typedef union {
  */
 struct variable_list {
    /** NULL for last variable */
-   struct variable_list *next_variable;    
+   struct variable_list *next_variable;
    /** Object identifier of variable */
-   oid            *name;   
+   oid            *name;
    /** number of subid's in name */
-   size_t          name_length;    
+   size_t          name_length;
    /** ASN type of variable */
-   u_char          type;   
+   u_char          type;
    /** value of variable */
     netsnmp_vardata val;
    /** the length of the value to be copied into buf */
    size_t          val_len;
    /** 90 percentile < 24. */
-   oid             name_loc[MAX_OID_LEN];  
+   oid             name_loc[MAX_OID_LEN];
    /** 90 percentile < 40. */
    u_char          buf[40];
    /** (Opaque) hook for additional data */
    void           *data;
    /** callback to free above */
-   void            (*dataFreeHook)(void *);    
+   void            (*dataFreeHook)(void *);
    int             index;
 };
 
@@ -752,7 +752,7 @@ struct variable_list {
     int snmp_get_fd_for_session(struct snmp_session *sessp);
 
     /*
-     * New re-allocating reverse encoding functions.  
+     * New re-allocating reverse encoding functions.
      */
 #ifdef USE_REVERSE_ASNENCODING
 
@@ -769,7 +769,7 @@ struct variable_list {
 
 
     /*
-     * Extended open; fpre_parse has changed.  
+     * Extended open; fpre_parse has changed.
      */
 
     netsnmp_session *snmp_open_ex(netsnmp_session *,
@@ -812,11 +812,11 @@ struct variable_list {
      * but operate on a single session only.
      *
      * Synopsis:
-     
+
      void * sessp;
      netsnmp_session session, *ss;
      netsnmp_pdu *pdu, *response;
-     
+
      snmp_sess_init(&session);
      session.retries = ...
      session.remote_port = ...
@@ -832,10 +832,10 @@ struct variable_list {
      snmp_sess_synch_response(sessp, pdu, &response);
      ...
      snmp_sess_close(sessp);
-     
+
      * See also:
      * snmp_sess_synch_response, in snmp_client.h.
-     
+
      * Notes:
      *  1. Invoke snmp_sess_session after snmp_sess_open.
      *  2. snmp_sess_session return value is an opaque pointer.
@@ -850,7 +850,7 @@ struct variable_list {
 
     /*
      * Return the netsnmp_transport structure associated with the given opaque
-     * pointer.  
+     * pointer.
      */
 
     struct netsnmp_transport_s *snmp_sess_transport(void *);
@@ -858,16 +858,16 @@ struct variable_list {
 					    struct netsnmp_transport_s *);
 
     /*
-     * EXPERIMENTAL API EXTENSIONS ------------------------------------------ 
-     * 
-     * snmp_sess_add_ex, snmp_sess_add, snmp_add 
-     * 
+     * EXPERIMENTAL API EXTENSIONS ------------------------------------------
+     *
+     * snmp_sess_add_ex, snmp_sess_add, snmp_add
+     *
      * Analogous to snmp_open family of functions, but taking an
      * netsnmp_transport pointer as an extra argument.  Unlike snmp_open et
      * al. it doesn't attempt to interpret the in_session->peername as a
      * transport endpoint specifier, but instead uses the supplied transport.
      * JBPN
-     * 
+     *
      */
 
     void           *snmp_sess_add_ex(netsnmp_session *,
@@ -938,7 +938,7 @@ struct variable_list {
         );
 
     /*
-     * use return value from snmp_sess_open as void * parameter 
+     * use return value from snmp_sess_open as void * parameter
      */
 
     int             snmp_sess_send(void *, netsnmp_pdu *);
@@ -958,19 +958,19 @@ struct variable_list {
                                      netsnmp_session * ss);
 
     /*
-     * end single session API 
+     * end single session API
      */
 
     /*
-     * generic statistic counters 
+     * generic statistic counters
      */
 
     /*
-     * snmpv3 statistics 
+     * snmpv3 statistics
      */
 
     /*
-     * mpd stats 
+     * mpd stats
      */
 #define   STAT_SNMPUNKNOWNSECURITYMODELS     0
 #define   STAT_SNMPINVALIDMSGS               1
@@ -979,7 +979,7 @@ struct variable_list {
 #define   STAT_MPD_STATS_END                 STAT_SNMPUNKNOWNPDUHANDLERS
 
     /*
-     * usm stats 
+     * usm stats
      */
 #define   STAT_USMSTATSUNSUPPORTEDSECLEVELS  3
 #define   STAT_USMSTATSNOTINTIMEWINDOWS      4
@@ -991,7 +991,7 @@ struct variable_list {
 #define   STAT_USM_STATS_END                 STAT_USMSTATSDECRYPTIONERRORS
 
     /*
-     * snmp counters 
+     * snmp counters
      */
 #define  STAT_SNMPINPKTS                     9
 #define  STAT_SNMPOUTPKTS                    10
@@ -1000,7 +1000,7 @@ struct variable_list {
 #define  STAT_SNMPINBADCOMMUNITYUSES         13
 #define  STAT_SNMPINASNPARSEERRS             14
     /*
-     * #define  STAT_SNMPINBADTYPES              15 
+     * #define  STAT_SNMPINBADTYPES              15
      */
 #define  STAT_SNMPINTOOBIGS                  16
 #define  STAT_SNMPINNOSUCHNAMES              17
@@ -1018,7 +1018,7 @@ struct variable_list {
 #define  STAT_SNMPOUTNOSUCHNAMES             29
 #define  STAT_SNMPOUTBADVALUES               30
     /*
-     * #define  STAT_SNMPOUTREADONLYS            31 
+     * #define  STAT_SNMPOUTREADONLYS            31
      */
 #define  STAT_SNMPOUTGENERRS                 32
 #define  STAT_SNMPOUTGETREQUESTS             33
@@ -1027,7 +1027,7 @@ struct variable_list {
 #define  STAT_SNMPOUTGETRESPONSES            36
 #define  STAT_SNMPOUTTRAPS                   37
     /*
-     * AUTHTRAPENABLE                            38 
+     * AUTHTRAPENABLE                            38
      */
 #define  STAT_SNMPSILENTDROPS		     39
 #define  STAT_SNMPPROXYDROPS		     40
@@ -1035,7 +1035,7 @@ struct variable_list {
 #define  STAT_SNMP_STATS_END                 STAT_SNMPPROXYDROPS
 
     /*
-     * target mib counters 
+     * target mib counters
      */
 #define  STAT_SNMPUNAVAILABLECONTEXTS	     41
 #define  STAT_SNMPUNKNOWNCONTEXTS	     42

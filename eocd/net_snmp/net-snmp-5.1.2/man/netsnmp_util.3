@@ -2,7 +2,7 @@
 .ad l
 .nh
 .SH NAME
-Memory Utility Routines \- 
+Memory Utility Routines \-
 .SS "Defines"
 
 .in +1c
@@ -192,7 +192,7 @@ Memory Utility Routines \-
 .br
 .in -1c
 .SH "Define Documentation"
-.PP 
+.PP
 .SS "#define DIFFTIMEVAL(now, then, diff)"
 .PP
 \fBValue:\fP.nf
@@ -253,7 +253,7 @@ Computers the minimum of a and b. Definition at line 82 of file tools.h.
 .PP
 Referenced by netsnmp_oid_find_prefix(), netsnmp_register_table_data_set(), and netsnmp_table_data_helper_handler().
 .SH "Function Documentation"
-.PP 
+.PP
 .SS "long atime_diff (marker_t first, marker_t second)"
 .PP
 Returns the difference (in msec) between the two markers. Definition at line 746 of file tools.c.
@@ -280,9 +280,9 @@ Referenced by netsnmp_cache_helper_handler(), and netsnmp_stash_cache_update().
 .PP
 converts binary to hexidecimal \fBParameters:\fP
 .RS 4
-\fI*input\fP Binary data. 
+\fI*input\fP Binary data.
 .br
-\fIlen\fP Length of binary data. 
+\fIlen\fP Length of binary data.
 .br
 \fI**output\fP NULL terminated string equivalent in hex.
 .RE
@@ -297,9 +297,9 @@ FIX Is there already one of these in the UCD SNMP codebase? The old one should b
 .PP
 zeros memory before freeing it. \fBParameters:\fP
 .RS 4
-\fI*buf\fP Pointer at bytes to free. 
+\fI*buf\fP Pointer at bytes to free.
 .br
-\fIsize\fP Number of bytes in buf. 
+\fIsize\fP Number of bytes in buf.
 .RE
 .PP
 Definition at line 186 of file tools.c.
@@ -309,9 +309,9 @@ Referenced by hex_to_binary2(), and malloc_random().
 .PP
 hex_to_binary2 \fBParameters:\fP
 .RS 4
-\fI*input\fP Printable data in base16. 
+\fI*input\fP Printable data in base16.
 .br
-\fIlen\fP Length in bytes of data. 
+\fIlen\fP Length in bytes of data.
 .br
 \fI**output\fP Binary data equivalent to input.
 .RE
@@ -337,7 +337,7 @@ Returns pointer to allocaed & set buffer on success, size contains number of ran
 .PP
 \fBReturns:\fP
 .RS 4
-a malloced buffer 
+a malloced buffer
 .RE
 .PP
 Definition at line 206 of file tools.c.
@@ -354,16 +354,16 @@ Duplicates a memory block. Copies a existing memory location from a pointer to a
 .PP
 \fBParameters:\fP
 .RS 4
-\fIto\fP Pointer to allocate and copy memory to. 
+\fIto\fP Pointer to allocate and copy memory to.
 .br
-\fIfrom\fP Pointer to copy memory from. 
+\fIfrom\fP Pointer to copy memory from.
 .br
 \fIsize\fP Size of the data to be copied.
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-SNMPERR_SUCCESS on success, SNMPERR_GENERR on failure. 
+SNMPERR_SUCCESS on success, SNMPERR_GENERR on failure.
 .RE
 .PP
 Definition at line 237 of file tools.c.
@@ -380,9 +380,9 @@ This function increase the size of the buffer pointed at by *buf, which is initi
 .PP
 \fBParameters:\fP
 .RS 4
-\fIbuf\fP pointer to a buffer pointer 
+\fIbuf\fP pointer to a buffer pointer
 .br
-\fIbuf_len\fP pointer to current size of buffer in bytes 
+\fIbuf_len\fP pointer to current size of buffer in bytes
 .RE
 .PP
 Definition at line 116 of file tools.c.

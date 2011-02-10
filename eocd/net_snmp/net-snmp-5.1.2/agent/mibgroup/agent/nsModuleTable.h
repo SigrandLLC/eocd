@@ -6,7 +6,7 @@
 #define NSMODULETABLE_H
 
 /*
- * function declarations 
+ * function declarations
  */
 void            init_nsModuleTable(void);
 void            initialize_table_nsModuleTable(void);
@@ -16,7 +16,7 @@ Netsnmp_First_Data_Point nsModuleTable_get_first_data_point;
 Netsnmp_Next_Data_Point nsModuleTable_get_next_data_point;
 
 /*
- * column number definitions for table nsModuleTable 
+ * column number definitions for table nsModuleTable
  */
 #define COLUMN_NSMCONTEXTNAME		1
 #define COLUMN_NSMREGISTRATIONPOINT	2

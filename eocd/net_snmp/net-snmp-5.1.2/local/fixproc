@@ -1,7 +1,7 @@
 #!/usr/bin/perl
-# 
+#
 # fixproc [-min n] [-max n] [-check | -kill | -restart | -exist | -fix] proc ...
-# 
+#
 # fixproc exit code:
 # 	0	ok
 # 	1	check failed
@@ -10,22 +10,22 @@
 # 	4	fix failed	if fix is defined as kill or restart, then
 # 				cannot kill or cannot restart is return instead
 # 	10	fixproc error
-# 
+#
 #
 # Fixes a process named "proc" by performing the specified action.  The
 # actions can be check, kill, restart, exist, or fix.  The action is specified
 # on the command line or is read from a default database, which describes
 # the default action to take for each process.  The database format and
 # the meaning of each action are described below.
-# 
+#
 # database format
 # ---------------
-# 
+#
 # name	foo			required
 # cmd	/a/b/name args		required
 # min	number			optional, defaults to 1
 # max	number			optional, defaults to 1
-# 
+#
 # check	{null, exist, shell}	optional, defaults to exist if not defined
 # [shell command		shell commands needed only if check=shell
 #  ...
@@ -36,12 +36,12 @@
 #  ...
 #  shell command
 #  end_shell]			keyword end_shell marks end of shell commands
-# 
+#
 # Blank lines and lines beginning with "#" are ignored.
-# 
+#
 #
 # Example:
-# 
+#
 # name	test1
 # cmd	nice /home/kong/z/test1 > /dev/null &
 # max	2
@@ -49,18 +49,18 @@
 # 	xterm&
 # 	nice /home/kong/z/test1 > /dev/null &
 # 	end_shell
-# 
-# 
+#
+#
 # actions
 # -------
 # There are 5 possible actions:  kill, restart, fix, exist, check.  Fix is
 # defined to be the kill action, the restart action, or a series of shell
 # commands.  Check is optionally defined in the database.  If check is not
 # defined, it defaults to exist.
-# 
+#
 # If the action is specified on the cmd line, it is executed regardless of
 # check.  The commands executed for each action type is as follow:
-# 
+#
 #   switch action:
 # 	kill:
 # 	  kill process, wait 5 seconds, kill -9 if still exist
@@ -68,8 +68,8 @@
 # 	    return "cannot kill"
 # 	  else
 # 	    return "ok"
-# 
-# 	restart:	
+#
+# 	restart:
 # 	  execute kill
 # 	  if kill returned "cannot kill"
 # 	    return "cannot kill"
@@ -80,7 +80,7 @@
 # 	      return "ok"
 # 	    else
 # 	      return "cannot restart"
-# 
+#
 # 	fix:
 # 	  if fix=kill
 # 	    execute kill
@@ -89,7 +89,7 @@
 # 	  else
 # 	    execute shell commands
 # 	    execute check
-# 
+#
 # 	check:
 # 	  if check defined as null
 # 	    return "fixproc error"
@@ -98,32 +98,32 @@
 # 	    if check succeeds
 # 	      return (execute exist)
 # 	    return "check failed"
-# 
+#
 # 	exist:
 # 	  if proc exists in ps && (min <= num. of processes <= max)
 # 	    return "ok"
 # 	  else
 # 	    return "check failed"
-# 
-# 
+#
+#
 # If the action is not specified on the cmd line, the default action is the
 # fix action defined in the database.  Fix is only executed if check fails:
-# 
+#
 # 	if fix defined
 # 	  if check is not defined as null
 # 	    execute check
 # 	    if check succeeds
 # 	      return "ok"
-# 	  execute action defined for fix  
+# 	  execute action defined for fix
 # 	else
 # 	  return "fixproc error"
-# 
-# 
-# If proc is not specified on the command line, return "fixproc error." 
+#
+#
+# If proc is not specified on the command line, return "fixproc error."
 # Multiple proc's can be defined on the cmd line.   When an error occurs
 # when multiple proc's are specified, the first error encountered halts the
 # script.
-# 
+#
 # For check shell scripts, any non-zero exit code means the check has failed.
 #
 #
@@ -174,7 +174,7 @@ if ($max != 1)
 	$max{$name} = $max;
       }
   }
-    
+
 # work on one process at a time
 for $proc ( @proc_list )
   {

@@ -45,7 +45,7 @@ int             old_snmp_enableauthentraps;
 
 /*
  * define the structure we're going to ask the agent to register our
- * information at 
+ * information at
  */
 struct variable1 snmp_variables[] = {
     {SNMPINPKTS, ASN_COUNTER, RONLY, var_snmp, 1, {1}},
@@ -82,7 +82,7 @@ struct variable1 snmp_variables[] = {
 
 /*
  * Define the OID pointer to the top of the mib tree that we're
- * registering underneath 
+ * registering underneath
  */
 oid             snmp_variables_oid[] = { SNMP_OID_MIB2, 11 };
 #ifdef USING_MIBII_SYSTEM_MIB_MODULE
@@ -108,7 +108,7 @@ void
 init_snmp_mib(void)
 {
     /*
-     * register ourselves with the agent to handle our mib tree 
+     * register ourselves with the agent to handle our mib tree
      */
     REGISTER_MIB("mibII/snmp", snmp_variables, variable1,
                  snmp_variables_oid);
@@ -127,11 +127,11 @@ init_snmp_mib(void)
  * Arguments:
  * vp     IN      - pointer to variable entry that points here
  * name    IN/OUT  - IN/name requested, OUT/name found
- * length  IN/OUT  - length of IN/OUT oid's 
+ * length  IN/OUT  - length of IN/OUT oid's
  * exact   IN      - TRUE if an exact match was requested
  * var_len OUT     - length of variable or 0 if function returned
  * write_method
- * 
+ *
  */
 
         /*********************
@@ -158,7 +158,7 @@ var_snmp(struct variable *vp,
         return NULL;
 
     /*
-     * this is where we do the value assignments for the mib results. 
+     * this is where we do the value assignments for the mib results.
      */
     if (vp->magic == SNMPENABLEAUTHENTRAPS) {
         *write_method = write_snmp;
@@ -201,7 +201,7 @@ write_snmp(int action,
         }
         if (snmp_enableauthentrapsset < 0) {
             /*
-             * The object is set in a read-only configuration file.  
+             * The object is set in a read-only configuration file.
              */
             return SNMP_ERR_NOTWRITABLE;
         }
@@ -210,14 +210,14 @@ write_snmp(int action,
     case RESERVE2:             /* Allocate memory and similar resources */
 
         /*
-         * Using static variables, so nothing needs to be done 
+         * Using static variables, so nothing needs to be done
          */
         break;
 
     case ACTION:               /* Perform the SET action (if reversible) */
 
         /*
-         * Save the old value, in case of UNDO 
+         * Save the old value, in case of UNDO
          */
         intval = *((long *) var_val);
         old_snmp_enableauthentraps = snmp_enableauthentraps;

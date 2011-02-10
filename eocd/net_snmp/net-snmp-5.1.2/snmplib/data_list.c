@@ -83,11 +83,11 @@ netsnmp_add_list_data(netsnmp_data_list **head, netsnmp_data_list *node)
     }
 
     /*
-     * xxx-rks: check for duplicate names? 
+     * xxx-rks: check for duplicate names?
      */
     for (ptr = *head; ptr->next != NULL; ptr = ptr->next) {
         /*
-         * noop 
+         * noop
          */
     }
 
@@ -126,18 +126,18 @@ netsnmp_data_list_add_data(netsnmp_data_list **head, const char *name,
         snmp_log(LOG_ERR,"could not allocte memory for node.");
         return NULL;
     }
-    
+
     if (!*head) {
         *head = node;
         return node;
     }
 
     /*
-     * xxx-rks: check for duplicate names? 
+     * xxx-rks: check for duplicate names?
      */
     for (ptr = *head; ptr->next != NULL; ptr = ptr->next) {
         /*
-         * noop 
+         * noop
          */
     }
 
@@ -277,7 +277,7 @@ netsnmp_save_all_data_callback(int major, int minor,
     netsnmp_save_all_data(*(info->datalist), info->type, info->token,
                           info->data_list_save_ptr);
     return SNMP_ERR_NOERROR;
-}    
+}
 
 /** intended to be called as a callback during persistent save operations.
  * See the netsnmp_save_all_data_callback for where this is typically used. */

@@ -24,13 +24,13 @@
 #endif
 
 /*
- * snmp.h:#define SNMP_MSG_INTERNAL_SET_BEGIN        -1 
- * snmp.h:#define SNMP_MSG_INTERNAL_SET_RESERVE1     0 
- * snmp.h:#define SNMP_MSG_INTERNAL_SET_RESERVE2     1 
- * snmp.h:#define SNMP_MSG_INTERNAL_SET_ACTION       2 
- * snmp.h:#define SNMP_MSG_INTERNAL_SET_COMMIT       3 
- * snmp.h:#define SNMP_MSG_INTERNAL_SET_FREE         4 
- * snmp.h:#define SNMP_MSG_INTERNAL_SET_UNDO         5 
+ * snmp.h:#define SNMP_MSG_INTERNAL_SET_BEGIN        -1
+ * snmp.h:#define SNMP_MSG_INTERNAL_SET_RESERVE1     0
+ * snmp.h:#define SNMP_MSG_INTERNAL_SET_RESERVE2     1
+ * snmp.h:#define SNMP_MSG_INTERNAL_SET_ACTION       2
+ * snmp.h:#define SNMP_MSG_INTERNAL_SET_COMMIT       3
+ * snmp.h:#define SNMP_MSG_INTERNAL_SET_FREE         4
+ * snmp.h:#define SNMP_MSG_INTERNAL_SET_UNDO         5
  */
 
 static const char *mode_name[] = {
@@ -183,7 +183,7 @@ netsnmp_table_container_register(netsnmp_handler_registration *reginfo,
         container->compare = netsnmp_compare_netsnmp_index;
     if (NULL==container->ncompare)
         container->ncompare = netsnmp_ncompare_netsnmp_index;
-    
+
     tad->cb = cb;
 
     reginfo->handler->myvoid = tad;
@@ -227,7 +227,7 @@ netsnmp_table_array_check_row_status(netsnmp_table_array_callbacks *cb,
         return SNMPERR_GENERR;
     row_ctx  = ag->existing_row;
     undo_ctx = ag->undo_info;
-    
+
     /*
      * xxx-rks: revisit row delete scenario
      */
@@ -634,7 +634,7 @@ process_set_group(netsnmp_index *o, void *c)
                 break;
             }
         }
-        
+
         if (context->tad->cb->set_reserve1)
             context->tad->cb->set_reserve1(ag);
         break;
@@ -769,11 +769,11 @@ process_set_group(netsnmp_index *o, void *c)
         rc = SNMP_ERR_GENERR;
         break;
     }
-    
+
     if (rc)
         netsnmp_set_request_error(context->agtreq_info,
                                   ag->list->ri, rc);
-                                               
+
 }
 
 int
@@ -870,7 +870,7 @@ netsnmp_table_array_helper_handler(netsnmp_mib_handler *handler,
     if (rc != SNMP_ERR_NOERROR) {
         DEBUGMSGTL(("table_array", "processing returned rc %d\n", rc));
     }
-    
+
     /*
      * Now we've done our processing. If there is another handler below us,
      * call them.
@@ -881,7 +881,7 @@ netsnmp_table_array_helper_handler(netsnmp_mib_handler *handler,
             DEBUGMSGTL(("table_array", "next handler returned rc %d\n", rc));
         }
     }
-    
+
     return rc;
 }
 #endif /** DOXYGEN_SHOULD_SKIP_THIS */

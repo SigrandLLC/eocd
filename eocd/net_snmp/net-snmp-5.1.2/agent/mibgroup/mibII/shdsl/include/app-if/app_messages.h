@@ -35,7 +35,7 @@ struct span_desc{
 
 typedef struct{
     u8 filled:7;
-    u8 last_msg:1; 
+    u8 last_msg:1;
 	struct span_desc spans[SPAN_NAMES_NUM];
 } span_name_payload;
 #define SPAN_NAME_PAY_SZ sizeof(span_name_payload)
@@ -104,7 +104,7 @@ typedef struct {
 	time_t relative_ts;
     u32 cur_15m_elaps;
     counters_t cur15min;
-    u32 cur_1d_elaps;    
+    u32 cur_1d_elaps;
     counters_t cur1day;
     s32 CurrTipRingReversal;
     s32 CurrActivationState;
@@ -183,7 +183,7 @@ typedef struct{
 
 typedef struct{
     u8 annex :1;
-    u8 wires :1;      
+    u8 wires :1;
     u8 power :1;
     u8 psd :1;
     u8 clk:1;
@@ -195,9 +195,9 @@ typedef struct{
     s8 worst_marg_down:1;
     s8 cur_marg_up:1;
     s8 worst_marg_up:1;
-    u8 use_cur_down :1;                                                   
-    u8 use_worst_down :1;                                                  
-    u8 use_cur_up :1;                                                     
+    u8 use_cur_down :1;
+    u8 use_worst_down :1;
+    u8 use_cur_up :1;
     u8 use_worst_up :1;
 } cprof_changes;
 #define CPROF_CH_SZ sizeof(cprof_changes)
@@ -206,7 +206,7 @@ typedef struct{
 #define PROF_NAMES_NUM 8
 typedef struct{
     u8 filled:7;
-    u8 last_msg:1; 
+    u8 last_msg:1;
     char pname[PROF_NAMES_NUM][SNMP_ADMIN_LEN+1];
 } cprof_list_payload;
 #define CPROF_LIST_PAY_SZ sizeof(cprof_list_payload)

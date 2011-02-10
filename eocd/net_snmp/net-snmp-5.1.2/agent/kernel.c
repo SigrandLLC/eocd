@@ -48,14 +48,14 @@ init_kmem(const char *file)
 #if HAVE_KVM_OPENFILES
     char            err[4096];
     kd = kvm_openfiles(NULL, NULL, NULL, O_RDONLY, err);
-    if (kd == NULL && !netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+    if (kd == NULL && !netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 					   NETSNMP_DS_AGENT_NO_ROOT_ACCESS)) {
         snmp_log(LOG_CRIT, "init_kmem: kvm_openfiles failed: %s\n", err);
         exit(1);
     }
 #else
     kd = kvm_open(NULL, NULL, NULL, O_RDONLY, NULL);
-    if (!kd && !netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+    if (!kd && !netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 				       NETSNMP_DS_AGENT_NO_ROOT_ACCESS)) {
         snmp_log(LOG_CRIT, "init_kmem: kvm_open failed: %s\n",
                  strerror(errno));
@@ -107,14 +107,14 @@ void
 init_kmem(const char *file)
 {
     kmem = open(file, O_RDONLY);
-    if (kmem < 0 && !netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+    if (kmem < 0 && !netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 					    NETSNMP_DS_AGENT_NO_ROOT_ACCESS)) {
         snmp_log_perror(file);
         exit(1);
     }
     fcntl(kmem, F_SETFD, 1);
     mem = open("/dev/mem", O_RDONLY);
-    if (mem < 0 && !netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+    if (mem < 0 && !netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 					   NETSNMP_DS_AGENT_NO_ROOT_ACCESS)) {
         snmp_log_perror("/dev/mem");
         exit(1);
@@ -122,7 +122,7 @@ init_kmem(const char *file)
     fcntl(mem, F_SETFD, 1);
 #ifdef DMEM_LOC
     swap = open(DMEM_LOC, O_RDONLY);
-    if (swap < 0 && !netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+    if (swap < 0 && !netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 					    NETSNMP_DS_AGENT_NO_ROOT_ACCESS)) {
         snmp_log_perror(DMEM_LOC);
         exit(1);
@@ -143,7 +143,7 @@ klseek(off_t base)
 
 
 /*
- *  Read from the kernel 
+ *  Read from the kernel
  */
 static int
 klread(char *buf, int buflen)
@@ -183,7 +183,7 @@ klookup(unsigned long off, char *target, int siz)
         if (snmp_get_do_debugging()) {
             /*
              * these happen too often on too many architectures to print them
-             * unless we're in debugging mode. People get very full log files. 
+             * unless we're in debugging mode. People get very full log files.
              */
             snmp_log(LOG_ERR, "klookup(%lx, %p, %d): ", off, target, siz);
             snmp_log_perror("klread");

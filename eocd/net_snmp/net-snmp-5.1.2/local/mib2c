@@ -4,7 +4,7 @@
 #
 # $Id: mib2c,v 5.36.2.1 2004/06/15 14:26:37 dts12 Exp $
 #
-# Description: 
+# Description:
 #
 # This program, given an OID reference as an argument, creates some
 # template mib module files to be used with the net-snmp agent.  It is
@@ -71,7 +71,7 @@ sub usage {
     print "  -i\t\tDon't run indent on the resulting code\n\n";
     print "  mibNode\tThe name of the top level mib node you want to\n\t\tgenerate code for.  By default, the code will be stored in\n\t\tmibNode.c and mibNode.h (use the -f flag to change this)\n\n";
     1;
-}	
+}
 
 my @origargs = @ARGV;
 my $args_done = 0;
@@ -113,12 +113,12 @@ while($#ARGV >= 0) {
       $oid = $_;
     }
 }
- 
+
 #
 # internal conversion tables
 #
 
-%accessToIsWritable = qw(ReadOnly 0 ReadWrite 1 
+%accessToIsWritable = qw(ReadOnly 0 ReadWrite 1
 			 WriteOnly 1 Create 1);
 %perltoctypes = qw(OCTETSTR   ASN_OCTET_STR
 		   INTEGER    ASN_INTEGER
@@ -163,7 +163,7 @@ while($#ARGV >= 0) {
 
 my $mibnode = $SNMP::MIB{$oid};
 
-if (!$mibnode) { 
+if (!$mibnode) {
 
 print STDERR "
 You didn't give mib2c a valid OID to start with.  IE, I could not find
@@ -783,13 +783,13 @@ sub setup_data {
 	my $columns = $entry->[0]{children};
         my $augments = $entry->[0]{'augments'};
         if ($augments) {
-           my $mib = $SNMP::MIB{$augments} || 
+           my $mib = $SNMP::MIB{$augments} ||
 		die "can't find info about augmented table $augments in table $tablename\n";
-           $mib = $mib->{parent} || 
+           $mib = $mib->{parent} ||
 		die "can't find info about augmented table $augments in table $tablename\n";
 	   my $entry = $mib->{children};
 	   foreach my $index (@{$entry->[0]{'indexes'}}) {
-	       my $node = $SNMP::MIB{$index} || 
+	       my $node = $SNMP::MIB{$index} ||
 		   die "can't find info about index $index in table $tablename\n";
 	       push @{$tables{$tablename}{'index'}}, $index;
 	       push @{$tables{$tablename}{'externalindex'}}, $index;
@@ -798,7 +798,7 @@ sub setup_data {
            my $columns = $entry->[0]{children};
         }
 	foreach my $index (@{$entry->[0]{'indexes'}}) {
-	    my $node = $SNMP::MIB{$index} || 
+	    my $node = $SNMP::MIB{$index} ||
 		die "can't find info about index $index in table $tablename\n";
             next if ( $indexes =~ /$index\b/ );
 	    push @{$tables{$tablename}{'index'}}, $index;

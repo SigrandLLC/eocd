@@ -13,7 +13,7 @@ extern          "C" {
      * The table array helper is designed to simplify the task of
      * writing a table handler for the net-snmp agent when the data being
      * accessed is in an oid sorted form and must be accessed externally.
-     * 
+     *
      * Functionally, it is a specialized version of the more
      * generic table helper but easies the burden of GETNEXT processing by
      * retrieving the appropriate row for ead index through
@@ -128,7 +128,7 @@ extern          "C" {
     } netsnmp_table_array_callbacks;
 
 
-    int            
+    int
         netsnmp_table_container_register(netsnmp_handler_registration *reginfo,
                                      netsnmp_table_registration_info
                                      *tabreq,

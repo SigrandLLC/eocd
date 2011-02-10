@@ -5,7 +5,7 @@
 #include <net-snmp/net-snmp-config.h>
 
 /*
- * Ripped from /usr/scr/usr.bin/vmstat/vmstat.c (covering all bases) 
+ * Ripped from /usr/scr/usr.bin/vmstat/vmstat.c (covering all bases)
  */
 #include <sys/param.h>
 #include <sys/time.h>
@@ -20,7 +20,7 @@
 #include <sys/ioctl.h>
 #include <sys/sysctl.h>
 #include <sys/vmmeter.h>
- 
+
 #if defined(HAVE_UVM_UVM_PARAM_H) && defined(HAVE_UVM_UVM_EXTERN_H)
 #include <uvm/uvm_param.h>
 #include <uvm/uvm_extern.h>
@@ -30,7 +30,7 @@
 #else
 #error memory_netbsd1.c: Is this really a NetBSD system?
 #endif
- 
+
 #include <time.h>
 #include <nlist.h>
 #include <kvm.h>
@@ -56,17 +56,17 @@
 #include "memory_netbsd1.h"
 
 /*
- * Default swap warning limit (kb) 
+ * Default swap warning limit (kb)
  */
 #define DEFAULTMINIMUMSWAP 16000
 
 /*
- * Swap warning limit 
+ * Swap warning limit
  */
 long            minimumswap;
 
 /*
- * Swap info 
+ * Swap info
  */
 quad_t          swapTotal;
 quad_t          swapUsed;
@@ -115,12 +115,12 @@ init_memory_netbsd1(void)
 
     /*
      * Define the OID pointer to the top of the mib tree that we're
-     * registering underneath 
+     * registering underneath
      */
     oid             mem_variables_oid[] = { UCDAVIS_MIB, MEMMIBNUM };
 
     /*
-     * register ourselves with the agent to handle our mib tree 
+     * register ourselves with the agent to handle our mib tree
      */
     REGISTER_MIB("ucd-snmp/memory", extensible_mem_variables, variable2,
                  mem_variables_oid);
@@ -148,11 +148,11 @@ memory_free_config(void)
  * Arguments:
  * vp     IN      - pointer to variable entry that points here
  * name    IN/OUT  - IN/name requested, OUT/name found
- * length  IN/OUT  - length of IN/OUT oid's 
+ * length  IN/OUT  - length of IN/OUT oid's
  * exact   IN      - TRUE if an exact match was requested
  * var_len OUT     - length of variable or 0 if function returned
  * write_method
- * 
+ *
  */
 
 static
@@ -181,20 +181,20 @@ var_extensible_mem(struct variable *vp,
         return (NULL);
 
     /*
-     * Memory info 
+     * Memory info
      */
     sysctl(uvmexp_mib, 2, &uvmexp, &uvmexp_size, NULL, 0);
     sysctl(total_mib, 2, &total, &total_size, NULL, 0);
 
     /*
-     * Physical memory 
+     * Physical memory
      */
     sysctl(phys_mem_mib, 2, &phys_mem, &phys_mem_size, NULL, 0);
 
     long_ret = 0;               /* set to 0 as default */
 
     /*
-     * Page-to-kb macro 
+     * Page-to-kb macro
      */
 #define ptok(p) ((p) * (uvmexp.pagesize >> 10))
 
@@ -220,7 +220,7 @@ var_extensible_mem(struct variable *vp,
         return ((u_char *) (&long_ret));
 
         /*
-         * these are not implemented 
+         * these are not implemented
          */
     case MEMTOTALSWAPTXT:
     case MEMUSEDSWAPTXT:

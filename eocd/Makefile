@@ -2,7 +2,7 @@
 #
 #	Sigrand EOC management server general Makefile
 #	Written 2007 by Artem Y. Polyakov <artpol84@gmail.com>
-#	
+#
 #***********************************************************************************
 
 
@@ -12,8 +12,8 @@ include $(TOPDIR)/version.mk
 
 INCLUDES=-I$(TOPDIR)/include/
 INCLUDES += -I$(TOPDIR)/libconfig/
-CPPFLAGS=$(INCLUDES) -DEOC_VER="\"$(EOC_VER)\"" 
-#-g 
+CPPFLAGS=$(INCLUDES) -DEOC_VER="\"$(EOC_VER)\""
+#-g
 ifeq ($(VIRT),1)
 CPPFLAGS += -DVIRTUAL_DEVS
 endif
@@ -22,7 +22,7 @@ endif
 .PHONY: generic engine devs utils db app-if tar
 
 TARGS :=generic engine devs utils local db app-if
-OBJECTS := build/*.o 
+OBJECTS := build/*.o
 
 #ifneq ($(VIRT),1)
 CROSSDIR=/home/artpol/OpenWRT/
@@ -37,36 +37,36 @@ RANLIB=$(CROSSDIR)/staging_dir_mipsel/bin/mipsel-linux-uclibc-ranlib
 export CXX AR RANLIB CC TOPDIR INCLUDES CPPFLAGS
 
 
-all: $(TARGS) 
+all: $(TARGS)
 	$(CXX) -g $(INCLUDES) -o result main.cpp $(OBJECTS) libconfig++.a
 
-all-mips: $(TARGS) 
+all-mips: $(TARGS)
 	$(CC) $(CPPFLAGS) -c md5.c
-	$(CC) $(CPPFLAGS) -DSHELL -c kdb.c 
+	$(CC) $(CPPFLAGS) -DSHELL -c kdb.c
 	$(CXX) $(CPPFLAGS) -o eocd eocd.cpp kdb.o md5.o $(OBJECTS) libconfig/.libs/libconfig++.a
 
-fake-mips: $(TARGS) 
+fake-mips: $(TARGS)
 #	$(CXX) -g $(INCLUDES) -o result main.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
 	$(CXX) -g $(INCLUDES) -o eocd-fake eocd-fake.cpp $(OBJECTS) libconfig/.libs/libconfig++.a
 
 memleak-test:
-	$(CXX) -g $(INCLUDES) -o memleak-test memleak-test.cpp kdb.o md5.o $(OBJECTS) 
+	$(CXX) -g $(INCLUDES) -o memleak-test memleak-test.cpp kdb.o md5.o $(OBJECTS)
 
 local: EOC_main.o EOC_pci.o
-	cp $^ build/    
+	cp $^ build/
 
 engine:
-	make all -C engine/ 
+	make all -C engine/
 generic:
-	make all -C generic/ 
+	make all -C generic/
 devs:
-	make all -C devs/ 
+	make all -C devs/
 utils:
-	make all -C utils/ 
+	make all -C utils/
 db:
-	make all -C db/ 
+	make all -C db/
 app-if:
-	make all -C app-if/ 
+	make all -C app-if/
 
 
 clean:

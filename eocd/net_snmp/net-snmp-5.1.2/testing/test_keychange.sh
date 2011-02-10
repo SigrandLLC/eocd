@@ -20,7 +20,7 @@ VERIFY ktest
 STARTTEST
 
 
-#------------------------------------ -o- 
+#------------------------------------ -o-
 # Declarations.
 #
 DATAFILE_PREFIX=data.keychange-
@@ -32,7 +32,7 @@ keychangestring=
 
 
 
-#------------------------------------ -o- 
+#------------------------------------ -o-
 # Test.
 #
 for dfs in $DATAFILE_SUFFIXES; do
@@ -62,7 +62,7 @@ done
 
 
 
-#------------------------------------ -o- 
+#------------------------------------ -o-
 # Cleanup, exit.
 #
 STOPTEST

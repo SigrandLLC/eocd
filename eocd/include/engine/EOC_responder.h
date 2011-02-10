@@ -56,7 +56,7 @@ class EOC_responder{
 			return -1;
 		return handlers[m->type()](this,m,ret,cnt);
     }
-    
+
     // Handlers
     static int _inventory(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt);
     static int _configure(EOC_responder *in,EOC_msg *m,EOC_msg **&ret,int &cnt);

@@ -40,7 +40,7 @@ CREATING THE FIRST USER:
 
     snmpget -v 3 -u myuser -l authNoPriv -a MD5 -A my_password localhost sysUpTime.0
        [ this should return information about how long your agent has been up]
-  
+
     snmpget -v 3 -u myuser -l authPriv   -a MD5 -A my_password
                                          -x DES -X my_password localhost sysUpTime.0
        [ this should return similar information, but encrypts the transmission ]
@@ -68,7 +68,7 @@ CREATING A SECOND USER:
 
   But, you'll have to add a configuration line that allows them access
   to do things.  Do this with another "rwuser" line in your
-  /usr/local/share/snmp/snmpd.conf file (you'll need to stop and start 
+  /usr/local/share/snmp/snmpd.conf file (you'll need to stop and start
   the agent again, or send the agent a SIGHUP signal):
 
     rwuser wes

@@ -2,7 +2,7 @@
 #
 #	Sigrand EOC management server general Makefile
 #	Written 2007 by Artem U. Polyakov <artpol84@gmail.com>
-#	
+#
 #***********************************************************************************
 
 USE_KDB=@USE_KDB@
@@ -19,7 +19,7 @@ CPPFLAGS=$(INCLUDES) -DEOC_VER="\"$(EOC_VER)\""
 .PHONY: generic engine devs utils db app-if
 
 TARGS :=generic engine devs utils local db app-if
-OBJECTS := build/*.o 
+OBJECTS := build/*.o
 
 #ifeq (USE_KDB,0)
 #	OBJECTS += libconfig/.libs/libconfig++.a
@@ -32,26 +32,26 @@ RANLIB=@CROSS_PREFIX@ranlib
 
 export CXX AR RANLIB CC TOPDIR INCLUDES CPPFLAGS
 
-all-mips: $(TARGS) 
+all-mips: $(TARGS)
 	$(CC) $(CPPFLAGS) -c md5.c
-	$(CC) $(CPPFLAGS) -DSHELL -c kdb.c 
-	$(CXX) $(CPPFLAGS) -o eocd eocd.cpp md5.o kdb.o $(OBJECTS) 
+	$(CC) $(CPPFLAGS) -DSHELL -c kdb.c
+	$(CXX) $(CPPFLAGS) -o eocd eocd.cpp md5.o kdb.o $(OBJECTS)
 
 local: EOC_main.o EOC_pci.o
-	cp $^ build/    
+	cp $^ build/
 
 engine:
-	make all -C engine/ 
+	make all -C engine/
 generic:
-	make all -C generic/ 
+	make all -C generic/
 devs:
-	make all -C devs/ 
+	make all -C devs/
 utils:
-	make all -C utils/ 
+	make all -C utils/
 db:
-	make all -C db/ 
+	make all -C db/
 app-if:
-	make all -C app-if/ 
+	make all -C app-if/
 
 
 clean:

@@ -4,10 +4,10 @@
 #include <sys/time.h>
 #include "../comm.h"
 /*
-int 
+int
 print_int_payload(endp_int_payload *p,char *display)
 {
-    printf("%s interval #%d: ",display,p->int_num);	
+    printf("%s interval #%d: ",display,p->int_num);
     printf("es(%u) ses(%u) crc(%d) losws(%u) uas(%u)\n",
 	p->cntrs.es,p->cntrs.ses,p->cntrs.crc,p->cntrs.losws,p->cntrs.uas);
     return 0;
@@ -19,32 +19,32 @@ Interface_Index_By_Name(char *name_1,int s)
 {
     if( !strcmp(name_1,"eth0") ){
 	return 1;
-    }	
+    }
     if( !strcmp(name_1,"dsl1") ){
 	return 2;
     }
 
     if( !strcmp(name_1,"dsl2") ){
 	return 3;
-    }	
+    }
     if( !strcmp(name_1,"dsl3") ){
 	return 4;
     }
     if( !strcmp(name_1,"dsl4") ){
 	return 5;
-    }	
+    }
     if( !strcmp(name_1,"dsl5") ){
 	return 6;
     }
     if( !strcmp(name_1,"dsl6") ){
 	return 7;
-    }	
+    }
     if( !strcmp(name_1,"dsl7") ){
 	return 8;
     }
     if( !strcmp(name_1,"dsl8") ){
 	return 9;
-    }	
+    }
     if( !strcmp(name_1,"dsl9") ){
 	return 10;
     }
@@ -74,8 +74,8 @@ chann_names(shdsl_channel_elem *tbl,int *min_i)
     int tbl_size = 0;
     char ifname[SPAN_NAME_LEN];
     ifname[0] = 0;
-    
-    do{    
+
+    do{
 	p = (span_name_payload*)
 		comm_alloc_request(APP_SPAN_NAME,APP_GET,ifname,&fr1);
 
@@ -156,32 +156,32 @@ Interface_Index_By_Name(char *name_1,int s)
 {
     if( !strcmp(name_1,"eth0") ){
 	return 1;
-    }	
+    }
     if( !strcmp(name_1,"dsl1") ){
 	return 2;
     }
 
     if( !strcmp(name_1,"dsl2") ){
 	return 3;
-    }	
+    }
     if( !strcmp(name_1,"dsl3") ){
 	return 4;
     }
     if( !strcmp(name_1,"dsl4") ){
 	return 5;
-    }	
+    }
     if( !strcmp(name_1,"dsl5") ){
 	return 6;
     }
     if( !strcmp(name_1,"dsl6") ){
 	return 7;
-    }	
+    }
     if( !strcmp(name_1,"dsl7") ){
 	return 8;
     }
     if( !strcmp(name_1,"dsl8") ){
 	return 9;
-    }	
+    }
     if( !strcmp(name_1,"dsl9") ){
 	return 10;
     }
@@ -205,7 +205,7 @@ chann_names()
 
     if( gettimeofday(&tvcur,NULL) )
 	tverr = 1;
-	
+
 //    if( ((tvcur.tv_sec - tbl_tv.tv_sec) > CACHE_INT) || tverr ){
 
         ifname[0] = 0;
@@ -215,10 +215,10 @@ chann_names()
 	    comm_alloc_request(APP_SPAN_NAME,APP_GET,ifname,&fr1);
 
 	if( !p ){
-	
+
     	    return -1;
 	}
-    
+
         do{
 	    set_chan_name(fr1,ifname);
 	    fr2 = comm_request(comm,fr1);
@@ -280,7 +280,7 @@ int main()
 
 
 
-//inventory_info(char 
+//inventory_info(char
 
 /*
 int main()
@@ -312,7 +312,7 @@ int main()
     	    printf("Reqest failed");
     	    return -1;
 	}
-	
+
         p = (endp_int_payload*)comm_frame_payload(fr2);
 	printf("int#%d\n",i);
     }
@@ -323,7 +323,7 @@ int main()
 
 /*
     int i;
-    
+
     if(!c){
 	printf("Cannot initialise connection to eocd\n");
 	return -1;
@@ -331,7 +331,7 @@ int main()
 
     char if_name[SPAN_NAME_LEN];
     if_name[0] = 0;
-    
+
     while(1){
         p = (span_name_payload*)comm_alloc_request(APP_SPAN_NAME,APP_GET,if_name,&fr1);
 	if( !p ){
@@ -360,7 +360,7 @@ int main()
 	    p1 = (span_params_payload*)comm_frame_payload(fr4);
 	    printf("units(%d) loops(%d)\n",p1->units,p1->loops);
 	}
-	
+
 	if( !p->last_msg && p->filled){
 	    strncpy(if_name,p->name[p->filled-1],SPAN_NAME_LEN);
 	} else {

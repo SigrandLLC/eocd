@@ -53,7 +53,7 @@ extern          "C" {
 #define SNMP_FREE(s)		if (s) { free((void *)s); s=NULL; }
 
     /*
-     * XXX Not optimal everywhere. 
+     * XXX Not optimal everywhere.
      */
 /** @def SNMP_MALLOC_STRUCT(s)
     Mallocs memory of sizeof(struct s), zeros it and returns a pointer to it. */

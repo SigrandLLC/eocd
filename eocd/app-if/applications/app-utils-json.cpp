@@ -157,7 +157,7 @@ void json_sensor_events(int indent,int snum,unit_info_t &uinfo)
 {
 	struct sens_event *events = uinfo.sens_events[snum-1];
 	int offset = 0;
-	
+
 	for(int i=0;i<uinfo.sens_events_num[snum-1];i++){
 		do_indent(indent+offset);
 		bprintf("{\n");
@@ -180,10 +180,10 @@ void json_sensor_events(int indent,int snum,unit_info_t &uinfo)
 		strftime(s, 256, "%R", localtime(&events[i].end));
 		do_indent(indent + offset);
 		bprintf("\"time_end\" : \"%s\",\n",s);
-		
+
 		do_indent(indent + offset);
 		bprintf("\"count\" : \"%d\"\n",events[i].cnt);
-		
+
 		offset--;
 		do_indent(indent+offset);
 		bprintf("}");
@@ -208,14 +208,14 @@ void json_sensor(int indent, int snum, int cur, int cnt, unit_info_t &uinfo) {
 	json_sensor_events(indent+2,snum,uinfo);
 	do_indent(indent+1);
 	bprintf("]\n");
-	
+
 	do_indent(indent);
 	bprintf("}");
 }
 
 
-int 
-json_sensors(int indent, channel_info_t &info, unit u) 
+int
+json_sensors(int indent, channel_info_t &info, unit u)
 {
 	if( !unit_is_ok(u,info) ){
 		json_error("Fatal error. Channel %s has no unit %s",info.name,unit2string(u));
@@ -314,7 +314,7 @@ json_m15ints(int indent, channel_info_t &info, unit u, side s)
 		json_error("Fatal error. Not all information accumulated for channel \'%s\'",info.name);
 		exit(1);
 	}
-	
+
 	endp_int_payload *ints = info.units[(int)u-1].sints15m[snum];
 	int cnt = info.units[(int)u-1].sints15m_cnt[snum];
 
@@ -372,7 +372,7 @@ json_m15ints(int indent, channel_info_t &info, unit u, side s)
 		}else{
 			bprintf("},\n");
 		}
-		
+
 	}
 	return 0;
 }
@@ -391,10 +391,10 @@ json_d1ints(int indent, channel_info_t &info, unit u, side s)
 		json_error("Fatal error. Not all information accumulated for channel %s",info.name);
 		exit(1);
 	}
-	
+
 	endp_int_payload *ints = info.units[(int)u-1].sints1d[snum];
 	int cnt = info.units[(int)u-1].sints1d_cnt[snum];
-	
+
 	for (int i = 0; i < cnt; i++) {
 		do_indent(indent + offset);
 		bprintf("{\n");
@@ -461,7 +461,7 @@ json_side(int indent,channel_info_t &info, unit u, side s)
 	do_indent(indent + offset);
 	bprintf("\"loops\" : [\n");
 	indent++;
-	
+
 	// At this moment we have only one loop
 	int loop = 0;
 	int snum = side2index(s,u,info);
@@ -469,7 +469,7 @@ json_side(int indent,channel_info_t &info, unit u, side s)
 		json_error("Fatal error. Cannot resolv side=%d of unit=%d to index",(int)s,(int)u);
 		return -1;
 	}
-	
+
 	endp_cur_payload &cpay = info.units[(int)u-1].sides[snum];
 
 	do_indent(indent + offset);
@@ -618,7 +618,7 @@ json_unit(int indent,channel_info_t &info, unit u)
 		json_error("Wrong unit: %d",u);
 		exit(1);
 	}
-	
+
 	do_indent(indent + offset);
 	bprintf("{\n");
 	offset++;
@@ -684,7 +684,7 @@ json_unit(int indent,channel_info_t &info, unit u)
 	do_indent(indent + offset);
 	bprintf("}\n");
 	return ret;
-err_exit: 
+err_exit:
 	json_error("Incorrect channel unit: %d", u);
 	return -1;
 }
@@ -715,7 +715,7 @@ void json_one_confprof(int indent,confprof_info_t &info)
 	bprintf("}");
 }
 
-int 
+int
 json_cprofiles(profiles_info_t &info)
 {
 	int ret = 0;

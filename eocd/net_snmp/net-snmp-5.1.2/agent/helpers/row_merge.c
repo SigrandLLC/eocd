@@ -25,7 +25,7 @@
  */
 
 /** returns a row_merge handler that can be injected into a given
- *  handler chain.  
+ *  handler chain.
  */
 netsnmp_mib_handler *
 netsnmp_get_row_merge_handler(int prefix_len)
@@ -84,7 +84,7 @@ netsnmp_row_merge_helper_handler(netsnmp_mib_handler *handler,
      * Count the requests, and set up an array to keep
      *  track of the original order.
      */
-    for (request = requests; request; request = request->next) 
+    for (request = requests; request; request = request->next)
 	count++;
 
     /*
@@ -153,15 +153,15 @@ netsnmp_row_merge_helper_handler(netsnmp_mib_handler *handler,
         }
 
         /*
-         * call the next handler with this list, and 
-         * restore the original next pointer 
+         * call the next handler with this list, and
+         * restore the original next pointer
          */
         ret = netsnmp_call_next_handler(handler, reginfo, reqinfo,
 			                saved_requests[i]);
 	saved_requests[i]->next = saved_requests[i+1];
 
         if (ret != SNMP_ERR_NOERROR) {
-	    /* 
+	    /*
 	     * Something went wrong.
 	     * Re-link the rest of the original list,
 	     *   clean up, and report back.
@@ -179,7 +179,7 @@ netsnmp_row_merge_helper_handler(netsnmp_mib_handler *handler,
     return SNMP_ERR_NOERROR;
 }
 
-/** 
+/**
  *  initializes the row_merge helper which then registers a row_merge
  *  handler as a run-time injectable handler for configuration file
  *  use.

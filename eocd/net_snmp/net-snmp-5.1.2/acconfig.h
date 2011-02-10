@@ -37,7 +37,7 @@
    counter64, i64, ui64, union? */
 #undef OPAQUE_SPECIAL_TYPES
 
-/* comment the next line if you are compiling with libsnmp.h 
+/* comment the next line if you are compiling with libsnmp.h
    and are not using the UC-Davis SNMP library. */
 #define UCD_SNMP_LIBRARY 1
 
@@ -141,7 +141,7 @@
 #define NETSNMP_TEMP_FILE_PATTERN "/tmp/snmpdXXXXXX"
 
 /* testing code sections. */
-#undef SNMP_TESTING_CODE 
+#undef SNMP_TESTING_CODE
 
 /* If you don't have root access don't exit upon kmem errors */
 #undef NO_ROOT_ACCESS
@@ -331,7 +331,7 @@
    EXTENSIBLEMIB.AGENTID.???, where ??? is defined below by OSTYPE */
 
 #define HPUX9ID 1
-#define SUNOS4ID 2 
+#define SUNOS4ID 2
 #define SOLARISID 3
 #define OSFID 4
 #define ULTRIXID 5
@@ -421,7 +421,7 @@
 #define UCDAVIS_DOT_MIB_LENGTH	7
 
 /* how long to wait (seconds) for error querys before reseting the error trap.*/
-#define ERRORTIMELENGTH 600 
+#define ERRORTIMELENGTH 600
 
 /* Exec command to fix PROC problems */
 /* %s will be replaced by the process name in error */
@@ -625,7 +625,7 @@
 #define config_arch_require(x,y)
 #define config_parse_dot_conf(w,x,y,z)
 #define config_add_mib(x)
-  
+
 #if defined (WIN32) || defined (mingw32) || defined (cygwin)
 #define ENV_SEPARATOR ";"
 #define ENV_SEPARATOR_CHAR ';'
@@ -675,7 +675,7 @@
 #   define NETSNMP_USE_INLINE
 #else
 #   undef NETSNMP_INLINE
-#   define NETSNMP_INLINE 
+#   define NETSNMP_INLINE
 #   undef NETSNMP_STATIC_INLINE
 #   define NETSNMP_STATIC_INLINE static
 #endif

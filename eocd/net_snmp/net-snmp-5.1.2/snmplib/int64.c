@@ -42,7 +42,7 @@ divBy10(U64 u64, U64 * pu64Q, unsigned int *puR)
 
 
     /*
-     * top 16 bits 
+     * top 16 bits
      */
     ulT = (u64.high >> 16) & 0x0ffff;
     ulQ = ulT / 10;
@@ -50,7 +50,7 @@ divBy10(U64 u64, U64 * pu64Q, unsigned int *puR)
     pu64Q->high = ulQ << 16;
 
     /*
-     * next 16 
+     * next 16
      */
     ulT = (u64.high & 0x0ffff);
     ulT += (ulR << 16);
@@ -59,7 +59,7 @@ divBy10(U64 u64, U64 * pu64Q, unsigned int *puR)
     pu64Q->high = pu64Q->high | ulQ;
 
     /*
-     * next 16 
+     * next 16
      */
     ulT = ((u64.low >> 16) & 0x0ffff) + (ulR << 16);
     ulQ = ulT / 10;
@@ -67,7 +67,7 @@ divBy10(U64 u64, U64 * pu64Q, unsigned int *puR)
     pu64Q->low = ulQ << 16;
 
     /*
-     * final 16 
+     * final 16
      */
     ulT = (u64.low & 0x0ffff);
     ulT += (ulR << 16);
@@ -97,7 +97,7 @@ multBy10(U64 u64, U64 * pu64P)
 
 
     /*
-     * lower 16 bits 
+     * lower 16 bits
      */
     ulT = u64.low & 0x0ffff;
     ulP = ulT * 10;
@@ -105,7 +105,7 @@ multBy10(U64 u64, U64 * pu64P)
     pu64P->low = ulP & 0x0ffff;
 
     /*
-     * next 16 
+     * next 16
      */
     ulT = (u64.low >> 16) & 0x0ffff;
     ulP = (ulT * 10) + ulK;
@@ -113,7 +113,7 @@ multBy10(U64 u64, U64 * pu64P)
     pu64P->low = (ulP & 0x0ffff) << 16 | pu64P->low;
 
     /*
-     * next 16 bits 
+     * next 16 bits
      */
     ulT = u64.high & 0x0ffff;
     ulP = (ulT * 10) + ulK;
@@ -121,7 +121,7 @@ multBy10(U64 u64, U64 * pu64P)
     pu64P->high = ulP & 0x0ffff;
 
     /*
-     * final 16 
+     * final 16
      */
     ulT = (u64.high >> 16) & 0x0ffff;
     ulP = (ulT * 10) + ulK;
@@ -149,7 +149,7 @@ incrByU16(U64 * pu64, unsigned int u16)
 
 
     /*
-     * lower 16 bits 
+     * lower 16 bits
      */
     ulT1 = pu64->low;
     ulT2 = ulT1 & 0x0ffff;
@@ -161,7 +161,7 @@ incrByU16(U64 * pu64, unsigned int u16)
     }
 
     /*
-     * next 16 bits 
+     * next 16 bits
      */
     ulT2 = (ulT1 >> 16) & 0x0ffff;
     ulR = ulT2 + 1;
@@ -172,7 +172,7 @@ incrByU16(U64 * pu64, unsigned int u16)
     }
 
     /*
-     * next 32 - ignore any overflow 
+     * next 32 - ignore any overflow
      */
     pu64->low = (ulT1 + u16) & 0x0FFFFFFFFL;
     pu64->high++;
@@ -190,7 +190,7 @@ incrByU32(U64 * pu64, unsigned int u32)
 }
 
 /*
- * pu64out = pu64one - pu64two 
+ * pu64out = pu64one - pu64two
  */
 void
 u64Subtract(U64 * pu64one, U64 * pu64two, U64 * pu64out)
@@ -385,5 +385,5 @@ main(int argc, char *argv[])
 #endif                          /* TESTING */
 
 /*
- * file: test.c 
+ * file: test.c
  */

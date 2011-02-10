@@ -67,7 +67,7 @@ sub snmptest_cleanup {
             Win32::Process::KillProcess($pid, 0)
           }
         }
-          
+
 	unlink "t/snmptrapd.pid";
     }
 }
@@ -135,7 +135,7 @@ else {
   }
   sleep 2; # Give programs time to start
 
-} 
+}
 
 1;
 

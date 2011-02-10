@@ -50,7 +50,7 @@ if [ "x$SNMP_PATH" = "x" ]; then
     SNMP_PATH=yes
     export SNMP_PATH
 fi
-    
+
 
 # Set up temporary directory
 if [ "x$SNMP_TMPDIR" = "x" -a "x$SNMP_HEADERONLY" != "xyes" ]; then
@@ -99,7 +99,7 @@ if [ "x$SNMP_TEST_DEST" = "x" -a $SNMP_TRANSPORT_SPEC != "unix" ];then
 fi
 export SNMP_FLAGS SNMP_SNMPD_PORT SNMP_SNMPTRAPD_PORT
 
-# Make sure the agent doesn't parse any config file but what we give it.  
+# Make sure the agent doesn't parse any config file but what we give it.
 # this is mainly to protect against a broken agent that doesn't
 # properly handle combinations of -c and -C.  (since I've broke it before).
 SNMPCONFPATH="$SNMP_TMPDIR/does-not-exist"

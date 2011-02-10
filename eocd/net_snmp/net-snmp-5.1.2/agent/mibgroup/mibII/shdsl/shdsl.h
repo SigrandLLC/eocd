@@ -35,18 +35,18 @@ extern FindVarMethod var_SpanConfProfEntry;
 
 /*---- Magic values ----*/
 /*
- * var_SpanConfEntry Magic numbers 
+ * var_SpanConfEntry Magic numbers
  * Represents hdsl2ShdslSpanConfTable:
  * - table indexed by {ifIndex}
  * - each entry represents the complete span in single SHDSL line
  * - information is persistant
  */
-#define CONF_NREPS	0	
-#define CONF_PRFL	1	
+#define CONF_NREPS	0
+#define CONF_PRFL	1
 #define CONF_ALARMPRFL	2
 
 /*
- * var_SpanStatusEntry Magic numbers 
+ * var_SpanStatusEntry Magic numbers
  * Represents hdsl2ShdslSpanStatusTable:
  * - table indexed by {ifIndex},
  * - each entry represents the complete span in single SHDSL line
@@ -60,11 +60,11 @@ extern FindVarMethod var_SpanConfProfEntry;
 #define STATUS_ACTPRATE		5
 
 /*
- * var_InventoryEntry Magic numbers 
+ * var_InventoryEntry Magic numbers
  * Represents hdsl2ShdslInventoryTable:
  * - table indexed by {ifIndex,hdsl2ShdslInvIndex}
  * - info retreive via EOC from units in SHDSL line
- * - each entry represents inventory information for a single unit in 
+ * - each entry represents inventory information for a single unit in
  SHDSL line
  * - information is NOT persistent
  */
@@ -83,9 +83,9 @@ extern FindVarMethod var_SpanConfProfEntry;
 
 
 /*
- * var_EndpointConfEntry Magic numbers 
+ * var_EndpointConfEntry Magic numbers
  * Represents hdsl2ShdslEndpointConfTable:
- * - table indexed by 
+ * - table indexed by
  {ifIndex, hdsl2ShdslInvIndex,hdsl2ShdslEndpointSide,
  hdsl2ShdslEndpointWirePair}
  * - Configuration of alarm profile is setted by user
@@ -98,16 +98,16 @@ extern FindVarMethod var_SpanConfProfEntry;
 
 
 /*
- * var_EndpointCurrEntry Magic numbers 
+ * var_EndpointCurrEntry Magic numbers
  * Represents hdsl2ShdslEndpointCurrTable:
- * - table indexed by 
+ * - table indexed by
  {ifIndex, hdsl2ShdslInvIndex,hdsl2ShdslEndpointSide,
  hdsl2ShdslEndpointWirePair}
  * - contains current status and performance information
  for segment endpoints in HDSL2/SHDSL lines
  * - information is persistent
  */
- 
+
 #define ENDP_STAT_CUR_ATN	3
 #define ENDP_STAT_CUR_SNRMGN	4
 #define ENDP_STAT_CUR_STATUS	5
@@ -131,12 +131,12 @@ extern FindVarMethod var_SpanConfProfEntry;
 
 
 /*
- * var_Endpoint15minEntry Magic numbers 
+ * var_Endpoint15minEntry Magic numbers
  * Represents hdsl2Shdsl15MinIntervalTable:
- * - table indexed by 
+ * - table indexed by
  {ifIndex, hdsl2ShdslInvIndex,hdsl2ShdslEndpointSide,
  hdsl2ShdslEndpointWirePair,hdsl2Shdsl15MinIntervalNumber}
- * - contains history of performance information for segment endpoints in 
+ * - contains history of performance information for segment endpoints in
  HDSL2/SHDSL lines
  * - information is NOT persistent
  */
@@ -151,9 +151,9 @@ extern FindVarMethod var_SpanConfProfEntry;
 
 
 /*
- * var_Endpoint1dayEntry Magic numbers 
+ * var_Endpoint1dayEntry Magic numbers
  * Represents hdsl2Shdsl1DayIntervalTable:
- * - table indexed by 
+ * - table indexed by
  {ifIndex, hdsl2ShdslInvIndex,hdsl2ShdslEndpointSide,
  hdsl2ShdslEndpointWirePair,hdsl2Shdsl1DayIntervalNumber}
  * - contains current status and performance information
@@ -172,40 +172,40 @@ extern FindVarMethod var_SpanConfProfEntry;
 
 
 /*
- * var_EndpointMaintEntry Magic numbers 
+ * var_EndpointMaintEntry Magic numbers
  * Represents hdsl2ShdslEndpointMaintTable:
- * - table indexed by 
+ * - table indexed by
  *	{ifIndex, hdsl2ShdslInvIndex,hdsl2ShdslEndpointSide}
  * - supports maintenance operations (e.g., loopbacks)
  *   to be performed on HDSL2/SHDSL segment endpoints
  * - information is persistent
  */
- 
+
 #define ENDP_MAINT_LOOPBACK 	1
 #define ENDP_MAINT_TIPRINGREV	2
 #define ENDP_MAINT_PWRBACKOFF	3
 #define ENDP_MAINT_SOFTRESTART	4
 
 /*
- * var_UnitMaintEntry Magic numbers 
+ * var_UnitMaintEntry Magic numbers
  * Represents hdsl2ShdslEndpointMaintTable:
- * - table indexed by 
+ * - table indexed by
  *	{ ifIndex,hdsl2ShdslInvIndex }
  * - supports maintenance operations (e.g., loopbacks)
  *   to be performed on HDSL2/SHDSL segment unit
  * - information is persistent
  */
- 
+
 #define UNIT_MAINT_LPB_TO 	1
 #define UNIT_MAINT_PWR_SRC	2
 
 
 /*
- * var_SpanConfProfEntry Magic numbers 
+ * var_SpanConfProfEntry Magic numbers
  * Represents hdsl2ShdslSpanConfProfileTable
- * - table indexed by 
+ * - table indexed by
  *	{ hdsl2ShdslSpanConfProfileName }
- * - SHDSL Line configuration profile table to be 
+ * - SHDSL Line configuration profile table to be
  *   performed on HDSL2/SHDSL segment unit
  * - information is persistent
  */

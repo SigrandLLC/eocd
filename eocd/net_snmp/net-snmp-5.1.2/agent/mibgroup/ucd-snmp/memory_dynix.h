@@ -8,7 +8,7 @@
 #include "mibdefs.h"
 
 /*
- * from /usr/include/sys/mc_param.h 
+ * from /usr/include/sys/mc_param.h
  */
 #define MMU_PAGESIZE 0x1000     /* 4096 bytes */
 

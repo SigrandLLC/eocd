@@ -143,7 +143,7 @@ SOFTWARE.
         struct module_import *imports;  /* List of descriptors being imported */
         int             no_imports;     /* The number of such import descriptors */
         /*
-         * -1 implies the module hasn't been read in yet 
+         * -1 implies the module hasn't been read in yet
          */
         int             modid;  /* The index number of this module */
         struct module  *next;   /* Linked list pointer */
@@ -160,7 +160,7 @@ SOFTWARE.
 
 
     /*
-     * non-aggregate types for tree end nodes 
+     * non-aggregate types for tree end nodes
      */
 #define TYPE_OTHER          0
 #define TYPE_OBJID          1
@@ -224,10 +224,10 @@ SOFTWARE.
     struct tree    *find_best_tree_node(const char *, struct tree *,
                                         u_int *);
     /*
-     * backwards compatability 
+     * backwards compatability
      */
     struct tree    *find_node(const char *, struct tree *);
-    struct tree    *find_node2(const char *, const char *); 
+    struct tree    *find_node2(const char *, const char *);
     struct module  *find_module(int);
     void            adopt_orphans(void);
     char           *snmp_mib_toggle_options(char *options);

@@ -17,7 +17,7 @@ netsnmp_transport *snmp_udp6_transport(struct sockaddr_in6 *addr,
 /*
  * Convert a "traditional" peername into a sockaddr_in6 structure which is
  * written to *addr.  Returns 1 if the conversion was successful, or 0 if it
- * failed.  
+ * failed.
  */
 
 int             netsnmp_sockaddr_in6(struct sockaddr_in6 *addr,
@@ -33,7 +33,7 @@ int             netsnmp_udp6_getSecName(void *opaque, int olength,
                                         int community_len, char **secname);
 
 /*
- * "Constructor" for transport domain object.  
+ * "Constructor" for transport domain object.
  */
 
 void            netsnmp_udp6_ctor(void);

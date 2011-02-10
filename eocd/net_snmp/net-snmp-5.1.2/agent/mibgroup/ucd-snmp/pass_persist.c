@@ -55,7 +55,7 @@ static void     destruct_persist_pipes(void);
 static int      write_persist_pipe(int iindex, const char *data);
 
 /*
- * These are defined in pass.c 
+ * These are defined in pass.c
  */
 extern int      asc2bin(char *p);
 extern int      bin2asc(char *p, size_t n);
@@ -63,11 +63,11 @@ extern int      snmp_oid_min_compare(const oid *, size_t, const oid *,
                                      size_t);
 
 /*
- * the relocatable extensible commands variables 
+ * the relocatable extensible commands variables
  */
 struct variable2 extensible_persist_passthru_variables[] = {
     /*
-     * bogus entry.  Only some of it is actually used. 
+     * bogus entry.  Only some of it is actually used.
      */
     {MIBINDEX, ASN_INTEGER, RWRITE, var_extensible_pass_persist, 0,
      {MIBINDEX}},
@@ -108,7 +108,7 @@ pass_persist_parse_config(const char *token, char *cptr)
     while (isdigit(*cptr) || *cptr == '.')
         cptr++;
     /*
-     * name 
+     * name
      */
     cptr = skip_white(cptr);
     if (cptr == NULL) {
@@ -130,7 +130,7 @@ pass_persist_parse_config(const char *token, char *cptr)
                  (*ppass)->miblen);
 
     /*
-     * argggg -- pasthrus must be sorted 
+     * argggg -- pasthrus must be sorted
      */
     if (numpersistpassthrus > 1) {
         etmp = (struct extensible **)
@@ -160,7 +160,7 @@ pass_persist_free_config(void)
     struct extensible *etmp, *etmp2;
 
     /*
-     * Close any open pipes to any programs 
+     * Close any open pipes to any programs
      */
     destruct_persist_pipes();
 
@@ -191,7 +191,7 @@ var_extensible_pass_persist(struct variable *vp,
     FILE           *file;
 
     /*
-     * Make sure that our basic pipe structure is malloced 
+     * Make sure that our basic pipe structure is malloced
      */
     init_persist_pipes();
 
@@ -203,7 +203,7 @@ var_extensible_pass_persist(struct variable *vp,
                                      persistpassthru->miblen);
         if ((exact && rtest == 0) || (!exact && rtest <= 0)) {
             /*
-             * setup args 
+             * setup args
              */
             if (persistpassthru->miblen >= *length || rtest < 0)
                 sprint_mib_oid(buf, persistpassthru->miboid,
@@ -212,7 +212,7 @@ var_extensible_pass_persist(struct variable *vp,
                 sprint_mib_oid(buf, name, *length);
 
             /*
-             * Open our pipe if necessary 
+             * Open our pipe if necessary
              */
             if (!open_persist_pipe(i, persistpassthru->name)) {
                 return (NULL);
@@ -232,13 +232,13 @@ var_extensible_pass_persist(struct variable *vp,
             if (!write_persist_pipe(i, persistpassthru->command)) {
                 *var_len = 0;
                 /*
-                 * close_persist_pipes is called in write_persist_pipe 
+                 * close_persist_pipes is called in write_persist_pipe
                  */
                 return (NULL);
             }
 
             /*
-             * valid call.  Exec and get output 
+             * valid call.  Exec and get output
              */
             if ((file = persist_pipes[i].fIn)) {
                 if (fgets(buf, sizeof(buf), file) == NULL) {
@@ -247,7 +247,7 @@ var_extensible_pass_persist(struct variable *vp,
                     return (NULL);
                 }
                 /*
-                 * persistant scripts return "NONE\n" on invalid items 
+                 * persistant scripts return "NONE\n" on invalid items
                  */
                 if (!strncmp(buf, "NONE", 4)) {
                     if (exact) {
@@ -259,14 +259,14 @@ var_extensible_pass_persist(struct variable *vp,
                 newlen = parse_miboid(buf, newname);
 
                 /*
-                 * its good, so copy onto name/length 
+                 * its good, so copy onto name/length
                  */
                 memcpy((char *) name, (char *) newname,
                        (int) newlen * sizeof(oid));
                 *length = newlen;
 
                 /*
-                 * set up return pointer for setable stuff 
+                 * set up return pointer for setable stuff
                  */
                 *write_method = setPassPersist;
 
@@ -278,7 +278,7 @@ var_extensible_pass_persist(struct variable *vp,
                 }
 
                 /*
-                 * buf contains the return type, and buf2 contains the data 
+                 * buf contains the return type, and buf2 contains the data
                  */
                 if (!strncasecmp(buf, "string", 6)) {
                     buf2[strlen(buf2) - 1] = 0; /* zap the linefeed */
@@ -366,7 +366,7 @@ setPassPersist(int action,
     unsigned long   utmp;
 
     /*
-     * Make sure that our basic pipe structure is malloced 
+     * Make sure that our basic pipe structure is malloced
      */
     init_persist_pipes();
 
@@ -379,7 +379,7 @@ setPassPersist(int action,
             if (action != COMMIT)
                 return SNMP_ERR_NOERROR;
             /*
-             * setup args 
+             * setup args
              */
             if (persistpassthru->miblen >= name_len || rtest < 0)
                 sprint_mib_oid(buf, persistpassthru->miboid,
@@ -495,14 +495,14 @@ init_persist_pipes(void)
     int             i;
 
     /*
-     * if we are already taken care of, just return 
+     * if we are already taken care of, just return
      */
     if (persist_pipes) {
         return persist_pipes ? 1 : 0;
     }
 
     /*
-     * Otherwise malloc and initialize 
+     * Otherwise malloc and initialize
      */
     persist_pipes = (struct persist_pipe_type *)
         malloc(sizeof(struct persist_pipe_type) *
@@ -527,7 +527,7 @@ destruct_persist_pipes(void)
     int             i;
 
     /*
-     * Return if there are no pipes 
+     * Return if there are no pipes
      */
     if (!persist_pipes) {
         return;
@@ -542,7 +542,7 @@ destruct_persist_pipes(void)
 }
 
 /*
- * returns 0 on failure, 1 on success 
+ * returns 0 on failure, 1 on success
  */
 static int
 open_persist_pipe(int iindex, char *command)
@@ -552,14 +552,14 @@ open_persist_pipe(int iindex, char *command)
     DEBUGMSGTL(("ucd-snmp/pass_persist", "open_persist_pipe(%d,'%s')\n",
                 iindex, command));
     /*
-     * Open if it's not already open 
+     * Open if it's not already open
      */
     if (persist_pipes[iindex].pid == -1) {
         int             fdIn, fdOut, pid;
         get_exec_pipes(command, &fdIn, &fdOut, &pid);
 
         /*
-         * Did we fail? 
+         * Did we fail?
          */
         if (pid == -1) {
             DEBUGMSGTL(("ucd-snmp/pass_persist",
@@ -569,7 +569,7 @@ open_persist_pipe(int iindex, char *command)
         }
 
         /*
-         * If not, fill out our structure 
+         * If not, fill out our structure
          */
         persist_pipes[iindex].pid = pid;
         persist_pipes[iindex].fdIn = fdIn;
@@ -578,18 +578,18 @@ open_persist_pipe(int iindex, char *command)
         persist_pipes[iindex].fOut = fdopen(fdOut, "w");
 
         /*
-         * Setup our -non-buffered-io- 
+         * Setup our -non-buffered-io-
          */
         setbuf(persist_pipes[iindex].fOut, (char *) 0);
     }
 
     /*
-     * Send test packet always so we can self-catch 
+     * Send test packet always so we can self-catch
      */
     {
         char            buf[SNMP_MAXBUF];
         /*
-         * Should catch SIGPIPE around this call! 
+         * Should catch SIGPIPE around this call!
          */
         if (!write_persist_pipe(iindex, "PING\n")) {
             DEBUGMSGTL(("ucd-snmp/pass_persist",
@@ -597,7 +597,7 @@ open_persist_pipe(int iindex, char *command)
             close_persist_pipe(iindex);
 
             /*
-             * Recurse one time if we get a SIGPIPE 
+             * Recurse one time if we get a SIGPIPE
              */
             if (!recurse) {
                 recurse = 1;
@@ -628,7 +628,7 @@ open_persist_pipe(int iindex, char *command)
 
 #if STRUCT_SIGACTION_HAS_SA_SIGACTION
 /*
- * Generic handler 
+ * Generic handler
  */
 void
 sigpipe_handler(int sig, siginfo_t * sip, void *uap)
@@ -645,14 +645,14 @@ write_persist_pipe(int iindex, const char *data)
     int             wret = 0, werrno = 0;
 
     /*
-     * Don't write to a non-existant process 
+     * Don't write to a non-existant process
      */
     if (persist_pipes[iindex].pid == -1) {
         return 0;
     }
 
     /*
-     * Setup our signal action to catch SIGPIPEs 
+     * Setup our signal action to catch SIGPIPEs
      */
     sa.sa_handler = NULL;
 #if STRUCT_SIGACTION_HAS_SA_SIGACTION
@@ -666,13 +666,13 @@ write_persist_pipe(int iindex, const char *data)
     }
 
     /*
-     * Do the write 
+     * Do the write
      */
     wret = write(persist_pipes[iindex].fdOut, data, strlen(data));
     werrno = errno;
 
     /*
-     * Reset the signal handler 
+     * Reset the signal handler
      */
     sigaction(SIGPIPE, &osa, (struct sigaction *) 0);
 
@@ -694,7 +694,7 @@ close_persist_pipe(int iindex)
 {
 
     /*
-     * Check and nix every item 
+     * Check and nix every item
      */
     if (persist_pipes[iindex].fOut) {
         fclose(persist_pipes[iindex].fOut);

@@ -1,5 +1,5 @@
 /*
- * bulk_to_next.h 
+ * bulk_to_next.h
  */
 #ifndef BULK_TO_NEXT_H
 #define BULK_TO_NEXT_H

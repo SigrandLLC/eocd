@@ -260,7 +260,7 @@ string2power(char *a)
 bool
 unit_is_ok(unit u,channel_info_t &info)
 {
-	int i = (int)u-1; 
+	int i = (int)u-1;
 	if( !info.units_map[i] )
 		return false;
 	return true;

@@ -27,7 +27,7 @@ void            init_logmatch(void);
 
 
 /*
- * config logmatch parsing routines 
+ * config logmatch parsing routines
  */
 void            logmatch_free_config(void);
 void            logmatch_parse_config(const char *, char *);

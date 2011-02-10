@@ -41,14 +41,14 @@ check_log_size(unsigned int clientreg, void *clientarg)
 
     for (row = nlmLogTable->table->first_row; row; row = row->next) {
         /*
-         * check max allowed count 
+         * check max allowed count
          */
         count++;
         if (max_logged && count == max_logged)
             break;
 
         /*
-         * check max age 
+         * check max age
          */
 
         data = (netsnmp_table_data_set_storage *) row->data;
@@ -63,14 +63,14 @@ check_log_size(unsigned int clientreg, void *clientarg)
 
     /*
      * we've reached the limit, so keep looping but start deleting
-     * from the beginning 
+     * from the beginning
      */
     for (deleterow = nlmLogTable->table->first_row, row = row->next; row;
          row = row->next) {
         DEBUGMSGTL(("notification_log", "deleting a log entry\n"));
 
         /*
-         * delete contained varbinds 
+         * delete contained varbinds
          */
         for (deletevarrow = nlmLogVarTable->table->first_row;
              deletevarrow; deletevarrow = tmprow) {
@@ -89,7 +89,7 @@ check_log_size(unsigned int clientreg, void *clientarg)
         }
 
         /*
-         * delete the master row 
+         * delete the master row
          */
         tmprow = deleterow->next;
         netsnmp_table_dataset_remove_and_delete_row(nlmLogTable,
@@ -97,7 +97,7 @@ check_log_size(unsigned int clientreg, void *clientarg)
         deleterow = tmprow;
         num_deleted++;
         /*
-         * XXX: delete vars from it's table 
+         * XXX: delete vars from it's table
          */
     }
 }
@@ -114,7 +114,7 @@ initialize_table_nlmLogVariableTable(void)
     netsnmp_table_data_set *table_set;
 
     /*
-     * create the table structure itself 
+     * create the table structure itself
      */
     table_set = netsnmp_create_table_data_set("nlmLogVariableTable");
     nlmLogVarTable = table_set;
@@ -144,7 +144,7 @@ initialize_table_nlmLogVariableTable(void)
 
     /*
      * adding column nlmLogVariableIndex of type ASN_UNSIGNED and access
-     * of NoAccess 
+     * of NoAccess
      */
     DEBUGMSGTL(("initialize_table_nlmLogVariableTable",
                 "adding column nlmLogVariableIndex (#1) of type ASN_UNSIGNED to table nlmLogVariableTable\n"));
@@ -153,7 +153,7 @@ initialize_table_nlmLogVariableTable(void)
                                       ASN_UNSIGNED, 0, NULL, 0);
     /*
      * adding column nlmLogVariableID of type ASN_OBJECT_ID and access of
-     * ReadOnly 
+     * ReadOnly
      */
     DEBUGMSGTL(("initialize_table_nlmLogVariableTable",
                 "adding column nlmLogVariableID (#2) of type ASN_OBJECT_ID to table nlmLogVariableTable\n"));
@@ -161,7 +161,7 @@ initialize_table_nlmLogVariableTable(void)
                                       ASN_OBJECT_ID, 0, NULL, 0);
     /*
      * adding column nlmLogVariableValueType of type ASN_INTEGER and
-     * access of ReadOnly 
+     * access of ReadOnly
      */
     DEBUGMSGTL(("initialize_table_nlmLogVariableTable",
                 "adding column nlmLogVariableValueType (#3) of type ASN_INTEGER to table nlmLogVariableTable\n"));
@@ -170,7 +170,7 @@ initialize_table_nlmLogVariableTable(void)
                                       ASN_INTEGER, 0, NULL, 0);
     /*
      * adding column nlmLogVariableCounter32Val of type ASN_COUNTER and
-     * access of ReadOnly 
+     * access of ReadOnly
      */
     DEBUGMSGTL(("initialize_table_nlmLogVariableTable",
                 "adding column nlmLogVariableCounter32Val (#4) of type ASN_COUNTER to table nlmLogVariableTable\n"));
@@ -179,7 +179,7 @@ initialize_table_nlmLogVariableTable(void)
                                       ASN_COUNTER, 0, NULL, 0);
     /*
      * adding column nlmLogVariableUnsigned32Val of type ASN_UNSIGNED and
-     * access of ReadOnly 
+     * access of ReadOnly
      */
     DEBUGMSGTL(("initialize_table_nlmLogVariableTable",
                 "adding column nlmLogVariableUnsigned32Val (#5) of type ASN_UNSIGNED to table nlmLogVariableTable\n"));
@@ -188,7 +188,7 @@ initialize_table_nlmLogVariableTable(void)
                                       ASN_UNSIGNED, 0, NULL, 0);
     /*
      * adding column nlmLogVariableTimeTicksVal of type ASN_TIMETICKS and
-     * access of ReadOnly 
+     * access of ReadOnly
      */
     DEBUGMSGTL(("initialize_table_nlmLogVariableTable",
                 "adding column nlmLogVariableTimeTicksVal (#6) of type ASN_TIMETICKS to table nlmLogVariableTable\n"));
@@ -197,7 +197,7 @@ initialize_table_nlmLogVariableTable(void)
                                       ASN_TIMETICKS, 0, NULL, 0);
     /*
      * adding column nlmLogVariableInteger32Val of type ASN_INTEGER and
-     * access of ReadOnly 
+     * access of ReadOnly
      */
     DEBUGMSGTL(("initialize_table_nlmLogVariableTable",
                 "adding column nlmLogVariableInteger32Val (#7) of type ASN_INTEGER to table nlmLogVariableTable\n"));
@@ -206,7 +206,7 @@ initialize_table_nlmLogVariableTable(void)
                                       ASN_INTEGER, 0, NULL, 0);
     /*
      * adding column nlmLogVariableOctetStringVal of type ASN_OCTET_STR
-     * and access of ReadOnly 
+     * and access of ReadOnly
      */
     DEBUGMSGTL(("initialize_table_nlmLogVariableTable",
                 "adding column nlmLogVariableOctetStringVal (#8) of type ASN_OCTET_STR to table nlmLogVariableTable\n"));
@@ -215,7 +215,7 @@ initialize_table_nlmLogVariableTable(void)
                                       ASN_OCTET_STR, 0, NULL, 0);
     /*
      * adding column nlmLogVariableIpAddressVal of type ASN_IPADDRESS and
-     * access of ReadOnly 
+     * access of ReadOnly
      */
     DEBUGMSGTL(("initialize_table_nlmLogVariableTable",
                 "adding column nlmLogVariableIpAddressVal (#9) of type ASN_IPADDRESS to table nlmLogVariableTable\n"));
@@ -223,8 +223,8 @@ initialize_table_nlmLogVariableTable(void)
                                       COLUMN_NLMLOGVARIABLEIPADDRESSVAL,
                                       ASN_IPADDRESS, 0, NULL, 0);
     /*
-     * adding column nlmLogVariableOidVal of type ASN_OBJECT_ID and access 
-     * of ReadOnly 
+     * adding column nlmLogVariableOidVal of type ASN_OBJECT_ID and access
+     * of ReadOnly
      */
     DEBUGMSGTL(("initialize_table_nlmLogVariableTable",
                 "adding column nlmLogVariableOidVal (#10) of type ASN_OBJECT_ID to table nlmLogVariableTable\n"));
@@ -233,7 +233,7 @@ initialize_table_nlmLogVariableTable(void)
                                       ASN_OBJECT_ID, 0, NULL, 0);
     /*
      * adding column nlmLogVariableCounter64Val of type ASN_COUNTER64 and
-     * access of ReadOnly 
+     * access of ReadOnly
      */
     DEBUGMSGTL(("initialize_table_nlmLogVariableTable",
                 "adding column nlmLogVariableCounter64Val (#11) of type ASN_COUNTER64 to table nlmLogVariableTable\n"));
@@ -241,8 +241,8 @@ initialize_table_nlmLogVariableTable(void)
                                       COLUMN_NLMLOGVARIABLECOUNTER64VAL,
                                       ASN_COUNTER64, 0, NULL, 0);
     /*
-     * adding column nlmLogVariableOpaqueVal of type ASN_OPAQUE and access 
-     * of ReadOnly 
+     * adding column nlmLogVariableOpaqueVal of type ASN_OPAQUE and access
+     * of ReadOnly
      */
     DEBUGMSGTL(("initialize_table_nlmLogVariableTable",
                 "adding column nlmLogVariableOpaqueVal (#12) of type ASN_OPAQUE to table nlmLogVariableTable\n"));
@@ -251,11 +251,11 @@ initialize_table_nlmLogVariableTable(void)
                                       ASN_OPAQUE, 0, NULL, 0);
 
     /*
-     * registering the table with the master agent 
+     * registering the table with the master agent
      */
     /*
      * note: if you don't need a subhandler to deal with any aspects of
-     * the request, change nlmLogVariableTable_handler to "NULL" 
+     * the request, change nlmLogVariableTable_handler to "NULL"
      */
     netsnmp_register_table_data_set(netsnmp_create_handler_registration
                                     ("nlmLogVariableTable",
@@ -273,7 +273,7 @@ initialize_table_nlmLogTable(void)
     size_t          nlmLogTable_oid_len = OID_LENGTH(nlmLogTable_oid);
 
     /*
-     * create the table structure itself 
+     * create the table structure itself
      */
     nlmLogTable = netsnmp_create_table_data_set("nlmLogTable");
 
@@ -293,15 +293,15 @@ initialize_table_nlmLogTable(void)
 
     /*
      * adding column nlmLogTime of type ASN_TIMETICKS and access of
-     * ReadOnly 
+     * ReadOnly
      */
     DEBUGMSGTL(("initialize_table_nlmLogTable",
                 "adding column nlmLogTime (#2) of type ASN_TIMETICKS to table nlmLogTable\n"));
     netsnmp_table_set_add_default_row(nlmLogTable, COLUMN_NLMLOGTIME,
                                       ASN_TIMETICKS, 0, NULL, 0);
     /*
-     * adding column nlmLogDateAndTime of type ASN_OCTET_STR and access of 
-     * ReadOnly 
+     * adding column nlmLogDateAndTime of type ASN_OCTET_STR and access of
+     * ReadOnly
      */
     DEBUGMSGTL(("initialize_table_nlmLogTable",
                 "adding column nlmLogDateAndTime (#3) of type ASN_OCTET_STR to table nlmLogTable\n"));
@@ -310,15 +310,15 @@ initialize_table_nlmLogTable(void)
                                       ASN_OCTET_STR, 0, NULL, 0);
     /*
      * adding column nlmLogEngineID of type ASN_OCTET_STR and access of
-     * ReadOnly 
+     * ReadOnly
      */
     DEBUGMSGTL(("initialize_table_nlmLogTable",
                 "adding column nlmLogEngineID (#4) of type ASN_OCTET_STR to table nlmLogTable\n"));
     netsnmp_table_set_add_default_row(nlmLogTable, COLUMN_NLMLOGENGINEID,
                                       ASN_OCTET_STR, 0, NULL, 0);
     /*
-     * adding column nlmLogEngineTAddress of type ASN_OCTET_STR and access 
-     * of ReadOnly 
+     * adding column nlmLogEngineTAddress of type ASN_OCTET_STR and access
+     * of ReadOnly
      */
     DEBUGMSGTL(("initialize_table_nlmLogTable",
                 "adding column nlmLogEngineTAddress (#5) of type ASN_OCTET_STR to table nlmLogTable\n"));
@@ -327,7 +327,7 @@ initialize_table_nlmLogTable(void)
                                       ASN_OCTET_STR, 0, NULL, 0);
     /*
      * adding column nlmLogEngineTDomain of type ASN_OBJECT_ID and access
-     * of ReadOnly 
+     * of ReadOnly
      */
     DEBUGMSGTL(("initialize_table_nlmLogTable",
                 "adding column nlmLogEngineTDomain (#6) of type ASN_OBJECT_ID to table nlmLogTable\n"));
@@ -336,7 +336,7 @@ initialize_table_nlmLogTable(void)
                                       ASN_OBJECT_ID, 0, NULL, 0);
     /*
      * adding column nlmLogContextEngineID of type ASN_OCTET_STR and
-     * access of ReadOnly 
+     * access of ReadOnly
      */
     DEBUGMSGTL(("initialize_table_nlmLogTable",
                 "adding column nlmLogContextEngineID (#7) of type ASN_OCTET_STR to table nlmLogTable\n"));
@@ -344,8 +344,8 @@ initialize_table_nlmLogTable(void)
                                       COLUMN_NLMLOGCONTEXTENGINEID,
                                       ASN_OCTET_STR, 0, NULL, 0);
     /*
-     * adding column nlmLogContextName of type ASN_OCTET_STR and access of 
-     * ReadOnly 
+     * adding column nlmLogContextName of type ASN_OCTET_STR and access of
+     * ReadOnly
      */
     DEBUGMSGTL(("initialize_table_nlmLogTable",
                 "adding column nlmLogContextName (#8) of type ASN_OCTET_STR to table nlmLogTable\n"));
@@ -353,8 +353,8 @@ initialize_table_nlmLogTable(void)
                                       COLUMN_NLMLOGCONTEXTNAME,
                                       ASN_OCTET_STR, 0, NULL, 0);
     /*
-     * adding column nlmLogNotificationID of type ASN_OBJECT_ID and access 
-     * of ReadOnly 
+     * adding column nlmLogNotificationID of type ASN_OBJECT_ID and access
+     * of ReadOnly
      */
     DEBUGMSGTL(("initialize_table_nlmLogTable",
                 "adding column nlmLogNotificationID (#9) of type ASN_OBJECT_ID to table nlmLogTable\n"));
@@ -363,11 +363,11 @@ initialize_table_nlmLogTable(void)
                                       ASN_OBJECT_ID, 0, NULL, 0);
 
     /*
-     * registering the table with the master agent 
+     * registering the table with the master agent
      */
     /*
      * note: if you don't need a subhandler to deal with any aspects of
-     * the request, change nlmLogTable_handler to "NULL" 
+     * the request, change nlmLogTable_handler to "NULL"
      */
     netsnmp_register_table_data_set(netsnmp_create_handler_registration
                                     ("nlmLogTable", nlmLogTable_handler,
@@ -377,7 +377,7 @@ initialize_table_nlmLogTable(void)
 
     /*
      * hmm...  5 minutes seems like a reasonable time to check for out
-     * dated notification logs right? 
+     * dated notification logs right?
      */
     snmp_alarm_register(300, SA_REPEAT, check_log_size, NULL);
 }
@@ -411,7 +411,7 @@ init_notification_log(void)
         { 1, 3, 6, 1, 2, 1, 92, 1, 1, 2, 0 };
 
     /*
-     * static variables 
+     * static variables
      */
     netsnmp_register_read_only_counter32_instance
         ("nlmStatsGlobalNotificationsLogged",
@@ -440,13 +440,13 @@ init_notification_log(void)
                                     notification_log_config_handler);
 
     /*
-     * tables 
+     * tables
      */
     initialize_table_nlmLogTable();
     initialize_table_nlmLogVariableTable();
 
     /*
-     * disable flag 
+     * disable flag
      */
     netsnmp_ds_register_config(ASN_BOOLEAN, "snmptrapd", "dontRetainLogs",
 			   NETSNMP_DS_APPLICATION_ID, NETSNMP_DS_APP_DONT_LOG);
@@ -473,7 +473,7 @@ log_notification(struct hostent *host, netsnmp_pdu *pdu,
     u_long          tmpul;
     int             col;
 
-    if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+    if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 			       NETSNMP_DS_APP_DONT_LOG)) {
         return;
     }
@@ -484,7 +484,7 @@ log_notification(struct hostent *host, netsnmp_pdu *pdu,
     default_num++;
 
     /*
-     * indexes to the table 
+     * indexes to the table
      */
     netsnmp_table_row_add_index(row, ASN_OCTET_STR, "default",
                                 strlen("default"));
@@ -492,7 +492,7 @@ log_notification(struct hostent *host, netsnmp_pdu *pdu,
                                 sizeof(default_num));
 
     /*
-     * add the data 
+     * add the data
      */
     gettimeofday(&now, NULL);
     tmpl = netsnmp_timeval_uptime(&now);
@@ -507,10 +507,10 @@ log_notification(struct hostent *host, netsnmp_pdu *pdu,
                            pdu->securityEngineIDLen);
     if (transport && transport->domain == netsnmpUDPDomain) {
         /*
-         * lame way to check for the udp domain 
+         * lame way to check for the udp domain
          */
         /*
-         * no, it is the correct way to do it -- jbpn 
+         * no, it is the correct way to do it -- jbpn
          */
         struct sockaddr_in *addr =
             (struct sockaddr_in *) pdu->transport_data;
@@ -548,7 +548,7 @@ log_notification(struct hostent *host, netsnmp_pdu *pdu,
             myrow = netsnmp_create_table_data_row();
 
             /*
-             * indexes to the table 
+             * indexes to the table
              */
             netsnmp_table_row_add_index(myrow, ASN_OCTET_STR, "default",
                                         strlen("default"));
@@ -559,14 +559,14 @@ log_notification(struct hostent *host, netsnmp_pdu *pdu,
                                         sizeof(vbcount));
 
             /*
-             * OID 
+             * OID
              */
             netsnmp_set_row_column(myrow, COLUMN_NLMLOGVARIABLEID,
                                    ASN_OBJECT_ID, (u_char *) vptr->name,
                                    vptr->name_length * sizeof(oid));
 
             /*
-             * value 
+             * value
              */
             switch (vptr->type) {
             case ASN_OBJECT_ID:
@@ -601,7 +601,7 @@ log_notification(struct hostent *host, netsnmp_pdu *pdu,
 
             default:
                 /*
-                 * unsupported 
+                 * unsupported
                  */
                 DEBUGMSGTL(("log_notification",
                             "skipping type %d\n", vptr->type));
@@ -619,7 +619,7 @@ log_notification(struct hostent *host, netsnmp_pdu *pdu,
     }
 
     /*
-     * store the row 
+     * store the row
      */
     netsnmp_table_dataset_add_row(nlmLogTable, row);
 
@@ -638,7 +638,7 @@ nlmLogTable_handler(netsnmp_mib_handler *handler,
      * perform anything here that you need to do.  The requests have
      * already been processed by the master table_dataset handler, but
      * this gives you chance to act on the request in some other way if
-     * need be. 
+     * need be.
      */
     return SNMP_ERR_NOERROR;
 }
@@ -654,7 +654,7 @@ nlmLogVariableTable_handler(netsnmp_mib_handler *handler,
      * perform anything here that you need to do.  The requests have
      * already been processed by the master table_dataset handler, but
      * this gives you chance to act on the request in some other way if
-     * need be. 
+     * need be.
      */
     return SNMP_ERR_NOERROR;
 }
@@ -673,12 +673,12 @@ int   notification_handler(netsnmp_pdu           *pdu,
 
     DEBUGMSGTL(( "snmptrapd", "notification_handler\n"));
 
-        if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+        if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 					NETSNMP_DS_APP_NUMERIC_IP)) {
             /*
              * Right, apparently a name lookup is wanted.  This is only
              * reasonable for the UDP and TCP transport domains (we
-             * don't want to try to be too clever here).  
+             * don't want to try to be too clever here).
              */
             if (transport != NULL
                 && (transport->domain == netsnmpUDPDomain
@@ -693,7 +693,7 @@ int   notification_handler(netsnmp_pdu           *pdu,
                  */
                 struct sockaddr_in *addr =
                     (struct sockaddr_in *) pdu->transport_data;
-                if (addr != NULL && 
+                if (addr != NULL &&
 		    pdu->transport_data_length == sizeof(struct sockaddr_in)) {
                     host = gethostbyaddr((char *) &(addr->sin_addr),
 					     sizeof(struct in_addr), AF_INET);

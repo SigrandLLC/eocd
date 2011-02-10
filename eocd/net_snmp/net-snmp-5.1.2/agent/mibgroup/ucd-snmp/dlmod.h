@@ -7,7 +7,7 @@
 #define _MIBGROUP_DLMOD_H
 
 /*
- * TODO #include "mibdefs.h" 
+ * TODO #include "mibdefs.h"
  */
 
 config_add_mib(UCD-DLMOD-MIB)

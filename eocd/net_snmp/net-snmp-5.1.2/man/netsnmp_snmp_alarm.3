@@ -2,7 +2,7 @@
 .ad l
 .nh
 .SH NAME
-generic library based alarm timers for various parts of an application \- 
+generic library based alarm timers for various parts of an application \-
 .SS "Functions"
 
 .in +1c
@@ -51,7 +51,7 @@ generic library based alarm timers for various parts of an application \-
 .RI "\fIThis function offers finer granularity as to when the callback function is called by making use of t->tv_usec value forming the 'when' aspect of \fBsnmp_alarm_register()\fP. \fP"
 .in -1c
 .SH "Function Documentation"
-.PP 
+.PP
 .SS "unsigned int snmp_alarm_register (unsigned int when, unsigned int flags, SNMPAlarmCallback * thecallback, void * clientarg)"
 .PP
 This function registers function callbacks to occur at a speciifc time in the future. \fBParameters:\fP
@@ -72,11 +72,11 @@ Returns a unique unsigned integer(which is also passed as the first argument of 
 .PP
 \fBSee also:\fP
 .RS 4
-\fBsnmp_alarm_unregister\fP 
+\fBsnmp_alarm_unregister\fP
 .PP
-\fBsnmp_alarm_register_hr\fP 
+\fBsnmp_alarm_register_hr\fP
 .PP
-\fBsnmp_alarm_unregister_all\fP 
+\fBsnmp_alarm_unregister_all\fP
 .RE
 .PP
 
@@ -110,11 +110,11 @@ Returns a unique unsigned integer(which is also passed as the first argument of 
 .PP
 \fBSee also:\fP
 .RS 4
-\fBsnmp_alarm_register\fP 
+\fBsnmp_alarm_register\fP
 .PP
-\fBsnmp_alarm_unregister\fP 
+\fBsnmp_alarm_unregister\fP
 .PP
-\fBsnmp_alarm_unregister_all\fP 
+\fBsnmp_alarm_unregister_all\fP
 .RE
 .PP
 Definition at line 472 of file snmp_alarm.c.
@@ -134,11 +134,11 @@ void
 .PP
 \fBSee also:\fP
 .RS 4
-\fBsnmp_alarm_register\fP 
+\fBsnmp_alarm_register\fP
 .PP
-\fBsnmp_alarm_register_hr\fP 
+\fBsnmp_alarm_register_hr\fP
 .PP
-\fBsnmp_alarm_unregister_all\fP 
+\fBsnmp_alarm_unregister_all\fP
 .RE
 .PP
 Definition at line 147 of file snmp_alarm.c.
@@ -151,11 +151,11 @@ void
 .PP
 \fBSee also:\fP
 .RS 4
-\fBsnmp_alarm_register\fP 
+\fBsnmp_alarm_register\fP
 .PP
-\fBsnmp_alarm_register_hr\fP 
+\fBsnmp_alarm_register_hr\fP
 .PP
-\fBsnmp_alarm_unregister\fP 
+\fBsnmp_alarm_unregister\fP
 .RE
 .PP
 Definition at line 180 of file snmp_alarm.c.

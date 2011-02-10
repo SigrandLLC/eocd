@@ -35,8 +35,8 @@ for these MIBs, it passes these queries to the peer.
 
 [7] Who implemented SMUX for ucd-snmp?
 SMUX was implemented by Rohit Dube. He had oodles of help from
-ucd-snmp-coders (Dave, Niels, Wes, Simon, Felix, Leonti) and 
-gated-people (Acee, Feiyi, Larry, Sue). [If I missed somebody, sorry in 
+ucd-snmp-coders (Dave, Niels, Wes, Simon, Felix, Leonti) and
+gated-people (Acee, Feiyi, Larry, Sue). [If I missed somebody, sorry in
 advance and do let me know].  Later, Nick Amato re-write the entire
 SMUX package so the code today is mostly his.
 

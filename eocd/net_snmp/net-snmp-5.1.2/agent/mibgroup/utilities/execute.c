@@ -180,7 +180,7 @@ tokenize_exec_command( char *command, int *argc )
     }
     argv[count] = 0;
     *argc       = count;
-        
+
     return argv;
 }
 
@@ -272,7 +272,7 @@ run_exec_command( char *command, char *input,
 	close(opipe[1]);
 	return -1;
     }
-    
+
 #else
     /*
      * If necessary, fall back to using 'system'

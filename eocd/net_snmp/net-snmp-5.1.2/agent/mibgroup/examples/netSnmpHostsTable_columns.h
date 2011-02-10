@@ -6,7 +6,7 @@
 #define NETSNMPHOSTSTABLE_COLUMNS_H
 
 /*
- * column number definitions for table netSnmpHostsTable 
+ * column number definitions for table netSnmpHostsTable
  */
 #define COLUMN_NETSNMPHOSTNAME		1
 #define COLUMN_NETSNMPHOSTADDRESSTYPE		2

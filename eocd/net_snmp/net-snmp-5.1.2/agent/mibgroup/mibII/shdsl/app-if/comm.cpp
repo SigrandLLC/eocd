@@ -31,7 +31,7 @@ extern "C" {
 		char *b;
 		app_frame *fr1 = NULL;
 		int i = 0;
-    
+
 		while(i<3){
 			comm->send(fr->frame_ptr(),fr->frame_size());
 			comm->wait();
@@ -40,7 +40,7 @@ extern "C" {
 				i++;
 				continue;
 			}
-	    
+
 			fr1 = new app_frame(b,size);
 			if( !fr1->frame_ptr() ){
 				delete fr1;
@@ -65,7 +65,7 @@ extern "C" {
 		return fr->payload_ptr();
 	}
 
-	void 
+	void
 	set_chan_name(app_frame *fr,char *name)
 	{
 		fr->chan_name(name);

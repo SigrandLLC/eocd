@@ -84,7 +84,7 @@ void
 netsnmp_subtree_free(netsnmp_subtree *a)
 {
   if (a != NULL) {
-    if (a->variables != NULL && netsnmp_oid_equals(a->name_a, a->namelen, 
+    if (a->variables != NULL && netsnmp_oid_equals(a->name_a, a->namelen,
 					     a->start_a, a->start_len) == 0) {
       SNMP_FREE(a->variables);
     }
@@ -108,15 +108,15 @@ netsnmp_subtree_deepcopy(netsnmp_subtree *a)
     b->start_a = snmp_duplicate_objid(a->start_a, a->start_len);
     b->end_a   = snmp_duplicate_objid(a->end_a,   a->end_len);
     b->label_a = strdup(a->label_a);
-    
-    if (b->name_a == NULL || b->start_a == NULL || 
+
+    if (b->name_a == NULL || b->start_a == NULL ||
 	b->end_a  == NULL || b->label_a == NULL) {
       netsnmp_subtree_free(b);
       return NULL;
     }
 
     if (a->variables != NULL) {
-      b->variables = (struct variable *)malloc(a->variables_len * 
+      b->variables = (struct variable *)malloc(a->variables_len *
 					       a->variables_width);
       if (b->variables != NULL) {
 	memcpy(b->variables, a->variables,a->variables_len*a->variables_width);
@@ -152,16 +152,16 @@ netsnmp_subtree_find_first(const char *context_name)
         context_name = "";
     }
 
-    DEBUGMSGTL(("subtree", "looking for subtree for context: \"%s\"\n", 
+    DEBUGMSGTL(("subtree", "looking for subtree for context: \"%s\"\n",
 		context_name));
     for (ptr = context_subtrees; ptr != NULL; ptr = ptr->next) {
-        if (ptr->context_name != NULL && 
+        if (ptr->context_name != NULL &&
 	    strcmp(ptr->context_name, context_name) == 0) {
             DEBUGMSGTL(("subtree", "found one for: \"%s\"\n", context_name));
             return ptr->first_subtree;
         }
     }
-    DEBUGMSGTL(("subtree", "didn't find a subtree for context: \"%s\"\n", 
+    DEBUGMSGTL(("subtree", "didn't find a subtree for context: \"%s\"\n",
 		context_name));
     return NULL;
 }
@@ -178,7 +178,7 @@ add_subtree(netsnmp_subtree *new_tree, const char *context_name)
         return NULL;
     }
 
-    DEBUGMSGTL(("subtree", "adding subtree for context: \"%s\"\n",	
+    DEBUGMSGTL(("subtree", "adding subtree for context: \"%s\"\n",
 		context_name));
     ptr->next = context_subtrees;
     ptr->first_subtree = new_tree;
@@ -188,7 +188,7 @@ add_subtree(netsnmp_subtree *new_tree, const char *context_name)
 }
 
 netsnmp_subtree *
-netsnmp_subtree_replace_first(netsnmp_subtree *new_tree, 
+netsnmp_subtree_replace_first(netsnmp_subtree *new_tree,
 			      const char *context_name)
 {
     subtree_context_cache *ptr;
@@ -245,7 +245,7 @@ netsnmp_subtree_join(netsnmp_subtree *root)
             DEBUGMSGOID(("subtree", root->end_a, root->end_len));
             DEBUGMSG(("subtree", "\n"));
             /*
-             * Probably need to free children too?  
+             * Probably need to free children too?
              */
             for (c = s->children; c != NULL; c = d) {
                 d = c->children;
@@ -316,7 +316,7 @@ netsnmp_subtree_split(netsnmp_subtree *current, oid name[], int name_len)
 	    whole registration, hence the strange comparison here.  */
 
 	rc = snmp_oid_compare(vp->name, vp->namelen,
-			      name     + current->namelen, 
+			      name     + current->namelen,
 			      name_len - current->namelen);
 
         if (name_len - current->namelen > vp->namelen) {
@@ -336,7 +336,7 @@ netsnmp_subtree_split(netsnmp_subtree *current, oid name[], int name_len)
         if (rc2 < 0) {
             new_sub->variables_len--;
             cp = (char *) new_sub->variables;
-            new_sub->variables = (struct variable *)(cp + 
+            new_sub->variables = (struct variable *)(cp +
 						     new_sub->variables_width);
         }
         vp = (struct variable *) ((char *) vp + current->variables_width);
@@ -351,7 +351,7 @@ netsnmp_subtree_split(netsnmp_subtree *current, oid name[], int name_len)
 
     /* Propogate this split down through any children */
     if (current->children) {
-        new_sub->children = netsnmp_subtree_split(current->children, 
+        new_sub->children = netsnmp_subtree_split(current->children,
 						  name, name_len);
     }
 
@@ -383,7 +383,7 @@ netsnmp_subtree_load(netsnmp_subtree *new_sub, const char *context_name)
     /*  Find the subtree that contains the start of the new subtree (if
 	any)...*/
 
-    tree1 = netsnmp_subtree_find(new_sub->start_a, new_sub->start_len, 
+    tree1 = netsnmp_subtree_find(new_sub->start_a, new_sub->start_len,
 				 NULL, context_name);
 
     /*  ... and the subtree that follows the new one (NULL implies this is the
@@ -403,7 +403,7 @@ netsnmp_subtree_load(netsnmp_subtree *new_sub, const char *context_name)
 	/*  Is there any overlap with later subtrees?  */
 	if (tree2 && snmp_oid_compare(new_sub->end_a, new_sub->end_len,
 				      tree2->start_a, tree2->start_len) > 0) {
-	    new2 = netsnmp_subtree_split(new_sub, 
+	    new2 = netsnmp_subtree_split(new_sub,
 					 tree2->start_a, tree2->start_len);
 	}
 
@@ -436,9 +436,9 @@ netsnmp_subtree_load(netsnmp_subtree *new_sub, const char *context_name)
 	    (rather than at the same point as it), then split the existing
 	    subtree at this point.  */
 
-	if (netsnmp_oid_equals(new_sub->start_a, new_sub->start_len, 
+	if (netsnmp_oid_equals(new_sub->start_a, new_sub->start_len,
 			     tree1->start_a,   tree1->start_len) != 0) {
-	    tree1 = netsnmp_subtree_split(tree1, new_sub->start_a, 
+	    tree1 = netsnmp_subtree_split(tree1, new_sub->start_a,
 					  new_sub->start_len);
 	}
 
@@ -447,17 +447,17 @@ netsnmp_subtree_load(netsnmp_subtree *new_sub, const char *context_name)
 	}
 
 	/*  Now consider the end of this existing subtree:
-	    
+
 	    If it matches the new subtree precisely,
 	            simply merge the new one into the list of children
 
 	    If it includes the whole of the new subtree,
 		    split it at the appropriate point, and merge again
-     
+
 	    If the new subtree extends beyond this existing region,
 	            split it, and recurse to merge the two parts.  */
 
-	rc = snmp_oid_compare(new_sub->end_a, new_sub->end_len, 
+	rc = snmp_oid_compare(new_sub->end_a, new_sub->end_len,
 			      tree1->end_a, tree1->end_len);
 
         switch (rc) {
@@ -475,7 +475,7 @@ netsnmp_subtree_load(netsnmp_subtree *new_sub, const char *context_name)
 
 	    prev = NULL;
 	    next = tree1;
-	
+
 	    while (next && next->namelen > new_sub->namelen) {
 		prev = next;
 		next = next->children;
@@ -486,7 +486,7 @@ netsnmp_subtree_load(netsnmp_subtree *new_sub, const char *context_name)
 		prev = next;
 		next = next->children;
 	    }
-	
+
 	    if (next && (next->namelen  == new_sub->namelen) &&
 		(next->priority == new_sub->priority)) {
 		return MIB_DUPLICATE_REGISTRATION;
@@ -501,7 +501,7 @@ netsnmp_subtree_load(netsnmp_subtree *new_sub, const char *context_name)
 		new_sub->children = next;
 		new_sub->prev = next->prev;
 		new_sub->next = next->next;
-	
+
 		for (next = new_sub->next; next != NULL;next = next->children){
 		    next->prev = new_sub;
 		}
@@ -564,7 +564,7 @@ netsnmp_register_mib(const char *moduleName,
     subtree->start_a = snmp_duplicate_objid(mibloc, mibloclen);
     subtree->end_a   = snmp_duplicate_objid(mibloc, mibloclen);
     subtree->label_a = strdup(moduleName);
-    if (subtree->name_a == NULL || subtree->start_a == NULL || 
+    if (subtree->name_a == NULL || subtree->start_a == NULL ||
 	subtree->end_a  == NULL || subtree->label_a == NULL) {
 	netsnmp_subtree_free(subtree);
 	return MIB_REGISTRATION_FAILED;
@@ -632,9 +632,9 @@ netsnmp_register_mib(const char *moduleName,
     }
 
     /*
-     * mark the MIB as detached, if there's no master agent present as of now 
+     * mark the MIB as detached, if there's no master agent present as of now
      */
-    if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+    if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 			       NETSNMP_DS_AGENT_ROLE) != MASTER_AGENT) {
         extern struct snmp_session *main_session;
         if (main_session == NULL) {
@@ -652,8 +652,8 @@ netsnmp_register_mib(const char *moduleName,
         reg_parms.flags = (u_char) flags;
 
         /*
-         * Should this really be called if the registration hasn't actually 
-         * succeeded?  
+         * Should this really be called if the registration hasn't actually
+         * succeeded?
          */
 
         snmp_call_callbacks(SNMP_CALLBACK_APPLICATION,
@@ -666,7 +666,7 @@ netsnmp_register_mib(const char *moduleName,
 }
 
 /*
- * Reattach a particular node.  
+ * Reattach a particular node.
  */
 
 static void
@@ -675,10 +675,10 @@ register_mib_reattach_node(netsnmp_subtree *s)
     if ((s != NULL) && (s->namelen > 1) && !(s->flags & SUBTREE_ATTACHED)) {
         struct register_parameters reg_parms;
         /*
-         * only do registrations that are not the top level nodes 
+         * only do registrations that are not the top level nodes
          */
         /*
-         * XXX: do this better 
+         * XXX: do this better
          */
         reg_parms.name = s->name_a;
         reg_parms.namelen = s->namelen;
@@ -694,7 +694,7 @@ register_mib_reattach_node(netsnmp_subtree *s)
 }
 
 /*
- * Call callbacks to reattach all our nodes.  
+ * Call callbacks to reattach all our nodes.
  */
 
 void
@@ -714,7 +714,7 @@ register_mib_reattach(void)
 }
 
 /*
- * Mark a node as detached.  
+ * Mark a node as detached.
  */
 
 static void
@@ -728,7 +728,7 @@ register_mib_detach_node(netsnmp_subtree *s)
 /*
  * Mark all our registered OIDs as detached.  This is only really
  * useful for subagent protocols, when a connection is lost or
- * something.  
+ * something.
  */
 
 void
@@ -826,7 +826,7 @@ netsnmp_subtree_unload(netsnmp_subtree *sub, netsnmp_subtree *prev, const char *
         return;
     }
     /*
-     * otherwise, we need to amend our neighbours as well 
+     * otherwise, we need to amend our neighbours as well
      */
 
     if (sub->children == NULL) {        /* just remove this node completely */
@@ -853,7 +853,7 @@ netsnmp_subtree_unload(netsnmp_subtree *sub, netsnmp_subtree *prev, const char *
 }
 
 /**
- * Unregisters an OID that has an associated context name value. 
+ * Unregisters an OID that has an associated context name value.
  * Typically used when a module has multiple contexts defined.  The parameters
  * priority, range_subid, and range_ubound should be used in conjunction with
  * agentx, see RFC 2741, otherwise these values should always be 0.
@@ -878,8 +878,8 @@ netsnmp_subtree_unload(netsnmp_subtree *sub, netsnmp_subtree *prev, const char *
  *
  * @param context  a context name that has been created
  *
- * @return 
- * 
+ * @return
+ *
  */
 int
 unregister_mib_context(oid * name, size_t len, int priority,
@@ -972,7 +972,7 @@ netsnmp_unregister_mib_table_row(oid * name, size_t len, int priority,
     DEBUGMSG(("register_mib", "\n"));
 
     for (; name[var_subid - 1] <= range_ubound; name[var_subid - 1]++) {
-        list = netsnmp_subtree_find(name, len, 
+        list = netsnmp_subtree_find(name, len,
 				netsnmp_subtree_find_first(context), context);
 
         if (list == NULL) {
@@ -982,8 +982,8 @@ netsnmp_unregister_mib_table_row(oid * name, size_t len, int priority,
         for (child = list, prev = NULL; child != NULL;
              prev = child, child = child->children) {
 
-            if (netsnmp_oid_equals(child->name_a, child->namelen, 
-				 name, len) == 0 && 
+            if (netsnmp_oid_equals(child->name_a, child->namelen,
+				 name, len) == 0 &&
 		(child->priority == priority)) {
                 break;          /* found it */
             }
@@ -1000,7 +1000,7 @@ netsnmp_unregister_mib_table_row(oid * name, size_t len, int priority,
             for (child = list, prev = NULL; child != NULL;
                  prev = child, child = child->children) {
 
-                if (netsnmp_oid_equals(child->name_a, child->namelen, 
+                if (netsnmp_oid_equals(child->name_a, child->namelen,
 				      name, len) == 0 &&
                     (child->priority == priority)) {
                     netsnmp_subtree_unload(child, prev, context);
@@ -1083,7 +1083,7 @@ unregister_mibs_by_session(netsnmp_session * ss)
 
                     if (child->reginfo != NULL) {
                         /*
-                         * Don't let's free the session pointer just yet!  
+                         * Don't let's free the session pointer just yet!
                          */
                         child->reginfo->handler->myvoid = NULL;
                         netsnmp_handler_registration_free(child->reginfo);
@@ -1110,7 +1110,7 @@ unregister_mibs_by_session(netsnmp_session * ss)
  * given name/namelen OID pointer
  * name         IN - name of var, OUT - name matched
  * nameLen      IN -number of sub-ids in name, OUT - subid-is in matched name
- * pi           IN - relevant auth info re PDU 
+ * pi           IN - relevant auth info re PDU
  * cvp          IN - relevant auth info re mib module
  */
 
@@ -1125,7 +1125,7 @@ in_a_view(oid *name, size_t *namelen, netsnmp_pdu *pdu, int type)
     }
 
     /*
-     * check for v1 and counter64s, since snmpv1 doesn't support it 
+     * check for v1 and counter64s, since snmpv1 doesn't support it
      */
     if (pdu->version == SNMP_VERSION_1 && type == ASN_COUNTER64) {
         return VACM_NOTINVIEW;
@@ -1294,7 +1294,7 @@ lookup_cache_add(const char *context,
 
     if ((cptr = get_context_lookup_cache(context)) == NULL)
         return;
-    
+
     if (cptr->thecachecount < lookup_cache_size)
         cptr->thecachecount++;
 
@@ -1398,12 +1398,12 @@ netsnmp_subtree_find_next(oid *name, size_t len,
 
     if (myptr != NULL) {
         myptr = myptr->next;
-        while (myptr != NULL && (myptr->variables == NULL || 
+        while (myptr != NULL && (myptr->variables == NULL ||
 				 myptr->variables_len == 0)) {
             myptr = myptr->next;
         }
         return myptr;
-    } else if (subtree != NULL && snmp_oid_compare(name, len, 
+    } else if (subtree != NULL && snmp_oid_compare(name, len,
 				   subtree->start_a, subtree->start_len) < 0) {
         return subtree;
     } else {
@@ -1412,7 +1412,7 @@ netsnmp_subtree_find_next(oid *name, size_t len,
 }
 
 netsnmp_subtree *
-netsnmp_subtree_find(oid *name, size_t len, netsnmp_subtree *subtree, 
+netsnmp_subtree_find(oid *name, size_t len, netsnmp_subtree *subtree,
 		     const char *context_name)
 {
     netsnmp_subtree *myptr;
@@ -1431,7 +1431,7 @@ get_session_for_oid(oid *name, size_t len, const char *context_name)
 {
     netsnmp_subtree *myptr;
 
-    myptr = netsnmp_subtree_find_prev(name, len, 
+    myptr = netsnmp_subtree_find_prev(name, len,
 				      netsnmp_subtree_find_first(context_name),
 				      context_name);
 
@@ -1454,15 +1454,15 @@ setup_tree(void)
     oid joint_ccitt_iso[1] = { 2 };
 
 #ifdef USING_AGENTX_SUBAGENT_MODULE
-    int role =  netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+    int role =  netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 				       NETSNMP_DS_AGENT_ROLE);
 
-    netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID, NETSNMP_DS_AGENT_ROLE, 
+    netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID, NETSNMP_DS_AGENT_ROLE,
 			   MASTER_AGENT);
 #endif
 
-    /* 
-     * we need to have the oid's in the heap, that we can *free* it for every case, 
+    /*
+     * we need to have the oid's in the heap, that we can *free* it for every case,
      * thats the purpose of the duplicate_objid's
      */
     netsnmp_register_null(snmp_duplicate_objid(ccitt, 1), 1);
@@ -1470,12 +1470,12 @@ setup_tree(void)
     netsnmp_register_null(snmp_duplicate_objid(joint_ccitt_iso, 1), 1);
 
 #ifdef USING_AGENTX_SUBAGENT_MODULE
-    netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID, NETSNMP_DS_AGENT_ROLE, 
+    netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID, NETSNMP_DS_AGENT_ROLE,
 			   role);
 #endif
 }
 
-int 
+int
 remove_tree_entry (oid *name, size_t len) {
 
     netsnmp_subtree *sub = NULL;
@@ -1508,7 +1508,7 @@ void
 clear_subtree (netsnmp_subtree *sub) {
 
     netsnmp_subtree *nxt;
-    
+
     if (sub == NULL)
 	return;
 
@@ -1545,7 +1545,7 @@ clear_context(void) {
 
     DEBUGMSGTL(("agent_registry", "clear context\n"));
 
-    ptr = get_top_context_cache(); 
+    ptr = get_top_context_cache();
     while (ptr) {
 	next = ptr->next;
 

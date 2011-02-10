@@ -22,10 +22,10 @@
 /** a global static we'll make use of a lot to map to the right
    datatype to return (which for SNMP integer's is always a long). */
 static u_long long_ret;
-  
+
 
 /*
- * User-defined data access functions for data in table ipCidrRouteTable 
+ * User-defined data access functions for data in table ipCidrRouteTable
  */
 
 u_long         *

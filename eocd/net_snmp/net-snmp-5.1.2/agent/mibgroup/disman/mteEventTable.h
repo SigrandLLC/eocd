@@ -6,7 +6,7 @@
 #define MTEEVENTTABLE_H
 
 /*
- * function declarations 
+ * function declarations
  */
 void            init_mteEventTable(void);
 void            initialize_table_mteEventTable(void);
@@ -20,7 +20,7 @@ void parse_linkUpDownNotifications(const char *token, char *line);
 Netsnmp_Node_Handler mteEventTable_handler;
 
 /*
- * column number definitions for table mteEventTable 
+ * column number definitions for table mteEventTable
  */
 #define COLUMN_MTEEVENTNAME		1
 #define COLUMN_MTEEVENTCOMMENT		2

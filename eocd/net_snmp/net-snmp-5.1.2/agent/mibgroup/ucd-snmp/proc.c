@@ -77,7 +77,7 @@ init_proc(void)
 
     /*
      * define the structure we're going to ask the agent to register our
-     * information at 
+     * information at
      */
     struct variable2 extensible_proc_variables[] = {
         {MIBINDEX, ASN_INTEGER, RONLY, var_extensible_proc, 1, {MIBINDEX}},
@@ -99,12 +99,12 @@ init_proc(void)
 
     /*
      * Define the OID pointer to the top of the mib tree that we're
-     * registering underneath 
+     * registering underneath
      */
     oid             proc_variables_oid[] = { UCDAVIS_MIB, PROCMIBNUM, 1 };
 
     /*
-     * register ourselves with the agent to handle our mib tree 
+     * register ourselves with the agent to handle our mib tree
      */
     REGISTER_MIB("ucd-snmp/proc", extensible_proc_variables, variable2,
                  proc_variables_oid);
@@ -119,7 +119,7 @@ init_proc(void)
 
 /*
  * Define snmpd.conf reading routines first.  They get called
- * automatically by the invocation of a macro in the proc.h file. 
+ * automatically by the invocation of a macro in the proc.h file.
  */
 
 void
@@ -137,7 +137,7 @@ proc_free_config(void)
 }
 
 /*
- * find a give entry in the linked list associated with a proc name 
+ * find a give entry in the linked list associated with a proc name
  */
 static struct myproc *
 get_proc_by_name(char *name)
@@ -159,7 +159,7 @@ procfix_parse_config(const char *token, char *cptr)
     struct myproc  *procp;
 
     /*
-     * don't allow two entries with the same name 
+     * don't allow two entries with the same name
      */
     cptr = copy_nword(cptr, tmpname, sizeof(tmpname));
     if ((procp = get_proc_by_name(tmpname)) == NULL) {
@@ -183,7 +183,7 @@ proc_parse_config(const char *token, char *cptr)
     struct myproc **procp = &procwatch;
 
     /*
-     * don't allow two entries with the same name 
+     * don't allow two entries with the same name
      */
     copy_nword(cptr, tmpname, sizeof(tmpname));
     if (get_proc_by_name(tmpname) != NULL) {
@@ -192,7 +192,7 @@ proc_parse_config(const char *token, char *cptr)
     }
 
     /*
-     * skip past used ones 
+     * skip past used ones
      */
     while (*procp != NULL)
         procp = &((*procp)->next);
@@ -202,7 +202,7 @@ proc_parse_config(const char *token, char *cptr)
         return;                 /* memory alloc error */
     numprocs++;
     /*
-     * not blank and not a comment 
+     * not blank and not a comment
      */
     copy_nword(cptr, (*procp)->name, sizeof((*procp)->name));
     cptr = skip_not_white(cptr);
@@ -225,7 +225,7 @@ proc_parse_config(const char *token, char *cptr)
 }
 
 /*
- * The routine that handles everything 
+ * The routine that handles everything
  */
 
 u_char         *
@@ -361,7 +361,7 @@ get_proc_instance(struct myproc *proc, oid inst)
 #define VP(pp, field) ((pp)->kp_eproc.e_vm . field)
 
 /*
- * these are for keeping track of the proc array 
+ * these are for keeping track of the proc array
  */
 
 static int      nproc = 0;
@@ -463,7 +463,7 @@ sh_count_procs(char *procname)
           total++;
           DEBUGMSGTL(("proc", " Matched.  total count now=%d\n", total));
       }
-#endif      
+#endif
     }
     closedir(dir);
     return total;
@@ -529,14 +529,14 @@ sh_count_procs(char *procname)
                 if (lseek(kmem, (off_t) procp, L_SET) == -1 ||
                     (nread = read(kmem, (char *) procs, psize)) < 0) {
                     /*
-                     * warn("read proc"); 
+                     * warn("read proc");
                      */
                     return (total);
                 } else if (nread != psize) {
                     thisproc = nread / sizeof(struct proc);
                     nproc = 0;
                     /*
-                     * warn("read proc: short read"); 
+                     * warn("read proc: short read");
                      */
                 }
                 procsp = procs;
@@ -591,13 +591,13 @@ getuser(struct proc *aproc)
              sizeof(dmap))) {
             /*
              * warnx("can't read dmap for pid %d from %s", aproc->p_pid,
-             * _PATH_DRUM); 
+             * _PATH_DRUM);
              */
             return (NULL);
         }
         if (SKRD(swap, SW_UADDR, &u.user, SW_UBYTES)) {
             /*
-             * warnx("can't read u for pid %d from %s", aproc->p_pid, _PATH_DRUM); 
+             * warnx("can't read u for pid %d from %s", aproc->p_pid, _PATH_DRUM);
              */
             return (NULL);
         }
@@ -614,7 +614,7 @@ getuser(struct proc *aproc)
      */
     if (SKRD(kmem, aproc->p_addr, uptes, sizeof(uptes))) {
         /*
-         * warnx("can't read user pt for pid %d from %s", aproc->p_pid, _PATH_DRUM); 
+         * warnx("can't read user pt for pid %d from %s", aproc->p_pid, _PATH_DRUM);
          */
         return (NULL);
     }
@@ -624,7 +624,7 @@ getuser(struct proc *aproc)
         if (SKRD(mem, ptob(uptes[i].pg_pfnum), u.upgs[i], NBPG)) {
             /*
              * warnx("can't read user page %u for pid %d from %s",
-             * uptes[i].pg_pfnum, aproc->p_pid, _PATH_MEM); 
+             * uptes[i].pg_pfnum, aproc->p_pid, _PATH_MEM);
              */
             return (NULL);
         }
@@ -697,7 +697,7 @@ sh_count_procs(char *procname)
 
         if (!info.pr_nlwp && !info.pr_lwp.pr_lwpid) {
             /*
-             * Zombie process 
+             * Zombie process
              */
         } else {
             DEBUGMSGTL(("proc","Comparing wanted %s against %s\n",
@@ -744,7 +744,7 @@ sh_count_procs(char *procname)
         }
         u = kvm_getu(kd, p);
         /*
-         * Skip this entry if u or u->u_comm is a NULL pointer 
+         * Skip this entry if u or u->u_comm is a NULL pointer
          */
         if (!u) {
             continue;

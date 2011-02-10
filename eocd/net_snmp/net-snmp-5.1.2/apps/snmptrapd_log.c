@@ -95,13 +95,13 @@ SOFTWARE.
 #endif
 
 /*
- * These flags mark undefined values in the options structure 
+ * These flags mark undefined values in the options structure
  */
 #define UNDEF_CMD '*'
 #define UNDEF_PRECISION -1
 
 /*
- * This structure holds the options for a single format command 
+ * This structure holds the options for a single format command
  */
 typedef struct {
     char            cmd;        /* the format command itself */
@@ -119,7 +119,7 @@ char            separator[32];
  * The rather odd choice of symbols comes from an attempt to avoid
  * colliding with the ones that printf uses, so that someone could add
  * printf functionality to this code and turn it into a library
- * routine in the future.  
+ * routine in the future.
  */
 typedef enum {
     CHR_FMT_DELIM = '%',        /* starts a format command */
@@ -155,7 +155,7 @@ typedef enum {
 } parse_chr_type;
 
 /*
- * These symbols define the states for the parser's state machine 
+ * These symbols define the states for the parser's state machine
  */
 typedef enum {
     PARSE_NORMAL,               /* looking for next character */
@@ -167,7 +167,7 @@ typedef enum {
 } parse_state_type;
 
 /*
- * macros 
+ * macros
  */
 
 #define is_cur_time_cmd(chr) ((((chr) == CHR_CUR_TIME)     \
@@ -247,7 +247,7 @@ typedef enum {
      /*
       * Function:
       *    Returns true if the character is a format command.
-      * 
+      *
       * Input Parameters:
       *    chr - character to check
       */
@@ -277,7 +277,7 @@ typedef enum {
       */
 
 /*
- * prototypes 
+ * prototypes
  */
 extern const char *trap_description(int trap);
 
@@ -294,7 +294,7 @@ init_options(options_type * options)
       */
 {
     /*
-     * initialize the structure's fields 
+     * initialize the structure's fields
      */
     options->cmd = '*';
     options->width = 0;
@@ -347,7 +347,7 @@ realloc_output_temp_bfr(u_char ** buf, size_t * buf_len, size_t * out_len,
     }
 
     /*
-     * Handle leading characters.  
+     * Handle leading characters.
      */
     if ((!options->left_justify) && (temp_to_write < options->width)) {
         zeroes_to_write = options->precision - temp_to_write;
@@ -374,7 +374,7 @@ realloc_output_temp_bfr(u_char ** buf, size_t * buf_len, size_t * out_len,
     }
 
     /*
-     * Truncate the temporary buffer and append its contents.  
+     * Truncate the temporary buffer and append its contents.
      */
     *(*temp_buf + temp_to_write) = '\0';
     if (!snmp_strcat(buf, buf_len, out_len, allow_realloc, *temp_buf)) {
@@ -383,7 +383,7 @@ realloc_output_temp_bfr(u_char ** buf, size_t * buf_len, size_t * out_len,
     }
 
     /*
-     * Handle trailing characters.  
+     * Handle trailing characters.
      */
     if ((options->left_justify) && (temp_to_write < options->width)) {
         for (char_to_write = options->width - temp_to_write;
@@ -401,7 +401,7 @@ realloc_output_temp_bfr(u_char ** buf, size_t * buf_len, size_t * out_len,
     }
 
     /*
-     * Slap on a trailing \0 for good measure.  
+     * Slap on a trailing \0 for good measure.
      */
 
     *(*buf + *out_len) = '\0';
@@ -442,20 +442,20 @@ realloc_handle_time_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
     }
 
     /*
-     * Get the time field to output.  
+     * Get the time field to output.
      */
     if (is_up_time_cmd(fmt_cmd)) {
         time_ul = pdu->time;
     } else {
         /*
-         * Note: a time_t is a signed long.  
+         * Note: a time_t is a signed long.
          */
         time(&time_val);
         time_ul = (unsigned long) time_val;
     }
 
     /*
-     * Handle output in Unix time format.  
+     * Handle output in Unix time format.
      */
     if (fmt_cmd == CHR_CUR_TIME) {
         sprintf(safe_bfr, "%lu", time_ul);
@@ -490,7 +490,7 @@ realloc_handle_time_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
         }
     } else {
         /*
-         * Handle other time fields.  
+         * Handle other time fields.
          */
 
         if (options->alt_format) {
@@ -502,9 +502,9 @@ realloc_handle_time_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
         switch (fmt_cmd) {
 
             /*
-             * Output year. The year field is unusual: if there's a restriction 
+             * Output year. The year field is unusual: if there's a restriction
              * on precision, we want to truncate from the left of the number,
-             * not the right, so someone printing the year 1972 with 2 digit 
+             * not the right, so someone printing the year 1972 with 2 digit
              * precision gets "72" not "19".
              */
         case CHR_CUR_YEAR:
@@ -518,7 +518,7 @@ realloc_handle_time_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
             break;
 
             /*
-             * output month 
+             * output month
              */
         case CHR_CUR_MONTH:
         case CHR_UP_MONTH:
@@ -526,7 +526,7 @@ realloc_handle_time_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
             break;
 
             /*
-             * output day of month 
+             * output day of month
              */
         case CHR_CUR_MDAY:
         case CHR_UP_MDAY:
@@ -534,7 +534,7 @@ realloc_handle_time_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
             break;
 
             /*
-             * output hour 
+             * output hour
              */
         case CHR_CUR_HOUR:
         case CHR_UP_HOUR:
@@ -542,7 +542,7 @@ realloc_handle_time_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
             break;
 
             /*
-             * output minute 
+             * output minute
              */
         case CHR_CUR_MIN:
         case CHR_UP_MIN:
@@ -550,7 +550,7 @@ realloc_handle_time_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
             break;
 
             /*
-             * output second 
+             * output second
              */
         case CHR_CUR_SEC:
         case CHR_UP_SEC:
@@ -558,7 +558,7 @@ realloc_handle_time_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
             break;
 
             /*
-             * unknown format command - just output the character 
+             * unknown format command - just output the character
              */
         default:
             sprintf(safe_bfr, "%c", fmt_cmd);
@@ -566,7 +566,7 @@ realloc_handle_time_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
     }
 
     /*
-     * Output with correct justification, leading zeroes, etc.  
+     * Output with correct justification, leading zeroes, etc.
      */
     return realloc_output_temp_bfr(buf, buf_len, out_len, allow_realloc,
                                    (u_char **) & safe_bfr, options);
@@ -581,7 +581,7 @@ realloc_handle_ip_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
 
      /*
       * Function:
-      *     Handle a format command that deals with an IP address 
+      *     Handle a format command that deals with an IP address
       * or host name.  Append the information to the buffer subject to
       * the buffer's length limit.
       *
@@ -589,7 +589,7 @@ realloc_handle_ip_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
       *    buf, buf_len, out_len, allow_realloc - standard relocatable
       *                                           buffer parameters
       *    options   - options governing how to write the field
-      *    pdu       - information about this trap 
+      *    pdu       - information about this trap
       *    transport - the transport descriptor
       */
 {
@@ -604,12 +604,12 @@ realloc_handle_ip_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
     }
 
     /*
-     * Decide exactly what to output.  
+     * Decide exactly what to output.
      */
     switch (fmt_cmd) {
     case CHR_AGENT_IP:
         /*
-         * Write a numerical address.  
+         * Write a numerical address.
          */
         if (!snmp_strcat(&temp_buf, &temp_buf_len, &temp_out_len, 1,
                          inet_ntoa(*agent_inaddr))) {
@@ -623,9 +623,9 @@ realloc_handle_ip_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
     case CHR_AGENT_NAME:
         /*
          * Try to resolve the agent_addr field as a hostname; fall back
-         * to numerical address.  
+         * to numerical address.
          */
-        if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+        if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
                                     NETSNMP_DS_APP_NUMERIC_IP)) {
             host = gethostbyaddr((char *) pdu->agent_addr, 4, AF_INET);
         }
@@ -650,7 +650,7 @@ realloc_handle_ip_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
 
     case CHR_PDU_IP:
         /*
-         * Write the numerical transport information.  
+         * Write the numerical transport information.
          */
         if (transport != NULL && transport->f_fmtaddr != NULL) {
             char           *tstr =
@@ -682,13 +682,13 @@ realloc_handle_ip_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
         break;
 
         /*
-         * Write a host name.  
+         * Write a host name.
          */
     case CHR_PDU_NAME:
         /*
          * Right, apparently a name lookup is wanted.  This is only reasonable
          * for the UDP and TCP transport domains (we don't want to try to be
-         * too clever here).  
+         * too clever here).
          */
 #ifdef SNMP_TRANSPORT_TCP_DOMAIN
         if (transport != NULL && (transport->domain == netsnmpUDPDomain ||
@@ -700,14 +700,14 @@ realloc_handle_ip_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
             /*
              * This is kind of bletcherous -- it breaks the opacity of
              * transport_data but never mind -- the alternative is a lot of
-             * munging strings from f_fmtaddr.  
+             * munging strings from f_fmtaddr.
              */
             struct sockaddr_in *addr =
                 (struct sockaddr_in *) pdu->transport_data;
             if (addr != NULL
                 && pdu->transport_data_length ==
                 sizeof(struct sockaddr_in)) {
-                if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+                if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
                                             NETSNMP_DS_APP_NUMERIC_IP)) {
                     host =
                         gethostbyaddr((char *) &(addr->sin_addr),
@@ -745,7 +745,7 @@ realloc_handle_ip_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
         } else if (transport != NULL && transport->f_fmtaddr != NULL) {
             /*
              * Some other domain for which we do not know how to do a name
-             * lookup.  Fall back to the formatted transport address.  
+             * lookup.  Fall back to the formatted transport address.
              */
             char           *tstr =
                 transport->f_fmtaddr(transport, pdu->transport_data,
@@ -765,7 +765,7 @@ realloc_handle_ip_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
             }
         } else {
             /*
-             * We are kind of stuck!  
+             * We are kind of stuck!
              */
             if (!snmp_strcat(&temp_buf, &temp_buf_len, &temp_out_len, 1,
                              "<UNKNOWN>")) {
@@ -778,14 +778,14 @@ realloc_handle_ip_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
         break;
 
         /*
-         * Don't know how to handle this command - write the character itself.  
+         * Don't know how to handle this command - write the character itself.
          */
     default:
         temp_buf[0] = fmt_cmd;
     }
 
     /*
-     * Output with correct justification, leading zeroes, etc.  
+     * Output with correct justification, leading zeroes, etc.
      */
     return realloc_output_temp_bfr(buf, buf_len, out_len, allow_realloc,
                                    &temp_buf, options);
@@ -799,7 +799,7 @@ realloc_handle_ent_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
 
      /*
       * Function:
-      *     Handle a format command that deals with the enterprise 
+      *     Handle a format command that deals with the enterprise
       * string.  Append the information to the buffer subject to the
       * buffer's length limit.
       *
@@ -807,7 +807,7 @@ realloc_handle_ent_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
       *    buf, buf_len, out_len, allow_realloc - standard relocatable
       *                                           buffer parameters
       *    options - options governing how to write the field
-      *    pdu     - information about this trap 
+      *    pdu     - information about this trap
       */
 {
     char            fmt_cmd = options->cmd;     /* what we're formatting */
@@ -819,12 +819,12 @@ realloc_handle_ent_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
     }
 
     /*
-     * Decide exactly what to output.  
+     * Decide exactly what to output.
      */
     switch (fmt_cmd) {
     case CHR_PDU_ENT:
         /*
-         * Write the enterprise oid.  
+         * Write the enterprise oid.
          */
         if (!sprint_realloc_objid
             (&temp_buf, &temp_buf_len, &temp_out_len, 1, pdu->enterprise,
@@ -835,14 +835,14 @@ realloc_handle_ent_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
         break;
 
         /*
-         * Don't know how to handle this command - write the character itself.  
+         * Don't know how to handle this command - write the character itself.
          */
     default:
         temp_buf[0] = fmt_cmd;
     }
 
     /*
-     * Output with correct justification, leading zeroes, etc.  
+     * Output with correct justification, leading zeroes, etc.
      */
     return realloc_output_temp_bfr(buf, buf_len, out_len, allow_realloc,
                                    &temp_buf, options);
@@ -856,15 +856,15 @@ realloc_handle_trap_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
 
      /*
       * Function:
-      *     Handle a format command that deals with the trap itself. 
-      * Append the information to the buffer subject to the buffer's 
+      *     Handle a format command that deals with the trap itself.
+      * Append the information to the buffer subject to the buffer's
       * length limit.
       *
       * Input Parameters:
       *    buf, buf_len, out_len, allow_realloc - standard relocatable
       *                                           buffer parameters
       *    options - options governing how to write the field
-      *    pdu     - information about this trap 
+      *    pdu     - information about this trap
       */
 {
     netsnmp_variable_list *vars;        /* variables assoc with trap */
@@ -880,19 +880,19 @@ realloc_handle_trap_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
     }
 
     /*
-     * Decide exactly what to output.  
+     * Decide exactly what to output.
      */
     switch (fmt_cmd) {
     case CHR_TRAP_NUM:
         /*
-         * Write the trap's number.  
+         * Write the trap's number.
          */
         tout_len = sprintf(temp_buf, "%ld", pdu->trap_type);
         break;
 
     case CHR_TRAP_DESC:
         /*
-         * Write the trap's description.  
+         * Write the trap's description.
          */
         tout_len =
             sprintf(temp_buf, "%s", trap_description(pdu->trap_type));
@@ -900,13 +900,13 @@ realloc_handle_trap_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
 
     case CHR_TRAP_STYPE:
         /*
-         * Write the trap's subtype.  
+         * Write the trap's subtype.
          */
         if (pdu->trap_type != SNMP_TRAP_ENTERPRISESPECIFIC) {
             tout_len = sprintf(temp_buf, "%ld", pdu->specific_type);
         } else {
             /*
-             * Get object ID for the trap.  
+             * Get object ID for the trap.
              */
             size_t          obuf_len = 64, oout_len = 0, trap_oid_len = 0;
             oid             trap_oid[MAX_OID_LEN + 2] = { 0 };
@@ -928,7 +928,7 @@ realloc_handle_trap_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
             trap_oid_len++;
 
             /*
-             * Find the element after the last dot.  
+             * Find the element after the last dot.
              */
             if (!sprint_realloc_objid(&obuf, &obuf_len, &oout_len, 1,
                                       trap_oid, trap_oid_len)) {
@@ -961,7 +961,7 @@ realloc_handle_trap_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
 
     case CHR_TRAP_VARS:
         /*
-         * Write the trap's variables.  
+         * Write the trap's variables.
          */
         if (!sep || !*sep)
             sep = (options->alt_format ? default_alt_sep : default_sep);
@@ -993,13 +993,13 @@ realloc_handle_trap_fmt(u_char ** buf, size_t * buf_len, size_t * out_len,
 
     default:
         /*
-         * Don't know how to handle this command - write the character itself.  
+         * Don't know how to handle this command - write the character itself.
          */
         temp_buf[0] = fmt_cmd;
     }
 
     /*
-     * Output with correct justification, leading zeroes, etc.  
+     * Output with correct justification, leading zeroes, etc.
      */
     return realloc_output_temp_bfr(buf, buf_len, out_len, allow_realloc,
                                    &temp_buf, options);
@@ -1155,7 +1155,7 @@ realloc_dispatch_format_cmd(u_char ** buf, size_t * buf_len,
     char            fmt_cmd = options->cmd;     /* for speed */
 
     /*
-     * choose the appropriate command handler 
+     * choose the appropriate command handler
      */
 
     if (is_cur_time_cmd(fmt_cmd) || is_up_time_cmd(fmt_cmd)) {
@@ -1175,7 +1175,7 @@ realloc_dispatch_format_cmd(u_char ** buf, size_t * buf_len,
                                        allow_realloc, pdu);
     } else {
         /*
-         * unknown format command - just output the character 
+         * unknown format command - just output the character
          */
         char            fmt_cmd_string[2] = { 0, 0 };
         fmt_cmd_string[0] = fmt_cmd;
@@ -1192,7 +1192,7 @@ realloc_handle_backslash(u_char ** buf, size_t * buf_len, size_t * out_len,
 
      /*
       * Function:
-      *     Handle a character following a backslash. Append the resulting 
+      *     Handle a character following a backslash. Append the resulting
       * character to the buffer subject to the buffer's length limit.
       *     This routine currently isn't sophisticated enough to handle
       * \nnn or \xhh formats.
@@ -1206,7 +1206,7 @@ realloc_handle_backslash(u_char ** buf, size_t * buf_len, size_t * out_len,
     char            temp_bfr[3];        /* for bulding temporary strings */
 
     /*
-     * select the proper output character(s) 
+     * select the proper output character(s)
      */
     switch (fmt_cmd) {
     case 'a':
@@ -1301,9 +1301,9 @@ realloc_format_plain_trap(u_char ** buf, size_t * buf_len,
     }
 
     /*
-     * Get info about the sender.  
+     * Get info about the sender.
      */
-    if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+    if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
                                 NETSNMP_DS_APP_NUMERIC_IP)) {
         host = gethostbyaddr((char *) pdu->agent_addr, 4, AF_INET);
     }
@@ -1335,7 +1335,7 @@ realloc_format_plain_trap(u_char ** buf, size_t * buf_len,
     }
 
     /*
-     * Append PDU transport info.  
+     * Append PDU transport info.
      */
     if (transport != NULL && transport->f_fmtaddr != NULL) {
         char           *tstr =
@@ -1359,7 +1359,7 @@ realloc_format_plain_trap(u_char ** buf, size_t * buf_len,
     }
 
     /*
-     * Add security wrapper information.  
+     * Add security wrapper information.
      */
     if (!realloc_handle_wrap_fmt
         (buf, buf_len, out_len, allow_realloc, pdu)) {
@@ -1372,7 +1372,7 @@ realloc_format_plain_trap(u_char ** buf, size_t * buf_len,
     }
 
     /*
-     * Add enterprise information.  
+     * Add enterprise information.
      */
     if (!sprint_realloc_objid(buf, buf_len, out_len, allow_realloc,
                               pdu->enterprise, pdu->enterprise_length)) {
@@ -1394,7 +1394,7 @@ realloc_format_plain_trap(u_char ** buf, size_t * buf_len,
     }
 
     /*
-     * Handle enterprise specific traps.  
+     * Handle enterprise specific traps.
      */
     if (pdu->trap_type == SNMP_TRAP_ENTERPRISESPECIFIC) {
         size_t          obuf_len = 64, oout_len = 0, trap_oid_len = 0;
@@ -1407,7 +1407,7 @@ realloc_format_plain_trap(u_char ** buf, size_t * buf_len,
         }
 
         /*
-         * Get object ID for the trap.  
+         * Get object ID for the trap.
          */
         trap_oid_len = pdu->enterprise_length;
         memcpy(trap_oid, pdu->enterprise, trap_oid_len * sizeof(oid));
@@ -1419,7 +1419,7 @@ realloc_format_plain_trap(u_char ** buf, size_t * buf_len,
         trap_oid_len++;
 
         /*
-         * Find the element after the last dot.  
+         * Find the element after the last dot.
          */
         if (!sprint_realloc_objid(&obuf, &obuf_len, &oout_len, 1,
                                   trap_oid, trap_oid_len)) {
@@ -1436,7 +1436,7 @@ realloc_format_plain_trap(u_char ** buf, size_t * buf_len,
         }
 
         /*
-         * Print trap info.  
+         * Print trap info.
          */
         if (!snmp_strcat
             (buf, buf_len, out_len, allow_realloc,
@@ -1447,7 +1447,7 @@ realloc_format_plain_trap(u_char ** buf, size_t * buf_len,
         free(obuf);
     } else {
         /*
-         * Handle traps that aren't enterprise specific.  
+         * Handle traps that aren't enterprise specific.
          */
         sprintf(safe_bfr, "%ld", pdu->specific_type);
         if (!snmp_strcat
@@ -1458,7 +1458,7 @@ realloc_format_plain_trap(u_char ** buf, size_t * buf_len,
     }
 
     /*
-     * Finish the line.  
+     * Finish the line.
      */
     if (!snmp_strcat
         (buf, buf_len, out_len, allow_realloc,
@@ -1476,7 +1476,7 @@ realloc_format_plain_trap(u_char ** buf, size_t * buf_len,
     }
 
     /*
-     * Finally, output the PDU variables. 
+     * Finally, output the PDU variables.
      */
     for (vars = pdu->variables; vars != NULL; vars = vars->next_variable) {
         if (!snmp_strcat
@@ -1496,7 +1496,7 @@ realloc_format_plain_trap(u_char ** buf, size_t * buf_len,
     }
 
     /*
-     * String is already null-terminated.  That's all folks!  
+     * String is already null-terminated.  That's all folks!
      */
     return 1;
 }
@@ -1533,14 +1533,14 @@ realloc_format_trap(u_char ** buf, size_t * buf_len, size_t * out_len,
 
     memset(separator, 0, sizeof(separator));
     /*
-     * Go until we reach the end of the format string:  
+     * Go until we reach the end of the format string:
      */
     for (fmt_idx = 0; format_str[fmt_idx] != '\0'; fmt_idx++) {
         next_chr = format_str[fmt_idx];
         switch (state) {
         case PARSE_NORMAL:
             /*
-             * Looking for next character.  
+             * Looking for next character.
              */
             if (reset_options) {
                 init_options(&options);
@@ -1594,7 +1594,7 @@ realloc_format_trap(u_char ** buf, size_t * buf_len, size_t * out_len,
 
         case PARSE_BACKSLASH:
             /*
-             * Found a backslash.  
+             * Found a backslash.
              */
             if (!realloc_handle_backslash
                 (buf, buf_len, out_len, allow_realloc, next_chr)) {
@@ -1605,7 +1605,7 @@ realloc_format_trap(u_char ** buf, size_t * buf_len, size_t * out_len,
 
         case PARSE_IN_FORMAT:
             /*
-             * In a format command.  
+             * In a format command.
              */
             reset_options = TRUE;
             if (next_chr == CHR_LEFT_JUST) {
@@ -1644,7 +1644,7 @@ realloc_format_trap(u_char ** buf, size_t * buf_len, size_t * out_len,
 
         case PARSE_GET_WIDTH:
             /*
-             * Parsing a width field.  
+             * Parsing a width field.
              */
             reset_options = TRUE;
             if (isdigit(next_chr)) {
@@ -1675,7 +1675,7 @@ realloc_format_trap(u_char ** buf, size_t * buf_len, size_t * out_len,
 
         case PARSE_GET_PRECISION:
             /*
-             * Parsing a precision field.  
+             * Parsing a precision field.
              */
             reset_options = TRUE;
             if (isdigit(next_chr)) {
@@ -1712,7 +1712,7 @@ realloc_format_trap(u_char ** buf, size_t * buf_len, size_t * out_len,
 
         default:
             /*
-             * Unknown state.  
+             * Unknown state.
              */
             reset_options = TRUE;
             if ((*out_len + 1) >= *buf_len) {

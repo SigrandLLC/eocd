@@ -49,13 +49,13 @@ LIBTOOL_DEPS = @LIBTOOL_DEPS@
 #
 # targets
 #
-all:    sedscript EXAMPLE.conf standardall net-snmp-config-x @PERLTARGS@ 
+all:    sedscript EXAMPLE.conf standardall net-snmp-config-x @PERLTARGS@
 
 start-flag:
 	@touch build-in-progress-flag
 
 end-flag:
-	@rm -f build-in-progress-flag > /dev/null 2>&1 
+	@rm -f build-in-progress-flag > /dev/null 2>&1
 
 libtool:	$(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
@@ -119,7 +119,7 @@ testdirs:
            fi  \
 	done
 
-distall: ${srcdir}/configure ${srcdir}/include/net-snmp/net-snmp-config.h 
+distall: ${srcdir}/configure ${srcdir}/include/net-snmp/net-snmp-config.h
 
 OTHERCLEANTARGETS=EXAMPLE.conf sedscript
 OTHERCLEANTODOS=perlclean

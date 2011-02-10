@@ -1,6 +1,6 @@
 
 mibload
-(save_descriptions, use_long_names) 
+(save_descriptions, use_long_names)
   setmib
   initMib
   addMibDirs

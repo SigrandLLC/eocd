@@ -2,7 +2,7 @@
 .ad l
 .nh
 .SH NAME
-netsnmp_iterator_info_s \- Holds iterator information containing functions which should be called by the iterator_handler to loop over your data set and sort it in a SNMP specific manner.  
+netsnmp_iterator_info_s \- Holds iterator information containing functions which should be called by the iterator_handler to loop over your data set and sort it in a SNMP specific manner.
 
 .PP
 .SH SYNOPSIS
@@ -50,14 +50,14 @@ netsnmp_iterator_info_s \- Holds iterator information containing functions which
 .RI "\fIA pointer to the netsnmp_table_registration_info object this iterator is registered along with. \fP"
 .in -1c
 .SH "Detailed Description"
-.PP 
-Holds iterator information containing functions which should be called by the iterator_handler to loop over your data set and sort it in a SNMP specific manner. 
+.PP
+Holds iterator information containing functions which should be called by the iterator_handler to loop over your data set and sort it in a SNMP specific manner.
 
-The netsnmp_iterator_info typedef can be used instead of directly calling this struct if you would prefer. 
+The netsnmp_iterator_info typedef can be used instead of directly calling this struct if you would prefer.
 .PP
 Definition at line 67 of file table_iterator.h.
 .SH "Field Documentation"
-.PP 
+.PP
 .SS "Netsnmp_Free_Data_Context* \fBnetsnmp_iterator_info_s::free_data_context\fP"
 .PP
 Frees a data context. This will be called at any time a data context needs to be freed. This may be at the same time as a correspondng loop context is freed, or much much later. Multiple data contexts may be kept in existence at any time. Definition at line 96 of file table_iterator.h.
@@ -96,5 +96,5 @@ A pointer to the netsnmp_table_registration_info object this iterator is registe
 Referenced by netsnmp_register_table_iterator(), and netsnmp_table_iterator_helper_handler().
 
 .SH "Author"
-.PP 
+.PP
 Generated automatically by Doxygen for net-snmp from the source code.

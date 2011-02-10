@@ -2,7 +2,7 @@
 #define NSLOGGING_H
 
 /*
- * function declarations 
+ * function declarations
  */
 void            init_nsLogging(void);
 

@@ -14,7 +14,7 @@ USAGE="Usage: `basename $0` start|stop|restart"
 
 
 
-#------------------------------------ -o- 
+#------------------------------------ -o-
 # Globals.
 #
 DAEMONLOG=/var/log/snmpd.log
@@ -31,13 +31,13 @@ DEBUGFLAG=		# -D	# Toggles use of debugging
 
 
 
-#------------------------------------ -o- 
+#------------------------------------ -o-
 # Function definitions.
 #
 killproc() {	# <program> [signal]
-	base= 
-	killlevel="-9" 
-	notset=1 
+	base=
+	killlevel="-9"
+	notset=1
 	pid=
 
 
@@ -126,7 +126,7 @@ pidofproc() {	# <program>
 	#
 	# Try ps.
 	#
-	ps $PSARGS | awk '	BEGIN	{ prog=ARGV[1]; ARGC=1 } 
+	ps $PSARGS | awk '	BEGIN	{ prog=ARGV[1]; ARGC=1 }
 			{	if ((prog == $11) ||
 					(("(" prog ")") == $11) ||
 						((prog ":") == $11))
@@ -138,7 +138,7 @@ pidofproc() {	# <program>
 
 
 
-#------------------------------------ -o- 
+#------------------------------------ -o-
 # Action.
 #
 case "$1" in
@@ -180,7 +180,7 @@ esac
 
 
 
-#------------------------------------ -o- 
+#------------------------------------ -o-
 #
 exit 0
 

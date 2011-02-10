@@ -11,23 +11,23 @@
 <hr>
     <div align=center>
     <font size=-1>
-      <a href="FAQ.html">[Official FAQ]</a> | 
-	<a href="#tokens">[Debug tokens]</a> | 
-	<a href="#agentx">[AgentX]</a> | 
-	<a href="#install">[Install]</a> | 
-	<a href="#disable">[Disable]</a> | 
-	<a href="#errors">[Errors]</a> | 
-	<a href="#bits">[Bits]</a> | 
-	<a href="#embedded">[embedded perl]</a> | 
-	<a href="#smux">[SMUX]</a> | 
-	<a href="#entid">[Enterprise OID]</a> | 
-	<a href="#autodeps">[Automatic dependencies]</a> | 
-	<a href="#cross">[Cross compiling]</a> | 
-	<a href="#static">[Static linking]</a> | 
-	<a href="#readfds">[readfds]</a> | 
-	<a href="#sharing">[Sharing data]</a> | 
-	<a href="man1-mib2c.1.html">[mib2c.array-user.conf]</a> | 
-	<a href="#steps">[Baby Steps flow]</a> | 
+      <a href="FAQ.html">[Official FAQ]</a> |
+	<a href="#tokens">[Debug tokens]</a> |
+	<a href="#agentx">[AgentX]</a> |
+	<a href="#install">[Install]</a> |
+	<a href="#disable">[Disable]</a> |
+	<a href="#errors">[Errors]</a> |
+	<a href="#bits">[Bits]</a> |
+	<a href="#embedded">[embedded perl]</a> |
+	<a href="#smux">[SMUX]</a> |
+	<a href="#entid">[Enterprise OID]</a> |
+	<a href="#autodeps">[Automatic dependencies]</a> |
+	<a href="#cross">[Cross compiling]</a> |
+	<a href="#static">[Static linking]</a> |
+	<a href="#readfds">[readfds]</a> |
+	<a href="#sharing">[Sharing data]</a> |
+	<a href="man1-mib2c.1.html">[mib2c.array-user.conf]</a> |
+	<a href="#steps">[Baby Steps flow]</a> |
       </font>
     </div>
 <hr>
@@ -55,7 +55,7 @@ and add this line to your subagent:
 
 <a name="install"></a><h2>install</h2>
 <pre> INSTALL_PREFIX goes before everything.. so, with the defaults, just
-setting INSTALL_PREFIX=/tmp would result in /tmp/usr/local.. 
+setting INSTALL_PREFIX=/tmp would result in /tmp/usr/local..
 so INSTALL_PREFIX=/tmp prefix=/usr exec_prefix=/usr would go into /tmp/usr
  </pre>
 
@@ -122,7 +122,7 @@ SNMPv2 and beyond uses BITS (RFC 3417, 8.1):
 
 <a name="embedded"></a> <h2>embedded perl</h2>
 <pre> Add the following line to snmpd.conf:
- 
+
    perl do "/path/to/perl_module.pl"
 
 
@@ -283,8 +283,8 @@ the flags for the tools needed for the cross compile:
    export CFLAGS=' -g -fPIC -msoft-float -D_SOFT_FLOAT -Dlinux -mcpu=403'
    export CPPFLAGS='-I$TOOLPATH/include -I$TOOLPATH/target/usr/include'
    export ASFLAGS='-g -gstabs'
-   export LDFLAGS='-Wl,-soname,-Bdynamic -lc' 
-   export LIB='ar rcu' 
+   export LDFLAGS='-Wl,-soname,-Bdynamic -lc'
+   export LIB='ar rcu'
 
    ./configure --build=i686-pc-linux-gnu  --host=powerpc \
            --target=powerpc-hardhat-linux-gnu --with-endianness=big
@@ -295,7 +295,7 @@ the flags for the tools needed for the cross compile:
 
 The mibgroup section is the most OS specific part of the agent. It's likely
 that you will have to remove some of them. You just need to figure out which
-ones to remove. 
+ones to remove.
 
 For example, agent/mibgroup/mibII/tcpTable.c is a common module that doesn't
 work on new platforms. So if it isn't working, omit it during configure, like
@@ -331,8 +331,8 @@ rstory: add -Bstatic to LDFLAGS
  </pre>
 
 <a name="readfds"></a> <h2>readfds</h2>
-<pre> > can you please tell me the meaning of the third argument. obviously the 
-> first parameter to register_readfd is a file descriptor and second is the 
+<pre> > can you please tell me the meaning of the third argument. obviously the
+> first parameter to register_readfd is a file descriptor and second is the
 > callback function.
 
 Correct.
@@ -726,7 +726,7 @@ yyyinjectHandler
      *                    |&lt;------------------+             |
      *                   \|/                               \|/
      * RESERVE1  &lt;object_syntax_checks>                     |
-     *                    |                                 | 
+     *                    |                                 |
      *                  (err?)  Y >------------------------>+
      *                    |                                 |
      *                   \|/                               \|/

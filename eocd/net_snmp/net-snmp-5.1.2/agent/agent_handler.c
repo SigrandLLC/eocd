@@ -22,7 +22,7 @@
 #include <net-snmp/agent/bulk_to_next.h>
 /***********************************************************************/
 /*
- * New Handler based API 
+ * New Handler based API
  */
 /***********************************************************************/
 /** @defgroup handler Net-SNMP Agent handler and extensibility API
@@ -127,23 +127,23 @@ netsnmp_create_handler(const char *name,
  *  @param reg_oid_len is the length of reg_oid, can use the macro,
  *         OID_LENGTH
  *
- *  @param modes is used to configure read/write access.  If modes == 0, 
- *	then modes will automatically be set to the default 
- *	value of only HANDLER_CAN_DEFAULT, which is by default read-only GET 
- *	and GETNEXT requests.  The other two mode options are read only, 
+ *  @param modes is used to configure read/write access.  If modes == 0,
+ *	then modes will automatically be set to the default
+ *	value of only HANDLER_CAN_DEFAULT, which is by default read-only GET
+ *	and GETNEXT requests.  The other two mode options are read only,
  *	HANDLER_CAN_RONLY, and read/write, HANDLER_CAN_RWRITE.
  *
  *		- HANDLER_CAN_GETANDGETNEXT
  *		- HANDLER_CAN_SET
- *		- HANDLER_CAN_GETBULK      
+ *		- HANDLER_CAN_GETBULK
  *
  *		- HANDLER_CAN_RONLY   (HANDLER_CAN_GETANDGETNEXT)
- *		- HANDLER_CAN_RWRITE  (HANDLER_CAN_GETANDGETNEXT | 
+ *		- HANDLER_CAN_RWRITE  (HANDLER_CAN_GETANDGETNEXT |
  *			HANDLER_CAN_SET)
  *		- HANDLER_CAN_DEFAULT HANDLER_CAN_RONLY
  *
  *  @return Returns a pointer to a netsnmp_handler_registration struct.
- *          NULL is returned only when memory could not be allocated for the 
+ *          NULL is returned only when memory could not be allocated for the
  *          netsnmp_handler_registration struct.
  *
  *
@@ -207,14 +207,14 @@ netsnmp_register_handler(netsnmp_handler_registration *reginfo)
     }
 
     /*
-     * don't let them register for absolutely nothing.  Probably a mistake 
+     * don't let them register for absolutely nothing.  Probably a mistake
      */
     if (0 == reginfo->modes) {
         reginfo->modes = HANDLER_CAN_DEFAULT;
     }
 
     /*
-     * for handlers that can't GETBULK, force a conversion handler on them 
+     * for handlers that can't GETBULK, force a conversion handler on them
      */
     if (!(reginfo->modes & HANDLER_CAN_GETBULK)) {
         netsnmp_inject_handler(reginfo,
@@ -272,7 +272,7 @@ netsnmp_register_handler_nocallback(netsnmp_handler_registration *reginfo)
     }
 
     /*
-     * don't let them register for absolutely nothing.  Probably a mistake 
+     * don't let them register for absolutely nothing.  Probably a mistake
      */
     if (0 == reginfo->modes) {
         reginfo->modes = HANDLER_CAN_DEFAULT;
@@ -381,7 +381,7 @@ netsnmp_call_handler(netsnmp_mib_handler *next_handler,
                 se_find_label_in_slist("agent_mode", reqinfo->mode)));
 
     /*
-     * XXX: define acceptable return statuses 
+     * XXX: define acceptable return statuses
      */
     ret = (*nh) (next_handler, reginfo, reqinfo, requests);
 
@@ -479,7 +479,7 @@ netsnmp_call_next_handler_one_request(netsnmp_mib_handler *current,
 {
     netsnmp_request_info *request;
     int ret;
-    
+
     if (!requests) {
         snmp_log(LOG_ERR, "netsnmp_call_next_handler_ONE_REQUEST() called illegally\n");
         return SNMP_ERR_GENERR;
@@ -669,7 +669,7 @@ NETSNMP_INLINE void
 netsnmp_free_delegated_cache(netsnmp_delegated_cache *dcache)
 {
     /*
-     * right now, no extra data is there that needs to be freed 
+     * right now, no extra data is there that needs to be freed
      */
     if (dcache)
         SNMP_FREE(dcache);
@@ -828,7 +828,7 @@ netsnmp_inject_handler_into_subtree(netsnmp_subtree *tp, const char *name,
     netsnmp_mib_handler *mh;
 
     for (tptr = tp; tptr != NULL; tptr = tptr->next) {
-        /*  if (tptr->children) { 
+        /*  if (tptr->children) {
               netsnmp_inject_handler_into_subtree(tptr->children,name,handler);
 	    }   */
         if (strcmp(tptr->label_a, name) == 0) {
@@ -874,7 +874,7 @@ parse_injectHandler_conf(const char *token, char *cptr)
     netsnmp_mib_handler *handler;
 
     /*
-     * XXXWWW: ensure instead that handler isn't inserted twice 
+     * XXXWWW: ensure instead that handler isn't inserted twice
      */
     if (doneit)                 /* we only do this once without restart the agent */
         return;

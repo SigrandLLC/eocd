@@ -190,7 +190,7 @@ foreach my $i (@didfiles) {
 	  else {
             move ("$opts{'I'}/$i", "$opts{'I'}/$i.bak") if (-f "$opts{'I'}/$i");
             if (move ("$didfile{$i}", "$opts{'I'}")) {
-              print("  $didfile{$i} installed in $opts{'I'}\n");	    
+              print("  $didfile{$i} installed in $opts{'I'}\n");
             }
             else {
               print "\nCould not move file $didfile{$i} to $opts{'I'}/$i: $!\n";
@@ -202,7 +202,7 @@ foreach my $i (@didfiles) {
 	    print "\nCould not create $home directory: $!\n";
 	    print ("File $didfile{$i} left in current directory\n");
 	  }
-	  else {	    
+	  else {
 	    move ("$home/$i", "$home/$i.bak") if (-f "$home/$i");
 	    if (move ("$didfile{$i}", "$home")) {
 	      print("  $didfile{$i} installed in $home\n");
@@ -226,7 +226,7 @@ foreach my $i (@didfiles) {
 
 if (!$opts{'p'} && !$opts{'i'} && !$opts{'I'}) {
     Print("\nThese files should be moved to $confpath if you
-want them used by everyone on the system.  In the future, if you add 
+want them used by everyone on the system.  In the future, if you add
 the -i option to the command line I'll copy them there automatically for you.
 
 Or, if you want them for your personal use only, copy them to
@@ -317,7 +317,7 @@ sub do_section {
 			 -mapanswers => { 'f' => 'finished',
 					  'l' => 'list' },
 			 -question => 'Select section',
-			 -descriptions => [map { $confsect->{$_}{info}[0] } 
+			 -descriptions => [map { $confsect->{$_}{info}[0] }
 					   @{$confsect->{'thetokens'}}],
 			 @{$confsect->{'thetokens'}});
 	return @lines if ($line eq "finished");
@@ -466,7 +466,7 @@ sub read_config_group {
     }
     return;
 }
-	
+
 
 #
 # Parse one file
@@ -497,7 +497,7 @@ sub read_config_item {
 	if ($token eq 'steal') {
 	    foreach my $stealfrom (keys(%{$results{$rest}})) {
 		if (!defined($results{$curtoken}{$stealfrom})) {
-		    @{$results{$curtoken}{$stealfrom}} = 
+		    @{$results{$curtoken}{$stealfrom}} =
 			@{$results{$rest}{$stealfrom}};
 		}
 	    }
@@ -593,7 +593,7 @@ sub get_answer {
     $question .= " (default = $defaultval)" if (defined($defaultval) && $defaultval ne "");
     $question .= ": ";
     my $ans = $term->readline($question);
-    return $defaultval if ($ans eq "" && defined($defaultval) && 
+    return $defaultval if ($ans eq "" && defined($defaultval) &&
 			   $defaultval ne "");
     while (!(!defined($regexp) ||
 	     $regexp eq "" ||
@@ -601,11 +601,11 @@ sub get_answer {
 	print "invalid answer!  It must match this regular expression: $regexp\n";
 	$ans = $term->readline($question);
     }
-    return $defaultval if ($ans eq "" && defined($defaultval) && 
+    return $defaultval if ($ans eq "" && defined($defaultval) &&
 			   $defaultval ne "");
     return $ans;
 }
-    
+
 sub valid_answers {
     my @list;
     foreach $i (@_) {
@@ -656,7 +656,7 @@ sub display_menu {
     }
     my @answers = @_;
     my @list;
-    if (defined($config{'-descriptions'}) && 
+    if (defined($config{'-descriptions'}) &&
 	ref($config{'-descriptions'}) eq "ARRAY") {
 	@list = @{$config{'-descriptions'}}
     } else {
@@ -679,7 +679,7 @@ sub display_menu {
 		$maxlen = length($i) if (length($i) > $maxlen);
 	    }
 	    foreach my $i (keys(%{$config{'-otheranswers'}})) {
-		printf("  %-" . $maxlen . "s: %s\n", $i, 
+		printf("  %-" . $maxlen . "s: %s\n", $i,
 		       $config{'-otheranswers'}{$i});
 	    }
 	}
@@ -713,7 +713,7 @@ sub display_menu {
 		    $count = 0;
 		    foreach my $i (@_) {
 			$count++;
-			if ($ans eq "all" || $ans eq "a" 
+			if ($ans eq "all" || $ans eq "a"
 			    || grep(/^$count$/,@list)) {
 			    push @ret, $i;
 			}

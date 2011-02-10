@@ -10,7 +10,7 @@
 void            init_memory(void);
 
 /*
- * config file parsing routines 
+ * config file parsing routines
  */
 void            memory_parse_config(const char *, char *);
 void            memory_free_config(void);

@@ -3,17 +3,17 @@
 .\" that may apply:
 .\" /***********************************************************
 .\" 	Copyright 1988, 1989 by Carnegie Mellon University
-.\" 
+.\"
 .\"                       All Rights Reserved
-.\" 
-.\" Permission to use, copy, modify, and distribute this software and its 
-.\" documentation for any purpose and without fee is hereby granted, 
+.\"
+.\" Permission to use, copy, modify, and distribute this software and its
+.\" documentation for any purpose and without fee is hereby granted,
 .\" provided that the above copyright notice appear in all copies and that
-.\" both that copyright notice and this permission notice appear in 
+.\" both that copyright notice and this permission notice appear in
 .\" supporting documentation, and that the name of CMU not be
 .\" used in advertising or publicity pertaining to distribution of the
-.\" software without specific, written prior permission.  
-.\" 
+.\" software without specific, written prior permission.
+.\"
 .\" CMU DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 .\" ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
 .\" CMU BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
@@ -38,7 +38,7 @@ snmptranslate - translate SNMP OID values into more useful information
 .B snmptranslate
 is an application that translates one or more SNMP object identifier
 values from their symbolic (textual) forms into their numerical forms
-(or vice versa).  
+(or vice versa).
 .PP
 OID is either a numeric or textual object identifier.
 .SH OPTIONS
@@ -106,18 +106,18 @@ and
 .B -Td
 output. The default is very large.
 .PP
-In addition to the above options, 
+In addition to the above options,
 .B snmptranslate
-takes the OID input 
+takes the OID input
 .RB ( -I ),
 MIB parsing
 .RB ( -M )
 and OID output
 .RB ( -O )
-options described in the 
+options described in the
 .BR "INPUT OPTIONS" ", " "MIB PARSING OPTIONS" " and " "OUTPUT OPTIONS"
 sections of the
-.I snmpcmd(1) 
+.I snmpcmd(1)
 manual page.
 .SH EXAMPLES
 .IP \(bu 4
@@ -132,7 +132,7 @@ snmptranslate -Onf -IR sysDescr
 will translate "sysDecr" to:
 .IP
 .RI .iso.org.dod.internet.mgmt.mib-2.system.sysDescr
-.IP \(bu 4 
+.IP \(bu 4
 snmptranslate -Td -OS system.sysDescr
 .br
 will translate "sysDecr" into:
@@ -153,7 +153,7 @@ sysDescr OBJECT-TYPE
                and networking software."
 ::= { iso(1) org(3) dod(6) internet(1) mgmt(2) mib-2(1) system(1) 1 }
 .fi
-.IP \(bu 4 
+.IP \(bu 4
 snmptranslate -Tp -OS system
 .br
 will print the following tree:

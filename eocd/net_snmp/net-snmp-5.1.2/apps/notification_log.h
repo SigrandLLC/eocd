@@ -3,7 +3,7 @@
 #include <net-snmp/agent/agent_handler.h>
 
 /*
- * function declarations 
+ * function declarations
  */
 void            init_notification_log(void);
 Netsnmp_Node_Handler nlmLogTable_handler;
@@ -17,7 +17,7 @@ void
 #define NETSNMP_DS_APP_DONT_LOG    9    /* must match notification_log. */
 
 /*
- * column number definitions for table nlmLogTable 
+ * column number definitions for table nlmLogTable
  */
 #define COLUMN_NLMLOGINDEX		1
 #define COLUMN_NLMLOGTIME		2
@@ -30,7 +30,7 @@ void
 #define COLUMN_NLMLOGNOTIFICATIONID		9
 
 /*
- * column number definitions for table nlmLogVariableTable 
+ * column number definitions for table nlmLogVariableTable
  */
 #define COLUMN_NLMLOGVARIABLEINDEX		1
 #define COLUMN_NLMLOGVARIABLEID		2

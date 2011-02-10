@@ -5,16 +5,16 @@ INTDIR=
 SSL=
 LINKTYPE=
 
-# Set to 1 to allow the building using the DLL version of SNMPLIB.  This is 
+# Set to 1 to allow the building using the DLL version of SNMPLIB.  This is
 # NOT supported as this program is NOT thread safe and it WILL cause
 # problems!
 ALLOW_DLL=0
 
 !IF "$(OS)" == "Windows_NT"
 NULL=
-!ELSE 
+!ELSE
 NULL=nul
-!ENDIF 
+!ENDIF
 
 !IF $(SSL) == 1
 OPENSSL="libeay32.lib"
@@ -44,46 +44,46 @@ CLEAN :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "." /I ".." /I "..\..\snmplib" /I "..\.." /I "..\..\include" /I "..\..\agent" /I "..\..\agent\mibgroup" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "HAVE_WIN32_PLATFORM_SDK" /Fp"$(INTDIR)\snmpd.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "." /I ".." /I "..\..\snmplib" /I "..\.." /I "..\..\include" /I "..\..\agent" /I "..\..\agent\mibgroup" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "HAVE_WIN32_PLATFORM_SDK" /Fp"$(INTDIR)\snmpd.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cpp{$(INTDIR)}.obj::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cxx{$(INTDIR)}.obj::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .c{$(INTDIR)}.sbr::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cpp{$(INTDIR)}.sbr::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cxx{$(INTDIR)}.sbr::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 RSC=rc.exe
-RSC_PROJ=/l 0x409 /fo"$(INTDIR)\winservice.res" /d "NDEBUG" 
+RSC_PROJ=/l 0x409 /fo"$(INTDIR)\winservice.res" /d "NDEBUG"
 BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(INTDIR)\snmpd.bsc" 
+BSC32_FLAGS=/nologo /o"$(INTDIR)\snmpd.bsc"
 BSC32_SBRS= \
-	
+
 LINK32=link.exe
-LINK32_FLAGS=$(OPENSSL) netsnmp.lib netsnmpagent.lib netsnmpmibs.lib netsnmphelpers.lib advapi32.lib ws2_32.lib kernel32.lib user32.lib iphlpapi.lib /nologo /subsystem:console /pdb:none /machine:I386 /out:"..\bin\$(OUTDIR)/snmpd.exe" /libpath:"../lib/release" 
+LINK32_FLAGS=$(OPENSSL) netsnmp.lib netsnmpagent.lib netsnmpmibs.lib netsnmphelpers.lib advapi32.lib ws2_32.lib kernel32.lib user32.lib iphlpapi.lib /nologo /subsystem:console /pdb:none /machine:I386 /out:"..\bin\$(OUTDIR)/snmpd.exe" /libpath:"../lib/release"
 LINK32_OBJS= \
 	"$(INTDIR)\auto_nlist.obj" \
 	"$(INTDIR)\kernel.obj" \
@@ -131,42 +131,42 @@ CLEAN :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "." /I ".." /I "..\..\snmplib" /I "..\.." /I "..\..\include" /I "..\..\agent" /I "..\..\agent\mibgroup" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "HAVE_WIN32_PLATFORM_SDK" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\snmpd.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "." /I ".." /I "..\..\snmplib" /I "..\.." /I "..\..\include" /I "..\..\agent" /I "..\..\agent\mibgroup" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "HAVE_WIN32_PLATFORM_SDK" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\snmpd.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cpp{$(INTDIR)}.obj::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cxx{$(INTDIR)}.obj::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .c{$(INTDIR)}.sbr::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cpp{$(INTDIR)}.sbr::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cxx{$(INTDIR)}.sbr::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 RSC=rc.exe
-RSC_PROJ=/l 0x409 /fo"$(INTDIR)\winservice.res" /d "_DEBUG" 
+RSC_PROJ=/l 0x409 /fo"$(INTDIR)\winservice.res" /d "_DEBUG"
 BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(INTDIR)\snmpd.bsc" 
+BSC32_FLAGS=/nologo /o"$(INTDIR)\snmpd.bsc"
 BSC32_SBRS= \
 	"$(INTDIR)\auto_nlist.sbr" \
 	"$(INTDIR)\kernel.sbr" \
@@ -179,7 +179,7 @@ BSC32_SBRS= \
 <<
 
 LINK32=link.exe
-LINK32_FLAGS=$(OPENSSL) netsnmp.lib netsnmpagent.lib netsnmpmibs.lib netsnmphelpers.lib advapi32.lib ws2_32.lib kernel32.lib user32.lib iphlpapi.lib /nologo /subsystem:console /incremental:no /pdb:"$(INTDIR)\snmpd.pdb" /debug /machine:I386 /out:"..\bin\$(OUTDIR)/snmpd.exe" /pdbtype:sept /libpath:"../lib/debug" 
+LINK32_FLAGS=$(OPENSSL) netsnmp.lib netsnmpagent.lib netsnmpmibs.lib netsnmphelpers.lib advapi32.lib ws2_32.lib kernel32.lib user32.lib iphlpapi.lib /nologo /subsystem:console /incremental:no /pdb:"$(INTDIR)\snmpd.pdb" /debug /machine:I386 /out:"..\bin\$(OUTDIR)/snmpd.exe" /pdbtype:sept /libpath:"../lib/debug"
 LINK32_OBJS= \
 	"$(INTDIR)\auto_nlist.obj" \
 	"$(INTDIR)\kernel.obj" \
@@ -198,16 +198,16 @@ LINK32_OBJS= \
 	-@echo .
 !ENDIF
 
-!ENDIF 
+!ENDIF
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
 !IF EXISTS("snmpd.dep")
 !INCLUDE "snmpd.dep"
-!ELSE 
+!ELSE
 !MESSAGE Warning: cannot find "snmpd.dep"
-!ENDIF 
-!ENDIF 
+!ENDIF
+!ENDIF
 
 
 !IF "$(CFG)" == "release" || "$(CFG)" == "debug"
@@ -227,7 +227,7 @@ SOURCE=..\..\agent\auto_nlist.c
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-!ENDIF 
+!ENDIF
 
 SOURCE=..\..\agent\kernel.c
 
@@ -245,7 +245,7 @@ SOURCE=..\..\agent\kernel.c
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-!ENDIF 
+!ENDIF
 
 SOURCE=..\..\agent\snmpd.c
 
@@ -263,7 +263,7 @@ SOURCE=..\..\agent\snmpd.c
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-!ENDIF 
+!ENDIF
 
 SOURCE=..\..\snmplib\winservice.c
 
@@ -281,7 +281,7 @@ SOURCE=..\..\snmplib\winservice.c
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-!ENDIF 
+!ENDIF
 
 SOURCE=..\..\snmplib\winservice.rc
 
@@ -299,8 +299,8 @@ SOURCE=..\..\snmplib\winservice.rc
 	$(RSC) /l 0x409 /fo"$(INTDIR)\winservice.res" /i "..\..\snmplib" /d "_DEBUG" $(SOURCE)
 
 
-!ENDIF 
+!ENDIF
 
 
-!ENDIF 
+!ENDIF
 

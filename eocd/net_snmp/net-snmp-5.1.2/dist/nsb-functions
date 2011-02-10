@@ -199,7 +199,7 @@ nsb-config-all()
       --disable-developer $NSB_EXTRA_CONFIG \
       "--with-mib-modules=$NSB_FINAL_MODULES" \
       "--with-transports=$NSB_DIST_TRANSPORTS $NSB_EXTRA_TRANSPORTS" \
-       $NSB_PERL --enable-shared 
+       $NSB_PERL --enable-shared
    $ngc_src/configure  --with-defaults \
       --disable-developer $NSB_EXTRA_CONFIG \
       "--with-mib-modules=$NSB_FINAL_MODULES" \

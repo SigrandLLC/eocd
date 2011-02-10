@@ -1,5 +1,5 @@
 /**************************************************************
- * Copyright (C) 2001 Alex Rozin, Optical Access 
+ * Copyright (C) 2001 Alex Rozin, Optical Access
  *
  *                     All Rights Reserved
  *
@@ -8,7 +8,7 @@
  * provided that the above copyright notice appear in all copies and that
  * both that copyright notice and this permission notice appear in
  * supporting documentation.
- * 
+ *
  * ALEX ROZIN DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
  * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
  * ALEX ROZIN BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
@@ -36,7 +36,7 @@ ag_trace(const char *format, ...)
     va_list         args;
 
     /*
-     * create msg 
+     * create msg
      */
     va_start(args, format);
     vsnprintf(msg, AG_MAX_MSG_LEN - 1, format, args);
@@ -62,13 +62,13 @@ AGUTIL_advance_index_name(struct variable *vp, oid * name,
         *length = vp->namelen;
     } else {
         /*
-         * If the name is given with indexes - compare only the oids. 
+         * If the name is given with indexes - compare only the oids.
          */
         result =
             snmp_oid_compare(name, (int) vp->namelen, vp->name,
                              (int) vp->namelen);
         /*
-         * If it's not the same oid - change name to the new oid 
+         * If it's not the same oid - change name to the new oid
          */
         if (result < 0) {
             memcpy((char *) name, (char *) vp->name,

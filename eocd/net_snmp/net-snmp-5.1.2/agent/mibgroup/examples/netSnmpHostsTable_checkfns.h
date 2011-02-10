@@ -15,8 +15,8 @@
 config_require(examples/netSnmpHostsTable_checkfns_local)
 
     /*
-     * these functions are designed to check incoming values for 
-     * columns in the netSnmpHostsTable table for legality with respect to 
+     * these functions are designed to check incoming values for
+     * columns in the netSnmpHostsTable table for legality with respect to
      * datatype and value.
      */
      int             check_netSnmpHostAddressType(int type, long *val,

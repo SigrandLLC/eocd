@@ -47,7 +47,7 @@
 #else
 /*
  * If this file doesn't exist, then there is no hard limit on the number
- * of processes, so return 0 for hrSystemMaxProcesses.  
+ * of processes, so return 0 for hrSystemMaxProcesses.
  */
 #define NR_TASKS	0
 #endif
@@ -157,7 +157,7 @@ init_hr_system(void)
  * Arguments:
  * vp     IN      - pointer to variable entry that points here
  * name    IN/OUT  - IN/name requested, OUT/name found
- * length  IN/OUT  - length of IN/OUT oid's 
+ * length  IN/OUT  - length of IN/OUT oid's
  * exact   IN      - TRUE if an exact match was requested
  * var_len OUT     - length of variable or 0 if function returned
  * write_method
@@ -366,10 +366,10 @@ set_solaris_bootcommand_parameter(int action,
                     if(p_old_value==NULL) {
                         snmp_log(LOG_ERR,"unable to malloc memory\n");
                         return SNMP_ERR_GENERR;
-                    } 
+                    }
                 }
                 strlcpy(p_old_value,statP,old_val_len+1);
-            } else { 
+            } else {
                 p_old_value=NULL;
             }
             break;
@@ -383,9 +383,9 @@ set_solaris_bootcommand_parameter(int action,
 
         case UNDO: {
             /* revert to old value */
-            if(p_old_value) { 
+            if(p_old_value) {
                 status=set_solaris_eeprom_parameter("boot-command",(char *)p_old_value,strlen(p_old_value));
-                p_old_value=old_value; 
+                p_old_value=old_value;
                 if(status!=0) return SNMP_ERR_GENERR;
             }
             break;
@@ -409,12 +409,12 @@ static int set_solaris_eeprom_parameter(const char *key, const char *value,
 
     int status=0;
     char buffer[1024],*pbuffer=buffer;
-    
+
     if( strlen(key)+strlen(value)+16 > sizeof(buffer) ) {
         pbuffer=(char *)malloc(strlen(key)+strlen(value)+16);
-    } 
+    }
 
-    
+
     sprintf(pbuffer,"eeprom %s=\"",key);
     strncat(pbuffer,value,var_val_len);
     strcat(pbuffer,"\"\n");
@@ -468,8 +468,8 @@ static long get_max_solaris_processes(void) {
 
     /* assume only necessary to compute once, since /etc/system must be modified */
     if (maxprocs == -1) {
-        if ( (ksc=kstat_open()) != NULL && 
-             (ks=kstat_lookup(ksc, "unix", 0, "var")) != NULL && 
+        if ( (ksc=kstat_open()) != NULL &&
+             (ks=kstat_lookup(ksc, "unix", 0, "var")) != NULL &&
              (kstat_read(ksc, ks, &v) != -1)) {
 
             maxprocs=v.v_proc;
@@ -527,7 +527,7 @@ set_solaris_time(int action,
                 newtimetm.tm_isdst=0;
             } else {
                 newtimetm.tm_isdst=1;
-            } 
+            }
 
             /* create copy of old value */
             oldtime=time(NULL);
@@ -549,7 +549,7 @@ set_solaris_time(int action,
             int status=0;
             if(oldtime != 0) {
                 status=stime(&oldtime);
-                oldtime=0;    
+                oldtime=0;
                 if(status!=0) {
                     snmp_log(LOG_ERR, "Unable to set time\n");
                     return SNMP_ERR_GENERR;
@@ -559,7 +559,7 @@ set_solaris_time(int action,
         }
 
         case COMMIT: {
-            oldtime=0;    
+            oldtime=0;
             break;
         }
     }

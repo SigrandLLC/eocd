@@ -37,11 +37,11 @@
 #endif
 
 /*
- * #include "snmp_vars.linux.h" 
+ * #include "snmp_vars.linux.h"
  */
 
                 /*
-                 * Deliberately set to the same values as hrDeviceTypes 
+                 * Deliberately set to the same values as hrDeviceTypes
                  */
 #define	HRDEV_OTHER	1
 #define	HRDEV_UNKNOWN	2

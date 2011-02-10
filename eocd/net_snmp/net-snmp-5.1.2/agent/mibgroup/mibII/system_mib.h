@@ -13,7 +13,7 @@ config_require(util_funcs)
      extern FindVarMethod var_system;
 
 /*
- * config file parsing routines 
+ * config file parsing routines
  */
      void            system_parse_config_sysloc(const char *, char *);
      void            system_parse_config_syscon(const char *, char *);

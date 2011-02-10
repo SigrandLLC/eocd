@@ -19,7 +19,7 @@
 #define MIB_CLIENTS_ARE_EVIL 1
 
 /*
- * don't use these! 
+ * don't use these!
  */
 void            set_current_agent_session(netsnmp_agent_session *asp);
 netsnmp_agent_session *netsnmp_get_current_agent_session(void);
@@ -64,7 +64,7 @@ netsnmp_register_old_api(const char *moduleName,
     unsigned int    i;
 
     /*
-     * register all subtree nodes 
+     * register all subtree nodes
      */
     for (i = 0; i < numvars; i++) {
         struct variable *vp;
@@ -95,7 +95,7 @@ netsnmp_register_old_api(const char *moduleName,
         reginfo->modes = HANDLER_CAN_RWRITE;
 
         /*
-         * register ourselves in the mib tree 
+         * register ourselves in the mib tree
          */
         if (netsnmp_register_handler(reginfo) != MIB_REGISTERED_OK) {
             netsnmp_handler_registration_free(reginfo);
@@ -133,7 +133,7 @@ netsnmp_register_mib_table_row(const char *moduleName,
         if (r == NULL) {
             /*
              * Unregister whatever we have registered so far, and
-             * return an error.  
+             * return an error.
              */
             rc = MIB_REGISTRATION_FAILED;
             break;
@@ -188,7 +188,7 @@ netsnmp_register_mib_table_row(const char *moduleName,
         r->modes = HANDLER_CAN_RWRITE;
 
         /*
-         * Register this column and row  
+         * Register this column and row
          */
         if ((rc =
              netsnmp_register_handler_nocallback(r)) !=
@@ -249,7 +249,7 @@ netsnmp_old_api_helper(netsnmp_mib_handler *handler,
     vp = (struct variable *) handler->myvoid;
 
     /*
-     * create old variable structure with right information 
+     * create old variable structure with right information
      */
     memcpy(cvp->name, reginfo->rootoid,
            reginfo->rootoid_len * sizeof(oid));
@@ -277,7 +277,7 @@ netsnmp_old_api_helper(netsnmp_mib_handler *handler,
         case MODE_GETNEXT:
         case MODE_SET_RESERVE1:
             /*
-             * Actually call the old mib-module function 
+             * Actually call the old mib-module function
              */
             if (vp && vp->findVar)
                 access = (*(vp->findVar)) (cvp, requests->requestvb->name,
@@ -297,18 +297,18 @@ netsnmp_old_api_helper(netsnmp_mib_handler *handler,
 #endif
 
             /*
-             * WWW: end range checking 
+             * WWW: end range checking
              */
             if (access) {
                 /*
-                 * result returned 
+                 * result returned
                  */
                 if (reqinfo->mode != MODE_SET_RESERVE1)
                     snmp_set_var_typed_value(requests->requestvb,
                                              cvp->type, access, len);
             } else {
                 /*
-                 * no result returned 
+                 * no result returned
                  */
 #if MIB_CLIENTS_ARE_EVIL
                 if (access == NULL) {
@@ -326,7 +326,7 @@ netsnmp_old_api_helper(netsnmp_mib_handler *handler,
             }
 
             /*
-             * AAA: fall through for everything that is a set (see BBB) 
+             * AAA: fall through for everything that is a set (see BBB)
              */
             if (reqinfo->mode != MODE_SET_RESERVE1)
                 break;
@@ -341,15 +341,15 @@ netsnmp_old_api_helper(netsnmp_mib_handler *handler,
                                           netsnmp_create_data_list
                                           (OLD_API_NAME, cacheptr, free));
             /*
-             * BBB: fall through for everything that is a set (see AAA) 
+             * BBB: fall through for everything that is a set (see AAA)
              */
 
         default:
             /*
-             * WWW: explicitly list the SET conditions 
+             * WWW: explicitly list the SET conditions
              */
             /*
-             * (the rest of the) SET contions 
+             * (the rest of the) SET contions
              */
             cacheptr =
                 (netsnmp_old_api_cache *)
@@ -357,7 +357,7 @@ netsnmp_old_api_helper(netsnmp_mib_handler *handler,
 
             if (cacheptr == NULL || cacheptr->write_method == NULL) {
                 /*
-                 * WWW: try to set ourselves if possible? 
+                 * WWW: try to set ourselves if possible?
                  */
                 return netsnmp_set_request_error(reqinfo, requests,
                                                  SNMP_ERR_NOTWRITABLE);
@@ -383,7 +383,7 @@ netsnmp_old_api_helper(netsnmp_mib_handler *handler,
 
             /*
              * clean up is done by the automatic freeing of the
-             * cache stored in the request. 
+             * cache stored in the request.
              */
 
             break;
@@ -395,7 +395,7 @@ netsnmp_old_api_helper(netsnmp_mib_handler *handler,
 /** @} */
 
 /*
- * don't use this! 
+ * don't use this!
  */
 static netsnmp_agent_session *current_agent_session = NULL;
 netsnmp_agent_session *
@@ -405,7 +405,7 @@ netsnmp_get_current_agent_session()
 }
 
 /*
- * don't use this! 
+ * don't use this!
  */
 void
 set_current_agent_session(netsnmp_agent_session *asp)

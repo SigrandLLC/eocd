@@ -224,7 +224,7 @@ ipCidrRouteTable_get_next_data_point(void **my_loop_context,
     /* make sure we were called correctly */
     if (!position)
         return NULL;
-    
+
     /* go to the next route in the list */
     (*position)++;
 

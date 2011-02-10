@@ -91,7 +91,7 @@ int EOC_db::response(EOC_msg *m, int check)
       m, m ? m->is_response() : -10, type, handlers[type]);
 		return -1;
   }
-  
+
 	// PDEBUG(DFULL, "return handlers[%d](this,m,check)", type);
 	return handlers[type](this, m, check);
 }
@@ -825,7 +825,7 @@ int EOC_db::_appreq_sensor_full(EOC_db *db, app_frame *fr)
 	sensor_full_payload *p = (sensor_full_payload*)fr->payload_ptr();
 	unit u = (unit)p->unit;
 	EOC_unit *un;
-	
+
 	PDEBUG(DNDISP, "DB: Sensor state request");
 	if(!p){
 		fr->negative(ERPARAM);
@@ -845,7 +845,7 @@ int EOC_db::_appreq_sensor_full(EOC_db *db, app_frame *fr)
 		fr->negative(ERNOELEM);
 		return 0;
 	}
-	
+
 	if( p->num > 3 ){
 		PDEBUG(DNDISP, "DB full sensor state: sensor #%d not exist",p->num);
 		fr->negative(ERNOSENSOR);
@@ -854,9 +854,9 @@ int EOC_db::_appreq_sensor_full(EOC_db *db, app_frame *fr)
 
 	PDEBUG(DNDISP, "Point to requested unit");
 	un = db->units[(int)u-1];
-	
+
 	PDEBUG(DNDISP,"num=%d, index=%d",p->num,p->index);
-	
+
 	sens_events ev;
 	switch(fr->type()){
 	case APP_GET:
@@ -865,13 +865,13 @@ int EOC_db::_appreq_sensor_full(EOC_db *db, app_frame *fr)
 		int flag = 0;
 		PDEBUG(DNDISP, "Get-NEXT");
 		int i=0,ret = 0;
-		
+
 		do{
 			PDEBUG(DNDISP, "Process event #%d", index);
 			if( ret = un->sensor_event(p->num,index,ev)){
 				break;
 			}
-			p->ev[i].index = index; 
+			p->ev[i].index = index;
 			p->ev[i].cnt = ev.event_descr(p->ev[i].start,p->ev[i].end);
 			i++;
 			index++;

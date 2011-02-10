@@ -64,7 +64,7 @@ AC_ARG_ENABLE(silent-libtool,
 AC_SUBST(LIBTOOLFLAGS)
 
 AC_ARG_WITH(install-prefix,
-[  --with-install-prefix=PATH      Just for installing, prefix all 
+[  --with-install-prefix=PATH      Just for installing, prefix all
                                   directories with PATH.  This is known not
                                   to work on some systems with shared
                                   libraries (eg, HPUX)],
@@ -124,10 +124,10 @@ AC_MSG_CHECKING([what to build and install])
 AC_MSG_RESULT([$MAINSUBS])
 
 AC_ARG_ENABLE(mib-loading,
-[  --disable-mib-loading            Do not include code that parses and 
+[  --disable-mib-loading            Do not include code that parses and
                                    manipulates the mib files.])
 if test "x$enable_mib_loading" = "xno"; then
-  AC_DEFINE([DISABLE_MIB_LOADING], 1, 
+  AC_DEFINE([DISABLE_MIB_LOADING], 1,
             [Define if mib loading and parsing code should not be included])
 fi
 
@@ -276,9 +276,9 @@ AC_ARG_WITH(pkcs,
 )
 
 AC_ARG_ENABLE(testing-code,
-[  --enable-testing-code           Enables some code sections that should 
+[  --enable-testing-code           Enables some code sections that should
                                   only be used for testing of certain
-                                  SNMP functionalities.  This should *not* 
+                                  SNMP functionalities.  This should *not*
                                   be turned on for production use.  Ever.],
     AC_DEFINE(SNMP_TESTING_CODE))
 
@@ -420,7 +420,7 @@ AC_ARG_WITH(out_mib_modules,
 [  --with-out-mib-modules=\"list\"   Compile without these mib modules.
 
   Default mib modules compiled into the agent (which can be removed):
-  
+
     mibII                  support for the mib-II tree.
     snmpv3mibs             support for the snmpv3 mib modules.
     ucd_snmp               UCD-SNMP-MIB specific extensions.
@@ -433,7 +433,7 @@ AC_ARG_WITH(out_mib_modules,
   Optional mib modules that can be built into the agent include:
     host                   host resources mib support.
     disman/event-mib       support for the DISMAN-EVENT-MIB (beta)
-                             (supports self monitoring and notification 
+                             (supports self monitoring and notification
                               delivery when error conditions are found)
     smux                   smux support to allow subagents to attach to snmpd.
     mibII/mta_sendmail     Sendmail statistics monitoring (MTA-MIB)
@@ -452,7 +452,7 @@ AC_ARG_WITH(out_mib_modules,
     agentx                 includes both agentx/master and agentx/client.
 
   Optional modules for C coders to look at and/or include as extension examples:
-  
+
     examples/ucdDemoPublic  SNMPv3 interoperability testing mib.
     examples/example        example C code extension.])
 
@@ -484,7 +484,7 @@ AC_ARG_WITH(enterprise-sysoid,
 [
   --with-enterprise-sysoid           The base OID for the sysObjectID
                                      of the system group
-                                     (default .1.3.6.1.4.1.8072.3.2... = 
+                                     (default .1.3.6.1.4.1.8072.3.2... =
                                       "netSnmpAgentOIDs...")],[
   if test "$withval" = yes; then
     AC_MSG_ERROR([ Please provide a base OID value ]);
@@ -570,7 +570,7 @@ AC_ARG_ENABLE(ucd-snmp-compatibility,
 #
 # setup install targets
 #
-if test "x$ucd_compat" != "xno" ; then	
+if test "x$ucd_compat" != "xno" ; then
   installucdheaders=installucdheaders
   installucdlibs=installucdlibs
   AC_MSG_CACHE_ADD(UCD-SNMP compatability:     enabled)
@@ -578,7 +578,7 @@ fi
 AC_SUBST(installucdheaders)
 AC_SUBST(installucdlibs)
 
-# Only define if specifically chosen as --without (i.e., default to true). 
+# Only define if specifically chosen as --without (i.e., default to true).
 if test "x$with_root_access" = "xno"; then
   AC_DEFINE(NO_ROOT_ACCESS)
 fi
@@ -588,19 +588,19 @@ if test "x$with_kmem_usage" = "xno"; then
   AC_DEFINE(NO_KMEM_USAGE)
 fi
 
-# Define unless specifically suppressed (i.e., option defaults to false). 
+# Define unless specifically suppressed (i.e., option defaults to false).
 if test "x$with_dummy_values" != "xyes"; then
   AC_DEFINE(NO_DUMMY_VALUES)
 fi
 
-# Only define if specifically chosen as --without (i.e., default to true). 
+# Only define if specifically chosen as --without (i.e., default to true).
 if test "x$with_opaque_special_types" != "xno"; then
   AC_DEFINE(OPAQUE_SPECIAL_TYPES)
 fi
 
 
 # overflow problems with hpux's sh
-# taken from Perl's Configure script 
+# taken from Perl's Configure script
 
 AC_MSG_CHECKING([if I need to feed myself to ksh])
 if test -f /hp-ux -a -f /bin/ksh; then
@@ -772,7 +772,7 @@ case $target_os in
 	if test "x$CCPATH" = "x/usr/ucb/cc" -o "x$CCPATH" = "x/usr/bin/cc"; then
 	    AC_MSG_ERROR([
 
-*** The BSDI /usr/ucb/cc compiler does not work with this package.  
+*** The BSDI /usr/ucb/cc compiler does not work with this package.
 *** Please run configure with --with-cc=gcc
 ])
 	fi
@@ -781,14 +781,14 @@ case $target_os in
 	if test "x$CCPATH" = "x/usr/ucb/cc"; then
 	    AC_MSG_ERROR([
 
-*** The solaris /usr/ucb/cc compiler does not work with this package.  
+*** The solaris /usr/ucb/cc compiler does not work with this package.
 *** Please put a different compiler in your path first or run
 *** configure with --with-cc=XX, where XX is the compiler you want to use.
 ])
 	fi
     ;;
 esac
-    
+
 AC_MSG_CHECKING([for additional cpp flags])
 # gcc extra CPPFLAGS
 if test "x$GCC" = "xyes" -a "x$CPP" = "x$CC -E"; then
@@ -1020,7 +1020,7 @@ if test "x$PARTIALTARGETOS" = "xmingw32" -o "x$PARTIALTARGETOS" = "xcygwin"; the
   other_objs_list="$other_objs_list winservice.o"
   other_lobjs_list="$other_lobjs_list winservice.lo"
 fi
-  
+
 # Win32 pipes
 if test "x$PARTIALTARGETOS" = "xmingw32" -o "x$PARTIALTARGETOS" = "xcygwin"; then
   other_src_list="$other_src_list winpipe.c"
@@ -1031,7 +1031,7 @@ fi
 AC_SUBST(other_src_list)
 AC_SUBST(other_objs_list)
 AC_SUBST(other_lobjs_list)
-  
+
 #
 # Do transport module processing.
 #
@@ -1050,7 +1050,7 @@ new_with_out_transport_list=`echo $with_out_transports | sed 's/,/ /g;'`
 #
 if test "x$PARTIALTARGETOS" = "xcygwin"; then
   transport_default_list="UDP TCP Callback"
-elif test "x$PARTIALTARGETOS" = "xmingw32"; then 
+elif test "x$PARTIALTARGETOS" = "xmingw32"; then
   transport_default_list="UDP TCP Callback"
 else
   transport_default_list="UDP TCP Unix Callback"
@@ -1116,7 +1116,7 @@ for i in $new_transport_list; do
     fi
   fi
 done
-transport_obj_list=`echo " $transport_src_list " | sed 's/\.c/\.o/g'` 	 
+transport_obj_list=`echo " $transport_src_list " | sed 's/\.c/\.o/g'`
 transport_lobj_list=`echo " $transport_src_list " | sed 's/\.c/\.lo/g'`
 
 ## win32 platforms require inet_ntop etc.
@@ -1139,12 +1139,12 @@ AC_MSG_CACHE_ADD(Network transport support: $transport_result_list)
 
 #
 # Security modules to use
-# 
+#
 
 AC_MSG_CHECKING([for security modules to use])
 security_def_list="usm"
 security_src_list=""
-security_obj_list="" 	 
+security_obj_list=""
 security_lobj_list=""
 security_init_file="snmplib/snmpsm_init.h"
 security_incl_file="include/net-snmp/library/snmpv3-security-includes.h"
@@ -1199,7 +1199,7 @@ for i in $new_with_security; do
   # define a bunch of stuff to enable it
   security_src_list="$security_src_list $cfile"
   security_hdr_list="$security_hdr_list $hfile"
-  security_obj_list="$security_obj_list snmp"$i".o" 	 
+  security_obj_list="$security_obj_list snmp"$i".o"
   security_lobj_list="$security_lobj_list snmp"$i".lo"
   def_name="SNMP_SECMOD_"`echo $i | tr 'abcdefghijklmnopqrstuvwxyz' 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'`
   echo "init_"$i"();" >> $security_init_file
@@ -1209,7 +1209,7 @@ done
 
 AC_SUBST(security_src_list)
 AC_SUBST(security_hdr_list)
-AC_SUBST(security_obj_list) 	 
+AC_SUBST(security_obj_list)
 AC_SUBST(security_lobj_list)
 AC_MSG_RESULT($new_with_security)
 AC_MSG_CACHE_ADD(SNMPv3 Security Modules:   $new_with_security)
@@ -1536,7 +1536,7 @@ AC_CHECK_LIB(mld, nlist)
 if test "x$tryopenssl" != "xno"; then
     if test "x$askedopenssl" != "xyes" -a "x$askedpkcs" = "xyes"; then
       AC_CHECK_LIB(pkcs11, C_Initialize)
-    else 
+    else
       if test "x$tryrsaref" != "xno"; then
          AC_CHECK_LIB(rsaref, RSAPrivateDecrypt)
          AC_CHECK_LIB(RSAglue, RSA_PKCS1_RSAref)
@@ -1643,13 +1643,13 @@ if test "x$with_rpm" != "xno" && \
   # two variants of db3 need checking.
   AC_CHECK_LIB(db-3.1, db_create, [_rpmlibs="-ldb-3.1 $_rpmlibs"],
     AC_CHECK_LIB(db-3.0, db_create, [_rpmlibs="-ldb-3.0 $_rpmlibs"]))
-  
+
   # rpm-3.0.5 and later needs popt.
   AC_CHECK_LIB(popt, poptParseArgvString, [_rpmlibs="-lpopt $_rpmlibs"])
-  
+
   # rpm-4.0.x needs rpmio.
   AC_CHECK_LIB(rpmio, Fopen, [_rpmlibs="-lrpmio $_rpmlibs"],,$_rpmlibs)
-  
+
   # now check for rpm using the appropriate libraries.
   AC_CHECK_LIB(rpm, rpmGetFilesystemList,[
     AC_DEFINE(HAVE_LIBRPM)
@@ -1664,7 +1664,7 @@ if test "x$with_rpm" != "xno" && \
     ],,-lrpm $_rpmlibs)
   ])
 fi
-  
+
 # Replace `main' with a function in -lkvm:
 AC_CHECK_LIB(kvm, kvm_read)
 # DYNAMIC MODULE SUPPORT
@@ -2003,7 +2003,7 @@ elif test "`($PSPROG ax 2>&1) | egrep ' (ps) *$' | awk '{print $NF}'`" = "ps" ; 
   ac_cv_ps_flags="ax"
 elif test "x$PARTIALTARGETOS" = "xcygwin"; then
   ac_cv_ps_flags="-e"
-elif test "x$PARTIALTARGETOS" = "xmingw32"; then 
+elif test "x$PARTIALTARGETOS" = "xmingw32"; then
   ac_cv_ps_flags="-e"
 else
   AC_MSG_WARN([Unable to determine valid ps flags...  defaulting...])
@@ -2191,7 +2191,7 @@ AC_TRY_COMPILE([
 #define rt_dst rt_nodes->rn_key
 #endif
 
-  struct rtentry rt; 
+  struct rtentry rt;
   rt.rt_nodes[0].rn_flags = 1;
   rt.rt_dst;
   ], ac_cv_RTENTRY_TYPE="BSD-4.4")
@@ -2210,7 +2210,7 @@ AC_TRY_COMPILE([
 #undef _KERNEL
 #include <net/route.h>
 ],[
-struct rtentry rt; 
+struct rtentry rt;
 rt.rt_hash;
 ], ac_cv_RTENTRY_TYPE="BSD-4.3")
 fi
@@ -2252,7 +2252,7 @@ fi
 
 # check for 4.3's rtentry->rt_next
 if test "x$ac_cv_RTENTRY_TYPE" = "xBSD-4.3"; then
-AC_CACHE_CHECK(for struct rtentry has a rt_next node, 
+AC_CACHE_CHECK(for struct rtentry has a rt_next node,
 	ac_cv_struct_rtentry_rt_next,
 [
 AC_TRY_COMPILE([
@@ -2267,7 +2267,7 @@ AC_TRY_COMPILE([
 #undef _KERNEL
 #include <net/route.h>
 ],[
-struct rtentry rt; 
+struct rtentry rt;
 rt.rt_next;
 ], ac_cv_struct_rtentry_rt_next=yes,  ac_cv_struct_rtentry_rt_next=no )
 ])
@@ -2719,7 +2719,7 @@ AC_CHECK_STRUCT_FOR([
 #endif
 ], ipstat, ips_reassembled)
 
-# check for the des_ks_struct.weak_key attribute, which indicates the 
+# check for the des_ks_struct.weak_key attribute, which indicates the
 # older opensll version is being used.
 if test "x$ac_cv_header_openssl_des_h" = "xyes" ; then
 AC_CHECK_STRUCT_FOR([
@@ -2756,10 +2756,10 @@ main() {
   int                 mib[2];
   size_t              len;
   struct timeval boottime;
-  
+
   mib[0] = CTL_KERN;
   mib[1] = KERN_BOOTTIME;
-  
+
   len = sizeof(boottime);
   sysctl(mib, 2, &boottime, &len, NULL, NULL);
   if (boottime.tv_sec != 0)
@@ -2896,7 +2896,7 @@ if test -d /var/log; then
 else
   defaultlog="/usr/adm/snmpd.log"
 fi
-  
+
 AC_PROMPT_USER(LOGFILE,[
 
 *** Logfile location:
@@ -2917,7 +2917,7 @@ else
   defaultstore="/etc/net-snmp"
   ucddefaultstore="/etc/ucd-snmp"
 fi
-  
+
 AC_PROMPT_USER(PERSISTENT_DIRECTORY,[
 
 *** snmpd persistent storage location:

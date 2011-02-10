@@ -39,7 +39,7 @@ static netsnmp_tdomain aal5pvcDomain;
 
 /*
  * Return a string representing the address in data, or else the "far end"
- * address if data is NULL.  
+ * address if data is NULL.
  */
 
 static char *
@@ -66,9 +66,9 @@ netsnmp_aal5pvc_fmtaddr(netsnmp_transport *t, void *data, int len)
 
 
 /*
- * You can write something into opaque that will subsequently get passed back 
+ * You can write something into opaque that will subsequently get passed back
  * to your send function if you like.  For instance, you might want to
- * remember where a PDU came from, so that you can send a reply there...  
+ * remember where a PDU came from, so that you can send a reply there...
  */
 
 static int
@@ -92,7 +92,7 @@ netsnmp_aal5pvc_recv(netsnmp_transport *t, void *buf, int size,
                         rc, string));
             free(string);
         } else {
-            DEBUGMSGTL(("netsnmp_aal5pvc", "recv on fd %d err %d (\"%s\")\n", 
+            DEBUGMSGTL(("netsnmp_aal5pvc", "recv on fd %d err %d (\"%s\")\n",
 			t->sock, errno, strerror(errno)));
         }
         *opaque = NULL;
@@ -156,9 +156,9 @@ netsnmp_aal5pvc_close(netsnmp_transport *t)
 
 
 /*
- * Open an AAL5 PVC transport for SNMP.  Local is TRUE if addr is the local 
- * NSAP to bind to (i.e. this is a server-type session); otherwise addr is 
- * the remote NSAP to send things to.  
+ * Open an AAL5 PVC transport for SNMP.  Local is TRUE if addr is the local
+ * NSAP to bind to (i.e. this is a server-type session); otherwise addr is
+ * the remote NSAP to send things to.
  */
 
 netsnmp_transport *
@@ -198,7 +198,7 @@ netsnmp_aal5pvc_transport(struct sockaddr_atmpvc *addr, int local)
     DEBUGMSGTL(("netsnmp_aal5pvc", "fd %d opened\n", t->sock));
 
     /*
-     * Set up the QOS parameters.  
+     * Set up the QOS parameters.
      */
 
     memset(&qos, 0, sizeof(struct atm_qos));
@@ -274,7 +274,7 @@ netsnmp_aal5pvc_transport(struct sockaddr_atmpvc *addr, int local)
     t->data_length = sizeof(struct sockaddr_atmpvc);
 
     /*
-     * 16-bit length field in the trailer, no headers.  
+     * 16-bit length field in the trailer, no headers.
      */
 
     t->msgMaxSize = 0xffff;

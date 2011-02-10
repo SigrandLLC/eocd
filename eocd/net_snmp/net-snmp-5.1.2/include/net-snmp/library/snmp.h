@@ -14,13 +14,13 @@ extern          "C" {
 
                       All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the name of CMU not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 CMU DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -42,7 +42,7 @@ SOFTWARE.
 #define SNMP_MIN_MAX_LEN    484 /* minimum maximum message size */
 
     /*
-     * SNMP versions 
+     * SNMP versions
      */
     /*
      * There currently exists the following SNMP versions.
@@ -73,7 +73,7 @@ SOFTWARE.
      * *             documents of the IETF SNMPv3 WG.
      * *
      * * SNMPv1, SNMPv2c, SNMPv2u, and SNMPv3 messages have a common
-     * * form, which is an ASN.1 sequence containing a message version 
+     * * form, which is an ASN.1 sequence containing a message version
      * * field, followed by version dependent fields.
      * * SNMPsec, SNMPv2p, and SNMPv2* messages have a common form,
      * * which is a tagged ASN.1 context specific sequence containing
@@ -90,11 +90,11 @@ SOFTWARE.
      * * documentational purposes.  At this point the only protocol planned
      * * for future implementations is SNMP3, as the other v2 protocols will
      * * not be supported by the IETF (ie, v2u, v2sec, v2star) or used by
-     * * the snmp community at large (at the time of this writing).  
+     * * the snmp community at large (at the time of this writing).
      */
 
     /*
-     * versions based on version field 
+     * versions based on version field
      */
 #define SNMP_VERSION_1	   0
 #define SNMP_VERSION_2c    1
@@ -102,14 +102,14 @@ SOFTWARE.
 #define SNMP_VERSION_3     3
 
     /*
-     * versions not based on a version field 
+     * versions not based on a version field
      */
 #define SNMP_VERSION_sec   128  /* not (will never be) supported by this code */
 #define SNMP_VERSION_2p	   129  /* no longer supported by this code (> 4.0) */
 #define SNMP_VERSION_2star 130  /* not (will never be) supported by this code */
 
     /*
-     * PDU types in SNMPv1, SNMPsec, SNMPv2p, SNMPv2c, SNMPv2u, SNMPv2*, and SNMPv3 
+     * PDU types in SNMPv1, SNMPsec, SNMPv2p, SNMPv2c, SNMPv2u, SNMPv2*, and SNMPv3
      */
 #define SNMP_MSG_GET        (ASN_CONTEXT | ASN_CONSTRUCTOR | 0x0) /* a0=160 */
 #define SNMP_MSG_GETNEXT    (ASN_CONTEXT | ASN_CONSTRUCTOR | 0x1) /* a1=161 */
@@ -117,19 +117,19 @@ SOFTWARE.
 #define SNMP_MSG_SET        (ASN_CONTEXT | ASN_CONSTRUCTOR | 0x3) /* a3=163 */
 
     /*
-     * PDU types in SNMPv1 and SNMPsec 
+     * PDU types in SNMPv1 and SNMPsec
      */
 #define SNMP_MSG_TRAP       (ASN_CONTEXT | ASN_CONSTRUCTOR | 0x4) /* a4=164 */
 
     /*
-     * PDU types in SNMPv2p, SNMPv2c, SNMPv2u, SNMPv2*, and SNMPv3 
+     * PDU types in SNMPv2p, SNMPv2c, SNMPv2u, SNMPv2*, and SNMPv3
      */
 #define SNMP_MSG_GETBULK    (ASN_CONTEXT | ASN_CONSTRUCTOR | 0x5) /* a5=165 */
 #define SNMP_MSG_INFORM     (ASN_CONTEXT | ASN_CONSTRUCTOR | 0x6) /* a6=166 */
 #define SNMP_MSG_TRAP2      (ASN_CONTEXT | ASN_CONSTRUCTOR | 0x7) /* a7=167 */
 
     /*
-     * PDU types in SNMPv2u, SNMPv2*, and SNMPv3 
+     * PDU types in SNMPv2u, SNMPv2*, and SNMPv3
      */
 #define SNMP_MSG_REPORT     (ASN_CONTEXT | ASN_CONSTRUCTOR | 0x8) /* a8=168 */
 
@@ -169,25 +169,25 @@ SOFTWARE.
 #define SNMP_MSG_INTERNAL_GET_STASH             131
 
     /*
-     * test for member of Confirmed Class i.e., reportable 
+     * test for member of Confirmed Class i.e., reportable
      */
 #define SNMP_CMD_CONFIRMED(c) (c == SNMP_MSG_INFORM || c == SNMP_MSG_GETBULK ||\
                                c == SNMP_MSG_GETNEXT || c == SNMP_MSG_GET || \
                                c == SNMP_MSG_SET)
 
     /*
-     * Exception values for SNMPv2p, SNMPv2c, SNMPv2u, SNMPv2*, and SNMPv3 
+     * Exception values for SNMPv2p, SNMPv2c, SNMPv2u, SNMPv2*, and SNMPv3
      */
 #define SNMP_NOSUCHOBJECT    (ASN_CONTEXT | ASN_PRIMITIVE | 0x0) /* 80=128 */
 #define SNMP_NOSUCHINSTANCE  (ASN_CONTEXT | ASN_PRIMITIVE | 0x1) /* 81=129 */
 #define SNMP_ENDOFMIBVIEW    (ASN_CONTEXT | ASN_PRIMITIVE | 0x2) /* 82=130 */
 
     /*
-     * Error codes (the value of the field error-status in PDUs) 
+     * Error codes (the value of the field error-status in PDUs)
      */
 
     /*
-     * in SNMPv1, SNMPsec, SNMPv2p, SNMPv2c, SNMPv2u, SNMPv2*, and SNMPv3 PDUs 
+     * in SNMPv1, SNMPsec, SNMPv2p, SNMPv2c, SNMPv2u, SNMPv2*, and SNMPv3 PDUs
      */
 #define SNMP_ERR_NOERROR                (0)     /* XXX  Used only for PDUs? */
 #define SNMP_ERR_TOOBIG	                (1)
@@ -197,7 +197,7 @@ SOFTWARE.
 #define SNMP_ERR_GENERR	                (5)
 
     /*
-     * in SNMPv2p, SNMPv2c, SNMPv2u, SNMPv2*, and SNMPv3 PDUs 
+     * in SNMPv2p, SNMPv2c, SNMPv2u, SNMPv2*, and SNMPv3 PDUs
      */
 #define SNMP_ERR_NOACCESS		(6)
 #define SNMP_ERR_WRONGTYPE		(7)
@@ -213,7 +213,7 @@ SOFTWARE.
 #define SNMP_ERR_NOTWRITABLE		(17)
 
     /*
-     * in SNMPv2c, SNMPv2u, SNMPv2*, and SNMPv3 PDUs 
+     * in SNMPv2c, SNMPv2u, SNMPv2*, and SNMPv3 PDUs
      */
 #define SNMP_ERR_INCONSISTENTNAME	(18)
 
@@ -221,7 +221,7 @@ SOFTWARE.
 
 
     /*
-     * values of the generic-trap field in trap PDUs 
+     * values of the generic-trap field in trap PDUs
      */
 #define SNMP_TRAP_COLDSTART		(0)
 #define SNMP_TRAP_WARMSTART		(1)
@@ -232,7 +232,7 @@ SOFTWARE.
 #define SNMP_TRAP_ENTERPRISESPECIFIC	(6)
 
     /*
-     * row status values 
+     * row status values
      */
 #define SNMP_ROW_NONEXISTENT		0
 #define SNMP_ROW_ACTIVE			1
@@ -243,7 +243,7 @@ SOFTWARE.
 #define SNMP_ROW_DESTROY		6
 
     /*
-     * row storage values 
+     * row storage values
      */
 #define SNMP_STORAGE_NONE  0
 #define SNMP_STORAGE_OTHER		1
@@ -253,7 +253,7 @@ SOFTWARE.
 #define SNMP_STORAGE_READONLY		5
 
     /*
-     * message processing models 
+     * message processing models
      */
 #define SNMP_MP_MODEL_SNMPv1		0
 #define SNMP_MP_MODEL_SNMPv2c		1
@@ -262,7 +262,7 @@ SOFTWARE.
 #define SNMP_MP_MODEL_SNMPv2p		256
 
     /*
-     * security values 
+     * security values
      */
 #define SNMP_SEC_MODEL_ANY		0
 #define SNMP_SEC_MODEL_SNMPv1		1
@@ -279,7 +279,7 @@ SOFTWARE.
 #define SNMP_MSG_FLAG_RPRT_BIT          0x04
 
     /*
-     * control PDU handling characteristics 
+     * control PDU handling characteristics
      */
 #define UCD_MSG_FLAG_RESPONSE_PDU            0x100
 #define UCD_MSG_FLAG_EXPECT_RESPONSE         0x200
@@ -289,13 +289,13 @@ SOFTWARE.
 #define UCD_MSG_FLAG_ONE_PASS_ONLY          0x2000
 
     /*
-     * view status 
+     * view status
      */
 #define SNMP_VIEW_INCLUDED		1
 #define SNMP_VIEW_EXCLUDED		2
 
     /*
-     * basic oid values 
+     * basic oid values
      */
 #define SNMP_OID_INTERNET		1, 3, 6, 1
 #define SNMP_OID_ENTERPRISES		SNMP_OID_INTERNET, 4, 1
@@ -304,7 +304,7 @@ SOFTWARE.
 #define SNMP_OID_SNMPMODULES		SNMP_OID_SNMPV2, 3
 
     /*
-     * lengths as defined by TCs 
+     * lengths as defined by TCs
      */
 #define SNMPADMINLENGTH 255
 

@@ -6,7 +6,7 @@ description command line arguments you need to type (especially for snmpv3).
 
 token defaultPort
 info  The default port number to use
-info  This token specifies the default port number you want packets to 
+info  This token specifies the default port number you want packets to
 info  be sent to and received from.
 info  override: with -p on the command line.
 info  arguments: portnum
@@ -22,7 +22,7 @@ validanswer 1 ^(1|2c|3)$
 token defCommunity
 info  The default snmpv1 and snmpv2c community name to use when needed.
 info  If this is specified, you don't need to include the community
-info  name as an argument to the snmp applications.  
+info  name as an argument to the snmp applications.
 info  override: with -c on the command line.
 info  arguments: communityname
 question 1 Enter the default community name to use

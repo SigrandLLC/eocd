@@ -29,11 +29,11 @@ extern          "C" {
      * *
      * * Enumerations and definitions
      * *
-     * * ============================ 
+     * * ============================
      */
 #include <net-snmp/definitions.h>
     /*
-     * From parse.h 
+     * From parse.h
      */
 #define ACCESS_READONLY		MIB_ACCESS_READONLY
 #define ACCESS_READWRITE	MIB_ACCESS_READWRITE
@@ -47,7 +47,7 @@ extern          "C" {
 #define STATUS_DEPRECATED	MIB_STATUS_DEPRECATED
 #define STATUS_CURRENT		MIB_STATUS_CURRENT
     /*
-     * From smnp_impl.h 
+     * From smnp_impl.h
      */
 #define INTEGER	    ASN_INTEGER
 #define STRING	    ASN_OCTET_STR
@@ -64,7 +64,7 @@ extern          "C" {
 #define COUNTER64   ASN_COUNTER64
 #define UINTEGER    ASN_UINTEGER
     /*
-     * From snmp.h 
+     * From snmp.h
      */
 #define GET_REQ_MSG	    SNMP_MSG_GET
 #define GETNEXT_REQ_MSG	    SNMP_MSG_GETNEXT
@@ -76,7 +76,7 @@ extern          "C" {
 #define TRP2_REQ_MSG	    SNMP_MSG_TRAP2
 #define REPORT_RSP_MSG	    SNMP_MSG_REPORT
     /*
-     * since CMU V1.5 
+     * since CMU V1.5
      */
 #define SNMP_PDU_GET	    SNMP_MSG_GET
 #define SNMP_PDU_GETNEXT    SNMP_MSG_GETNEXT
@@ -104,7 +104,7 @@ extern          "C" {
      * *     Function declarations
      * *     and global variables
      * *
-     * * ============================ 
+     * * ============================
      */
 extern int      snmp_dump_packet;       /* from snmp_api.h */
 extern int      quick_print;    /* from snmp_api.h */
@@ -123,9 +123,9 @@ u_char         *cmu_snmp_parse(netsnmp_session * session, netsnmp_pdu *pdu, u_ch
          * ============================
          * *
          * * MIB-II data structures
-         * *    (from mib.h) 
+         * *    (from mib.h)
          * *
-         * * ============================ 
+         * * ============================
          */
 
 

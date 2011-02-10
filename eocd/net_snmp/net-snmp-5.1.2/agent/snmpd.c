@@ -10,17 +10,17 @@
  */
 /*
  * Copyright 1988, 1989 by Carnegie Mellon University
- * 
+ *
  * All Rights Reserved
- * 
- * Permission to use, copy, modify, and distribute this software and its 
- * documentation for any purpose and without fee is hereby granted, 
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
  * provided that the above copyright notice appear in all copies and that
- * both that copyright notice and this permission notice appear in 
+ * both that copyright notice and this permission notice appear in
  * supporting documentation, and that the name of CMU not be
  * used in advertising or publicity pertaining to distribution of the
- * software without specific, written prior permission.  
- * 
+ * software without specific, written prior permission.
+ *
  * CMU DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
  * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
  * CMU BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
@@ -184,7 +184,7 @@ int             Facility = LOG_DAEMON;
 
 #ifdef WIN32SERVICE
 /*
- * SNMP Agent Status 
+ * SNMP Agent Status
  */
 #define AGENT_RUNNING 1
 #define AGENT_STOPPED 0
@@ -344,8 +344,8 @@ SnmpdShutDown(int a)
     running = 0;
 #ifdef WIN32SERVICE
     /*
-     * In case of windows, select() in receive() function will not return 
-     * on signal. Thats why following function is called, which closes the 
+     * In case of windows, select() in receive() function will not return
+     * on signal. Thats why following function is called, which closes the
      * socket descriptors and causes the select() to return
      */
     snmp_close(main_session);
@@ -387,12 +387,12 @@ SnmpTrapNodeDown(void)
 {
     send_easy_trap(SNMP_TRAP_ENTERPRISESPECIFIC, 2);
     /*
-     * XXX  2 - Node Down #define it as NODE_DOWN_TRAP 
+     * XXX  2 - Node Down #define it as NODE_DOWN_TRAP
      */
 }
 
 static void
-setup_log(int restart, int dont_zero, int stderr_log, int syslog_log, 
+setup_log(int restart, int dont_zero, int stderr_log, int syslog_log,
 	  char *logfile)
 {
     static char logfile_s[PATH_MAX + 1] = { 0 };
@@ -431,7 +431,7 @@ setup_log(int restart, int dont_zero, int stderr_log, int syslog_log,
  * Parameters:
  *	 argc
  *	*argv[]
- *      
+ *
  * Returns:
  *	0	Always succeeds.  (?)
  *
@@ -469,15 +469,15 @@ main(int argc, char *argv[])
 
 #ifdef NO_ROOT_ACCESS
     /*
-     * Default to no.  
+     * Default to no.
      */
-    netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID, 
+    netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID,
 			   NETSNMP_DS_AGENT_NO_ROOT_ACCESS, 1);
 #endif
     /*
-     * Default to NOT running an AgentX master.  
+     * Default to NOT running an AgentX master.
      */
-    netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID, 
+    netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID,
 			   NETSNMP_DS_AGENT_AGENTX_MASTER, 0);
     netsnmp_ds_set_int(NETSNMP_DS_APPLICATION_ID,
                        NETSNMP_DS_AGENT_AGENTX_TIMEOUT, -1);
@@ -485,7 +485,7 @@ main(int argc, char *argv[])
                        NETSNMP_DS_AGENT_AGENTX_RETRIES, -1);
 
     /*
-     * Add some options if they are available.  
+     * Add some options if they are available.
      */
 #if HAVE_UNISTD_H
     strcat(options, "g:u:");
@@ -503,11 +503,11 @@ main(int argc, char *argv[])
      */
     for (i=0; i<argc; i++) {
         if (!strcmp(argv[i], "-L"))
-            argv[i] = option_compatability;            
+            argv[i] = option_compatability;
     }
 
     /*
-     * Now process options normally.  
+     * Now process options normally.
      */
     while ((arg = getopt(argc, argv, options)) != EOF) {
         switch (arg) {
@@ -532,7 +532,7 @@ main(int argc, char *argv[])
 
         case 'c':
             if (optarg != NULL) {
-                netsnmp_ds_set_string(NETSNMP_DS_LIBRARY_ID, 
+                netsnmp_ds_set_string(NETSNMP_DS_LIBRARY_ID,
 				      NETSNMP_DS_LIB_OPTIONALCONFIG, optarg);
             } else {
                 usage(argv[0]);
@@ -540,13 +540,13 @@ main(int argc, char *argv[])
             break;
 
         case 'C':
-            netsnmp_ds_set_boolean(NETSNMP_DS_LIBRARY_ID, 
+            netsnmp_ds_set_boolean(NETSNMP_DS_LIBRARY_ID,
 				   NETSNMP_DS_LIB_DONT_READ_CONFIGS, 1);
             break;
 
         case 'd':
             snmp_set_dump_packet(++snmp_dump_packet);
-            netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID, 
+            netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID,
 				   NETSNMP_DS_AGENT_VERBOSE, 1);
             break;
 
@@ -562,7 +562,7 @@ main(int argc, char *argv[])
 #if HAVE_UNISTD_H
         case 'g':
             if (optarg != NULL) {
-                netsnmp_ds_set_int(NETSNMP_DS_APPLICATION_ID, 
+                netsnmp_ds_set_int(NETSNMP_DS_APPLICATION_ID,
 				   NETSNMP_DS_AGENT_GROUPID, atoi(optarg));
             } else {
                 usage(argv[0]);
@@ -575,7 +575,7 @@ main(int argc, char *argv[])
             break;
 
         case 'H':
-            netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID, 
+            netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID,
 				   NETSNMP_DS_AGENT_NO_ROOT_ACCESS, 1);
             init_agent("snmpd");        /* register our .conf handlers */
             init_mib_modules();
@@ -647,7 +647,7 @@ main(int argc, char *argv[])
             break;
 
         case 'r':
-            netsnmp_ds_toggle_boolean(NETSNMP_DS_APPLICATION_ID, 
+            netsnmp_ds_toggle_boolean(NETSNMP_DS_APPLICATION_ID,
 				      NETSNMP_DS_AGENT_NO_ROOT_ACCESS);
             break;
 
@@ -703,7 +703,7 @@ main(int argc, char *argv[])
             break;
 
         case 'U':
-            netsnmp_ds_toggle_boolean(NETSNMP_DS_APPLICATION_ID, 
+            netsnmp_ds_toggle_boolean(NETSNMP_DS_APPLICATION_ID,
 				      NETSNMP_DS_AGENT_LEAVE_PIDFILE);
             break;
 
@@ -728,7 +728,7 @@ main(int argc, char *argv[])
                     }
 #endif
                 }
-                netsnmp_ds_set_int(NETSNMP_DS_APPLICATION_ID, 
+                netsnmp_ds_set_int(NETSNMP_DS_APPLICATION_ID,
 				   NETSNMP_DS_AGENT_USERID, uid);
             } else {
                 usage(argv[0]);
@@ -740,19 +740,19 @@ main(int argc, char *argv[])
             version();
 
         case 'V':
-            netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID, 
+            netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID,
 				   NETSNMP_DS_AGENT_VERBOSE, 1);
             break;
 
 #if defined(USING_AGENTX_SUBAGENT_MODULE)|| defined(USING_AGENTX_MASTER_MODULE)
         case 'x':
             if (optarg != NULL) {
-                netsnmp_ds_set_string(NETSNMP_DS_APPLICATION_ID, 
+                netsnmp_ds_set_string(NETSNMP_DS_APPLICATION_ID,
 				      NETSNMP_DS_AGENT_X_SOCKET, optarg);
             } else {
                 usage(argv[0]);
             }
-            netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID, 
+            netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID,
 				   NETSNMP_DS_AGENT_AGENTX_MASTER, 1);
             break;
 #endif
@@ -776,12 +776,12 @@ main(int argc, char *argv[])
 
     if (optind < argc) {
         /*
-         * There are optional transport addresses on the command line.  
+         * There are optional transport addresses on the command line.
          */
         DEBUGMSGTL(("snmpd/main", "optind %d, argc %d\n", optind, argc));
         for (i = optind; i < argc; i++) {
             char *c, *astring;
-            if ((c = netsnmp_ds_get_string(NETSNMP_DS_APPLICATION_ID, 
+            if ((c = netsnmp_ds_get_string(NETSNMP_DS_APPLICATION_ID,
 					   NETSNMP_DS_AGENT_PORTS))) {
                 astring = malloc(strlen(c) + 2 + strlen(argv[i]));
                 if (astring == NULL) {
@@ -789,23 +789,23 @@ main(int argc, char *argv[])
                     exit(1);
                 }
                 sprintf(astring, "%s,%s", c, argv[i]);
-                netsnmp_ds_set_string(NETSNMP_DS_APPLICATION_ID, 
+                netsnmp_ds_set_string(NETSNMP_DS_APPLICATION_ID,
 				      NETSNMP_DS_AGENT_PORTS, astring);
                 SNMP_FREE(astring);
             } else {
-                netsnmp_ds_set_string(NETSNMP_DS_APPLICATION_ID, 
+                netsnmp_ds_set_string(NETSNMP_DS_APPLICATION_ID,
 				      NETSNMP_DS_AGENT_PORTS, argv[i]);
             }
         }
         DEBUGMSGTL(("snmpd/main", "port spec: %s\n",
-                    netsnmp_ds_get_string(NETSNMP_DS_APPLICATION_ID, 
+                    netsnmp_ds_get_string(NETSNMP_DS_APPLICATION_ID,
 					  NETSNMP_DS_AGENT_PORTS)));
     }
 
     setup_log(0, dont_zero_log, stderr_log, syslog_log, logfile);
 
     /*
-     * Initialize a argv set to the current for restarting the agent.   
+     * Initialize a argv set to the current for restarting the agent.
      */
     argvrestartp = (char **)malloc((argc + 2) * sizeof(char *));
     argvptr = argvrestartp;
@@ -821,14 +821,14 @@ main(int argc, char *argv[])
     strcpy(argvrestartname, argv[0]);
     if (agent_mode == -1) {
         if (strstr(argvrestartname, "agentxd") != NULL) {
-            netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID, 
+            netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID,
 				   NETSNMP_DS_AGENT_ROLE, SUB_AGENT);
         } else {
-            netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID, 
+            netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID,
 				   NETSNMP_DS_AGENT_ROLE, MASTER_AGENT);
         }
     } else {
-        netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID, 
+        netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID,
 			       NETSNMP_DS_AGENT_ROLE, agent_mode);
     }
 
@@ -844,7 +844,7 @@ main(int argc, char *argv[])
     setvbuf(stdout, NULL, _IOLBF, BUFSIZ);
 #endif
     /*
-     * Initialize the world.  Detach from the shell.  Create initial user.  
+     * Initialize the world.  Detach from the shell.  Create initial user.
      */
     if(!dont_fork) {
         int quit = ! netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
@@ -862,13 +862,13 @@ main(int argc, char *argv[])
     init_mib_modules();
 
     /*
-     * start library 
+     * start library
      */
     init_snmp("snmpd");
 
     if ((ret = init_master_agent()) != 0) {
         /*
-         * Some error opening one of the specified agent transports.  
+         * Some error opening one of the specified agent transports.
          */
         Exit(1);                /*  Exit logs exit val for us  */
     }
@@ -897,12 +897,12 @@ main(int argc, char *argv[])
 #endif
 
     /*
-     * Store persistent data immediately in case we crash later.  
+     * Store persistent data immediately in case we crash later.
      */
     snmp_store("snmpd");
 
     /*
-     * Send coldstart trap if possible.  
+     * Send coldstart trap if possible.
      */
     send_easy_trap(0, 0);
 
@@ -917,7 +917,7 @@ main(int argc, char *argv[])
         fd = open(pid_file, O_CREAT | O_EXCL | O_WRONLY, 0600);
         if (fd == -1) {
             snmp_log_perror(pid_file);
-            if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+            if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
                                         NETSNMP_DS_AGENT_NO_ROOT_ACCESS)) {
                 exit(1);
             }
@@ -936,7 +936,7 @@ main(int argc, char *argv[])
 
 #if HAVE_UNISTD_H
 #ifdef HAVE_SETGID
-    if ((gid = netsnmp_ds_get_int(NETSNMP_DS_APPLICATION_ID, 
+    if ((gid = netsnmp_ds_get_int(NETSNMP_DS_APPLICATION_ID,
 				  NETSNMP_DS_AGENT_GROUPID)) != 0) {
         DEBUGMSGTL(("snmpd/main", "Changing gid to %d.\n", gid));
         if (setgid(gid) == -1
@@ -945,7 +945,7 @@ main(int argc, char *argv[])
 #endif
             ) {
             snmp_log_perror("setgid failed");
-            if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+            if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 					NETSNMP_DS_AGENT_NO_ROOT_ACCESS)) {
                 exit(1);
             }
@@ -953,12 +953,12 @@ main(int argc, char *argv[])
     }
 #endif
 #ifdef HAVE_SETUID
-    if ((uid = netsnmp_ds_get_int(NETSNMP_DS_APPLICATION_ID, 
+    if ((uid = netsnmp_ds_get_int(NETSNMP_DS_APPLICATION_ID,
 				  NETSNMP_DS_AGENT_USERID)) != 0) {
         DEBUGMSGTL(("snmpd/main", "Changing uid to %d.\n", uid));
         if (setuid(uid) == -1) {
             snmp_log_perror("setuid failed");
-            if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+            if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 					NETSNMP_DS_AGENT_NO_ROOT_ACCESS)) {
                 exit(1);
             }
@@ -968,7 +968,7 @@ main(int argc, char *argv[])
 #endif
 
     /*
-     * We're up, log our version number.  
+     * We're up, log our version number.
      */
     snmp_log(LOG_INFO, "NET-SNMP version %s\n", netsnmp_get_version());
 #ifdef WIN32SERVICE
@@ -977,10 +977,10 @@ main(int argc, char *argv[])
     netsnmp_addrcache_initialise();
 
     /*
-     * Forever monitor the dest_port for incoming PDUs.  
+     * Forever monitor the dest_port for incoming PDUs.
      */
     DEBUGMSGTL(("snmpd/main", "We're up.  Starting to process data.\n"));
-    if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+    if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 				NETSNMP_DS_AGENT_QUIT_IMMEDIATELY))
         receive();
 #include "mib_module_shutdown.h"
@@ -994,7 +994,7 @@ main(int argc, char *argv[])
     shutdown_agent();
 #endif
 
-    if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+    if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 				NETSNMP_DS_AGENT_LEAVE_PIDFILE) &&
 	(pid_file != NULL)) {
         unlink(pid_file);
@@ -1013,7 +1013,7 @@ main(int argc, char *argv[])
  * receive
  *
  * Parameters:
- *      
+ *
  * Returns:
  *	0	On success.
  *	-1	System error.
@@ -1124,7 +1124,7 @@ receive(void)
 
 #ifdef USING_SMUX_MODULE
             /*
-             * handle the SMUX sd's 
+             * handle the SMUX sd's
              */
             if (smux_listen_sd >= 0) {
                 for (i = 0; i < sdlen; i++) {
@@ -1138,7 +1138,7 @@ receive(void)
                     }
                 }
                 /*
-                 * new connection 
+                 * new connection
                  */
                 if (FD_ISSET(smux_listen_sd, &readfds)) {
                     if ((sd = smux_accept(smux_listen_sd)) >= 0) {
@@ -1233,10 +1233,10 @@ receive(void)
         }
 
         /*
-         * endif -- now>sched 
+         * endif -- now>sched
          */
         /*
-         * run requested alarms 
+         * run requested alarms
          */
         run_alarms();
 
@@ -1260,10 +1260,10 @@ receive(void)
  *	 requid
  *	*pdu
  *	*magic
- *      
+ *
  * Returns:
  *	1		On success	-OR-
- *	Passes through	Return from alarmGetResponse() when 
+ *	Passes through	Return from alarmGetResponse() when
  *	  		  USING_V2PARTY_ALARM_MODULE is defined.
  *
  * Call-back function to manage responses to traps (informs) and alarms.
@@ -1280,7 +1280,7 @@ snmp_input(int op,
         if (pdu->command == SNMP_MSG_GET) {
             if (state->type == EVENT_GET_REQ) {
                 /*
-                 * this is just the ack to our inform pdu 
+                 * this is just the ack to our inform pdu
                  */
                 return 1;
             }
@@ -1288,7 +1288,7 @@ snmp_input(int op,
     } else if (op == NETSNMP_CALLBACK_OP_TIMED_OUT) {
         if (state->type == ALARM_GET_REQ) {
             /*
-             * Need a mechanism to replace obsolete SNMPv2p alarm 
+             * Need a mechanism to replace obsolete SNMPv2p alarm
              */
         }
     }
@@ -1299,14 +1299,14 @@ snmp_input(int op,
 
 
 /*
- * Windows Service Related functions 
+ * Windows Service Related functions
  */
 #ifdef WIN32SERVICE
 /************************************************************
 * main function for Windows
 * Parse command line arguments for startup options,
 * to start as service or console mode application in windows.
-* Invokes appropriate startup funcitons depending on the 
+* Invokes appropriate startup funcitons depending on the
 * parameters passesd
 *************************************************************/
 int
@@ -1314,7 +1314,7 @@ int
 _tmain(int argc, TCHAR * argv[])
 {
     /*
-     * Define Service Name and Description, which appears in windows SCM 
+     * Define Service Name and Description, which appears in windows SCM
      */
     LPCTSTR         lpszServiceName = g_szAppName;      /* Service Registry Name */
     LPCTSTR         lpszServiceDisplayName = _T("Net-SNMP Agent");       /* Display Name */
@@ -1333,7 +1333,7 @@ _tmain(int argc, TCHAR * argv[])
     switch (nRunType) {
     case REGISTER_SERVICE:
         /*
-         * Register As service 
+         * Register As service
          */
         InputOptions.Argc = argc;
         InputOptions.Argv = argv;
@@ -1344,27 +1344,27 @@ _tmain(int argc, TCHAR * argv[])
         break;
     case UN_REGISTER_SERVICE:
         /*
-         * Unregister service 
+         * Unregister service
          */
         UnregisterService(lpszServiceName);
         exit(0);
         break;
     case RUN_AS_SERVICE:
         /*
-         * Run as service 
+         * Run as service
          */
         /*
-         * Register Stop Function 
+         * Register Stop Function
          */
         RegisterStopFunction(StopSnmpAgent);
         return RunAsService(SnmpDaemonMain);
         break;
     default:
         /*
-         * Run Net-Snmpd in console mode 
+         * Run Net-Snmpd in console mode
          */
         /*
-         * Invoke SnmpDeamonMain with input arguments 
+         * Invoke SnmpDeamonMain with input arguments
          */
         return SnmpDaemonMain(argc, argv);
         break;
@@ -1372,19 +1372,19 @@ _tmain(int argc, TCHAR * argv[])
 }
 
 /*
- * To stop Snmp Agent deamon 
+ * To stop Snmp Agent deamon
  * This portion is still not working
  */
 void
 StopSnmpAgent(void)
 {
     /*
-     * Shut Down Agent 
+     * Shut Down Agent
      */
     SnmpdShutDown(1);
 
     /*
-     * Wait till agent is completely stopped 
+     * Wait till agent is completely stopped
      */
 
     while (agent_status != AGENT_STOPPED) {

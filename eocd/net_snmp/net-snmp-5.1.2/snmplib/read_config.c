@@ -51,7 +51,7 @@
  * transfer all your state from memory to disk. You do this by generating
  * configuration lines into a buffer.  The lines are of the form token
  * followed by token parameters.
- * 
+ *
  * Finally storing is done using read_config_store(type, buffer);
  * type is the application name this can be obtained from:
  *
@@ -187,9 +187,9 @@ register_app_prenetsnmp_mib_handler(const char *token,
  *                 should free any resources allocated by the token handler
  *                 function.
  *
- * @param help     if non-NULL, used to display help information on the expected 
+ * @param help     if non-NULL, used to display help information on the expected
  *	           arguments after the token.
- *      
+ *
  * @return Pointer to a new config line entry or NULL on error.
  */
 struct config_line *
@@ -203,7 +203,7 @@ register_config_handler(const char *type_param,
     const char     *type = type_param;
 
     if (type == NULL) {
-        type = netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID, 
+        type = netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID,
 				     NETSNMP_DS_LIB_APPTYPE);
     }
 
@@ -274,7 +274,7 @@ register_app_config_handler(const char *token,
  *
  * @param type_param the configuration file used where the token is located.
  *                   Used to lookup the config file entry
- * 
+ *
  * @param token      the token that is being unregistered
  *
  * @return void
@@ -287,12 +287,12 @@ unregister_config_handler(const char *type_param, const char *token)
     const char     *type = type_param;
 
     if (type == NULL) {
-        type = netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID, 
+        type = netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID,
 				     NETSNMP_DS_LIB_APPTYPE);
     }
 
     /*
-     * find type in current list 
+     * find type in current list
      */
     while (*ctmp != NULL && strcmp((*ctmp)->fileHeader, type)) {
         ctmp = &((*ctmp)->next);
@@ -300,7 +300,7 @@ unregister_config_handler(const char *type_param, const char *token)
 
     if (*ctmp == NULL) {
         /*
-         * Not found, return. 
+         * Not found, return.
          */
         return;
     }
@@ -308,13 +308,13 @@ unregister_config_handler(const char *type_param, const char *token)
     ltmp = &((*ctmp)->start);
     if (*ltmp == NULL) {
         /*
-         * Not found, return. 
+         * Not found, return.
          */
         return;
     }
     if (strcmp((*ltmp)->config_token, token) == 0) {
         /*
-         * found it at the top of the list 
+         * found it at the top of the list
          */
         ltmp2 = (*ltmp)->next;
         SNMP_FREE((*ltmp)->config_token);
@@ -351,7 +351,7 @@ unregister_all_config_handlers()
     free_config();
 
     /*
-     * Keep using config_files until there are no more! 
+     * Keep using config_files until there are no more!
      */
     for (ctmp = config_files; ctmp;) {
         for (ltmp = ctmp->start; ltmp; ltmp = ctmp->start) {
@@ -425,7 +425,7 @@ read_config_find_handler(struct config_line *line_handlers,
 
 
 /*
- * searches a config_line linked list for a match 
+ * searches a config_line linked list for a match
  */
 int
 run_config_handler(struct config_line *lptr,
@@ -448,8 +448,8 @@ run_config_handler(struct config_line *lptr,
             }
             (*(lptr->parse_line)) (token, cptr);
         }
-    } else if (when != PREMIB_CONFIG && 
-	       !netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID, 
+    } else if (when != PREMIB_CONFIG &&
+	       !netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID,
 				       NETSNMP_DS_LIB_NO_TOKEN_WARNINGS)) {
         snprintf(tmpbuf, sizeof(tmpbuf), "Unknown token: %s.", token);
         tmpbuf[ sizeof(tmpbuf)-1 ] = 0;
@@ -463,11 +463,11 @@ run_config_handler(struct config_line *lptr,
  * takens an arbitrary string and tries to intepret it based on the
  * known configruation handlers for all registered types.  May produce
  * inconsistent results when multiple tokens of the same name are
- * registered under different file types. 
+ * registered under different file types.
  */
 
 /*
- * we allow = delimeters here 
+ * we allow = delimeters here
  */
 #define SNMP_CONFIG_DELIMETERS " \t="
 
@@ -509,12 +509,12 @@ snmp_config_when(char *line, int when)
         lptr = read_config_find_handler(lptr, cptr);
     } else {
         /*
-         * we have to find a token 
+         * we have to find a token
          */
         for (; ctmp != NULL && lptr == NULL; ctmp = ctmp->next)
             lptr = read_config_find_handler(ctmp->start, cptr);
     }
-    if (lptr == NULL && netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID, 
+    if (lptr == NULL && netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID,
 					  NETSNMP_DS_LIB_NO_TOKEN_WARNINGS)) {
         snprintf(tmpbuf, sizeof(tmpbuf), "Unknown token: %s.", cptr);
         tmpbuf[ sizeof(tmpbuf)-1 ] = 0;
@@ -523,7 +523,7 @@ snmp_config_when(char *line, int when)
     }
 
     /*
-     * use the original string instead since strtok messed up the original 
+     * use the original string instead since strtok messed up the original
      */
     line = skip_white(line + (cptr - buf) + strlen(cptr) + 1);
 
@@ -538,7 +538,7 @@ netsnmp_config(char *line)
     netsnmp_config_remember(line);      /* always remember it so it's read
                                          * processed after a free_config()
                                          * call */
-    if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID, 
+    if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID,
 			       NETSNMP_DS_LIB_HAVE_READ_CONFIG)) {
         DEBUGMSGTL(("snmp_config", "  ... processing it now\n"));
         ret = snmp_config_when(line, NORMAL_CONFIG);
@@ -597,7 +597,7 @@ netsnmp_config_process_memory_list(struct read_config_memory **memp,
 }
 
 /*
- * default storage location implementation 
+ * default storage location implementation
  */
 static struct read_config_memory *memorylist = NULL;
 
@@ -631,7 +631,7 @@ netsnmp_config_process_memories_when(int when, int clear)
  * <line_handler> functions.
  *
  *
- * For each line in <filename>, search the list of <line_handler>'s 
+ * For each line in <filename>, search the list of <line_handler>'s
  * for an entry that matches the first token on the line.  This comparison is
  * case insensitive.
  *
@@ -686,7 +686,7 @@ read_config(const char *filename,
         if (line[i] == '\n')
             line[i] = 0;
         /*
-         * check blank line or # comment 
+         * check blank line or # comment
          */
         if ((cptr = skip_white(cptr))) {
             cptr = copy_nword(cptr, token, sizeof(token));
@@ -715,13 +715,13 @@ read_config(const char *filename,
                             &token[1]));
                 if (cptr == NULL) {
                     /*
-                     * change context permanently 
+                     * change context permanently
                      */
                     line_handler = lptr;
                     continue;
                 } else {
                     /*
-                     * the rest of this line only applies. 
+                     * the rest of this line only applies.
                      */
                     cptr = copy_nword(cptr, token, sizeof(token));
                 }
@@ -763,20 +763,20 @@ void
 read_configs(void)
 {
 
-    char *optional_config = netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID, 
+    char *optional_config = netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID,
 					       NETSNMP_DS_LIB_OPTIONALCONFIG);
-    char *type = netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID, 
+    char *type = netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID,
 				       NETSNMP_DS_LIB_APPTYPE);
 
     DEBUGMSGTL(("read_config", "reading normal configuration tokens\n"));
 
-    if (!netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID, 
+    if (!netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID,
 				NETSNMP_DS_LIB_DONT_READ_CONFIGS)) {
         read_config_files(NORMAL_CONFIG);
     }
 
     /*
-     * do this even when the normal above wasn't done 
+     * do this even when the normal above wasn't done
      */
     if (optional_config && type) {
       char *newp, *cp;
@@ -802,7 +802,7 @@ read_configs(void)
 
     netsnmp_config_process_memories_when(NORMAL_CONFIG, 1);
 
-    netsnmp_ds_set_boolean(NETSNMP_DS_LIBRARY_ID, 
+    netsnmp_ds_set_boolean(NETSNMP_DS_LIBRARY_ID,
 			   NETSNMP_DS_LIB_HAVE_READ_CONFIG, 1);
     snmp_call_callbacks(SNMP_CALLBACK_LIBRARY,
                         SNMP_CALLBACK_POST_READ_CONFIG, NULL);
@@ -813,14 +813,14 @@ read_premib_configs(void)
 {
     DEBUGMSGTL(("read_config", "reading premib configuration tokens\n"));
 
-    if (!netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID, 
+    if (!netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID,
 				NETSNMP_DS_LIB_DONT_READ_CONFIGS)) {
         read_config_files(PREMIB_CONFIG);
     }
 
     netsnmp_config_process_memories_when(PREMIB_CONFIG, 0);
 
-    netsnmp_ds_set_boolean(NETSNMP_DS_LIBRARY_ID, 
+    netsnmp_ds_set_boolean(NETSNMP_DS_LIBRARY_ID,
 			   NETSNMP_DS_LIB_HAVE_READ_PREMIB_CONFIG, 1);
     snmp_call_callbacks(SNMP_CALLBACK_LIBRARY,
                         SNMP_CALLBACK_POST_PREMIB_READ_CONFIG, NULL);
@@ -837,7 +837,7 @@ read_premib_configs(void)
 void
 set_configuration_directory(const char *dir)
 {
-    netsnmp_ds_set_string(NETSNMP_DS_LIBRARY_ID, 
+    netsnmp_ds_set_string(NETSNMP_DS_LIBRARY_ID,
 			  NETSNMP_DS_LIB_CONFIGURATION_DIR, dir);
 }
 
@@ -859,7 +859,7 @@ get_configuration_directory()
     char            defaultPath[SPRINT_MAX_LEN];
     char           *homepath;
 
-    if (NULL == netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID, 
+    if (NULL == netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID,
 				      NETSNMP_DS_LIB_CONFIGURATION_DIR)) {
         homepath = getenv("HOME");
         snprintf(defaultPath, sizeof(defaultPath), "%s%c%s%c%s%s%s%s",
@@ -871,7 +871,7 @@ get_configuration_directory()
         defaultPath[ sizeof(defaultPath)-1 ] = 0;
         set_configuration_directory(defaultPath);
     }
-    return (netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID, 
+    return (netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID,
 				  NETSNMP_DS_LIB_CONFIGURATION_DIR));
 }
 
@@ -880,14 +880,14 @@ get_configuration_directory()
  *
  * Parameters:
  *      char *dir - value of the directory
- * Sets the configuration directory. 
+ * Sets the configuration directory.
  * No multiple directories may be specified.
  * (However, this is not checked)
  */
 void
 set_persistent_directory(const char *dir)
 {
-    netsnmp_ds_set_string(NETSNMP_DS_LIBRARY_ID, 
+    netsnmp_ds_set_string(NETSNMP_DS_LIBRARY_ID,
 			  NETSNMP_DS_LIB_PERSISTENT_DIR, dir);
 }
 
@@ -898,17 +898,17 @@ set_persistent_directory(const char *dir)
  * Function will retrieve the persisten directory value.
  * First check whether the value is set.
  * If not set give it the default value.
- * Return the value. 
+ * Return the value.
  * We always retrieve it new, since we have to do it anyway if it is just set.
  */
 const char     *
 get_persistent_directory()
 {
-    if (NULL == netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID, 
+    if (NULL == netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID,
 				      NETSNMP_DS_LIB_PERSISTENT_DIR)) {
         set_persistent_directory(PERSISTENT_DIRECTORY);
     }
-    return (netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID, 
+    return (netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID,
 				  NETSNMP_DS_LIB_PERSISTENT_DIR));
 }
 
@@ -917,14 +917,14 @@ get_persistent_directory()
  *
  * Parameters:
  *      char *pattern - value of the file pattern
- * Sets the temp file pattern. 
+ * Sets the temp file pattern.
  * Multiple patterns may not be specified.
  * (However, this is not checked)
  */
 void
 set_temp_file_pattern(const char *pattern)
 {
-    netsnmp_ds_set_string(NETSNMP_DS_LIBRARY_ID, 
+    netsnmp_ds_set_string(NETSNMP_DS_LIBRARY_ID,
 			  NETSNMP_DS_LIB_TEMP_FILE_PATTERN, pattern);
 }
 
@@ -935,17 +935,17 @@ set_temp_file_pattern(const char *pattern)
  * Function will retrieve the temp file pattern value.
  * First check whether the value is set.
  * If not set give it the default value.
- * Return the value. 
+ * Return the value.
  * We always retrieve it new, since we have to do it anyway if it is just set.
  */
 const char     *
 get_temp_file_pattern()
 {
-    if (NULL == netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID, 
+    if (NULL == netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID,
 				      NETSNMP_DS_LIB_TEMP_FILE_PATTERN)) {
         set_temp_file_pattern(NETSNMP_TEMP_FILE_PATTERN);
     }
-    return (netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID, 
+    return (netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID,
 				  NETSNMP_DS_LIB_TEMP_FILE_PATTERN));
 }
 
@@ -959,7 +959,7 @@ get_temp_file_pattern()
  * Traverse the list of config file types, performing the following actions
  * for each --
  *
- * First, build a search path for config files.  If the contents of 
+ * First, build a search path for config files.  If the contents of
  * environment variable SNMPCONFPATH are NULL, then use the following
  * path list (where the last entry exists only if HOME is non-null):
  *
@@ -1001,14 +1001,14 @@ read_config_files(int when)
     perspath = get_persistent_directory();
 
     /*
-     * read all config file types 
+     * read all config file types
      */
     for (; ctmp != NULL; ctmp = ctmp->next) {
 
         ltmp = ctmp->start;
 
         /*
-         * read the config files 
+         * read the config files
          */
         if ((envconfpath = getenv("SNMPCONFPATH")) == NULL) {
             snprintf(defaultPath, sizeof(defaultPath), "%s%s%s",
@@ -1043,7 +1043,7 @@ read_config_files(int when)
                 (persfile != NULL &&
                  strncmp(cptr2, persfile, strlen(persfile)) == 0)) {
                 /*
-                 * limit this to the known storage directory only 
+                 * limit this to the known storage directory only
                  */
                 for (j = 0; j <= MAX_PERSISTENT_BACKUPS; j++) {
                     snprintf(configfile, sizeof(configfile),
@@ -1052,12 +1052,12 @@ read_config_files(int when)
                     configfile[ sizeof(configfile)-1 ] = 0;
                     if (stat(configfile, &statbuf) != 0) {
                         /*
-                         * file not there, continue 
+                         * file not there, continue
                          */
                         break;
                     } else {
                         /*
-                         * backup exists, read it 
+                         * backup exists, read it
                          */
                         DEBUGMSGTL(("read_config_files",
                                     "old config file found: %s, parsing\n",
@@ -1083,7 +1083,7 @@ read_config_files(int when)
         snmp_log(LOG_ERR, "net-snmp: %d error(s) in config file(s)\n",
                  config_errors);
         /*
-         * exit(1); 
+         * exit(1);
          */
     }
 }
@@ -1130,7 +1130,7 @@ read_config_print_usage(const char *lead)
  * @param type is the application name
  * @param line is the configuration line written to the application name's
  * configuration file
- *      
+ *
  * @return void
   */
 void
@@ -1181,7 +1181,7 @@ read_config_store(const char *type, const char *line)
 void
 read_app_config_store(const char *line)
 {
-    read_config_store(netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID, 
+    read_config_store(netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID,
 					    NETSNMP_DS_LIB_APPTYPE), line);
 }
 
@@ -1193,7 +1193,7 @@ read_app_config_store(const char *line)
  *
  * Parameters:
  *	*type
- *      
+ *
  *
  * Save the file "<PERSISTENT_DIRECTORY>/<type>.conf" into a backup copy
  * called "<PERSISTENT_DIRECTORY>/<type>.%d.conf", which %d is an
@@ -1239,7 +1239,7 @@ snmp_save_persistent(const char *type)
         }
     }
     /*
-     * save a warning header to the top of the new file 
+     * save a warning header to the top of the new file
      */
     snprintf(fileold, sizeof(fileold),
             "#\n# net-snmp (or ucd-snmp) persistent data file.\n#\n############################################################################\n# STOP STOP STOP STOP STOP STOP STOP STOP STOP \n#\n#          **** DO NOT EDIT THIS FILE ****\n#\n# STOP STOP STOP STOP STOP STOP STOP STOP STOP \n############################################################################\n#\n# DO NOT STORE CONFIGURATION ENTRIES HERE.\n# Please save normal configuration tokens for %s in SNMPCONFPATH/%s.conf.\n# Only \"createUser\" tokens should be placed here by %s administrators.\n# (Did I mention: do not edit this file?)\n#\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
@@ -1254,7 +1254,7 @@ snmp_save_persistent(const char *type)
  *
  * Parameters:
  *	*type
- *      
+ *
  *
  * Unlink all backup files called "<PERSISTENT_DIRECTORY>/<type>.%d.conf".
  *
@@ -1297,7 +1297,7 @@ snmp_clean_persistent(const char *type)
 
 /*
  * config_perror: prints a warning string associated with a file and
- * line number of a .conf file and increments the error count. 
+ * line number of a .conf file and increments the error count.
  */
 void
 config_perror(const char *string)
@@ -1316,7 +1316,7 @@ config_pwarn(const char *string)
 
 /*
  * skip all white spaces and return 1 if found something either end of
- * line or a comment character 
+ * line or a comment character
  */
 char           *
 skip_white(char *ptr)
@@ -1355,10 +1355,10 @@ skip_token(char *ptr)
  * copy_word
  * copies the next 'token' from 'from' into 'to', maximum len-1 characters.
  * currently a token is anything seperate by white space
- * or within quotes (double or single) (i.e. "the red rose" 
+ * or within quotes (double or single) (i.e. "the red rose"
  * is one token, \"the red rose\" is three tokens)
  * a '\' character will allow a quote character to be treated
- * as a regular character 
+ * as a regular character
  * It returns a pointer to first non-white space after the end of the token
  * being copied or to 0 if we reach the end.
  * Note: Partially copied words (greater than len) still returns a !NULL ptr
@@ -1424,10 +1424,10 @@ copy_nword(char *from, char *to, int len)
  * copy_word
  * copies the next 'token' from 'from' into 'to'.
  * currently a token is anything seperate by white space
- * or within quotes (double or single) (i.e. "the red rose" 
+ * or within quotes (double or single) (i.e. "the red rose"
  * is one token, \"the red rose\" is three tokens)
  * a '\' character will allow a quote character to be treated
- * as a regular character 
+ * as a regular character
  * It returns a pointer to first non-white space after the end of the token
  * being copied or to 0 if we reach the end.
  */
@@ -1446,7 +1446,7 @@ copy_word(char *from, char *to)
 
 /*
  * read_config_save_octet_string(): saves an octet string as a length
- * followed by a string of hex 
+ * followed by a string of hex
  */
 char           *
 read_config_save_octet_string(char *saveto, u_char * str, size_t len)
@@ -1455,7 +1455,7 @@ read_config_save_octet_string(char *saveto, u_char * str, size_t len)
     u_char         *cp;
 
     /*
-     * is everything easily printable 
+     * is everything easily printable
      */
     for (i = 0, cp = str; i < (int) len && cp &&
          (isalpha(*cp) || isdigit(*cp) || *cp == ' '); cp++, i++);
@@ -1484,7 +1484,7 @@ read_config_save_octet_string(char *saveto, u_char * str, size_t len)
 
 /*
  * read_config_read_octet_string(): reads an octet string that was
- * saved by the read_config_save_octet_string() function 
+ * saved by the read_config_save_octet_string() function
  */
 char           *
 read_config_read_octet_string(char *readfrom, u_char ** str, size_t * len)
@@ -1499,7 +1499,7 @@ read_config_read_octet_string(char *readfrom, u_char ** str, size_t * len)
 
     if (strncasecmp(readfrom, "0x", 2) == 0) {
         /*
-         * A hex string submitted. How long? 
+         * A hex string submitted. How long?
          */
         readfrom += 2;
         cptr1 = skip_not_white(readfrom);
@@ -1516,7 +1516,7 @@ read_config_read_octet_string(char *readfrom, u_char ** str, size_t * len)
         *len = *len / 2;
 
         /*
-         * malloc data space if needed (+1 for good measure) 
+         * malloc data space if needed (+1 for good measure)
          */
         if (*str == NULL) {
             if ((cptr = (u_char *) malloc(*len + 1)) == NULL) {
@@ -1528,14 +1528,14 @@ read_config_read_octet_string(char *readfrom, u_char ** str, size_t * len)
         }
 
         /*
-         * copy validated data 
+         * copy validated data
          */
         for (i = 0; i < (int) *len; i++) {
             if (1 == sscanf(readfrom, "%2x", &tmp))
                 *cptr++ = (u_char) tmp;
             else {
                 /*
-                 * we may lose memory, but don't know caller's buffer XX free(cptr); 
+                 * we may lose memory, but don't know caller's buffer XX free(cptr);
                  */
                 return (NULL);
             }
@@ -1545,11 +1545,11 @@ read_config_read_octet_string(char *readfrom, u_char ** str, size_t * len)
         readfrom = skip_white(readfrom);
     } else {
         /*
-         * Normal string 
+         * Normal string
          */
 
         /*
-         * malloc string space if needed (including NULL terminator) 
+         * malloc string space if needed (including NULL terminator)
          */
         if (*str == NULL) {
             char            buf[SNMP_MAXBUF];
@@ -1573,7 +1573,7 @@ read_config_read_octet_string(char *readfrom, u_char ** str, size_t * len)
 
 
 /*
- * read_config_save_objid(): saves an objid as a numerical string 
+ * read_config_save_objid(): saves an objid as a numerical string
  */
 char           *
 read_config_save_objid(char *saveto, oid * objid, size_t len)
@@ -1587,7 +1587,7 @@ read_config_save_objid(char *saveto, oid * objid, size_t len)
     }
 
     /*
-     * in case len=0, this makes it easier to read it back in 
+     * in case len=0, this makes it easier to read it back in
      */
     for (i = 0; i < (int) len; i++) {
         sprintf(saveto, ".%ld", objid[i]);
@@ -1597,7 +1597,7 @@ read_config_save_objid(char *saveto, oid * objid, size_t len)
 }
 
 /*
- * read_config_read_objid(): reads an objid from a format saved by the above 
+ * read_config_read_objid(): reads an objid from a format saved by the above
  */
 char           *
 read_config_read_objid(char *readfrom, oid ** objid, size_t * len)
@@ -1615,12 +1615,12 @@ read_config_read_objid(char *readfrom, oid ** objid, size_t * len)
 
     if (strncmp(readfrom, "NULL", 4) == 0) {
         /*
-         * null length oid 
+         * null length oid
          */
         *len = 0;
     } else {
         /*
-         * qualify the string for read_objid 
+         * qualify the string for read_objid
          */
         char            buf[SPRINT_MAX_LEN];
         copy_nword(readfrom, buf, sizeof(buf));
@@ -1659,7 +1659,7 @@ read_config_read_objid(char *readfrom, oid ** objid, size_t * len)
  *
  * @return the next token in the configuration line.  NULL if none left or
  * if an unknown type.
- * 
+ *
  */
 char           *
 read_config_read_data(int type, char *readfrom, void *dataptr,
@@ -1705,7 +1705,7 @@ read_config_read_data(int type, char *readfrom, void *dataptr,
 
 /*
  * read_config_read_memory():
- * 
+ *
  * similar to read_config_read_data, but expects a generic memory
  * pointer rather than a specific type of pointer.  Len is expected to
  * be the amount of available memory.

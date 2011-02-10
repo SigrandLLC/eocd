@@ -3,7 +3,7 @@
 # found in the net-snmp source code.  You can source it from within
 # gdb and then use it to print variable chains, oids, etc directly
 # from memory.
-# 
+#
 # as an example, consider the variables:
 #
 #   oid    *name;
@@ -65,7 +65,7 @@ document printvarval
   This is called from inside printvar.
 end
 
-  
+
 
 define printvar
   printf "%stype: %d\n", $varindent, $arg0->type

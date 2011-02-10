@@ -4,7 +4,7 @@ REQUIREMENTS
   yet.   You have been warned.  Use at your own risk.  yada yada yada.
 
   Get and install:
-  
+
     the mysql (http://www.mysql.com) database
       it may work with other databases, but I haven't tried.
 
@@ -27,17 +27,17 @@ REQUIREMENTS
      make
      make install
      scripts/mysql_install_db
-  
+
      start it by running 'safe_mysqld'.
      To run the sql commands listed in the following text, run
      'mysql'.
 
 SQL REQUIREMENTS
 
-  The scripts used by this project automatically create, edit, delete, 
+  The scripts used by this project automatically create, edit, delete,
   insert, update, etc everything necessary.  Because of this, you'll
-  need to set up a SQL user with the ability to modify the heck out of 
-  a database called "snmp" on your mysql server.  We'll call this user 
+  need to set up a SQL user with the ability to modify the heck out of
+  a database called "snmp" on your mysql server.  We'll call this user
   SQLUSER below, and its password SQLPASSWORD.  Replace these with
   your appropriate information anytime you see them listed below.
 
@@ -104,19 +104,19 @@ SETTING UP USERS OF THE SYSTEM
   whatever), or the user "guest" if you didn't configure apache for
   authenticated access.  The -a in this case grants "administrative"
   rights to the group of hosts, and thus allows the user to add new
-  hosts to the group, delete hosts, etc.  Non-administrative users are 
+  hosts to the group, delete hosts, etc.  Non-administrative users are
   mostly "read-only" type users.
 
   The interface groups hosts together in "groups", and you put users
   in these groups to assign responsiblity for them.  Groups are
   created when a user gets assigned to one, so just pick a groupname
-  for now and use it below.  Maybe later you can add yourself to a new 
+  for now and use it below.  Maybe later you can add yourself to a new
   group using a similar command, and the web interface will change to
-  reflect that you are now in more than one group.  Use the same group 
+  reflect that you are now in more than one group.  Use the same group
   name for multiple users that all belong to a single "group".
 
   If you add an email address to the argument list the system will
-  mail that user every time it finds a problem or finds a problem that 
+  mail that user every time it finds a problem or finds a problem that
   has been fixed.
 
   *** DO NOT PICK A GROUP WITH THE NAME "default" ***
@@ -126,7 +126,7 @@ SETTING UP USERS OF THE SYSTEM
 SETTING UP SNMP AUTHORIZATION INFORMATION
 
   Now, you need to add in your default authorization information for
-  how to make SNMP requests to your host.  The parameter names you can 
+  how to make SNMP requests to your host.  The parameter names you can
   pick come straight from the SNMP perl module, so see "perldoc SNMP"
   for all the parameter names you can pick from.
 
@@ -138,9 +138,9 @@ SETTING UP SNMP AUTHORIZATION INFORMATION
   I also recommend adding a large default timeout (30 secs):
 
     ./setupauth -u SQLUSER -p SQLPASSWORD -h SQLHOST Timeout 30000000
-  
+
   If you want different parameters for a group, it'll inherit
-  everything from the default parameters specified above plus any more 
+  everything from the default parameters specified above plus any more
   that you set or override:
 
     ./setupauth -u SQLUSER -p SQLPASSWORD -h SQLHOST -g agroup Community private
@@ -152,7 +152,7 @@ SETTING UP SNMP AUTHORIZATION INFORMATION
 
 COLLECTING THE DATA
 
-  The command you need to run to collect data is snmptosql, which will 
+  The command you need to run to collect data is snmptosql, which will
   use the information defined above to fill your data base with all
   sorts of useful information that you've asked it to collect.
   Something like:
@@ -167,13 +167,13 @@ COLLECTING THE DATA
 USING THE SYSTEM
 
   Most of the things you'll need to do can be done from the web
-  interface that you've just set up as /manager on some system in the 
+  interface that you've just set up as /manager on some system in the
   step above.  Go to this web page to see what you can do.
 
 MONITORING HOSTS WITH IT (finally)
 
   It's *not* entirely intuitive yet.  So, lets give you an example.  In
-  your snmpd.conf file, put a line that says "proc sendmail".  This will 
+  your snmpd.conf file, put a line that says "proc sendmail".  This will
   check to see if sendmail is running on your system.  Also put "disk /
   10%" which will require the disk has at least 10% of free space.
   Restart the snmpd (or kill -HUP).  See the snmpd.conf manual page

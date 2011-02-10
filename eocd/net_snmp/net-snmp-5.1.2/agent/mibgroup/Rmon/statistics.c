@@ -46,15 +46,15 @@
 #include "util_funcs.h"
 #include "statistics.h"
         /*
-         * Implementation headers 
+         * Implementation headers
          */
 #include "agutil_api.h"
 #include "row_api.h"
         /*
-         * File scope definitions section 
+         * File scope definitions section
          */
         /*
-         * from MIB compilation 
+         * from MIB compilation
          */
 #define MIB_DESCR	"EthStat"
 #define etherStatsEntryFirstIndexBegin	11
@@ -96,7 +96,7 @@
      } CRTL_ENTRY_T;
 
 /*
- * Main section 
+ * Main section
  */
 
      static TABLE_DEFINTION_T
@@ -106,7 +106,7 @@
          StatCtrlTable;
 
 /*
- * Control Table RowApi Callbacks 
+ * Control Table RowApi Callbacks
  */
 
      int
@@ -122,7 +122,7 @@
     body = (CRTL_ENTRY_T *) eptr->body;
 
     /*
-     * set defaults 
+     * set defaults
      */
     memcpy(&body->data_source, &data_src_if_index_1, sizeof(VAR_OID_T));
     body->data_source.objid[body->data_source.length - 1] =
@@ -137,7 +137,7 @@ int
 stat_Validate(RMON_ENTRY_T * eptr)
 {
     /*
-     * T.B.D. (system dependent) check valid inteface in body->data_source; 
+     * T.B.D. (system dependent) check valid inteface in body->data_source;
      */
 
     return 0;
@@ -178,7 +178,7 @@ stat_Deactivate(RMON_ENTRY_T * eptr)
 
 
 /***************************************************
- * Function:var_etherStats2Entry 
+ * Function:var_etherStats2Entry
  * Purpose: Handles the request for etherStats2Entry variable instances
  ***************************************************/
 u_char         *
@@ -218,7 +218,7 @@ var_etherStats2Entry(struct variable * vp, oid * name, size_t * length,
 
 
 /***************************************************
- * Function:write_etherStatsEntry 
+ * Function:write_etherStatsEntry
  ***************************************************/
 static int
 write_etherStatsEntry(int action, u_char * var_val, u_char var_val_type,
@@ -250,7 +250,7 @@ write_etherStatsEntry(int action, u_char * var_val, u_char var_val_type,
 
     case RESERVE2:
         /*
-         * get values from PDU, check them and save them in the cloned entry 
+         * get values from PDU, check them and save them in the cloned entry
          */
         long_temp = name[etherStatsEntryFirstIndexBegin];
         leaf_id = (int) name[etherStatsEntryFirstIndexBegin - 1];
@@ -314,7 +314,7 @@ write_etherStatsEntry(int action, u_char * var_val, u_char var_val_type,
 }
 
 /***************************************************
- * Function:var_etherStatsEntry 
+ * Function:var_etherStatsEntry
  * Purpose: Handles the request for etherStatsEntry variable instances
  ***************************************************/
 u_char         *
@@ -462,7 +462,7 @@ add_statistics_entry(int ctrl_index, int ifIndex)
 #endif
 
 /***************************************************
- * define Variables callbacks 
+ * define Variables callbacks
  ***************************************************/
 oid             oidstatisticsVariablesOid[] = { 1, 3, 6, 1, 2, 1, 16, 1 };
 
@@ -516,8 +516,8 @@ struct variable7 oidstatisticsVariables[] = {
 };
 
 /***************************************************
- * Function:init_statistics 
- * Purpose: register statistics objects in the agent 
+ * Function:init_statistics
+ * Purpose: register statistics objects in the agent
  ***************************************************/
 void
 init_statistics(void)
@@ -544,5 +544,5 @@ init_statistics(void)
 }
 
 /*
- * end of file statistics.c 
+ * end of file statistics.c
  */

@@ -1,5 +1,5 @@
 /*
- * ucdDemoPublic.c 
+ * ucdDemoPublic.c
  */
 
 #include <net-snmp/net-snmp-config.h>
@@ -67,8 +67,8 @@ ucdDemo_parse_userpass(const char *word, char *line)
 }
 
 /*
- * this variable defines function callbacks and type return information 
- * for the ucdDemoPublic mib 
+ * this variable defines function callbacks and type return information
+ * for the ucdDemoPublic mib
  */
 
 struct variable2 ucdDemoPublic_variables[] = {
@@ -82,7 +82,7 @@ struct variable2 ucdDemoPublic_variables[] = {
 
 /*
  * Define the OID pointer to the top of the mib tree that we're
- * registering underneath 
+ * registering underneath
  */
 oid             ucdDemoPublic_variables_oid[] =
     { 1, 3, 6, 1, 4, 1, 2021, 14, 1, 1 };
@@ -118,7 +118,7 @@ var_ucdDemoPublic(struct variable *vp,
         return 0;
 
     /*
-     * this is where we do the value assignments for the mib results. 
+     * this is where we do the value assignments for the mib results.
      */
     switch (vp->magic) {
 
@@ -161,7 +161,7 @@ write_ucdDemoResetKeys(int action,
                        u_char * statP, oid * name, size_t name_len)
 {
     /*
-     * variables we may use later 
+     * variables we may use later
      */
     static long     long_ret;
     unsigned char  *engineID;
@@ -193,7 +193,7 @@ write_ucdDemoResetKeys(int action,
                 }
             }
             /*
-             * reset the keys 
+             * reset the keys
              */
         }
     }

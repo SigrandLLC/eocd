@@ -34,22 +34,22 @@ $base_dir = "../../..";
 # filename title
 # etc..
 @files = qw(
-AGENT.txt AGENT.txt 
-CodingStyle CodingStyle 
-COPYING COPYING 
+AGENT.txt AGENT.txt
+CodingStyle CodingStyle
+COPYING COPYING
 INSTALL INSTALL
-NEWS NEWS 
-PORTING PORTING 
-TODO TODO 
-README README 
-README.agentx README.agentx 
-README.hpux11 README.hpux11 
+NEWS NEWS
+PORTING PORTING
+TODO TODO
+README README
+README.agentx README.agentx
+README.hpux11 README.hpux11
 README.krb5 README.krb5
-README.snmpv3 README.snmpv3 
-README.solaris README.solaris 
-README.thread README.thread 
-README.win32 README.win32 
-NEWS NEWS 
+README.snmpv3 README.snmpv3
+README.solaris README.solaris
+README.thread README.thread
+README.win32 README.win32
+NEWS NEWS
 README.perl README.perl
 );
 
@@ -81,7 +81,7 @@ for (my $i=0; $i <= $#files; ) {
 
   chomp $file;
   chomp $file_title;
- 
+
   if (! (-f "$base_dir/$file")) {
     die "Could not open file $base_dir/$file!";
   }
@@ -91,7 +91,7 @@ for (my $i=0; $i <= $#files; ) {
   #print "$command\n";
 
   system "$command";
-  
+
 }
 
 

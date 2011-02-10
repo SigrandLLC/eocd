@@ -29,6 +29,6 @@ would be a good idea to ignore or handle these signals in the daemon...
 The HP-UX 11.0 port was done by Johannes Schmidt-Fischer <jsf@InterFace-AG.com>
 
 If you have questions or problems please feel free to contact me via the
-above mentioned e-mail address. Please send a copy of your e-mail to the 
+above mentioned e-mail address. Please send a copy of your e-mail to the
 net-snmp-coders mailing list - probably someone else can answer your
 question earlier than me;-)

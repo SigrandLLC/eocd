@@ -22,7 +22,7 @@ netsnmp_transport *netsnmp_aal5pvc_transport(struct sockaddr_atmpvc *addr,
                                              int local);
 
 /*
- * "Constructor" for transport domain object.  
+ * "Constructor" for transport domain object.
  */
 
 void            netsnmp_aal5pvc_ctor(void);

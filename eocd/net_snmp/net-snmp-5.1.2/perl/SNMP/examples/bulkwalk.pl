@@ -5,7 +5,7 @@
 
 use SNMP;
 
-# Hard-coded hostname and community.  This is icky, but I didn't want to 
+# Hard-coded hostname and community.  This is icky, but I didn't want to
 # muddle the example with parsing command line arguments.  Deal with it. -r
 #
 my $hostname='localhost';
@@ -38,7 +38,7 @@ die "Cannot create session: ${SNMP::ErrorStr}\n" unless defined $sess;
 #
 #   For most branches (i.e. 'sysUpTime'), this "just works" -- be sure you
 #   don't ask for an instance, and the response will be as expected.  However,
-#   if you want a specific variable instance (i.e. 'ifSpeed.5'), you must 
+#   if you want a specific variable instance (i.e. 'ifSpeed.5'), you must
 #   ask for the _preceeding_ variable ('ifSpeed.4' in this example).
 #
 #   See section 4.2.3 of RFC 1905 for more details on GETBULK PDU handling.
@@ -88,9 +88,9 @@ for $vbarr ( @resp ) {
 #
 sub callback {
     my ($vars, $values) = @_;
-    
+
     for $vbarr ( @$values ) {
-	# Determine which OID this request queried.  This is kept in the 
+	# Determine which OID this request queried.  This is kept in the
 	# '$vars' VarList reference passed to the Perl callback by the
 	# asynchronous callback.
 	$oid = (shift @$vars)->tag();
@@ -110,9 +110,9 @@ sub callback {
     SNMP::finish();
 }
 
-# The actual bulkwalk request is done here.  Note that the $vars VarList 
+# The actual bulkwalk request is done here.  Note that the $vars VarList
 # reference will be passed to the Perl callback when the bulkwalk completes.
-# 
+#
 my $reqid = $sess->bulkwalk(2, 8, $vars, [ \&callback, $vars ]);
 die "Cannot do async bulkwalk: $sess->{ErrorStr} ($sess->{ErrorNum})\n"
 							if $sess->{ErrorNum};

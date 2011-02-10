@@ -6,7 +6,7 @@ extern          "C" {
 #endif
 
 /*
- * read_only.h 
+ * read_only.h
  */
 
 /*

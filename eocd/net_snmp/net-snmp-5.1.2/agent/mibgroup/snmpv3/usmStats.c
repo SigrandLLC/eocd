@@ -1,6 +1,6 @@
 
 /*
- * usmStats.c: implements the usmStats portion of the SNMP-USER-BASED-SM-MIB 
+ * usmStats.c: implements the usmStats portion of the SNMP-USER-BASED-SM-MIB
  */
 
 #include <net-snmp/net-snmp-config.h>
@@ -27,7 +27,7 @@ struct variable2 usmStats_variables[] = {
 };
 
 /*
- * now load this mib into the agents mib table 
+ * now load this mib into the agents mib table
  */
 oid             usmStats_variables_oid[] = { 1, 3, 6, 1, 6, 3, 15, 1, 1 };
 
@@ -53,7 +53,7 @@ var_usmStats(struct variable *vp,
 {
 
     /*
-     * variables we may use later 
+     * variables we may use later
      */
     static long     long_ret;
     int             tmagic;
@@ -65,7 +65,7 @@ var_usmStats(struct variable *vp,
         return 0;
 
     /*
-     * this is where we do the value assignments for the mib results. 
+     * this is where we do the value assignments for the mib results.
      */
     tmagic = vp->magic;
     if ((tmagic >= 0)

@@ -12,7 +12,7 @@
 #endif
 
                         /*
-                         * For 'timeval' 
+                         * For 'timeval'
                          */
 #if TIME_WITH_SYS_TIME
 # ifdef WIN32
@@ -83,7 +83,7 @@ typedef long ssize_t;
 #include <net-snmp/definitions.h>
 #include <net-snmp/library/snmp_api.h>
 /*
- * #include <net-snmp/library/libsnmp.h> 
+ * #include <net-snmp/library/libsnmp.h>
  */
 
     typedef struct netsnmp_index_s {

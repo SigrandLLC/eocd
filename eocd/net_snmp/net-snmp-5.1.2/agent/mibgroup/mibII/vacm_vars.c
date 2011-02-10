@@ -109,20 +109,20 @@ init_vacm_vars(void)
 
     /*
      * Define the OID pointer to the top of the mib tree that we're
-     * registering underneath 
+     * registering underneath
      */
     oid             vacm_sec2group_oid[] = { OID_VACMGROUPENTRY };
     oid             vacm_access_oid[] = { OID_VACMACCESSENTRY };
     oid             vacm_view_oid[] = { OID_VACMMIBVIEWS };
 
     /*
-     * we need to be called back later 
+     * we need to be called back later
      */
     snmp_register_callback(SNMP_CALLBACK_LIBRARY, SNMP_CALLBACK_STORE_DATA,
                            store_vacm, NULL);
 
     /*
-     * register ourselves with the agent to handle our mib tree 
+     * register ourselves with the agent to handle our mib tree
      */
     REGISTER_MIB("mibII/vacm:sec2group", vacm_sec2group, variable1,
                  vacm_sec2group_oid);
@@ -165,7 +165,7 @@ init_vacm_vars(void)
 #endif
 
     /*
-     * register ourselves to handle access control 
+     * register ourselves to handle access control
      */
     snmp_register_callback(SNMP_CALLBACK_APPLICATION,
                            SNMPD_CALLBACK_ACM_CHECK, vacm_in_view_callback,
@@ -470,22 +470,22 @@ vacm_parse_simple(const char *token, char *confline)
     char            authtype[SPRINT_MAX_LEN];
 
     /*
-     * init 
+     * init
      */
     strcpy(model, "any");
 
     /*
-     * community name or user name 
+     * community name or user name
      */
     cp = copy_nword(confline, community, sizeof(community));
 
     if (strcmp(token, "rouser") == 0 || strcmp(token, "rwuser") == 0) {
         /*
-         * maybe security model type 
+         * maybe security model type
          */
         if (strcmp(community, "-s") == 0) {
             /*
-             * -s model ... 
+             * -s model ...
              */
             if (cp)
                 cp = copy_nword(cp, model, sizeof(authtype));
@@ -499,7 +499,7 @@ vacm_parse_simple(const char *token, char *confline)
             strcpy(model, "usm");
         }
         /*
-         * authentication type 
+         * authentication type
          */
         if (cp && *cp)
             cp = copy_nword(cp, authtype, sizeof(authtype));
@@ -508,7 +508,7 @@ vacm_parse_simple(const char *token, char *confline)
         DEBUGMSGTL((token, "setting auth type: \"%s\"\n", authtype));
     } else {
         /*
-         * source address 
+         * source address
          */
         if (cp && *cp) {
             cp = copy_nword(cp, addressname, sizeof(addressname));
@@ -516,13 +516,13 @@ vacm_parse_simple(const char *token, char *confline)
             strcpy(addressname, "default");
         }
         /*
-         * authtype has to be noauth 
+         * authtype has to be noauth
          */
         strcpy(authtype, "noauth");
     }
 
     /*
-     * oid they can touch 
+     * oid they can touch
      */
     if (cp && *cp) {
         cp = copy_nword(cp, theoid, sizeof(theoid));
@@ -540,10 +540,10 @@ vacm_parse_simple(const char *token, char *confline)
     if (strcmp(token, "rwcommunity") == 0
         || strcmp(token, "rocommunity") == 0) {
         /*
-         * com2sec mapping 
+         * com2sec mapping
          */
         /*
-         * com2sec anonymousSecNameNUM    ADDRESS  COMMUNITY 
+         * com2sec anonymousSecNameNUM    ADDRESS  COMMUNITY
          */
         sprintf(secname, "anonymousSecName%03d", num);
         snprintf(line, sizeof(line), "%s %s '%s'",
@@ -560,10 +560,10 @@ vacm_parse_simple(const char *token, char *confline)
         netsnmp_unix_parse_security("com2secunix", line);
 #endif
         /*
-         * sec->group mapping 
+         * sec->group mapping
          */
         /*
-         * group   anonymousGroupNameNUM  any      anonymousSecNameNUM 
+         * group   anonymousGroupNameNUM  any      anonymousSecNameNUM
          */
         snprintf(line, sizeof(line),
                  "anonymousGroupName%03d v1 %s", num, secname);
@@ -579,10 +579,10 @@ vacm_parse_simple(const char *token, char *confline)
     } else if (strcmp(token, "rwcommunity6") == 0
                || strcmp(token, "rocommunity6") == 0) {
         /*
-         * com2sec6 mapping 
+         * com2sec6 mapping
          */
         /*
-         * com2sec6 anonymousSecNameNUM    ADDRESS  COMMUNITY 
+         * com2sec6 anonymousSecNameNUM    ADDRESS  COMMUNITY
          */
         sprintf(secname, "anonymousSecName%03d", num);
         snprintf(line, sizeof(line), "%s %s '%s'",
@@ -592,10 +592,10 @@ vacm_parse_simple(const char *token, char *confline)
         netsnmp_udp6_parse_security("com2sec6", line);
 
         /*
-         * sec->group mapping 
+         * sec->group mapping
          */
         /*
-         * group   anonymousGroupNameNUM  any      anonymousSecNameNUM 
+         * group   anonymousGroupNameNUM  any      anonymousSecNameNUM
          */
         snprintf(line, sizeof(line),
                  "anonymousGroupName%03d v1 %s", num, secname);
@@ -613,10 +613,10 @@ vacm_parse_simple(const char *token, char *confline)
         secname[ sizeof(secname)-1 ] = 0;
 
         /*
-         * sec->group mapping 
+         * sec->group mapping
          */
         /*
-         * group   anonymousGroupNameNUM  any      anonymousSecNameNUM 
+         * group   anonymousGroupNameNUM  any      anonymousSecNameNUM
          */
         snprintf(line, sizeof(line),
                  "anonymousGroupName%03d %s %s", num, model, secname);
@@ -626,10 +626,10 @@ vacm_parse_simple(const char *token, char *confline)
     }
 
     /*
-     * view definition 
+     * view definition
      */
     /*
-     * view    anonymousViewNUM       included OID 
+     * view    anonymousViewNUM       included OID
      */
     sprintf(viewname, "anonymousView%03d", num);
     snprintf(line, sizeof(line), "%s included %s", viewname, theoid);
@@ -638,10 +638,10 @@ vacm_parse_simple(const char *token, char *confline)
     vacm_parse_view("view", line);
 
     /*
-     * map everything together 
+     * map everything together
      */
     /*
-     * access  anonymousGroupNameNUM  "" MODEL AUTHTYPE prefix anonymousViewNUM [none/anonymousViewNUM] [none/anonymousViewNUM] 
+     * access  anonymousGroupNameNUM  "" MODEL AUTHTYPE prefix anonymousViewNUM [none/anonymousViewNUM] [none/anonymousViewNUM]
      */
     snprintf(line, sizeof(line),
             "anonymousGroupName%03d  \"\" %s %s prefix %s %s %s",
@@ -656,11 +656,11 @@ int
 vacm_warn_if_not_configured(int majorID, int minorID, void *serverarg,
                             void *clientarg)
 {
-    const char * name = netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID, 
+    const char * name = netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID,
                                         NETSNMP_DS_LIB_APPTYPE);
     if (NULL==name)
         name = "snmpd";
-    
+
     if (!vacm_is_configured()) {
         snmp_log(LOG_WARNING,
                  "Warning: no access control information configured.\n  It's "
@@ -697,7 +697,7 @@ vacm_in_view_callback(int majorID, int minorID, void *serverarg,
  *	*name
  *	 namelen
  *       check_subtree
- *      
+ *
  * Returns:
  *	0	On success.
  *	1	Missing security name.
@@ -722,7 +722,7 @@ vacm_in_view(netsnmp_pdu *pdu, oid * name, size_t namelen,
     char           *vn;
     char           *sn = NULL;
     /*
-     * len defined by the vacmContextName object 
+     * len defined by the vacmContextName object
      */
 #define CONTEXTNAMEINDEXLEN 32
     char            contextNameIndex[CONTEXTNAMEINDEXLEN + 1];
@@ -748,7 +748,7 @@ vacm_in_view(netsnmp_pdu *pdu, oid * name, size_t namelen,
         /*
          * Okay, if this PDU was received from a UDP or a TCP transport then
          * ask the transport abstraction layer to map its source address and
-         * community string to a security name for us.  
+         * community string to a security name for us.
          */
 
         if (pdu->tDomain == netsnmpUDPDomain
@@ -761,7 +761,7 @@ vacm_in_view(netsnmp_pdu *pdu, oid * name, size_t namelen,
                                         (char *) pdu->community,
                                         pdu->community_len, &sn)) {
                 /*
-                 * There are no com2sec entries.  
+                 * There are no com2sec entries.
                  */
                 sn = NULL;
             }
@@ -776,7 +776,7 @@ vacm_in_view(netsnmp_pdu *pdu, oid * name, size_t namelen,
                                          (char *) pdu->community,
                                          pdu->community_len, &sn)) {
                 /*
-                 * There are no com2sec entries.  
+                 * There are no com2sec entries.
                  */
                 sn = NULL;
             }
@@ -789,12 +789,12 @@ vacm_in_view(netsnmp_pdu *pdu, oid * name, size_t namelen,
                                         pdu->community_len, &sn)) {
 					sn = NULL;
 				  }
-#endif	
+#endif
         } else {
             /*
              * Map other <community, transport-address> pairs to security names
              * here.  For now just let non-IPv4 transport always succeed.
-             * 
+             *
              * WHAAAATTTT.  No, we don't let non-IPv4 transports
              * succeed!  You must fix this to make it usable, sorry.
              * From a security standpoint this is insane. -- Wes
@@ -806,7 +806,7 @@ vacm_in_view(netsnmp_pdu *pdu, oid * name, size_t namelen,
 
     } else if (find_sec_mod(pdu->securityModel)) {
         /*
-         * any legal defined v3 security model 
+         * any legal defined v3 security model
          */
         DEBUGMSG(("mibII/vacm_vars",
                   "vacm_in_view: ver=%d, model=%d, secName=%s\n",
@@ -830,7 +830,7 @@ vacm_in_view(netsnmp_pdu *pdu, oid * name, size_t namelen,
         return 6;
     }
     /*
-     * NULL termination of the pdu field is ugly here.  Do in PDU parsing? 
+     * NULL termination of the pdu field is ugly here.  Do in PDU parsing?
      */
     if (pdu->contextName)
         strncpy(contextNameIndex, pdu->contextName, pdu->contextNameLen);
@@ -841,7 +841,7 @@ vacm_in_view(netsnmp_pdu *pdu, oid * name, size_t namelen,
     if (!netsnmp_subtree_find_first(contextNameIndex)) {
         /*
          * rfc2575 section 3.2, step 1
-         * no such context here; return no such context error 
+         * no such context here; return no such context error
          */
         DEBUGMSGTL(("mibII/vacm_vars", "vacm_in_view: no such ctxt \"%s\"\n",
                     contextNameIndex));
@@ -933,7 +933,7 @@ var_vacm_sec2group(struct variable * vp,
      * Set up write_method first, in case we return NULL before getting to
      * the switch (vp->magic) below.  In some of these cases, we still want
      * to call the appropriate write_method, if only to have it return the
-     * appropriate error.  
+     * appropriate error.
      */
 
     switch (vp->magic) {
@@ -1053,7 +1053,7 @@ var_vacm_access(struct variable * vp,
      * Set up write_method first, in case we return NULL before getting to
      * the switch (vp->magic) below.  In some of these cases, we still want
      * to call the appropriate write_method, if only to have it return the
-     * appropriate error.  
+     * appropriate error.
      */
 
     switch (vp->magic) {
@@ -1256,7 +1256,7 @@ var_vacm_view(struct variable * vp,
      * Set up write_method first, in case we return NULL before getting to
      * the switch (vp->magic) below.  In some of these cases, we still want
      * to call the appropriate write_method, if only to have it return the
-     * appropriate error.  
+     * appropriate error.
      */
 
     switch (vp->magic) {
@@ -1446,7 +1446,7 @@ sec2group_parse_oid(oid * oidIndex, size_t oidLen,
     int             i;
 
     /*
-     * first check the validity of the oid 
+     * first check the validity of the oid
      */
     if ((oidLen <= 0) || (!oidIndex)) {
         return 1;
@@ -1457,7 +1457,7 @@ sec2group_parse_oid(oid * oidIndex, size_t oidLen,
     }
 
     /*
-     * its valid, malloc the space and store the results 
+     * its valid, malloc the space and store the results
      */
     if (name == NULL) {
         return 1;
@@ -1495,7 +1495,7 @@ sec2group_parse_groupEntry(oid * name, size_t name_len)
     size_t          nameLen;
 
     /*
-     * get the name and engineID out of the incoming oid 
+     * get the name and engineID out of the incoming oid
      */
     if (sec2group_parse_oid
         (&name[SEC2GROUP_MIB_LENGTH], name_len - SEC2GROUP_MIB_LENGTH,
@@ -1503,7 +1503,7 @@ sec2group_parse_groupEntry(oid * name, size_t name_len)
         return NULL;
 
     /*
-     * Now see if a user exists with these index values 
+     * Now see if a user exists with these index values
      */
     geptr = vacm_getGroupEntry(model, newName);
     free(newName);
@@ -1545,7 +1545,7 @@ write_vacmGroupName(int action,
         }
     } else if (action == FREE) {
         /*
-         * Try to undo the SET here (abnormal usage of FREE clause)  
+         * Try to undo the SET here (abnormal usage of FREE clause)
          */
         if ((geptr = sec2group_parse_groupEntry(name, name_len)) != NULL &&
             resetOnFail) {
@@ -1564,7 +1564,7 @@ write_vacmSecurityToGroupStorageType(int action,
                                      oid * name, size_t name_len)
 {
     /*
-     * variables we may use later 
+     * variables we may use later
      */
     static long     long_ret;
     struct vacm_groupEntry *geptr;
@@ -1577,7 +1577,7 @@ write_vacmSecurityToGroupStorageType(int action,
     }
     if (action == COMMIT) {
         /*
-         * don't allow creations here 
+         * don't allow creations here
          */
         if ((geptr = sec2group_parse_groupEntry(name, name_len)) == NULL) {
             return SNMP_ERR_NOSUCHNAME;
@@ -1624,7 +1624,7 @@ write_vacmSecurityToGroupStatus(int action,
         }
 
         /*
-         * See if we can parse the oid for model/name first.  
+         * See if we can parse the oid for model/name first.
          */
 
         if (sec2group_parse_oid(&name[SEC2GROUP_MIB_LENGTH],
@@ -1639,7 +1639,7 @@ write_vacmSecurityToGroupStatus(int action,
         }
 
         /*
-         * Now see if a group already exists with these index values.  
+         * Now see if a group already exists with these index values.
          */
         geptr = vacm_getGroupEntry(model, newName);
 
@@ -1661,7 +1661,7 @@ write_vacmSecurityToGroupStatus(int action,
             if (long_ret == RS_CREATEANDGO || long_ret == RS_CREATEANDWAIT) {
 
                 /*
-                 * Generate a new group entry.  
+                 * Generate a new group entry.
                  */
                 if ((geptr =
                      vacm_createGroupEntry(model, newName)) == NULL) {
@@ -1670,7 +1670,7 @@ write_vacmSecurityToGroupStatus(int action,
                 }
 
                 /*
-                 * Set defaults.  
+                 * Set defaults.
                  */
                 geptr->storageType = ST_NONVOLATILE;
                 geptr->status = RS_NOTREADY;
@@ -1688,7 +1688,7 @@ write_vacmSecurityToGroupStatus(int action,
             if (long_ret == RS_CREATEANDGO || long_ret == RS_ACTIVE) {
                 /*
                  * Check that all the mandatory objects have been set by now,
-                 * otherwise return inconsistentValue.  
+                 * otherwise return inconsistentValue.
                  */
                 if (geptr->groupName[0] == 0) {
                     free(newName);
@@ -1784,7 +1784,7 @@ access_parse_oid(oid * oidIndex, size_t oidLen,
     int             i;
 
     /*
-     * first check the validity of the oid 
+     * first check the validity of the oid
      */
     if ((oidLen <= 0) || (!oidIndex)) {
         return 1;
@@ -1796,7 +1796,7 @@ access_parse_oid(oid * oidIndex, size_t oidLen,
     }
 
     /*
-     * its valid, malloc the space and store the results 
+     * its valid, malloc the space and store the results
      */
     if (contextPrefix == NULL || groupName == NULL) {
         return 1;
@@ -1855,7 +1855,7 @@ access_parse_accessEntry(oid * name, size_t name_len)
     size_t          groupNameLen, contextPrefixLen;
 
     /*
-     * get the name and engineID out of the incoming oid 
+     * get the name and engineID out of the incoming oid
      */
     if (access_parse_oid
         (&name[ACCESS_MIB_LENGTH], name_len - ACCESS_MIB_LENGTH,
@@ -1865,7 +1865,7 @@ access_parse_accessEntry(oid * name, size_t name_len)
         return NULL;
 
     /*
-     * Now see if a user exists with these index values 
+     * Now see if a user exists with these index values
      */
     aptr =
         vacm_getAccessEntry(newGroupName, newContextPrefix, model, level);
@@ -1902,7 +1902,7 @@ write_vacmAccessStatus(int action,
         }
 
         /*
-         * See if we can parse the oid for model/name first.  
+         * See if we can parse the oid for model/name first.
          */
         if (access_parse_oid(&name[ACCESS_MIB_LENGTH],
                              name_len - ACCESS_MIB_LENGTH,
@@ -1920,7 +1920,7 @@ write_vacmAccessStatus(int action,
         }
 
         /*
-         * Now see if a group already exists with these index values.  
+         * Now see if a group already exists with these index values.
          */
         aptr =
             vacm_getAccessEntry(newGroupName, newContextPrefix, model,
@@ -1954,7 +1954,7 @@ write_vacmAccessStatus(int action,
                 }
 
                 /*
-                 * Set defaults.  
+                 * Set defaults.
                  */
                 aptr->contextMatch = 1; /*  exact(1) is the DEFVAL  */
                 aptr->storageType = ST_NONVOLATILE;
@@ -2038,7 +2038,7 @@ write_vacmAccessStorageType(int action,
                             u_char * statP, oid * name, size_t name_len)
 {
     /*
-     * variables we may use later 
+     * variables we may use later
      */
     static long     long_ret;
     struct vacm_accessEntry *aptr;
@@ -2055,7 +2055,7 @@ write_vacmAccessStorageType(int action,
     }
     if (action == COMMIT) {
         /*
-         * don't allow creations here 
+         * don't allow creations here
          */
         if ((aptr = access_parse_accessEntry(name, name_len)) == NULL) {
             return SNMP_ERR_NOSUCHNAME;
@@ -2064,7 +2064,7 @@ write_vacmAccessStorageType(int action,
         /*
          * if ((long_ret == ST_VOLATILE || long_ret == ST_NONVOLATILE) &&
          * (aptr->storageType == ST_VOLATILE ||
-         * aptr->storageType == ST_NONVOLATILE)) 
+         * aptr->storageType == ST_NONVOLATILE))
          */
         /*
          * This version only supports volatile storage
@@ -2086,7 +2086,7 @@ write_vacmAccessContextMatch(int action,
                              u_char * statP, oid * name, size_t name_len)
 {
     /*
-     * variables we may use later 
+     * variables we may use later
      */
     static long     long_ret;
     struct vacm_accessEntry *aptr;
@@ -2103,7 +2103,7 @@ write_vacmAccessContextMatch(int action,
     }
     if (action == COMMIT) {
         /*
-         * don't allow creations here 
+         * don't allow creations here
          */
         if ((aptr = access_parse_accessEntry(name, name_len)) == NULL) {
             return SNMP_ERR_NOSUCHNAME;
@@ -2152,7 +2152,7 @@ write_vacmAccessReadViewName(int action,
         }
     } else if (action == FREE) {
         /*
-         * Try to undo the SET here (abnormal usage of FREE clause)  
+         * Try to undo the SET here (abnormal usage of FREE clause)
          */
         if ((aptr = access_parse_accessEntry(name, name_len)) != NULL &&
             resetOnFail) {
@@ -2196,7 +2196,7 @@ write_vacmAccessWriteViewName(int action,
         }
     } else if (action == FREE) {
         /*
-         * Try to undo the SET here (abnormal usage of FREE clause)  
+         * Try to undo the SET here (abnormal usage of FREE clause)
          */
         if ((aptr = access_parse_accessEntry(name, name_len)) != NULL &&
             resetOnFail) {
@@ -2240,7 +2240,7 @@ write_vacmAccessNotifyViewName(int action,
         }
     } else if (action == FREE) {
         /*
-         * Try to undo the SET here (abnormal usage of FREE clause)  
+         * Try to undo the SET here (abnormal usage of FREE clause)
          */
         if ((aptr = access_parse_accessEntry(name, name_len)) != NULL &&
             resetOnFail) {
@@ -2258,7 +2258,7 @@ view_parse_oid(oid * oidIndex, size_t oidLen,
     int             viewNameL, subtreeL, i;
 
     /*
-     * first check the validity of the oid 
+     * first check the validity of the oid
      */
     if ((oidLen <= 0) || (!oidIndex)) {
         return SNMP_ERR_INCONSISTENTNAME;
@@ -2267,7 +2267,7 @@ view_parse_oid(oid * oidIndex, size_t oidLen,
     subtreeL = oidLen - viewNameL - 1;  /* the initial name length */
 
     /*
-     * its valid, malloc the space and store the results 
+     * its valid, malloc the space and store the results
      */
     if (viewName == NULL || subtree == NULL) {
         return SNMP_ERR_RESOURCEUNAVAILABLE;
@@ -2394,7 +2394,7 @@ write_vacmViewStatus(int action,
         }
 
         /*
-         * See if we can parse the oid for model/name first.  
+         * See if we can parse the oid for model/name first.
          */
         if ((rc =
              view_parse_oid(&name[VIEW_MIB_LENGTH],
@@ -2411,7 +2411,7 @@ write_vacmViewStatus(int action,
         }
 
         /*
-         * Now see if a group already exists with these index values.  
+         * Now see if a group already exists with these index values.
          */
         vptr =
             vacm_getViewEntry(newViewName, newViewSubtree, viewSubtreeLen,
@@ -2438,7 +2438,7 @@ write_vacmViewStatus(int action,
             if (long_ret == RS_CREATEANDGO || long_ret == RS_CREATEANDWAIT) {
 
                 /*
-                 * Generate a new group entry.  
+                 * Generate a new group entry.
                  */
                 if ((vptr =
                      vacm_createViewEntry(newViewName, &newViewSubtree[1],
@@ -2449,7 +2449,7 @@ write_vacmViewStatus(int action,
                 }
 
                 /*
-                 * Set defaults.  
+                 * Set defaults.
                  */
                 vptr->viewStorageType = ST_NONVOLATILE;
                 vptr->viewStatus = RS_NOTREADY;

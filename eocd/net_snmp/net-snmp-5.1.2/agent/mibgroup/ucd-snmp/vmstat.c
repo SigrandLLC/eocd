@@ -168,7 +168,7 @@ init_vmstat(void)
         {CPURAWSOFTIRQ, ASN_COUNTER, RONLY, var_extensible_vmstat, 1,
          {CPURAWSOFTIRQ}},
         /*
-         * Future use: 
+         * Future use:
          */
         /*
          * {ERRORFLAG, ASN_INTEGER, RONLY, var_extensible_vmstat, 1, {ERRORFLAG }},
@@ -178,12 +178,12 @@ init_vmstat(void)
 
     /*
      * Define the OID pointer to the top of the mib tree that we're
-     * registering underneath 
+     * registering underneath
      */
     oid             vmstat_variables_oid[] = { UCDAVIS_MIB, 11 };
 
     /*
-     * register ourselves with the agent to handle our mib tree 
+     * register ourselves with the agent to handle our mib tree
      */
     REGISTER_MIB("ucd-snmp/vmstat", extensible_vmstat_variables, variable2,
                  vmstat_variables_oid);
@@ -510,9 +510,9 @@ var_extensible_vmstat(struct variable *vp,
 	if (!has_cpu_26) return NULL;
         long_ret = vmstat(cpurawsoft);
         return ((u_char *) (&long_ret));
-		
+
         /*
-         * reserved for future use 
+         * reserved for future use
          */
         /*
          * case ERRORFLAG:

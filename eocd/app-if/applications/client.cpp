@@ -99,24 +99,24 @@ print_cur_payload(endp_cur_payload *p )
         printf("noNeighborPresent ");
     if( p->cur_status.loopbackActive )
         printf("loopbackActive");
-//-------------------------------------------------------------//	
-    printf("Counters till startup: ");	
+//-------------------------------------------------------------//
+    printf("Counters till startup: ");
     printf("es(%u) ses(%u) crc(%d) losws(%u) uas(%u)\n",
 	p->total.es,p->total.ses,p->total.crc,p->total.losws,p->total.uas);
 //-------------------------------------------------------------//
-    printf("Current 15 minutes interval: sec.elapsed(%d) ",p->cur_15m_elaps);	
+    printf("Current 15 minutes interval: sec.elapsed(%d) ",p->cur_15m_elaps);
     printf("es(%u) ses(%u) crc(%d) losws(%u) uas(%u)\n",
 	p->cur15min.es,p->cur15min.ses,p->cur15min.crc,p->cur15min.losws,p->cur15min.uas);
 //-------------------------------------------------------------//
-    printf("Current 1 day interval: sec.elapsed(%d) ",p->cur_1d_elaps);	
+    printf("Current 1 day interval: sec.elapsed(%d) ",p->cur_1d_elaps);
     printf("es(%u) ses(%u) crc(%d) losws(%u) uas(%u)\n",
 	p->cur1day.es,p->cur1day.ses,p->cur1day.crc,p->cur1day.losws,p->cur1day.uas);
 }
 
-int 
+int
 print_int_payload(endp_int_payload *p,char *display)
 {
-    printf("%s interval #%d: ",display,p->int_num);	
+    printf("%s interval #%d: ",display,p->int_num);
     printf("es(%u) ses(%u) crc(%d) losws(%u) uas(%u)\n",
 	p->cntrs.es,p->cntrs.ses,p->cntrs.crc,p->cntrs.losws,p->cntrs.uas);
     return 0;
@@ -131,7 +131,7 @@ print_endp_cur(app_comm_cli &cli,char *chan,unit u,side s,int loop)
     // Endpoint current
     endp_cur_payload *p,*p1;
     app_frame *fr, *fr1;
-    
+
     fr = new app_frame(APP_ENDP_CUR,APP_GET,app_frame::REQUEST,1,chan);
     p = (endp_cur_payload*)fr->payload_ptr();
     p->unit = u;
@@ -144,7 +144,7 @@ print_endp_cur(app_comm_cli &cli,char *chan,unit u,side s,int loop)
     if( !fr1->frame_ptr() ){
 	printf("error requesting\n");
 	return -1;
-    } 
+    }
     if( fr1->is_negative() ){ // no such unit or no net_side
 	delete fr1;
 	printf("Requested component: unit(%s),side(%s),loop(%d) NOT FOUND\n",
@@ -172,7 +172,7 @@ print_endp_15m(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
     // Endpoint current
     endp_15min_payload *p,*p1;
     app_frame *fr, *fr1;
-    
+
     fr = new app_frame(APP_ENDP_15MIN,APP_GET,app_frame::REQUEST,1,chan);
     p = (endp_15min_payload*)fr->payload_ptr();
     p->unit = u;
@@ -186,7 +186,7 @@ print_endp_15m(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
     if( !fr1->frame_ptr() ){
 	printf("error requesting\n");
 	return -1;
-    } 
+    }
     if( fr1->is_negative() ){ // no such unit or no net_side
 	delete fr1;
 	printf("Requested component: unit(%s),side(%s),loop(%d),int(%d) NOT FOUND\n",
@@ -195,7 +195,7 @@ print_endp_15m(app_comm_cli &cli,char *chan,unit u,side s,int loop,int inum)
 	return -1;
     } else {
 	p1 = (endp_15min_payload*)fr1->payload_ptr();
-	if( p1->unit != p->unit || p1->side != p->side 
+	if( p1->unit != p->unit || p1->side != p->side
 	    || p1->loop != p->loop || p1->int_num != p->int_num ){
 	    printf("Error: get information about different unit\n");
 	    delete fr1;
@@ -217,7 +217,7 @@ print_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int &inum)
     // Endpoint current
     endp_1day_payload *p,*p1;
     app_frame *fr, *fr1;
-    
+
     fr = new app_frame(APP_ENDP_1DAY,APP_GET_NEXT,app_frame::REQUEST,1,chan);
     p = (endp_1day_payload*)fr->payload_ptr();
     p->unit = u;
@@ -231,7 +231,7 @@ print_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int &inum)
     if( !fr1->frame_ptr() ){
 	printf("error requesting\n");
 	return -1;
-    } 
+    }
     if( fr1->is_negative() ){ // no such unit or no net_side
 	delete fr1;
 //	printf("Requested component: unit(%s),side(%s),loop(%d),int(%d) NOT FOUND\n",
@@ -240,7 +240,7 @@ print_endp_1d(app_comm_cli &cli,char *chan,unit u,side s,int loop,int &inum)
 	return -1;
     } else {
 	p1 = (endp_1day_payload*)fr1->payload_ptr();
-	if( p1->unit != p->unit || p1->side != p->side 
+	if( p1->unit != p->unit || p1->side != p->side
 	    || p1->loop != p->loop || p1->int_num != p->int_num ){
 	    printf("Error: get information about different unit\n");
 	    delete fr1;
@@ -263,13 +263,13 @@ main()
     char *iface = "dsl0";
     app_comm_cli cli("/var/eocd/eocd-socket");
     printf("Connect ok\n");
-    
+
 /*
     // profile test
     span_conf_prof_payload *p,*p1;
     app_frame *fr, *fr1;
     char curprof[33];
-    
+
     curprof[0] = 0;
     while(1){
 	fr = new app_frame(APP_SPAN_CPROF,APP_GET_NEXT,app_frame::REQUEST,1,"");
@@ -299,17 +299,17 @@ main()
 	strcpy(curprof,p1->ProfileName);
     }
 
-    
+
 /*
 printf("-----------------------------------------------\n");
     print_endp_cur(cli,iface,stu_c,net_side,0);
 printf("-----------------------------------------------\n");
-    print_endp_cur(cli,iface,stu_r,cust_side,0);    
+    print_endp_cur(cli,iface,stu_r,cust_side,0);
 printf("-----------------------------------------------\n");
     print_endp_cur(cli,iface,sru1,net_side,0);
 printf("-----------------------------------------------\n");
     print_endp_cur(cli,iface,sru1,cust_side,0);
-printf("-----------------------------------------------\n");    
+printf("-----------------------------------------------\n");
 */
     i =0;
     while( !print_endp_1d(cli,"dsl2",stu_c,cust_side,0,i) ){
@@ -348,12 +348,12 @@ printf("-----------------------------------------------\n");
 	i++;
     }
 printf("-----------------------------------------------\n");
-*/    
+*/
     return 0;
 }
 
 
-/*    
+/*
     app_frame *fr = new app_frame(app_frame::SPAN_STATUS,app_frame::GET,app_frame::REQUEST,"dsl0");
     cli.send(fr->frame_ptr(),fr->frame_size());
     cli.wait();
@@ -373,7 +373,7 @@ printf("-----------------------------------------------\n");
     cli.wait();
     size = cli.recv(b);
     fr1 = new app_frame(b,size);
-    span_conf_payload *p1 = (span_conf_payload *)fr1->payload_ptr();    
+    span_conf_payload *p1 = (span_conf_payload *)fr1->payload_ptr();
     printf("Conf reps = %d\n",p1->nreps);
 
     printf("Request STU-C inventory\n");
@@ -387,7 +387,7 @@ printf("-----------------------------------------------\n");
     if( !fr1->frame_ptr() || fr1->is_negative() ){
 	printf("error requesting\n");
     } else {
-	p2 = (inventory_payload *)fr1->payload_ptr();    
+	p2 = (inventory_payload *)fr1->payload_ptr();
 	printf("Manuf = %s\n",p2->inv.ven_id);
     }
 
@@ -402,7 +402,7 @@ printf("-----------------------------------------------\n");
     if( !fr1->frame_ptr() || fr1->is_negative() ){
 	printf("error requesting\n");
     } else {
-	p2 = (inventory_payload *)fr1->payload_ptr();    
+	p2 = (inventory_payload *)fr1->payload_ptr();
 	printf("Manuf = %s\n",p2->inv.ven_id);
     }
 
@@ -417,7 +417,7 @@ printf("-----------------------------------------------\n");
     if( !fr1->frame_ptr() || fr1->is_negative() ){
 	printf("error requesting\n");
     } else {
-	p2 = (inventory_payload *)fr1->payload_ptr();    
+	p2 = (inventory_payload *)fr1->payload_ptr();
 	printf("Manuf = %s\n",p2->inv.ven_id);
     }
 
@@ -432,7 +432,7 @@ printf("-----------------------------------------------\n");
     if( !fr1->frame_ptr() || fr1->is_negative() ){
 	printf("error requesting\n");
     } else {
-	p2 = (inventory_payload *)fr1->payload_ptr();    
+	p2 = (inventory_payload *)fr1->payload_ptr();
 	printf("Manuf = %s\n",p2->inv.ven_id);
     }
 
@@ -482,7 +482,7 @@ printf("-----------------------------------------------\n");
     if( !fr1->frame_ptr() || fr1->is_negative() ){
 	printf("error requesting\n");
     } else {
-	p2 = (inventory_payload *)fr1->payload_ptr();    
+	p2 = (inventory_payload *)fr1->payload_ptr();
 	printf("Manuf = %s\n",p2->inv.ven_id);
     }
 
@@ -499,7 +499,7 @@ printf("-----------------------------------------------\n");
     if( !fr1->frame_ptr() || fr1->is_negative() ){
 	printf("error requesting\n");
     } else {
-	p2 = (inventory_payload *)fr1->payload_ptr();    
+	p2 = (inventory_payload *)fr1->payload_ptr();
 	printf("Manuf = %s\n",p2->inv.ven_id);
     }
 

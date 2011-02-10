@@ -10,9 +10,9 @@ UCD-SNMP-MIB-OLD DEFINITIONS ::= BEGIN
 IMPORTS
 	ucdavis
 	    FROM UCD-SNMP-MIB
-        OBJECT-TYPE 				
+        OBJECT-TYPE
 	    FROM SNMPv2-SMI
-	DisplayString 				
+	DisplayString
 	    FROM SNMPv2-TC
 	Integer32
             FROM SNMPv2-SMI;
@@ -31,7 +31,7 @@ IMPORTS
 -- mibRegistryTable    OBJECT IDENTIFIER ::= { ucdavis 102 }
 
 -- These are the returned values of the agent type.
--- returned to:  .iso.org.dod.internet.mgmt.mib-2.system.sysObjectID.0 
+-- returned to:  .iso.org.dod.internet.mgmt.mib-2.system.sysObjectID.0
 
 -- The following section is commented out since it is defined in the
 -- current UCD-SNMP-MIB
@@ -207,10 +207,10 @@ extensibleErrFix OBJECT-TYPE
 	DESCRIPTION
 		"Set to 1 to fix the problem, if possible."
 	::= { extensible 102 }
-	
+
 -- the following section is commented out because it is already
 -- defined in the current UCD-SNMP-MIB
-   
+
 -- memory OBJECT-TYPE
 -- 	SYNTAX Memory
 -- 	ACCESS not-accessible
@@ -218,7 +218,7 @@ extensibleErrFix OBJECT-TYPE
 -- 	DESCRIPTION
 -- 		"Miscellanous stuff - memory related."
 -- 	::= { ucdavis 4 }
--- 
+--
 -- Memory ::= SEQUENCE {
 --    memIndex        INTEGER,
 --    memErrorName    DisplayString,
@@ -241,18 +241,18 @@ extensibleErrFix OBJECT-TYPE
 --      SYNTAX  INTEGER
 --      ACCESS  read-only
 --      STATUS  mandatory
---      DESCRIPTION  
+--      DESCRIPTION
 --           "Generic Index."
---      ::= { memory 1 } 
--- 
+--      ::= { memory 1 }
+--
 -- memErrorName OBJECT-TYPE
 --      SYNTAX  DisplayString
 --      ACCESS  read-only
 --      STATUS  mandatory
---      DESCRIPTION  
+--      DESCRIPTION
 --           "Bogus Name (swap) for consistancy with the rest of the mibs."
---      ::= { memory 2 } 
--- 
+--      ::= { memory 2 }
+--
 -- memTotalSwap OBJECT-TYPE
 -- 	SYNTAX INTEGER
 -- 	ACCESS read-only
@@ -260,7 +260,7 @@ extensibleErrFix OBJECT-TYPE
 -- 	DESCRIPTION
 -- 		"Total Swap Size."
 -- 	::= { memory 3 }
--- 
+--
 -- memAvailSwap OBJECT-TYPE
 -- 	SYNTAX INTEGER
 -- 	ACCESS read-only
@@ -268,7 +268,7 @@ extensibleErrFix OBJECT-TYPE
 -- 	DESCRIPTION
 -- 		"Available Swap Space."
 -- 	::= { memory 4 }
--- 
+--
 -- memTotalReal OBJECT-TYPE
 -- 	SYNTAX INTEGER
 -- 	ACCESS read-only
@@ -276,7 +276,7 @@ extensibleErrFix OBJECT-TYPE
 -- 	DESCRIPTION
 -- 		"Total Real/Physical Memory Size."
 -- 	::= { memory 5 }
--- 
+--
 -- memAvailReal OBJECT-TYPE
 -- 	SYNTAX INTEGER
 -- 	ACCESS read-only
@@ -284,7 +284,7 @@ extensibleErrFix OBJECT-TYPE
 -- 	DESCRIPTION
 -- 		"Available Real/Physical Memory Space."
 -- 	::= { memory 6 }
--- 
+--
 -- memTotalSwapTXT OBJECT-TYPE
 -- 	SYNTAX INTEGER
 -- 	ACCESS read-only
@@ -292,7 +292,7 @@ extensibleErrFix OBJECT-TYPE
 -- 	DESCRIPTION
 -- 		"Total VM used by text."
 -- 	::= { memory 7 }
--- 
+--
 -- memAvailSwapTXT OBJECT-TYPE
 -- 	SYNTAX INTEGER
 -- 	ACCESS read-only
@@ -300,7 +300,7 @@ extensibleErrFix OBJECT-TYPE
 -- 	DESCRIPTION
 -- 		"Active VM used by text."
 -- 	::= { memory 8 }
--- 
+--
 -- memTotalRealTXT OBJECT-TYPE
 -- 	SYNTAX INTEGER
 -- 	ACCESS read-only
@@ -308,7 +308,7 @@ extensibleErrFix OBJECT-TYPE
 -- 	DESCRIPTION
 -- 		"Total Real/Physical Memory Size used by txt."
 -- 	::= { memory 9 }
--- 
+--
 -- memAvailRealTXT OBJECT-TYPE
 -- 	SYNTAX INTEGER
 -- 	ACCESS read-only
@@ -316,7 +316,7 @@ extensibleErrFix OBJECT-TYPE
 -- 	DESCRIPTION
 -- 		"Active Real/Physical Memory Space used by txt."
 -- 	::= { memory 10 }
--- 
+--
 -- memTotalFree OBJECT-TYPE
 -- 	SYNTAX INTEGER
 -- 	ACCESS read-only
@@ -324,7 +324,7 @@ extensibleErrFix OBJECT-TYPE
 -- 	DESCRIPTION
 -- 		"Total Available Memory"
 -- 	::= { memory 11 }
--- 
+--
 -- memMinimumSwap OBJECT-TYPE
 -- 	SYNTAX INTEGER
 -- 	ACCESS read-only
@@ -333,7 +333,7 @@ extensibleErrFix OBJECT-TYPE
 -- 		"Minimum amount of free swap.  Otherwise memErrorSwap
 -- 		is set to 1 "
 -- 	::= { memory 12 }
--- 
+--
 -- memShared OBJECT-TYPE
 -- 	SYNTAX INTEGER
 -- 	ACCESS read-only
@@ -341,7 +341,7 @@ extensibleErrFix OBJECT-TYPE
 -- 	DESCRIPTION
 -- 		"Total Shared Memory"
 -- 	::= { memory 13 }
--- 
+--
 -- memBuffer OBJECT-TYPE
 -- 	SYNTAX INTEGER
 -- 	ACCESS read-only
@@ -349,7 +349,7 @@ extensibleErrFix OBJECT-TYPE
 -- 	DESCRIPTION
 -- 		"Total Buffered Memory"
 -- 	::= { memory 14 }
--- 
+--
 -- memCached OBJECT-TYPE
 -- 	SYNTAX INTEGER
 -- 	ACCESS read-only
@@ -357,7 +357,7 @@ extensibleErrFix OBJECT-TYPE
 -- 	DESCRIPTION
 -- 		"Total Cached Memory"
 -- 	::= { memory 15 }
--- 
+--
 -- memSwapError OBJECT-TYPE
 -- 	SYNTAX INTEGER
 -- 	ACCESS read-only
@@ -365,15 +365,15 @@ extensibleErrFix OBJECT-TYPE
 -- 	DESCRIPTION
 -- 		"Error flag.  1 indicates very little swap space left"
 -- 	::= { memory 100 }
--- 	
+--
 -- memSwapErrorMsg OBJECT-TYPE
 --      SYNTAX  DisplayString
 --      ACCESS  read-only
 --      STATUS  mandatory
---      DESCRIPTION  
+--      DESCRIPTION
 --           "Error message describing the errorflag condition"
---      ::= { memory 101 } 
--- 
+--      ::= { memory 101 }
+--
 -- lockd OBJECT-TYPE
 -- 	SYNTAX Lockd
 -- 	ACCESS not-accessible
@@ -388,7 +388,7 @@ extensibleErrFix OBJECT-TYPE
 --    lockdError  INTEGER,
 --    lockdErrorMsg  DisplayString
 -- }
--- 
+--
 -- lockdIndex OBJECT-TYPE
 -- 	SYNTAX INTEGER
 -- 	ACCESS read-only
@@ -396,7 +396,7 @@ extensibleErrFix OBJECT-TYPE
 -- 	DESCRIPTION
 -- 		"Reference Index for lockd calls."
 -- 	::= { lockd 1 }
--- 
+--
 -- lockdError OBJECT-TYPE
 -- 	SYNTAX INTEGER
 -- 	ACCESS read-only
@@ -404,7 +404,7 @@ extensibleErrFix OBJECT-TYPE
 -- 	DESCRIPTION
 -- 		"Error Flag.  > 0 indicates error"
 -- 	::= { lockd 100 }
--- 
+--
 -- lockdErrorMsg OBJECT-TYPE
 -- 	SYNTAX DisplayString (SIZE (0..255))
 -- 	ACCESS read-only
@@ -443,87 +443,87 @@ diskIndex OBJECT-TYPE
 	DESCRIPTION
 		"Reference number for the Disk Mib."
 	::= { disk 1 }
-	
+
 diskPath OBJECT-TYPE
      SYNTAX  DisplayString
      ACCESS  read-only
      STATUS  mandatory
-     DESCRIPTION  
+     DESCRIPTION
           "Path where disk is mounted."
-     ::= { disk 2 } 
+     ::= { disk 2 }
 
 diskDevice OBJECT-TYPE
      SYNTAX  DisplayString
      ACCESS  read-only
      STATUS  mandatory
-     DESCRIPTION  
+     DESCRIPTION
           "Device path"
-     ::= { disk 3 } 
+     ::= { disk 3 }
 
 diskMinimum OBJECT-TYPE
      SYNTAX  INTEGER
      ACCESS  read-only
      STATUS  mandatory
-     DESCRIPTION  
+     DESCRIPTION
           "Minimum space required on the disk."
-     ::= { disk 4 } 
+     ::= { disk 4 }
 
 diskMinPercent OBJECT-TYPE
      SYNTAX  INTEGER
      ACCESS  read-only
      STATUS  mandatory
-     DESCRIPTION  
+     DESCRIPTION
           "Minimum percentage of space required on the disk."
-     ::= { disk 5 } 
+     ::= { disk 5 }
 
 diskTotal OBJECT-TYPE
      SYNTAX  INTEGER
      ACCESS  read-only
      STATUS  mandatory
-     DESCRIPTION  
+     DESCRIPTION
           "Total Disk Size (kbytes)"
-     ::= { disk 6 } 
+     ::= { disk 6 }
 
 diskAvail OBJECT-TYPE
      SYNTAX  INTEGER
      ACCESS  read-only
      STATUS  mandatory
-     DESCRIPTION  
+     DESCRIPTION
           "Available disk Space"
-     ::= { disk 7 } 
+     ::= { disk 7 }
 
 diskUsed OBJECT-TYPE
      SYNTAX  INTEGER
      ACCESS  read-only
      STATUS  mandatory
-     DESCRIPTION  
+     DESCRIPTION
           "Used Space on Disk"
-     ::= { disk 8 } 
+     ::= { disk 8 }
 
 diskPercent OBJECT-TYPE
      SYNTAX  INTEGER
      ACCESS  read-only
      STATUS  mandatory
-     DESCRIPTION  
+     DESCRIPTION
           "Percentage of space used on disk"
-     ::= { disk 9 } 
+     ::= { disk 9 }
 
 diskErrorFlag OBJECT-TYPE
      SYNTAX  INTEGER
      ACCESS  read-only
      STATUS  mandatory
-     DESCRIPTION  
+     DESCRIPTION
           "Error flag signaling disk is over minimum required space"
-     ::= { disk 100 } 
-     
+     ::= { disk 100 }
+
 diskErrorMsg OBJECT-TYPE
      SYNTAX  DisplayString
      ACCESS  read-only
      STATUS  mandatory
-     DESCRIPTION  
+     DESCRIPTION
           "A text description of what caused the error flag to be set."
-     ::= { disk 101 } 
-     
+     ::= { disk 101 }
+
 loadaves OBJECT-TYPE
 	SYNTAX SEQUENCE OF Loadaves
 	ACCESS not-accessible
@@ -603,7 +603,7 @@ loadaveErrMessage OBJECT-TYPE
 -- 		"ece-snmpd version info."
 -- 	INDEX { versionIndex }
 -- 	::= { ucdavis 100 }
--- 
+--
 -- Version ::= SEQUENCE {
 --    versionIndex   INTEGER,
 --    versionTag  DisplayString,
@@ -614,79 +614,79 @@ loadaveErrMessage OBJECT-TYPE
 --    versionUpdateConfig  INTEGER,
 --    versionDoDebugging  INTEGER
 -- }
---    
+--
 -- versionIndex OBJECT-TYPE
 --      SYNTAX  INTEGER
 --      ACCESS  read-only
 --      STATUS  mandatory
---      DESCRIPTION  
+--      DESCRIPTION
 --           "Index to mib (always 1)"
---      ::= { version 1 } 
--- 
+--      ::= { version 1 }
+--
 -- versionTag OBJECT-TYPE
 --      SYNTAX  DisplayString
 --      ACCESS  read-only
 --      STATUS  mandatory
---      DESCRIPTION  
+--      DESCRIPTION
 --           "CVS tag keyword"
---      ::= { version 2 } 
---      
+--      ::= { version 2 }
+--
 -- versionDate OBJECT-TYPE
 --      SYNTAX  DisplayString
 --      ACCESS  read-only
 --      STATUS  mandatory
---      DESCRIPTION  
+--      DESCRIPTION
 --           "Date string from RCS keyword"
---      ::= { version 3 } 
--- 
+--      ::= { version 3 }
+--
 -- versionCDate OBJECT-TYPE
 --      SYNTAX  DisplayString
 --      ACCESS  read-only
 --      STATUS  mandatory
---      DESCRIPTION  
+--      DESCRIPTION
 --           "Date string from ctime() "
---      ::= { version 4 } 
--- 
+--      ::= { version 4 }
+--
 -- versionIdent OBJECT-TYPE
 --      SYNTAX  DisplayString
 --      ACCESS  read-only
 --      STATUS  mandatory
---      DESCRIPTION  
+--      DESCRIPTION
 --           "Id string from RCS keyword"
---      ::= { version 5 } 
--- 
+--      ::= { version 5 }
+--
 -- versionClearCache OBJECT-TYPE
 --      SYNTAX  INTEGER
 --      ACCESS  read-write
 --      STATUS  mandatory
---      DESCRIPTION  
+--      DESCRIPTION
 --           "Set to 1 to clear the exec cache, if enabled"
---      ::= { version 10 } 
--- 
+--      ::= { version 10 }
+--
 -- versionUpdateConfig OBJECT-TYPE
 --      SYNTAX  INTEGER
 --      ACCESS  read-write
 --      STATUS  mandatory
---      DESCRIPTION  
+--      DESCRIPTION
 --           "Set to 1 to read-read the config file(s)."
---      ::= { version 11 } 
--- 
+--      ::= { version 11 }
+--
 -- versionRestartAgent OBJECT-TYPE
 --      SYNTAX  INTEGER
 --      ACCESS  read-write
 --      STATUS  mandatory
---      DESCRIPTION  
+--      DESCRIPTION
 --           "Set to 1 to restart the agent."
---      ::= { version 12 } 
--- 
+--      ::= { version 12 }
+--
 -- versionDoDebugging OBJECT-TYPE
 --      SYNTAX  INTEGER
 --      ACCESS  read-write
 --      STATUS  mandatory
---      DESCRIPTION  
+--      DESCRIPTION
 --           "Set to 1 to turn debugging statements on in the agent."
---      ::= { version 20 } 
--- 
+--      ::= { version 20 }
+--
 
 -- the following section is commented out because it is already
 -- defined in the current UCD-SNMP-MIB
@@ -699,15 +699,15 @@ loadaveErrMessage OBJECT-TYPE
 -- 		"A place for the agent to report problems."
 -- 	INDEX { snmperrIndex }
 -- 	::= { ucdavis 101 }
--- 
--- 
+--
+--
 -- Snmperrs ::= SEQUENCE {
 --    snmperrIndex  INTEGER,
 --    snmperrNames  DisplayString,
 --    snmperrErrorFlag  INTEGER,
 --    snmperrErrMessage  DisplayString
 -- }
--- 
+--
 -- snmperrIndex OBJECT-TYPE
 -- 	SYNTAX INTEGER
 -- 	ACCESS read-only
@@ -715,7 +715,7 @@ loadaveErrMessage OBJECT-TYPE
 -- 	DESCRIPTION
 -- 		"Reference Index for each observed snmperr."
 -- 	::= { snmperrs 1 }
--- 
+--
 -- snmperrNames OBJECT-TYPE
 -- 	SYNTAX DisplayString (SIZE (0..255))
 -- 	ACCESS read-only
@@ -723,7 +723,7 @@ loadaveErrMessage OBJECT-TYPE
 -- 	DESCRIPTION
 -- 		"snmp"
 -- 	::= { snmperrs 2 }
--- 
+--
 -- snmperrErrorFlag OBJECT-TYPE
 -- 	SYNTAX INTEGER
 -- 	ACCESS read-only
@@ -732,7 +732,7 @@ loadaveErrMessage OBJECT-TYPE
 -- 		"A Error flag to indicate trouble with the agent.  It
 -- 		goes to 1 if there is an error, 0 if no error."
 -- 	::= { snmperrs 100 }
--- 
+--
 -- snmperrErrMessage OBJECT-TYPE
 -- 	SYNTAX DisplayString (SIZE (0..255))
 -- 	ACCESS read-only
@@ -740,5 +740,5 @@ loadaveErrMessage OBJECT-TYPE
 -- 	DESCRIPTION
 -- 		"An error message describing the problem (if one exists)."
 -- 	::= { snmperrs 101 }
--- 
+--
 END

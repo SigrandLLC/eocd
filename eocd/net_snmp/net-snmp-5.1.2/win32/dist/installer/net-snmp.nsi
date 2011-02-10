@@ -94,15 +94,15 @@ Section "Base Components" SEC01
   File "bin\mib2c"
   File "bin\mib2c.bat"
   Call CreateMib2cBat
-  
+
   File "bin\snmpconf"
   File "bin\snmpconf.bat"
   Call CreateSnmpconfBat
-  
+
   File "bin\traptoemail"
   File "bin\traptoemail.bat"
   Call CreatTraptoemailBat
-  
+
   SetOutPath "$INSTDIR\share\snmp\mibs"
   File "share\snmp\mibs\AGENTX-MIB.txt"
   File "share\snmp\mibs\DISMAN-EVENT-MIB.txt"
@@ -181,11 +181,11 @@ Section "Base Components" SEC01
   CreateDirectory "$INSTDIR\temp"
   CreateDirectory "$INSTDIR\snmp"
   CreateDirectory "$INSTDIR\snmp\persist"
-  
+
   ; Add bin directory to the search path
   Push "$INSTDIR\bin"
   Call AddToPath
-  
+
   Call CreateSnmpConf
 SectionEnd
 
@@ -201,12 +201,12 @@ Section "Net-SNMP Agent Service" SEC02
   File "share\snmp\snmpconf-data\snmpd-data\snmpconf-config"
   File "share\snmp\snmpconf-data\snmpd-data\system"
   File "share\snmp\snmpconf-data\snmpd-data\trapsinks"
-  
+
   ; If we are on an NT system then install the service batch files.
   Call IsNT
   Pop $1
   StrCmp $1 0 NoService
-  
+
   SetOutPath "$INSTDIR\"
   File "registeragent.bat"
   File "unregisteragent.bat"
@@ -215,7 +215,7 @@ Section "Net-SNMP Agent Service" SEC02
   CreateDirectory "$SMPROGRAMS\$ICONS_GROUP\Service"
   CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Service\Register Agent Service.lnk" "$INSTDIR\registeragent.bat"
   CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Service\Unregister Agent Service.lnk" "$INSTDIR\unregisteragent.bat"
-  
+
   NoService:
 SectionEnd
 
@@ -273,32 +273,32 @@ SectionEnd
 
 Function CreateSnmpConf
   SetOutPath "$INSTDIR\etc\snmp"
-  
+
   ; Slash it
   Push $INSTDIR
   Push "\"
   Push "/"
   Call StrRep
-  Pop $R0 
-  
+  Pop $R0
+
   ClearErrors
   FileOpen $0 "snmp.conf" "w"
   IfErrors cleanup
   FileWrite $0 "mibdirs $R0/share/snmp/mibs$\r$\n"
   FileWrite $0 "persistentDir $R0/snmp/persist$\r$\n"
   FileWrite $0 "tempFilePattern $R0/temp/snmpdXXXXXX$\r$\n"
-  
+
   cleanup:
   FileClose $0
-  
+
   ; For environment variables
   ;!define ALL_USERS
-  
+
   ; Set the conf path
   Push "SNMPCONFPATH"
   Push "$R0/etc/snmp"
   Call WriteEnvStr
-  
+
   Push "SNMPSHAREPATH"
   Push "$R0/share/snmp"
   Call WriteEnvStr
@@ -311,7 +311,7 @@ Function CreateAgentBats
   IfErrors cleanup
   FileWrite $0 "$\"$INSTDIR\bin\snmpd.exe$\" -register$\r$\n"
   FileWrite $0 "pause"
-  
+
   ClearErrors
   FileOpen $1 "unregisteragent.bat" "w"
   IfErrors cleanup
@@ -623,13 +623,13 @@ Section Uninstall
   ; Delete the environment variables
   Push "SNMPCONFPATH"
   Call un.DeleteEnvStr
-  
+
   Push "SNMPSHAREPATH"
   Call un.DeleteEnvStr
 
   Push "$INSTDIR\bin"
   Call un.RemoveFromPath
-  
+
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
   SetAutoClose true

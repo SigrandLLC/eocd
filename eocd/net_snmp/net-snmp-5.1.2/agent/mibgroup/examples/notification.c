@@ -20,20 +20,20 @@
  */
 
 /*
- * start be including the appropriate header files 
+ * start be including the appropriate header files
  */
 #include <net-snmp/net-snmp-config.h>
 #include <net-snmp/net-snmp-includes.h>
 #include <net-snmp/agent/net-snmp-agent-includes.h>
 
 /*
- * contains prototypes 
+ * contains prototypes
  */
 #include "notification.h"
 
 /*
  * our initialization routine
- * (to get called, the function name must match init_FILENAME() 
+ * (to get called, the function name must match init_FILENAME()
  */
 void
 init_notification(void)
@@ -55,8 +55,8 @@ init_notification(void)
  *  destinations to receive different formats.
  *  But *all* traps are sent to *all* destinations, regardless of how they
  *  were specified.
- *  
- *  
+ *
+ *
  *  I.e. it's
  *                                           ___  trapsink
  *                                          /
@@ -65,7 +65,7 @@ init_notification(void)
  *      send_v2trap    /     [            ] ----- informsink
  *                                          \____
  *                                                trapsess
- *  
+ *
  *  *Not*
  *       send_easy_trap  ------------------->  trapsink
  *       send_v2trap     ------------------->  trap2sink
@@ -77,7 +77,7 @@ send_example_notification(unsigned int clientreg, void *clientarg)
 {
     /*
      * define the OID for the notification we're going to send
-     * NET-SNMP-EXAMPLES-MIB::netSnmpExampleNotification 
+     * NET-SNMP-EXAMPLES-MIB::netSnmpExampleNotification
      */
     oid             notification_oid[] =
         { 1, 3, 6, 1, 4, 1, 8072, 2, 3, 1 };
@@ -85,53 +85,53 @@ send_example_notification(unsigned int clientreg, void *clientarg)
 
     /*
      * In the notification, we have to assign our notification OID to
-     * the snmpTrapOID.0 object. Here is it's definition. 
+     * the snmpTrapOID.0 object. Here is it's definition.
      */
     oid             objid_snmptrap[] = { 1, 3, 6, 1, 6, 3, 1, 1, 4, 1, 0 };
     size_t          objid_snmptrap_len = OID_LENGTH(objid_snmptrap);
 
     /*
-     * here is where we store the variables to be sent in the trap 
+     * here is where we store the variables to be sent in the trap
      */
     netsnmp_variable_list *notification_vars = NULL;
 
     DEBUGMSGTL(("example_notification", "defining the trap\n"));
 
     /*
-     * add in the trap definition object 
+     * add in the trap definition object
      */
     snmp_varlist_add_variable(&notification_vars,
                               /*
-                               * the snmpTrapOID.0 variable 
+                               * the snmpTrapOID.0 variable
                                */
                               objid_snmptrap, objid_snmptrap_len,
                               /*
-                               * value type is an OID 
+                               * value type is an OID
                                */
                               ASN_OBJECT_ID,
                               /*
-                               * value contents is our notification OID 
+                               * value contents is our notification OID
                                */
                               (u_char *) notification_oid,
                               /*
-                               * size in bytes = oid length * sizeof(oid) 
+                               * size in bytes = oid length * sizeof(oid)
                                */
                               notification_oid_len * sizeof(oid));
 
     /*
-     * if we wanted to insert additional objects, we'd do it here 
+     * if we wanted to insert additional objects, we'd do it here
      */
 
     /*
      * send the trap out.  This will send it to all registered
      * receivers (see the "SETTING UP TRAP AND/OR INFORM DESTINATIONS"
-     * section of the snmpd.conf manual page. 
+     * section of the snmpd.conf manual page.
      */
     DEBUGMSGTL(("example_notification", "sending the trap\n"));
     send_v2trap(notification_vars);
 
     /*
-     * free the created notification variable list 
+     * free the created notification variable list
      */
     DEBUGMSGTL(("example_notification", "cleaning up\n"));
     snmp_free_varbind(notification_vars);

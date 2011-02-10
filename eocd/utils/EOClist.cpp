@@ -9,7 +9,7 @@ EOClist::prev_by_ptr(__list *s)
 	return NULL;
     if( head == s )
 	return el;
-    
+
     while( el->get_next() != s && el->get_next()!=NULL )
 	el = el->get_next();
 
@@ -21,7 +21,7 @@ EOClist::prev_by_ptr(__list *s)
 EOClist::EOClist()
 {
     head = tail = current = NULL;
-    size = 0;    
+    size = 0;
 }
 
 EOClist::~EOClist()
@@ -45,7 +45,7 @@ EOClist::next()
 	return -1;
     current = current->get_next();
     return 0;
-}	
+}
 
 int
 EOClist::add_first(EOCList_elem *d)
@@ -56,7 +56,7 @@ EOClist::add_first(EOCList_elem *d)
     if( !head )
 	tail = current = el;
     head = el;
-    size++;    
+    size++;
     return 0;
 }
 
@@ -73,7 +73,7 @@ EOClist::add_last(EOCList_elem *d)
     el->set_data(d);
     el->set_next(NULL);
     tail->set_next(el);
-    tail = el;    
+    tail = el;
     size++;
     return 0;
 }
@@ -121,7 +121,7 @@ EOClist::del_first()
     head = head->get_next();
     if( current == el )
 	current = head;
-    delete el;	
+    delete el;
     size--;
 
     return 0;

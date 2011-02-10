@@ -5,7 +5,7 @@
 #include <net-snmp/net-snmp-config.h>
 
 /*
- * Ripped from /usr/scr/usr.bin/vmstat/vmstat.c (covering all bases) 
+ * Ripped from /usr/scr/usr.bin/vmstat/vmstat.c (covering all bases)
  */
 #include <sys/param.h>
 #include <sys/time.h>
@@ -57,7 +57,7 @@
 
 
 /*
- * nlist symbols 
+ * nlist symbols
  */
 #define CPTIME_SYMBOL   "cp_time"
 #define SUM_SYMBOL      "cnt"
@@ -66,12 +66,12 @@
 #define BOOTTIME_SYMBOL "boottime"
 
 /*
- * Number of interrupts 
+ * Number of interrupts
  */
 #define INT_COUNT       10
 
 /*
- * CPU percentage 
+ * CPU percentage
  */
 #define CPU_PRC         100
 
@@ -116,7 +116,7 @@ init_vmstat_freebsd2(void)
         {SYSRAWCONTEXT, ASN_COUNTER, RONLY, var_extensible_vmstat, 1,
          {SYSRAWCONTEXT}},
         /*
-         * Future use: 
+         * Future use:
          */
         /*
          * {ERRORFLAG, ASN_INTEGER, RONLY, var_extensible_vmstat, 1, {ERRORFLAG }},
@@ -126,12 +126,12 @@ init_vmstat_freebsd2(void)
 
     /*
      * Define the OID pointer to the top of the mib tree that we're
-     * registering underneath 
+     * registering underneath
      */
     oid             vmstat_variables_oid[] = { UCDAVIS_MIB, 11 };
 
     /*
-     * register ourselves with the agent to handle our mib tree 
+     * register ourselves with the agent to handle our mib tree
      */
     REGISTER_MIB("ucd-snmp/vmstat", extensible_vmstat_variables, variable2,
                  vmstat_variables_oid);
@@ -186,14 +186,14 @@ var_extensible_vmstat(struct variable *vp,
         return (NULL);
 
     /*
-     * Update structures (only if time has passed) 
+     * Update structures (only if time has passed)
      */
     if (time_new != time_old) {
         time_diff = time_new - time_old;
         time_old = time_new;
 
         /*
-         * CPU usage 
+         * CPU usage
          */
         auto_nlist(CPTIME_SYMBOL, (char *) cpu_new, sizeof(cpu_new));
 
@@ -209,19 +209,19 @@ var_extensible_vmstat(struct variable *vp,
             cpu_total = 1;
 
         /*
-         * Memory info 
+         * Memory info
          */
         mem_old = mem_new;
         auto_nlist(SUM_SYMBOL, (char *) &mem_new, sizeof(mem_new));
     }
 
     /*
-     * Rate macro 
+     * Rate macro
      */
 #define rate(x) (((x)+ time_diff/2) / time_diff)
 
     /*
-     * Page-to-kb macro 
+     * Page-to-kb macro
      */
 #define ptok(p) ((p) * (mem_new.v_page_size >> 10))
 
@@ -309,7 +309,7 @@ var_extensible_vmstat(struct variable *vp,
         long_ret = mem_new.v_swtch;
         return ((u_char *) (&long_ret));
         /*
-         * reserved for future use 
+         * reserved for future use
          */
         /*
          * case ERRORFLAG:

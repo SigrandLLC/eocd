@@ -20,11 +20,11 @@ class sched_queue{
     ~sched_queue(){
 		q.clear();
     }
-    
+
     void clear(){
 		q.clear();
     }
-    
+
     int add(unit src,unit dst,unsigned char type,__timestamp ts){
 		list<sched_elem>::iterator p = q.begin();
 		list<sched_elem>::iterator p1 = q.end();
@@ -49,7 +49,7 @@ class sched_queue{
     inline int add(sched_elem &el){
 		return add(el.src,el.dst,el.type,el.tstamp);
     }
-    
+
     int get_old(__timestamp cur,u32 wait_to,sched_elem &el)
     {
 		if( !q.size() )
@@ -65,8 +65,8 @@ class sched_queue{
 			return 0;
 		}
 		return -1;
-    }	
-    
+    }
+
     int schedule(sched_elem &el,__timestamp cur){
 		q.sort();
 		unit swap;
@@ -94,10 +94,10 @@ class sched_queue{
 				q.erase(p);
 				return 0;
 			}
-		}	
+		}
 		return -1;
     }
-    
+
     void print(){
 		q.sort();
 		list<sched_elem>::iterator p = q.begin();
@@ -106,8 +106,8 @@ class sched_queue{
 			unsigned char a = p->type;
 			printf("%d: src(%d),dst(%d),type(%u),tick(%d)\n",i,p->src,p->dst,(unsigned char)(a&0xff),p->tstamp.get_val());
 			i++;
-		}	
-    }	
+		}
+    }
 
 };
 
@@ -119,7 +119,7 @@ class sched_queue{
   __timestamp t2(t,5);
   __timestamp t3(195);
   sched_queue q,q1;
-    
+
   unit s,d;
   unsigned char tp;
   sched_elem el;

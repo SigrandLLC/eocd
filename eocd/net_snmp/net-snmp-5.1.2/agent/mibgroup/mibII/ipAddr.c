@@ -167,11 +167,11 @@ static int      Address_Scan_Next(short *, mib_ipAdEnt *);
  * Arguments:
  * vp     IN      - pointer to variable entry that points here
  * name    IN/OUT  - IN/name requested, OUT/name found
- * length  IN/OUT  - length of IN/OUT oid's 
+ * length  IN/OUT  - length of IN/OUT oid's
  * exact   IN      - TRUE if an exact match was requested
  * var_len OUT     - length of variable or 0 if function returned
  * write_method
- * 
+ *
  */
 
 u_char         *
@@ -204,7 +204,7 @@ var_ipAddrEntry(struct variable *vp,
 #endif                          /* hpux11 */
 
     /*
-     * fill in object part of name for current (less sizeof instance part) 
+     * fill in object part of name for current (less sizeof instance part)
      */
 
     memcpy((char *) current, (char *) vp->name,
@@ -362,7 +362,7 @@ Address_Scan_Init(void)
 }
 
 /*
- * NB: Index is the number of the corresponding interface, not of the address 
+ * NB: Index is the number of the corresponding interface, not of the address
  */
 static int
 Address_Scan_Next(Index, Retin_ifaddr)
@@ -398,7 +398,7 @@ Address_Scan_Next(Index, Retin_ifaddr)
         }
 
         /*
-         * XXX - might not find it? 
+         * XXX - might not find it?
          */
 
         if (Index)
@@ -453,7 +453,7 @@ Address_Scan_Init(void)
 }
 
 /*
- * NB: Index is the number of the corresponding interface, not of the address 
+ * NB: Index is the number of the corresponding interface, not of the address
  */
 static int
 Address_Scan_Next(Index, Retin_ifaddr)
@@ -462,22 +462,22 @@ Address_Scan_Next(Index, Retin_ifaddr)
 {
     if (iptab_current < iptab_size) {
         /*
-         * copy values 
+         * copy values
          */
         *Index = ip[iptab_current].IfIndex;
         *Retin_ifaddr = ip[iptab_current];
         /*
-         * increment to point to next entry 
+         * increment to point to next entry
          */
         iptab_current++;
         /*
-         * return success 
+         * return success
          */
         return (1);
     }
 
     /*
-     * return done 
+     * return done
      */
     return (0);
 }
@@ -509,7 +509,7 @@ Address_Scan_Init(void)
 
 	ifc.ifc_len = sizeof(struct ifreq) * num_interfaces;
 	ifc.ifc_buf = (char*) realloc(ifc.ifc_buf, ifc.ifc_len);
-	
+
 	    if (ioctl(fd, SIOCGIFCONF, &ifc) < 0)
 	    {
 		ifr=NULL;
@@ -519,13 +519,13 @@ Address_Scan_Init(void)
 	    close(fd);
     }
     while (ifc.ifc_len >= (sizeof(struct ifreq) * num_interfaces));
-    
+
     ifr = ifc.ifc_req;
     close(fd);
 }
 
 /*
- * NB: Index is the number of the corresponding interface, not of the address 
+ * NB: Index is the number of the corresponding interface, not of the address
  */
 static int
 Address_Scan_Next(Index, Retifnet)
@@ -542,13 +542,13 @@ Address_Scan_Next(Index, Retifnet)
     }
 
     while (ifr) {
-	
+
 	ifnet_store.if_addr = ifr->ifr_addr;
 
         if (Retifnet)
 	{
 	    Retifnet->if_addr = ifr->ifr_addr;
-	    
+
 	    if (ioctl(fd, SIOCGIFBRDADDR, ifr) < 0)
 	    {
 		memset((char *) &Retifnet->ifu_broadaddr, 0, sizeof(Retifnet->ifu_broadaddr));
@@ -576,7 +576,7 @@ Address_Scan_Next(Index, Retifnet)
 	    else
         	*Index = ifr->ifr_ifindex;
 	}
-	
+
 	ifr++;
 	ifr_counter+=sizeof(struct ifreq);
 	if (ifr_counter >= ifc.ifc_len)
@@ -628,7 +628,7 @@ var_ipAddrEntry(struct variable * vp,
     req_e           req_type;
 
     /*
-     * fill in object part of name for current (less sizeof instance part) 
+     * fill in object part of name for current (less sizeof instance part)
      */
 
     DEBUGMSGTL(("mibII/ip", "var_ipAddrEntry: "));
@@ -796,7 +796,7 @@ get_iflist(void)
             ifam = (struct ifa_msghdr *) rtm;
             cp += sizeof(*ifam);
             /*
-             * from route.c 
+             * from route.c
              */
 #define ROUND(a) \
         ((a) > 0 ? (1 + (((a) - 1) | (sizeof(long) - 1))) : sizeof(long))
@@ -865,7 +865,7 @@ var_ipAddrEntry(struct variable *vp,
     int             i, interface;
 
     /*
-     * fill in object part of name for current (less sizeof instance part) 
+     * fill in object part of name for current (less sizeof instance part)
      */
     memcpy(current, vp->name, (int) vp->namelen * sizeof(oid));
 
@@ -895,7 +895,7 @@ var_ipAddrEntry(struct variable *vp,
                  * if new one is greater than input
                  * and closer to input than previous
                  * lowest, save this one as the "next"
-                 * one.  
+                 * one.
                  */
                 lowinterface = i;
                 memcpy(lowest, current, 14 * sizeof(oid));
@@ -968,7 +968,7 @@ var_ipAddrEntry(struct variable *vp,
     DWORD           dwActualSize = 0;
 
     /*
-     * fill in object part of name for current (less sizeof instance part) 
+     * fill in object part of name for current (less sizeof instance part)
      */
     memcpy(current, vp->name, (int) vp->namelen * sizeof(oid));
 

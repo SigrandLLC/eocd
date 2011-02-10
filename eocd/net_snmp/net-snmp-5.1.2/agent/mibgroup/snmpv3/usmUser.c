@@ -49,7 +49,7 @@ oid             usmUser_variables_oid[] = { 1, 3, 6, 1, 6, 3, 15, 1, 2 };
 
 
 /*
- * needed for the write_ functions to find the start of the index 
+ * needed for the write_ functions to find the start of the index
  */
 #define USM_MIB_LENGTH 12
 
@@ -65,7 +65,7 @@ init_usmUser(void)
                                   "username (MD5|SHA) passphrase [DES [passphrase]]");
 
     /*
-     * we need to be called back later 
+     * we need to be called back later
      */
     snmp_register_callback(SNMP_CALLBACK_LIBRARY, SNMP_CALLBACK_STORE_DATA,
                            usm_store_users, NULL);
@@ -82,7 +82,7 @@ init_usmUser(void)
  *	 prefixLen	(I)
  *	*uptr		(I) Pointer to a user in the user list.
  *	*length		(O) Length of generated index OID.
- *      
+ *
  * Returns:
  *	Pointer to the OID index for the user (uptr)  -OR-
  *	NULL on failure.
@@ -123,12 +123,12 @@ usm_generate_OID(oid * prefix, size_t prefixLen, struct usmUser *uptr,
 /*
  * usm_parse_oid(): parses an index to the usmTable to break it down into
  * a engineID component and a name component.  The results are stored in:
- * 
+ *
  * **engineID:   a newly malloced string.
  * *engineIDLen: The length of the malloced engineID string above.
  * **name:       a newly malloced string.
  * *nameLen:     The length of the malloced name string above.
- * 
+ *
  * returns 1 if an error is encountered, or 0 if successful.
  */
 int
@@ -141,7 +141,7 @@ usm_parse_oid(oid * oidIndex, size_t oidLen,
     int             i;
 
     /*
-     * first check the validity of the oid 
+     * first check the validity of the oid
      */
     if ((oidLen <= 0) || (!oidIndex)) {
         DEBUGMSGTL(("usmUser",
@@ -162,7 +162,7 @@ usm_parse_oid(oid * oidIndex, size_t oidLen,
     }
 
     /*
-     * its valid, malloc the space and store the results 
+     * its valid, malloc the space and store the results
      */
     if (engineID == NULL || name == NULL) {
         DEBUGMSGTL(("usmUser",
@@ -214,11 +214,11 @@ usm_parse_oid(oid * oidIndex, size_t oidLen,
  * Parameters:
  *	*name		Complete OID indexing a given usmUser entry.
  *	 name_length
- *      
+ *
  * Returns:
  *	Pointer to a usmUser  -OR-
  *	NULL if name does not convert to a usmUser.
- * 
+ *
  * Convert an (full) OID and return a pointer to a matching user in the
  * user list if one exists.
  */
@@ -232,7 +232,7 @@ usm_parse_user(oid * name, size_t name_len)
     size_t          nameLen, engineIDLen;
 
     /*
-     * get the name and engineID out of the incoming oid 
+     * get the name and engineID out of the incoming oid
      */
     if (usm_parse_oid(&name[USM_MIB_LENGTH], name_len - USM_MIB_LENGTH,
                       &engineID, &engineIDLen, (u_char **) & newName,
@@ -240,7 +240,7 @@ usm_parse_user(oid * name, size_t name_len)
         return NULL;
 
     /*
-     * Now see if a user exists with these index values 
+     * Now see if a user exists with these index values
      */
     uptr = usm_get_user(engineID, engineIDLen, newName);
     free(engineID);
@@ -260,7 +260,7 @@ usm_parse_user(oid * name, size_t name_len)
  *	   exact   (I)     TRUE if an exact match was requested.
  *	  *var_len (O)     Length of variable or 0 if function returned.
  *	(**write_method)   Hook to name a write method (UNUSED).
- *      
+ *
  * Returns:
  *	Pointer to (char *) containing related data of length 'length'
  *	  (May be NULL.)
@@ -274,7 +274,7 @@ usm_parse_user(oid * name, size_t name_len)
  * in the usmUser list.
  *
  * If the name does not match any user and the request
- * is for an exact match, -or- if the usmUser list is empty, create a 
+ * is for an exact match, -or- if the usmUser list is empty, create a
  * new list entry.
  *
  * Finally, service the given USMUSER* var-bind.  A NULL user generally
@@ -292,7 +292,7 @@ var_usmUser(struct variable * vp,
     size_t          len;
 
     /*
-     * variables we may use later 
+     * variables we may use later
      */
     static long     long_ret;
     static u_char   string[1];
@@ -307,7 +307,7 @@ var_usmUser(struct variable * vp,
         rtest = snmp_oid_compare(name, len, vp->name, len);
         if (rtest > 0 ||
             /*
-             * (rtest == 0 && !exact && (int) vp->namelen+1 < (int) *length) || 
+             * (rtest == 0 && !exact && (int) vp->namelen+1 < (int) *length) ||
              */
             (exact == 1 && rtest != 0)) {
             if (var_len)
@@ -317,10 +317,10 @@ var_usmUser(struct variable * vp,
         memset(newname, 0, sizeof(newname));
         if (((int) *length) <= (int) vp->namelen || rtest == -1) {
             /*
-             * oid is not within our range yet 
+             * oid is not within our range yet
              */
             /*
-             * need to fail if not exact 
+             * need to fail if not exact
              */
             uptr = usm_get_userList();
 
@@ -348,7 +348,7 @@ var_usmUser(struct variable * vp,
                 } else {
                     if (result == 0) {
                         /*
-                         * found an exact match.  Need the next one for !exact 
+                         * found an exact match.  Need the next one for !exact
                          */
                         uptr = nptr->next;
                     } else if (result == -1) {
@@ -360,7 +360,7 @@ var_usmUser(struct variable * vp,
         }                       /* endif -- name <= vp->name */
 
         /*
-         * if uptr is NULL and exact we need to continue for creates 
+         * if uptr is NULL and exact we need to continue for creates
          */
         if (uptr == NULL && !exact)
             return (NULL);
@@ -419,7 +419,7 @@ var_usmUser(struct variable * vp,
     case USMUSEROWNAUTHKEYCHANGE:
         /*
          * we treat these the same, and let the calling module
-         * distinguish between them 
+         * distinguish between them
          */
         *write_method = write_usmUserAuthKeyChange;
         if (uptr) {
@@ -441,7 +441,7 @@ var_usmUser(struct variable * vp,
     case USMUSEROWNPRIVKEYCHANGE:
         /*
          * we treat these the same, and let the calling module
-         * distinguish between them 
+         * distinguish between them
          */
         *write_method = write_usmUserPrivKeyChange;
         if (uptr) {
@@ -491,7 +491,7 @@ var_usmUser(struct variable * vp,
 
 /*
  * write_usmUserSpinLock(): called when a set is performed on the
- * usmUserSpinLock object 
+ * usmUserSpinLock object
  */
 int
 write_usmUserSpinLock(int action,
@@ -501,7 +501,7 @@ write_usmUserSpinLock(int action,
                       u_char * statP, oid * name, size_t name_len)
 {
     /*
-     * variables we may use later 
+     * variables we may use later
      */
     static long     long_ret;
 
@@ -537,7 +537,7 @@ write_usmUserSpinLock(int action,
  *	*statP		(UNUSED)
  *	*name		OID of user to clone from.
  *	 name_len
- *      
+ *
  * Returns:
  *	SNMP_ERR_NOERROR		On success  -OR-  If user exists
  *					  and has already been cloned.
@@ -574,14 +574,14 @@ write_usmUserCloneFrom(int action,
     } else if (action == RESERVE2) {
         if ((uptr = usm_parse_user(name, name_len)) == NULL) {
             /*
-             * We don't allow creations here.  
+             * We don't allow creations here.
              */
             return SNMP_ERR_INCONSISTENTNAME;
         }
 
         /*
          * Has the user already been cloned?  If so, writes to this variable
-         * are defined to have no effect and to produce no error.  
+         * are defined to have no effect and to produce no error.
          */
         if (uptr->cloneFrom != NULL) {
             return SNMP_ERR_NOERROR;
@@ -615,7 +615,7 @@ write_usmUserCloneFrom(int action,
  *	*statP
  *	*name		OID of user upon which to perform set operation.
  *	 name_len
- *      
+ *
  * Returns:
  *	SNMP_ERR_NOERROR		On success.
  *	SNMP_ERR_GENERR
@@ -659,7 +659,7 @@ write_usmUserAuthProtocol(int action,
             || uptr->userStatus == RS_NOTINSERVICE) {
             /*
              * The authProtocol is already set.  It is only legal to CHANGE it
-             * to usmNoAuthProtocol...  
+             * to usmNoAuthProtocol...
              */
             if (snmp_oid_compare
                 ((oid *) var_val, var_val_len / sizeof(oid),
@@ -667,7 +667,7 @@ write_usmUserAuthProtocol(int action,
                  sizeof(usmNoAuthProtocol) / sizeof(oid)) == 0) {
                 /*
                  * ... and then only if the privProtocol is equal to
-                 * usmNoPrivProtocol.  
+                 * usmNoPrivProtocol.
                  */
                 if (snmp_oid_compare
                     (uptr->privProtocol, uptr->privProtocolLen,
@@ -691,7 +691,7 @@ write_usmUserAuthProtocol(int action,
                      uptr->authProtocol, uptr->authProtocolLen) == 0) {
                 /*
                  * But it's also okay to set it to the same thing as it
-                 * currently is.  
+                 * currently is.
                  */
                 return SNMP_ERR_NOERROR;
             } else {
@@ -702,7 +702,7 @@ write_usmUserAuthProtocol(int action,
              * This row is under creation.  It's okay to set
              * usmUserAuthProtocol to any valid authProtocol but it will be
              * overwritten when usmUserCloneFrom is set (so don't write it if
-             * that has already been set).  
+             * that has already been set).
              */
 
             if (snmp_oid_compare
@@ -733,7 +733,7 @@ write_usmUserAuthProtocol(int action,
                 }
             } else {
                 /*
-                 * Unknown authentication protocol.  
+                 * Unknown authentication protocol.
                  */
                 return SNMP_ERR_WRONGVALUE;
             }
@@ -757,19 +757,19 @@ write_usmUserAuthProtocol(int action,
  * write_usmUserAuthKeyChange
  *
  * Parameters:
- *	 action		
+ *	 action
  *	*var_val	Octet string representing new KeyChange value.
  *	 var_val_type
  *	 var_val_len
  *	*statP		(UNUSED)
  *	*name		OID of user upon which to perform set operation.
  *	 name_len
- *      
+ *
  * Returns:
  *	SNMP_ERR_NOERR		Success.
- *	SNMP_ERR_WRONGTYPE	
- *	SNMP_ERR_WRONGLENGTH	
- *	SNMP_ERR_NOSUCHNAME	
+ *	SNMP_ERR_WRONGTYPE
+ *	SNMP_ERR_WRONGLENGTH
+ *	SNMP_ERR_NOSUCHNAME
  *	SNMP_ERR_GENERR
  *
  * Note: This function handles both the usmUserAuthKeyChange and
@@ -849,7 +849,7 @@ write_usmUserAuthKeyChange(int action,
             /*
              * "When the value of the corresponding usmUserAuthProtocol is
              * usmNoAuthProtocol, then a set is successful, but effectively
-             * is a no-op."  
+             * is a no-op."
              */
             DEBUGMSGTL(("usmUser",
                         "%s: noAuthProtocol keyChange... success!\n",
@@ -858,7 +858,7 @@ write_usmUserAuthKeyChange(int action,
         }
 
         /*
-         * Change the key.  
+         * Change the key.
          */
         DEBUGMSGTL(("usmUser", "%s: changing auth key for user %s\n",
                     fname, uptr->secName));
@@ -928,7 +928,7 @@ write_usmUserPrivProtocol(int action,
             || uptr->userStatus == RS_NOTINSERVICE) {
             /*
              * The privProtocol is already set.  It is only legal to CHANGE it
-             * to usmNoPrivProtocol.  
+             * to usmNoPrivProtocol.
              */
             if (snmp_oid_compare
                 ((oid *) var_val, var_val_len / sizeof(oid),
@@ -950,7 +950,7 @@ write_usmUserPrivProtocol(int action,
                      uptr->privProtocol, uptr->privProtocolLen) == 0) {
                 /*
                  * But it's also okay to set it to the same thing as it
-                 * currently is.  
+                 * currently is.
                  */
                 return SNMP_ERR_NOERROR;
             } else {
@@ -963,7 +963,7 @@ write_usmUserPrivProtocol(int action,
              * that if usmUserAuthProtocol is set to usmNoAuthProtocol, it may
              * only be set to usmNoPrivProtocol.  The value will be overwritten
              * when usmUserCloneFrom is set (so don't write it if that has
-             * already been set).  
+             * already been set).
              */
             if (snmp_oid_compare(uptr->authProtocol, uptr->authProtocolLen,
                                  usmNoAuthProtocol,
@@ -1084,7 +1084,7 @@ write_usmUserPrivKeyChange(int action,
             /*
              * "When the value of the corresponding usmUserPrivProtocol is
              * usmNoPrivProtocol, then a set is successful, but effectively
-             * is a no-op."  
+             * is a no-op."
              */
             DEBUGMSGTL(("usmUser",
                         "%s: noPrivProtocol keyChange... success!\n",
@@ -1093,7 +1093,7 @@ write_usmUserPrivKeyChange(int action,
         }
 
         /*
-         * Change the key. 
+         * Change the key.
          */
         DEBUGMSGTL(("usmUser", "%s: changing priv key for user %s\n",
                     fname, uptr->secName));
@@ -1148,7 +1148,7 @@ write_usmUserPublic(int action,
     }
     if (action == COMMIT) {
         /*
-         * don't allow creations here 
+         * don't allow creations here
          */
         if ((uptr = usm_parse_user(name, name_len)) == NULL) {
             return SNMP_ERR_NOSUCHNAME;
@@ -1207,16 +1207,16 @@ write_usmUserStorageType(int action,
         } else {
             /*
              * From RFC2574:
-             * 
+             *
              * "Note that any user who employs authentication or privacy must
              * allow its secret(s) to be updated and thus cannot be 'readOnly'.
-             * 
+             *
              * If an initial set operation tries to set the value to 'readOnly'
              * for a user who employs authentication or privacy, then an
              * 'inconsistentValue' error must be returned.  Note that if the
              * value has been previously set (implicit or explicit) to any
              * value, then the rules as defined in the StorageType Textual
-             * Convention apply.  
+             * Convention apply.
              */
             DEBUGMSGTL(("usmUser",
                         "long_ret %d uptr->st %d uptr->status %d\n",
@@ -1253,7 +1253,7 @@ write_usmUserStorageType(int action,
 
 /*
  * Return 1 if enough objects have been set up to transition rowStatus to
- * notInService(2) or active(1).  
+ * notInService(2) or active(1).
  */
 
 int
@@ -1280,10 +1280,10 @@ usmStatusCheck(struct usmUser *uptr)
  *	*statP
  *	*name
  *	 name_len
- *      
+ *
  * Returns:
  *	SNMP_ERR_NOERROR		On success.
- *	SNMP_ERR_GENERR	
+ *	SNMP_ERR_GENERR
  *	SNMP_ERR_INCONSISTENTNAME
  *	SNMP_ERR_INCONSISTENTVALUE
  *	SNMP_ERR_WRONGLENGTH
@@ -1297,7 +1297,7 @@ write_usmUserStatus(int action,
                     u_char * statP, oid * name, size_t name_len)
 {
     /*
-     * variables we may use later 
+     * variables we may use later
      */
     static long     long_ret;
     unsigned char  *engineID;
@@ -1323,7 +1323,7 @@ write_usmUserStatus(int action,
         }
 
         /*
-         * See if we can parse the oid for engineID/name first.  
+         * See if we can parse the oid for engineID/name first.
          */
         if (usm_parse_oid(&name[USM_MIB_LENGTH], name_len - USM_MIB_LENGTH,
                           &engineID, &engineIDLen, (u_char **) & newName,
@@ -1339,7 +1339,7 @@ write_usmUserStatus(int action,
         }
 
         /*
-         * Now see if a user already exists with these index values. 
+         * Now see if a user already exists with these index values.
          */
         uptr = usm_get_user(engineID, engineIDLen, newName);
 
@@ -1375,14 +1375,14 @@ write_usmUserStatus(int action,
 
                 /*
                  * Set status to createAndGo or createAndWait so we can tell
-                 * that this row is under creation.  
+                 * that this row is under creation.
                  */
 
                 uptr->userStatus = long_ret;
 
                 /*
                  * Add to the list of users (we will take it off again
-                 * later if something goes wrong).  
+                 * later if something goes wrong).
                  */
 
                 usm_add_user(uptr);
@@ -1457,7 +1457,7 @@ write_usmUserStatus(int action,
 #if 0
 
     /*
-     * see if we can parse the oid for engineID/name first 
+     * see if we can parse the oid for engineID/name first
      */
 if (usm_parse_oid(&name[USM_MIB_LENGTH], name_len - USM_MIB_LENGTH,
                   &engineID, &engineIDLen, (u_char **) & newName,
@@ -1465,7 +1465,7 @@ if (usm_parse_oid(&name[USM_MIB_LENGTH], name_len - USM_MIB_LENGTH,
     return SNMP_ERR_INCONSISTENTNAME;
 
     /*
-     * Now see if a user already exists with these index values 
+     * Now see if a user already exists with these index values
      */
 uptr = usm_get_user(engineID, engineIDLen, newName);
 
@@ -1485,7 +1485,7 @@ if (uptr) {                     /* If so, we set the appropriate value... */
 
 } else {                        /* ...else we create a new user */
     /*
-     * check for a valid status column set 
+     * check for a valid status column set
      */
     if (long_ret == RS_ACTIVE || long_ret == RS_NOTINSERVICE) {
         free(engineID);
@@ -1494,7 +1494,7 @@ if (uptr) {                     /* If so, we set the appropriate value... */
     }
     if (long_ret == RS_DESTROY) {
         /*
-         * destroying a non-existent row is actually legal 
+         * destroying a non-existent row is actually legal
          */
         free(engineID);
         free(newName);
@@ -1502,7 +1502,7 @@ if (uptr) {                     /* If so, we set the appropriate value... */
     }
 
     /*
-     * generate a new user 
+     * generate a new user
      */
     if ((uptr = usm_create_user()) == NULL) {
         free(engineID);
@@ -1511,7 +1511,7 @@ if (uptr) {                     /* If so, we set the appropriate value... */
     }
 
     /*
-     * copy in the engineID 
+     * copy in the engineID
      */
     uptr->engineID = (unsigned char *) malloc(engineIDLen);
     if (uptr->engineID == NULL) {
@@ -1525,7 +1525,7 @@ if (uptr) {                     /* If so, we set the appropriate value... */
     free(engineID);
 
     /*
-     * copy in the name and secname 
+     * copy in the name and secname
      */
     if ((uptr->name = strdup(newName)) == NULL) {
         free(newName);
@@ -1539,7 +1539,7 @@ if (uptr) {                     /* If so, we set the appropriate value... */
     }
 
     /*
-     * set the status of the row based on the request 
+     * set the status of the row based on the request
      */
     if (long_ret == RS_CREATEANDGO)
         uptr->userStatus = RS_ACTIVE;
@@ -1547,7 +1547,7 @@ if (uptr) {                     /* If so, we set the appropriate value... */
         uptr->userStatus = RS_NOTINSERVICE;
 
     /*
-     * finally, add it to our list of users 
+     * finally, add it to our list of users
      */
     usm_add_user(uptr);
 

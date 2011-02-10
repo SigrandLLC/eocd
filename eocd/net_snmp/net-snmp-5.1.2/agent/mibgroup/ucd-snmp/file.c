@@ -66,12 +66,12 @@ init_file(void)
 
     /*
      * Define the OID pointer to the top of the mib tree that we're
-     * registering underneath 
+     * registering underneath
      */
     oid             file_variables_oid[] = { UCDAVIS_MIB, 15, 1 };
 
     /*
-     * register ourselves with the agent to handle our mib tree 
+     * register ourselves with the agent to handle our mib tree
      */
     REGISTER_MIB("ucd-snmp/file", file_table, variable2,
                  file_variables_oid);
@@ -91,7 +91,7 @@ void
 file_parse_config(const char *token, char *cptr)
 {
     char *cp;
-	
+
     if (fileCount < MAXFILE) {
         fileTable[fileCount].max = -1;
 
@@ -121,7 +121,7 @@ updateFile(int iindex)
 }
 
 /*
- * OID functions 
+ * OID functions
  */
 
 u_char         *

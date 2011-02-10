@@ -248,7 +248,7 @@ struct variable3 interfaces_variables[] = {
 
 /*
  * Define the OID pointer to the top of the mib tree that we're
- * registering underneath, and the OID of the MIB module 
+ * registering underneath, and the OID of the MIB module
  */
 oid             interfaces_variables_oid[] = { SNMP_OID_MIB2, 2 };
 oid             interfaces_module_oid[] = { SNMP_OID_MIB2, 31 };
@@ -257,7 +257,7 @@ void
 init_interfaces(void)
 {
     /*
-     * register ourselves with the agent to handle our mib tree 
+     * register ourselves with the agent to handle our mib tree
      */
     REGISTER_MIB("mibII/interfaces", interfaces_variables, variable3,
                  interfaces_variables_oid);
@@ -282,7 +282,7 @@ init_interfaces(void)
 /*
  * if_type_from_name
  * Return interface type using the interface name as a clue.
- * Returns 1 to imply "other" type if name not recognized. 
+ * Returns 1 to imply "other" type if name not recognized.
  */
 static int
 if_type_from_name(const char *pcch)
@@ -403,11 +403,11 @@ free_interface_config(void)
  * Arguments:
  * vp     IN      - pointer to variable entry that points here
  * name    IN/OUT  - IN/name requested, OUT/name found
- * length  IN/OUT  - length of IN/OUT oid's 
+ * length  IN/OUT  - length of IN/OUT oid's
  * exact   IN      - TRUE if an exact match was requested
  * var_len OUT     - length of variable or 0 if function returned
  * write_method
- * 
+ *
  */
 #ifndef WIN32
 static int
@@ -428,7 +428,7 @@ header_ifEntry(struct variable *vp,
     memcpy((char *) newname, (char *) vp->name,
            (int) vp->namelen * sizeof(oid));
     /*
-     * find "next" interface 
+     * find "next" interface
      */
     count = Interface_Scan_Get_Count();
     for (interface = 1; interface <= count; interface++) {
@@ -545,7 +545,7 @@ Interface_Scan_By_Index(int iindex,
                      * existence of struct sockaddr_new.  Hopefully, on
                      * other systems we can simply use get_in_address
                      * three times, with (ifap+1) as the starting
-                     * address. 
+                     * address.
                      */
 
                     sifa->sifa_netmask =
@@ -595,7 +595,7 @@ Interface_Scan_Get_Count(void)
     if (if_list_size) {
         for (cp = if_list, n = 0; cp < if_list_end; cp += ifp->ifm_msglen) {
             ifp = (struct if_msghdr *) cp;
-    
+
             if (ifp->ifm_type == RTM_IFINFO) {
                 ++n;
             }
@@ -681,7 +681,7 @@ var_ifEntry(struct variable *vp,
         return (u_char *) & long_return;
     case IFPHYSADDRESS:
         /*
-         * XXX 
+         * XXX
          */
         return NULL;
     case IFADMINSTATUS:
@@ -691,7 +691,7 @@ var_ifEntry(struct variable *vp,
         long_return = if_msg.ifm_flags & IFF_RUNNING ? 1 : 2;
         return (u_char *) & long_return;
         /*
-         * ifLastChange 
+         * ifLastChange
          */
     case IFINOCTETS:
         long_return = (u_long) if_msg.ifm_data.ifi_ibytes;
@@ -1416,7 +1416,7 @@ static int      saveIndex = 0;
 
 /**
 * Determines network interface speed. It is system specific. Only linux
-* realization is made. 
+* realization is made.
 */
 unsigned int getIfSpeed(int fd, struct ifreq ifr){
 	unsigned int retspeed = 10000000;
@@ -1430,7 +1430,7 @@ unsigned int getIfSpeed(int fd, struct ifreq ifr){
 	int mii_reg, i;
 	ushort mii_val[32];
 	ushort bmcr, bmsr, nway_advert, lkpar;
-	const unsigned int media_speeds[] = {10000000, 10000000, 100000000, 100000000, 10000000, 0};	
+	const unsigned int media_speeds[] = {10000000, 10000000, 100000000, 100000000, 10000000, 0};
 /* It corresponds to "10baseT", "10baseT-FD", "100baseTx", "100baseTx-FD", "100baseT4", "Flow-control", 0, */
 
 
@@ -1455,7 +1455,7 @@ unsigned int getIfSpeed(int fd, struct ifreq ifr){
 		if(ioctl(fd, 0x8948, &ifr) <0){
 			DEBUGMSGTL(("mibII/interfaces", "SIOCGMIIREG on %s failed\n", ifr.ifr_name));
 		}
-		mii_val[mii_reg] = data[3];		
+		mii_val[mii_reg] = data[3];
 	}
 /*Parsing of mii values*/
 /*Invalid basic mode control register*/
@@ -1468,20 +1468,20 @@ unsigned int getIfSpeed(int fd, struct ifreq ifr){
 	bmsr = mii_val[1]; 	  /* basic mode status register*/
 	nway_advert = mii_val[4]; /* autonegotiation advertisement*/
 	lkpar = mii_val[5]; 	  /*link partner ability*/
-	
+
 /*Check for link existence, returns 0 if link is absent*/
 	if ((bmsr & 0x0016) != 0x0004){
 		DEBUGMSGTL(("mibII/interfaces", "No link...\n"));
 		retspeed = 0;
 		return retspeed;
 	}
-	
+
 	if(!(bmcr & 0x1000) ){
 		DEBUGMSGTL(("mibII/interfaces", "Auto-negotiation disabled.\n"));
 		retspeed = bmcr & 0x2000 ? 100000000 : 10000000;
 		return retspeed;
 	}
-/* Link partner got our advertised abilities */	
+/* Link partner got our advertised abilities */
 	if (lkpar & 0x4000) {
 		int negotiated = nway_advert & lkpar & 0x3e0;
 		int max_capability = 0;
@@ -1502,9 +1502,9 @@ unsigned int getIfSpeed(int fd, struct ifreq ifr){
 		retspeed = (lkpar & 0x0080) ? 100000000 : 10000000;
 	}
 	return retspeed;
-#else /*!linux*/			   
+#else /*!linux*/
 	return retspeed;
-#endif 
+#endif
 }
 
 void
@@ -1558,7 +1558,7 @@ Interface_Scan_Init(void)
     LastLoad = et.tv_sec;
 
     /*
-     * free old list: 
+     * free old list:
      */
     while (ifnetaddr_list) {
         struct ifnet   *old = ifnetaddr_list;
@@ -1578,11 +1578,11 @@ Interface_Scan_Init(void)
     }
 
     /*
-     * build up ifnetaddr list by hand: 
+     * build up ifnetaddr list by hand:
      */
 
     /*
-     * at least linux v1.3.53 says EMFILE without reason... 
+     * at least linux v1.3.53 says EMFILE without reason...
      */
     if (!(devin = fopen("/proc/net/dev", "r"))) {
         close(fd);
@@ -1596,7 +1596,7 @@ Interface_Scan_Init(void)
      * read the second line (a header) and determine the fields we
      * should read from.  This should be done in a better way by
      * actually looking for the field names we want.  But thats too
-     * much work for today.  -- Wes 
+     * much work for today.  -- Wes
      */
     fgets(line, sizeof(line), devin);
     fgets(line, sizeof(line), devin);
@@ -1663,14 +1663,14 @@ Interface_Scan_Init(void)
             break;              /* alloc error */
 
         /*
-         * chain in: 
+         * chain in:
          */
         *ifnetaddr_ptr = nnew;
         ifnetaddr_ptr = &nnew->if_next;
         i++;
 
         /*
-         * linux previous to 1.3.~13 may miss transmitted loopback pkts: 
+         * linux previous to 1.3.~13 may miss transmitted loopback pkts:
          */
         if (!strcmp(ifname_buf, "lo") && rec_pkt > 0 && !snd_pkt)
             snd_pkt = rec_pkt;
@@ -1691,12 +1691,12 @@ Interface_Scan_Init(void)
         }
 
         /*
-         * ifnames are given as ``   eth0'': split in ``eth'' and ``0'': 
+         * ifnames are given as ``   eth0'': split in ``eth'' and ``0'':
          */
         for (ifname = ifname_buf; *ifname && *ifname == ' '; ifname++);
 
         /*
-         * set name and interface# : 
+         * set name and interface# :
          */
         nnew->if_name = (char *) strdup(ifname);
         for (ptr = nnew->if_name; *ptr && (*ptr < '0' || *ptr > '9');
@@ -1786,7 +1786,7 @@ Interface_Scan_Init(void)
                 break;
 #endif
                 /*
-                 * XXX: more if_arp.h:ARPHDR_xxx to IANAifType mappings... 
+                 * XXX: more if_arp.h:ARPHDR_xxx to IANAifType mappings...
                  */
             }
 #endif
@@ -1816,7 +1816,7 @@ Interface_Scan_Init(void)
         } else {
             /*
              * do only guess if_type from name, if we could not read
-             * * it before from SIOCGIFHWADDR 
+             * * it before from SIOCGIFHWADDR
              */
             if (!nnew->if_type)
                 nnew->if_type = if_type_from_name(nnew->if_name);
@@ -1855,7 +1855,7 @@ Interface_Scan_Init(void)
 #if defined(sunV3) || defined(linux)
 /*
  * **  4.2 BSD doesn't have ifaddr
- * **  
+ * **
  */
 int
 Interface_Scan_Next(short *Index,
@@ -2043,9 +2043,9 @@ Interface_Scan_Next(short *Index,
             ifnet.if_addrlist = (struct ifaddr *) ia;   /* WRONG DATA TYPE; ONLY A FLAG */
 #endif
             /*
-             * ifnet.if_addrlist = (struct ifaddr *)&ia->ia_ifa;   
+             * ifnet.if_addrlist = (struct ifaddr *)&ia->ia_ifa;
              *
-             * WRONG DATA TYPE; ONLY A FLAG 
+             * WRONG DATA TYPE; ONLY A FLAG
              */
 
             if (Index)
@@ -2294,7 +2294,7 @@ Interface_Index_By_Name(char *Name, int Len)
     /*
      * Cope with lots of interfaces and brokenness of ioctl SIOCGIFCONF
      * on some platforms; see W. R. Stevens, ``Unix Network Programming
-     * Volume I'', p.435.  
+     * Volume I'', p.435.
      */
 
     for (i = 8;; i += 8) {
@@ -2309,19 +2309,19 @@ Interface_Index_By_Name(char *Name, int Len)
         if (ioctl(sd, SIOCGIFCONF, (char *) &ifc) < 0) {
             if (errno != EINVAL || lastlen != 0) {
                 /*
-                 * Something has gone genuinely wrong.  
+                 * Something has gone genuinely wrong.
                  */
                 free(buf);
                 close(sd);
                 return 0;
             }
             /*
-             * Otherwise, it could just be that the buffer is too small.  
+             * Otherwise, it could just be that the buffer is too small.
              */
         } else {
             if (ifc.ifc_len == lastlen) {
                 /*
-                 * The length is the same as the last time; we're done.  
+                 * The length is the same as the last time; we're done.
                  */
                 break;
             }
@@ -2662,23 +2662,23 @@ header_ifEntry(struct variable *vp,
     memcpy((char *) newname, (char *) vp->name,
            (int) vp->namelen * sizeof(oid));
     /*
-     * find "next" ifIndex 
+     * find "next" ifIndex
      */
 
 
     /*
-     * query for buffer size needed 
+     * query for buffer size needed
      */
     status = GetIfTable(pIfTable, &dwActualSize, TRUE);
 
     if (status == ERROR_INSUFFICIENT_BUFFER) {
         /*
-         * need more space 
+         * need more space
          */
         pIfTable = (PMIB_IFTABLE) malloc(dwActualSize);
         if (pIfTable != NULL) {
             /*
-             * Get the sorted IF table 
+             * Get the sorted IF table
              */
             GetIfTable(pIfTable, &dwActualSize, TRUE);
         }
@@ -2752,7 +2752,7 @@ var_ifEntry(struct variable * vp,
         return NULL;
 
     /*
-     * Get the If Table Row by passing index as argument 
+     * Get the If Table Row by passing index as argument
      */
     ifRow.dwIndex = ifIndex;
     if (GetIfEntry(&ifRow) != NO_ERROR)
@@ -2860,7 +2860,7 @@ writeIfEntry(int action,
         }
 
         /*
-         * The dwAdminStatus member can be MIB_IF_ADMIN_STATUS_UP or MIB_IF_ADMIN_STATUS_DOWN 
+         * The dwAdminStatus member can be MIB_IF_ADMIN_STATUS_UP or MIB_IF_ADMIN_STATUS_DOWN
          */
         if (!(((int) (*var_val) == MIB_IF_ADMIN_STATUS_UP) ||
               ((int) (*var_val) == MIB_IF_ADMIN_STATUS_DOWN))) {
@@ -2874,7 +2874,7 @@ writeIfEntry(int action,
 
     case ACTION:
         /*
-         * Save the old value, in case of UNDO 
+         * Save the old value, in case of UNDO
          */
 
         oldadmin_status = admin_status;
@@ -2890,7 +2890,7 @@ writeIfEntry(int action,
         ifEntryRow.dwIndex = (int) name[10];
         ifEntryRow.dwAdminStatus = admin_status;
         /*
-         * Only UP and DOWN status are supported. Thats why done in COMMIT 
+         * Only UP and DOWN status are supported. Thats why done in COMMIT
          */
         if (SetIfEntry(&ifEntryRow) != NO_ERROR) {
             snmp_log(LOG_ERR,
@@ -2901,7 +2901,7 @@ writeIfEntry(int action,
 
     case FREE:                 /* Free any resources allocated */
         /*
-         * No resources have been allocated 
+         * No resources have been allocated
          */
         break;
     }

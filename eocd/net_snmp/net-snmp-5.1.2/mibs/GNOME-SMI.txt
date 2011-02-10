@@ -11,7 +11,7 @@ gnome MODULE-IDENTITY
 	ORGANIZATION "GNOME project"
 	CONTACT-INFO
 		"GNU Network Object Model Environment project
-		
+
 		see http://www.gnome.org for contact persons of a particular
 		area or subproject of GNOME.
 
@@ -20,7 +20,7 @@ gnome MODULE-IDENTITY
 		Jochen Friedrich
 		Buedingerstr. 30b
 		63546 Hammersbach
-		Germany 
+		Germany
 
 		email: jochen@scram.de"
 	DESCRIPTION

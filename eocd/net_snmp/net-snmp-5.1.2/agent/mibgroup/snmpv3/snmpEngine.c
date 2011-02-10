@@ -1,5 +1,5 @@
 /*
- * snmpEngine.c: implement's the SNMP-FRAMEWORK-MIB. 
+ * snmpEngine.c: implement's the SNMP-FRAMEWORK-MIB.
  */
 
 #include <net-snmp/net-snmp-config.h>
@@ -28,7 +28,7 @@ struct variable2 snmpEngine_variables[] = {
 };
 
 /*
- * now load this mib into the agents mib table 
+ * now load this mib into the agents mib table
  */
 oid             snmpEngine_variables_oid[] =
     { 1, 3, 6, 1, 6, 3, 10, 2, 1 };
@@ -45,7 +45,7 @@ init_snmpEngine(void)
                  snmpEngine_variables_oid);
 
     /*
-     * place any initialization routines needed here 
+     * place any initialization routines needed here
      */
 }
 
@@ -66,7 +66,7 @@ var_snmpEngine(struct variable *vp,
 {
 
     /*
-     * variables we may use later 
+     * variables we may use later
      */
     static long     long_ret;
     static unsigned char engineID[SNMP_MAXBUF];
@@ -78,14 +78,14 @@ var_snmpEngine(struct variable *vp,
         return 0;
 
     /*
-     * this is where we do the value assignments for the mib results. 
+     * this is where we do the value assignments for the mib results.
      */
     switch (vp->magic) {
 
     case SNMPENGINEID:
         *var_len = snmpv3_get_engineID(engineID, SNMP_MAXBUF);
         /*
-         * XXX  Set ERROR_MSG() upon error? 
+         * XXX  Set ERROR_MSG() upon error?
          */
         return (unsigned char *) engineID;
 
@@ -117,7 +117,7 @@ var_snmpEngine(struct variable *vp,
 #ifdef SNMP_TESTING_CODE
 /*
  * write_engineBoots():
- * 
+ *
  * This is technically not writable a writable mib object, but we
  * allow it so we can run some time synchronization tests.
  */
@@ -129,7 +129,7 @@ write_engineBoots(int action,
                   u_char * statP, oid * name, size_t name_len)
 {
     /*
-     * variables we may use later 
+     * variables we may use later
      */
     static long     long_ret;
     size_t          size;
@@ -151,7 +151,7 @@ write_engineBoots(int action,
         engineIDBufLen =
             snmpv3_get_engineID(engineIDBuf, SNMP_MAXBUF_MEDIUM);
         /*
-         * set our local engineTime in the LCD timing cache 
+         * set our local engineTime in the LCD timing cache
          */
         snmpv3_set_engineBootsAndTime(long_ret,
                                       snmpv3_local_snmpEngineTime());
@@ -164,7 +164,7 @@ write_engineBoots(int action,
 
 /*
  * write_engineTime():
- * 
+ *
  * This is technically not writable a writable mib object, but we
  * allow it so we can run some time synchronization tests.
  */
@@ -176,7 +176,7 @@ write_engineTime(int action,
                  u_char * statP, oid * name, size_t name_len)
 {
     /*
-     * variables we may use later 
+     * variables we may use later
      */
     static long     long_ret;
     size_t          size;
@@ -198,7 +198,7 @@ write_engineTime(int action,
         engineIDBufLen =
             snmpv3_get_engineID(engineIDBuf, SNMP_MAXBUF_MEDIUM);
         /*
-         * set our local engineTime in the LCD timing cache 
+         * set our local engineTime in the LCD timing cache
          */
         snmpv3_set_engineBootsAndTime(snmpv3_local_snmpEngineBoots(),
                                       long_ret);

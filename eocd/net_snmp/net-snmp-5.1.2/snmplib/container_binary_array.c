@@ -46,11 +46,11 @@ array_qsort(void **data, int first, int last, netsnmp_container_compare *f)
 {
     int i, j;
     void *mid, *tmp;
-    
+
     i = first;
     j = last;
     mid = data[(first+last)/2];
-    
+
     do {
         while ( ((*f)(data[i], mid) < 0) && (i < last))
             ++i;
@@ -73,7 +73,7 @@ array_qsort(void **data, int first, int last, netsnmp_container_compare *f)
 
     if (j > first)
         array_qsort(data, first, j, f);
-    
+
     if (i < last)
         array_qsort(data, i, last, f);
 }
@@ -84,10 +84,10 @@ Sort_Array(netsnmp_container *c)
     binary_array_table *t = (binary_array_table*)c->container_data;
     netsnmp_assert(t!=NULL);
     netsnmp_assert(c->compare!=NULL);
-    
+
     if (t->dirty) {
         /*
-         * Sort the table 
+         * Sort the table
          */
         if (t->count > 1)
             array_qsort(t->data, 0, t->count - 1, c->compare);
@@ -258,7 +258,7 @@ netsnmp_binary_array_remove(netsnmp_container *c, const void *key, void **save)
 
     if (save)
         *save = NULL;
-    
+
     /*
      * if there is no data, return NULL;
      */
@@ -498,7 +498,7 @@ _ba_get_subset(netsnmp_container *container, void *data)
     rtn = netsnmp_binary_array_get_subset(container, data, &len);
     if ((NULL==rtn) || (len <=0))
         return NULL;
-    
+
     va = SNMP_MALLOC_TYPEDEF(netsnmp_void_array);
     if (NULL==va)
         return NULL;
@@ -522,7 +522,7 @@ netsnmp_container_get_binary_array(void)
     }
 
     c->container_data = netsnmp_binary_array_initialize();
-        
+
     c->get_size = _ba_size;
     c->init = NULL;
     c->cfree = _ba_free;
@@ -533,7 +533,7 @@ netsnmp_container_get_binary_array(void)
     c->get_subset = _ba_get_subset;
     c->get_iterator = NULL;
     c->for_each = _ba_for_each;
-        
+
     return c;
 }
 
@@ -543,7 +543,7 @@ netsnmp_container_get_binary_array_factory(void)
     static netsnmp_factory f = { "binary_array",
                                  (netsnmp_factory_produce_f*)
                                  netsnmp_container_get_binary_array };
-    
+
     return &f;
 }
 
@@ -573,7 +573,7 @@ netsnmp_binary_array_iterator_first(netsnmp_iterator *it)
         return NULL;
     }
     t = (binary_array_table*)(it->container->container_data);
-    
+
     (int)(it->context) = 0;
 
     if((int)(it->context) <= t->count)
@@ -604,7 +604,7 @@ netsnmp_binary_array_iterator_next(netsnmp_iterator *it)
         return NULL;
 
     return t->data[ (int)(it->context) ];
-   
+
 }
 
 void *
@@ -623,7 +623,7 @@ netsnmp_binary_array_iterator_last(netsnmp_iterator *it)
         return NULL;
     }
     t = (binary_array_table*)(it->container->container_data);
-    
+
     return t->data[ t->count - 1 ];
 }
 
@@ -643,7 +643,7 @@ netsnmp_binary_array_iterator_last(netsnmp_iterator *it)
 /*          return NULL; */
 /*      } */
 /*      t = (binary_array_table*)(it->container->container_data); */
-    
+
 /*  } */
 
 netsnmp_iterator *

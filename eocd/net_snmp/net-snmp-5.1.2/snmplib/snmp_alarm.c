@@ -11,9 +11,9 @@
  * Use is subject to license terms specified in the COPYING file
  * distributed with the Net-SNMP package.
  */
-/** @defgroup snmp_alarm  generic library based alarm timers for various parts of an application 
+/** @defgroup snmp_alarm  generic library based alarm timers for various parts of an application
  *  @ingroup library
- * 
+ *
  *  @{
  */
 #include <net-snmp/net-snmp-config.h>
@@ -95,7 +95,7 @@ sa_update_entry(struct snmp_alarm *a)
     if (a->t_last.tv_sec == 0 && a->t_last.tv_usec == 0) {
         struct timeval  t_now;
         /*
-         * Never been called yet, call time `t' from now.  
+         * Never been called yet, call time `t' from now.
          */
         gettimeofday(&t_now, NULL);
 
@@ -111,7 +111,7 @@ sa_update_entry(struct snmp_alarm *a)
         }
     } else if (a->t_next.tv_sec == 0 && a->t_next.tv_usec == 0) {
         /*
-         * We've been called but not reset for the next call.  
+         * We've been called but not reset for the next call.
          */
         if (a->flags & SA_REPEAT) {
             a->t_next.tv_sec = a->t_last.tv_sec + a->t.tv_sec;
@@ -123,7 +123,7 @@ sa_update_entry(struct snmp_alarm *a)
             }
         } else {
             /*
-             * Single time call, remove it.  
+             * Single time call, remove it.
              */
             snmp_alarm_unregister(a->clientreg);
         }
@@ -156,10 +156,10 @@ snmp_alarm_unregister(unsigned int clientreg)
 
     if (sa_ptr != NULL) {
         *prevNext = sa_ptr->next;
-        DEBUGMSGTL(("snmp_alarm", "unregistered alarm %d\n", 
+        DEBUGMSGTL(("snmp_alarm", "unregistered alarm %d\n",
 		    sa_ptr->clientreg));
         /*
-         * Note:  do not free the clientarg, its the clients responsibility 
+         * Note:  do not free the clientarg, its the clients responsibility
          */
         free(sa_ptr);
     } else {
@@ -187,7 +187,7 @@ snmp_alarm_unregister_all(void)
   }
   DEBUGMSGTL(("snmp_alarm", "ALL alarms unregistered\n"));
   thealarms = NULL;
-}  
+}
 
 struct snmp_alarm *
 sa_find_next(void)
@@ -230,7 +230,7 @@ run_alarms(void)
 
     /*
      * Loop through everything we have repeatedly looking for the next thing to
-     * call until all events are finally in the future again.  
+     * call until all events are finally in the future again.
      */
 
     while (!done) {
@@ -291,14 +291,14 @@ get_next_alarm_delay_time(struct timeval *delta)
              (t_now.tv_usec > sa_ptr->t_next.tv_usec))) {
             /*
              * Time has already passed.  Return the smallest possible amount of
-             * time.  
+             * time.
              */
             delta->tv_sec = 0;
             delta->tv_usec = 1;
             return sa_ptr->clientreg;
         } else {
             /*
-             * Time is still in the future.  
+             * Time is still in the future.
              */
             t_diff.tv_sec = sa_ptr->t_next.tv_sec - t_now.tv_sec;
             t_diff.tv_usec = sa_ptr->t_next.tv_usec - t_now.tv_usec;
@@ -315,7 +315,7 @@ get_next_alarm_delay_time(struct timeval *delta)
     }
 
     /*
-     * Nothing Left.  
+     * Nothing Left.
      */
     return 0;
 }
@@ -330,7 +330,7 @@ set_an_alarm(void)
     /*
      * We don't use signals if they asked us nicely not to.  It's expected
      * they'll check the next alarm time and do their own calling of
-     * run_alarms().  
+     * run_alarms().
      */
 
     if (nextalarm && !netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID,
@@ -373,20 +373,20 @@ set_an_alarm(void)
  *             will be called in seconds.
  *
  * @param flags is an unsigned integer that specifies how frequent the callback
- *	function is called in seconds.  Should be SA_REPEAT or NULL.  If  
+ *	function is called in seconds.  Should be SA_REPEAT or NULL.  If
  *	flags  is  set with SA_REPEAT, then the registered callback function
- *	will be called every SA_REPEAT seconds.  If flags is NULL then the 
- *	function will only be called once and then removed from the 
+ *	will be called every SA_REPEAT seconds.  If flags is NULL then the
+ *	function will only be called once and then removed from the
  *	registered alarm list.
  *
- * @param thecallback is a pointer SNMPAlarmCallback which is the callback 
+ * @param thecallback is a pointer SNMPAlarmCallback which is the callback
  *	function being stored and registered.
  *
- * @param clientarg is a void pointer used by the callback function.  This 
+ * @param clientarg is a void pointer used by the callback function.  This
  *	pointer is assigned to snmp_alarm->clientarg and passed into the
  *	callback function for the client's specifc needs.
  *
- * @return Returns a unique unsigned integer(which is also passed as the first 
+ * @return Returns a unique unsigned integer(which is also passed as the first
  *	argument of each callback), which can then be used to remove the
  *	callback from the list at a later point in the future using the
  *	snmp_alarm_unregister() function.  If memory could not be allocated
@@ -433,32 +433,32 @@ snmp_alarm_register(unsigned int when, unsigned int flags,
 
 
 /**
- * This function offers finer granularity as to when the callback 
- * function is called by making use of t->tv_usec value forming the 
+ * This function offers finer granularity as to when the callback
+ * function is called by making use of t->tv_usec value forming the
  * "when" aspect of snmp_alarm_register().
  *
- * @param t is a timeval structure used to specify when the callback 
+ * @param t is a timeval structure used to specify when the callback
  *	function(alarm) will be called.  Adds the ability to specify
  *	microseconds.  t.tv_sec and t.tv_usec are assigned
  *	to snmp_alarm->tv_sec and snmp_alarm->tv_usec respectively internally.
- *	The snmp_alarm_register function only assigns seconds(it's when 
+ *	The snmp_alarm_register function only assigns seconds(it's when
  *	argument).
  *
  * @param flags is an unsigned integer that specifies how frequent the callback
- *	function is called in seconds.  Should be SA_REPEAT or NULL.  If  
+ *	function is called in seconds.  Should be SA_REPEAT or NULL.  If
  *	flags  is  set with SA_REPEAT, then the registered callback function
- *	will be called every SA_REPEAT seconds.  If flags is NULL then the 
- *	function will only be called once and then removed from the 
+ *	will be called every SA_REPEAT seconds.  If flags is NULL then the
+ *	function will only be called once and then removed from the
  *	registered alarm list.
  *
- * @param cb is a pointer SNMPAlarmCallback which is the callback 
+ * @param cb is a pointer SNMPAlarmCallback which is the callback
  *	function being stored and registered.
  *
- * @param cd is a void pointer used by the callback function.  This 
+ * @param cd is a void pointer used by the callback function.  This
  *	pointer is assigned to snmp_alarm->clientarg and passed into the
  *	callback function for the client's specifc needs.
  *
- * @return Returns a unique unsigned integer(which is also passed as the first 
+ * @return Returns a unique unsigned integer(which is also passed as the first
  *	argument of each callback), which can then be used to remove the
  *	callback from the list at a later point in the future using the
  *	snmp_alarm_unregister() function.  If memory could not be allocated

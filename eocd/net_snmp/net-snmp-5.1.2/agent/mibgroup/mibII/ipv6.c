@@ -357,7 +357,7 @@ config_load_mib(1.3 .6 .1 .3 .86 .1, 7, ipv6tcp_variables)
                      init_ipv6()
 {
     /*
-     * register ourselves with the agent to handle our mib tree 
+     * register ourselves with the agent to handle our mib tree
      */
     REGISTER_MIB("mibII/ipv6", ipv6_variables, variable3,
                  ipv6_variables_oid);
@@ -372,7 +372,7 @@ config_load_mib(1.3 .6 .1 .3 .86 .1, 7, ipv6tcp_variables)
 static int
 header_ipv6(register struct variable *vp,
             /*
-             * IN - pointer to variable entry that points here 
+             * IN - pointer to variable entry that points here
              */
             oid * name,         /* IN/OUT - input name requested, output name found */
             size_t * length,    /* IN/OUT - length of input and output oid's */
@@ -406,7 +406,7 @@ header_ipv6(register struct variable *vp,
 static int
 header_ipv6_scan(register struct variable *vp,
                  /*
-                  * IN - pointer to variable entry that points here 
+                  * IN - pointer to variable entry that points here
                   */
                  oid * name,    /* IN/OUT - input name requested, output name found */
                  size_t * length,       /* IN/OUT - length of input and output oid's */
@@ -559,7 +559,7 @@ if_getindex(const char *name)
 /*------------------------------------------------------------*/
 #ifndef linux
 /*
- * KAME dependent part 
+ * KAME dependent part
  */
 static int
 if_getifnet(int idx, struct ifnet *result)
@@ -630,7 +630,7 @@ var_ipv6(register struct variable * vp,
     }
 #if defined(HAVE_SYS_SYSCTL_H) && defined(CTL_NET)
     /*
-     * try with sysctl routines 
+     * try with sysctl routines
      */
     {
         int             name[] = { CTL_NET, PF_INET6, IPPROTO_IPV6, 0 };
@@ -677,7 +677,7 @@ var_ipv6(register struct variable * vp,
 #endif                          /* not (HAVE_SYS_SYSCTL_H && CTL_NET) */
 
     /*
-     * try looking into the kernel variable 
+     * try looking into the kernel variable
      */
     switch (vp->magic) {
 #ifdef IPV6_FORWARDING_SYMBOL
@@ -762,7 +762,7 @@ var_ifv6Entry(register struct variable * vp,
         break;
     case IPV6IFLOWLAYER:
         /*
-         * should check if type, this is a hard one... 
+         * should check if type, this is a hard one...
          */
         *var_len = nullOidLen;
         return (u_char *) nullOid;
@@ -792,7 +792,7 @@ var_ifv6Entry(register struct variable * vp,
 #if 0                           /*not yet */
     case IPV6IFREASMMAXSIZE:
         /*
-         * I dunno what the spec means for this MIB 
+         * I dunno what the spec means for this MIB
          */
     case IPV6IFTOKEN:
     case IPV6IFTOKENLEN:
@@ -839,7 +839,7 @@ var_ifv6Entry(register struct variable * vp,
             }
 
             /*
-             * no physical address found 
+             * no physical address found
              */
             *var_len = 0;
             return NULL;
@@ -1828,7 +1828,7 @@ var_tcp6(register struct variable * vp,
 #else                           /* !linux / linux */
 
 /*
- * Linux dependent part 
+ * Linux dependent part
  */
 static unsigned long
 linux_read_ip6_stat_ulong(const char *file)
@@ -1935,7 +1935,7 @@ var_ifv6Entry(register struct variable * vp,
         break;
     case IPV6IFLOWLAYER:
         /*
-         * should check if type, this is a hard one... 
+         * should check if type, this is a hard one...
          */
         *var_len = nullOidLen;
         return (u_char *) nullOid;
@@ -2047,7 +2047,7 @@ var_tcp6(register struct variable * vp,
 }
 
 /*
- * misc functions (against broken kernels ) 
+ * misc functions (against broken kernels )
  */
 void
 linux_if_freenameindex(struct if_nameindex *ifndx)

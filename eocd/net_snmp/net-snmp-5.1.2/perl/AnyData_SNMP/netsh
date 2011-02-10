@@ -67,12 +67,12 @@ if ($opts{'t'} == 0 && $colorize) {
 	{
 	    my ($width, $text) = @_;
 	    my $lines = _wrap($width, $text);
-	    map { 
+	    map {
 		if (ref($text) eq "color_string") {
 		    $_ .= $text->color_it($_) . ' 'x($width-length($_));
 		} else {
 		    $_ .= ' 'x($width-length($_));
-		} 
+		}
 	    } @$lines;
 	    return $lines;
 	}
@@ -81,12 +81,12 @@ if ($opts{'t'} == 0 && $colorize) {
 	{
 	    my ($width, $text) = @_;
 	    my $lines = _wrap($width, $text);
-	    map { 
+	    map {
 		if (ref($text) eq "color_string") {
 		    $_ = ' 'x($width-length($_)) . $text->color_it($_);
 		} else {
 		    $_ = ' 'x($width-length($_)) . $_;
-		} 
+		}
 	    } @$lines;
 	    return $lines;
 	}
@@ -293,7 +293,7 @@ sub netsh {
 		my $i;
 		for($i = 1; $i <= $#{$aliases{$name}{'prompts'}}; $i++) {
 		    if (!$ARGS[$i-1] && $term) {
-			$ARGS[$i-1] = 
+			$ARGS[$i-1] =
 			    $term->readline($aliases{$name}{'prompts'}[$i]);
 		    }
 		}
@@ -380,7 +380,7 @@ sub netsh {
 	$exporth->disconnect();
 	return;
     }
-    
+
     if ($stmt =~ /^diff\s+(.*)/) {
 	$running_watch = 2;
 	netsh($1);
@@ -421,7 +421,7 @@ sub netsh {
 	    }
 	    my $oldcount = 0;
 	    while($row = $sth->fetchrow_arrayref) {
-		
+
 		if ($running_watch) {
 		    $newrow=[];
 		    my $count;
@@ -493,10 +493,10 @@ sub netsh {
 	    my @results = split(/[,\s]+/,$stmt);
 	    my $resultsv = new SNMP::VarList();
 	    # expression stolen from the main perl SNMP module
-	    map {  my ($tag, $iid) = 
+	    map {  my ($tag, $iid) =
 		       (/^((?:\.\d+)+|(?:\w+(?:\-*\w+)+))\.?(.*)$/);
 		   push @$resultsv, [$tag, $iid] } @results;
-	    $sess->get($resultsv)  || 
+	    $sess->get($resultsv)  ||
 		print STDERR "Error: $sess->{ErrorNum} $sess->{ErrString}\n";
   	    @results = ();
 	    map { push @results, $_->[2] } @$resultsv;
@@ -515,7 +515,7 @@ sub netsh {
     if ($stmt =~ /^(set|)\s*([^\s]+)\s=\s(.*)$/) {
 	my $sess = make_session();
 	if ($sess) {
-	    $sess->set([$2,undef,$1]) || 
+	    $sess->set([$2,undef,$1]) ||
 		print STDERR "opps: $sess->{ErrorNum} $sess->{ErrString}\n";
 	} else {
 	    print STDERR "could not establish a SNMP session to $host\n";
@@ -530,7 +530,7 @@ sub auto_snmp {
     my $indexes = $node->{parent}{indexes};
     if ($#$indexes > -1) {
 #	print STDERR "column\n";
-	# table 
+	# table
     } else {
 	# scalar
 	if (exists($_[1])) {
@@ -595,7 +595,7 @@ sub make_session {
 
 sub usage {
     print STDERR "
-$0 [ARGUMENTS] HOSTNAME [SQL_COMMAND] 
+$0 [ARGUMENTS] HOSTNAME [SQL_COMMAND]
 
   $0 implements a simple SQL shell which maps onto SNMP.  All
   statements issued within the shell are converted to SNMP requests and
@@ -624,7 +624,7 @@ manual page for details on what they mean:
   -A AUTHPASS
   -X PRIVPASS
   -l SECURITY_LEVEL (default: authNoPriv)
-  
+
 ";
     exit;
 }
@@ -687,7 +687,7 @@ a full list of all the aliases and their definitions.
 
 =item show columns from TABLE
 
-=item select ... 
+=item select ...
 
 =item update ...
 

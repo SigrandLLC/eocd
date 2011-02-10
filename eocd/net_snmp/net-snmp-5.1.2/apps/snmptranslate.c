@@ -10,13 +10,13 @@
 
                       All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the name of CMU not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 CMU DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -286,7 +286,7 @@ main(int argc, char *argv[])
                 exit(1);
             }
             exit(0);
-        } else if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID, 
+        } else if (netsnmp_ds_get_boolean(NETSNMP_DS_LIBRARY_ID,
 					  NETSNMP_DS_LIB_REGEX_ACCESS)) {
 #ifndef DISABLE_MIB_LOADING
             if (0 == get_wild_node(current_name, name, &name_length)) {

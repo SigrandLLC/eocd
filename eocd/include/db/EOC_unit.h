@@ -24,11 +24,11 @@ public:
 		_cnt = 0;
 	}
 	sens_events(time_t start){
-		_start = start; 
+		_start = start;
 		_end = 0;
 		_cnt = 1;
 	}
-	
+
 	int event_start(time_t start)
 	{
 		_start = start;
@@ -48,7 +48,7 @@ public:
 
 	bool event_colsed(){
 		return (_end) > 0 ? true : false;
-	}	
+	}
 
 	bool related_event(time_t start){
 		if( _end ){
@@ -60,7 +60,7 @@ public:
 		}
 		return true;
 	}
-	
+
 	void event_add(time_t start){
 		_end = 0;
 		_cnt++;
@@ -78,7 +78,7 @@ public:
 	typedef enum {
 		span = 0, local
 	} power_t;
-	
+
 protected:
 	unit u;
 	u8 eoc_softw_v;
@@ -91,11 +91,11 @@ protected:
 	power_t power;
 	EOC_side *side[EOC_SIDES_NUM];
 public:
-	EOC_unit(unit u_in, resp_discovery *resp, int loops) 
+	EOC_unit(unit u_in, resp_discovery *resp, int loops)
 	{
 		sens_event[0].resize(SENS_EVENTS_NUM);
-		sens_event[1].resize(SENS_EVENTS_NUM);		
-		sens_event[2].resize(SENS_EVENTS_NUM);		
+		sens_event[1].resize(SENS_EVENTS_NUM);
+		sens_event[2].resize(SENS_EVENTS_NUM);
 		inv_info_setted = 0;
 		eoc_softw_v = resp->eoc_softw_ver;
 		for(int i = 0;i<EOC_SIDES_NUM;i++)
@@ -207,7 +207,7 @@ exit(0);
 		sensors_cur = *resp;
 		int events[3] = {0,0,0};
 		time_t tstamp = time(NULL);
-		
+
 		sens1 += resp->sensor1;
 		events[0] = resp->sensor1;
 		sens2 += resp->sensor2;
@@ -244,20 +244,20 @@ exit(0);
 							}
 							strftime(s, 256, "%R", localtime(&end));
 							printf("time_end = %s,",s);
-							
+
 							printf("cnt=%d\n",cnt);
-							
+
 						}
 					}
 				}
 			}else{
-				if( sens[0]->event_started() && 
+				if( sens[0]->event_started() &&
 					!sens[0]->event_ended()){
 					PDEBUG(DERR,"Close event on sensor #%d",i);
 					sens[0]->event_end(tstamp);
 				}
 			}
-		}				
+		}
 	}
 
 	inline void sensor_get(resp_sensor_state &st) {
@@ -280,7 +280,7 @@ exit(0);
 		ev = *sens_event[sens_num][index];
 		return 0;
     }
-	
+
 	// Link handling
 	inline void link_up() {
 		for(int i = 0;i<EOC_SIDES_NUM;i++){

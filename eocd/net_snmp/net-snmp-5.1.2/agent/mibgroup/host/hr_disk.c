@@ -423,7 +423,7 @@ match_disk_config(const char *name)
     }
 
     /*
-     * no match in ignorelist 
+     * no match in ignorelist
      */
     return 0;
 }
@@ -433,7 +433,7 @@ match_disk_config(const char *name)
  * Arguments:
  * vp     IN      - pointer to variable entry that points here
  * name    IN/OUT  - IN/name requested, OUT/name found
- * length  IN/OUT  - length of IN/OUT oid's 
+ * length  IN/OUT  - length of IN/OUT oid's
  * exact   IN      - TRUE if an exact match was requested
  * var_len OUT     - length of variable or 0 if function returned
  * write_method
@@ -457,7 +457,7 @@ header_hrdisk(struct variable *vp,
     memcpy((char *) newname, (char *) vp->name,
            (int) vp->namelen * sizeof(oid));
     /*
-     * Find "next" disk entry 
+     * Find "next" disk entry
      */
 
     Init_HR_Disk();
@@ -670,7 +670,7 @@ Get_Next_HR_Disk(void)
             }
 
             /*
-             * Construct the full device name in "string" 
+             * Construct the full device name in "string"
              */
             if (disk_devices[HRD_type_index].disk_controller != -1) {
                 snprintf(string, sizeof(string),
@@ -698,7 +698,7 @@ Get_Next_HR_Disk(void)
                  */
                 if (match_disk_config(string)) {
                     /*
-                     * device name matches entry in ignoredisk list 
+                     * device name matches entry in ignoredisk list
                      */
                     DEBUGMSGTL(("host/hr_disk",
                                 "Get_Next_HR_Disk: %s ignored\n", string));
@@ -710,11 +710,11 @@ Get_Next_HR_Disk(void)
 
             /*
              * use O_NDELAY to avoid CDROM spin-up and media detection
-             * * (too slow) --okir 
+             * * (too slow) --okir
              */
             /*
              * at least with HP-UX 11.0 this doesn't seem to work properly
-             * * when accessing an empty CDROM device --jsf 
+             * * when accessing an empty CDROM device --jsf
              */
 #ifdef O_NDELAY                 /* I'm sure everything has it, but just in case...  --Wes */
             fd = open(string, O_RDONLY | O_NDELAY);
@@ -746,7 +746,7 @@ Get_Next_HR_Disk_Partition(char *string, size_t str_len, int HRP_index)
                 HRD_type_index, HRD_index, HRP_index));
 
     /*
-     * no more partition names => return -1 
+     * no more partition names => return -1
      */
     if (disk_devices[HRD_type_index].disk_partition_last -
         disk_devices[HRD_type_index].disk_partition_first + 1
@@ -755,7 +755,7 @@ Get_Next_HR_Disk_Partition(char *string, size_t str_len, int HRP_index)
     }
 
     /*
-     * Construct the partition name in "string" 
+     * Construct the partition name in "string"
      */
     if (disk_devices[HRD_type_index].disk_controller != -1) {
         snprintf(string, str_len,

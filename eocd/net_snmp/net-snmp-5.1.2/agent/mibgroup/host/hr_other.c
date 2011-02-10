@@ -33,8 +33,8 @@ void
 Init_HR_CoProc(void)
 {
 #ifdef solaris2
-    /* 
-     * Sun didn't sell many Windows Co-processor boards 
+    /*
+     * Sun didn't sell many Windows Co-processor boards
      * somebody who has one will have to figure out how to discover it
      * so assume there are none
      */
@@ -48,7 +48,7 @@ int
 Get_Next_HR_CoProc(void)
 {
     /*
-     * How to identify the presence of a co-processor ? 
+     * How to identify the presence of a co-processor ?
      */
 
     if (done_coProc != 1) {

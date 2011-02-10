@@ -1,5 +1,5 @@
 /*
- * default_store.c: storage space for defaults 
+ * default_store.c: storage space for defaults
  */
 /* Portions of this file are subject to the following copyright(s).  See
  * the Net-SNMP's COPYING file for more details and other copyrights
@@ -11,7 +11,7 @@
  * Use is subject to license terms specified in the COPYING file
  * distributed with the Net-SNMP package.
  */
-/** @defgroup default_store storage space for defaults 
+/** @defgroup default_store storage space for defaults
  *  @ingroup library
  *
        The purpose of the default storage is three-fold:
@@ -44,7 +44,7 @@
        intended  for  use  in applications and is not modified or
        checked by the library, and, therefore, this is the  space
        usable by you.
-           
+
        These definitions correspond with the "storid" argument to the API
        - #define NETSNMP_DS_LIBRARY_ID     0
        - #define NETSNMP_DS_APPLICATION_ID 1
@@ -54,7 +54,7 @@
        when the storeid argument is NETSNMP_DS_LIBRARY_ID
 
        library booleans
-            
+
        - #define NETSNMP_DS_LIB_MIB_ERRORS          0
        - #define NETSNMP_DS_LIB_SAVE_MIB_DESCRS     1
        - #define NETSNMP_DS_LIB_MIB_COMMENT_TERM    2
@@ -62,18 +62,18 @@
        - #define NETSNMP_DS_LIB_DUMP_PACKET         4
        - #define NETSNMP_DS_LIB_LOG_TIMESTAMP       5
        - #define NETSNMP_DS_LIB_DONT_READ_CONFIGS   6
-       - #define NETSNMP_DS_LIB_MIB_REPLACE         7 replace objects from latest module 
+       - #define NETSNMP_DS_LIB_MIB_REPLACE         7 replace objects from latest module
        - #define NETSNMP_DS_LIB_PRINT_NUMERIC_ENUM  8 print only numeric enum values
-       - #define NETSNMP_DS_LIB_PRINT_NUMERIC_OIDS  9 print only numeric enum values 
-       - #define NETSNMP_DS_LIB_DONT_BREAKDOWN_OIDS 10 dont print oid indexes specially 
-       - #define NETSNMP_DS_LIB_ALARM_DONT_USE_SIG  11 don't use the alarm() signal 
-       - #define NETSNMP_DS_LIB_PRINT_FULL_OID      12 print fully qualified oids 
+       - #define NETSNMP_DS_LIB_PRINT_NUMERIC_OIDS  9 print only numeric enum values
+       - #define NETSNMP_DS_LIB_DONT_BREAKDOWN_OIDS 10 dont print oid indexes specially
+       - #define NETSNMP_DS_LIB_ALARM_DONT_USE_SIG  11 don't use the alarm() signal
+       - #define NETSNMP_DS_LIB_PRINT_FULL_OID      12 print fully qualified oids
        - #define NETSNMP_DS_LIB_QUICK_PRINT         13 print very brief output for parsing
        - #define NETSNMP_DS_LIB_RANDOM_ACCESS       14 random access to oid labels
        - #define NETSNMP_DS_LIB_REGEX_ACCESS        15 regex matching to oid labels
        - #define NETSNMP_DS_LIB_DONT_CHECK_RANGE    16 don't check values for ranges on send
        - #define NETSNMP_DS_LIB_NO_TOKEN_WARNINGS   17 no warn about unknown config tokens
-       - #define NETSNMP_DS_LIB_NUMERIC_TIMETICKS   18 print timeticks as a number 
+       - #define NETSNMP_DS_LIB_NUMERIC_TIMETICKS   18 print timeticks as a number
        - #define NETSNMP_DS_LIB_ESCAPE_QUOTES       19 shell escape quote marks in oids
        - #define NETSNMP_DS_LIB_REVERSE_ENCODE      20 encode packets from back to front
        - #define NETSNMP_DS_LIB_PRINT_BARE_VALUE    21 just print value (not OID = value)
@@ -162,13 +162,13 @@ static char *netsnmp_ds_strings[NETSNMP_DS_MAX_IDS][NETSNMP_DS_MAX_SUBIDS];
 static void *netsnmp_ds_voids[NETSNMP_DS_MAX_IDS][NETSNMP_DS_MAX_SUBIDS];
 
 /*
- * Prototype definitions 
+ * Prototype definitions
  */
 void            netsnmp_ds_handle_config(const char *token, char *line);
 
 /**
  * Stores "true" or "false" given an int value for value into
- * netsnmp_ds_booleans[store][which] slot.  
+ * netsnmp_ds_booleans[store][which] slot.
  *
  * @param storeid an index to the boolean storage container's first index(store)
  *
@@ -182,7 +182,7 @@ void            netsnmp_ds_handle_config(const char *token, char *line);
 int
 netsnmp_ds_set_boolean(int storeid, int which, int value)
 {
-    if (storeid < 0 || storeid >= NETSNMP_DS_MAX_IDS || 
+    if (storeid < 0 || storeid >= NETSNMP_DS_MAX_IDS ||
 	which   < 0 || which   >= NETSNMP_DS_MAX_SUBIDS) {
         return SNMPERR_GENERR;
     }
@@ -202,7 +202,7 @@ netsnmp_ds_set_boolean(int storeid, int which, int value)
 int
 netsnmp_ds_toggle_boolean(int storeid, int which)
 {
-    if (storeid < 0 || storeid >= NETSNMP_DS_MAX_IDS || 
+    if (storeid < 0 || storeid >= NETSNMP_DS_MAX_IDS ||
 	which   < 0 || which   >= NETSNMP_DS_MAX_SUBIDS) {
         return SNMPERR_GENERR;
     }
@@ -223,7 +223,7 @@ netsnmp_ds_toggle_boolean(int storeid, int which)
 int
 netsnmp_ds_get_boolean(int storeid, int which)
 {
-    if (storeid < 0 || storeid >= NETSNMP_DS_MAX_IDS || 
+    if (storeid < 0 || storeid >= NETSNMP_DS_MAX_IDS ||
 	which   < 0 || which   >= NETSNMP_DS_MAX_SUBIDS) {
         return SNMPERR_GENERR;
     }
@@ -234,7 +234,7 @@ netsnmp_ds_get_boolean(int storeid, int which)
 int
 netsnmp_ds_set_int(int storeid, int which, int value)
 {
-    if (storeid < 0 || storeid >= NETSNMP_DS_MAX_IDS || 
+    if (storeid < 0 || storeid >= NETSNMP_DS_MAX_IDS ||
 	which   < 0 || which   >= NETSNMP_DS_MAX_SUBIDS) {
         return SNMPERR_GENERR;
     }
@@ -249,7 +249,7 @@ netsnmp_ds_set_int(int storeid, int which, int value)
 int
 netsnmp_ds_get_int(int storeid, int which)
 {
-    if (storeid < 0 || storeid >= NETSNMP_DS_MAX_IDS || 
+    if (storeid < 0 || storeid >= NETSNMP_DS_MAX_IDS ||
 	which   < 0 || which   >= NETSNMP_DS_MAX_SUBIDS) {
         return SNMPERR_GENERR;
     }
@@ -260,7 +260,7 @@ netsnmp_ds_get_int(int storeid, int which)
 int
 netsnmp_ds_set_string(int storeid, int which, const char *value)
 {
-    if (storeid < 0 || storeid >= NETSNMP_DS_MAX_IDS || 
+    if (storeid < 0 || storeid >= NETSNMP_DS_MAX_IDS ||
 	which   < 0 || which   >= NETSNMP_DS_MAX_SUBIDS) {
         return SNMPERR_GENERR;
     }
@@ -273,7 +273,7 @@ netsnmp_ds_set_string(int storeid, int which, const char *value)
      */
     if (netsnmp_ds_strings[storeid][which] == value)
         return SNMPERR_SUCCESS;
-    
+
     if (netsnmp_ds_strings[storeid][which] != NULL) {
         free(netsnmp_ds_strings[storeid][which]);
 	netsnmp_ds_strings[storeid][which] = NULL;
@@ -291,7 +291,7 @@ netsnmp_ds_set_string(int storeid, int which, const char *value)
 char *
 netsnmp_ds_get_string(int storeid, int which)
 {
-    if (storeid < 0 || storeid >= NETSNMP_DS_MAX_IDS || 
+    if (storeid < 0 || storeid >= NETSNMP_DS_MAX_IDS ||
 	which   < 0 || which   >= NETSNMP_DS_MAX_SUBIDS) {
         return NULL;
     }
@@ -302,7 +302,7 @@ netsnmp_ds_get_string(int storeid, int which)
 int
 netsnmp_ds_set_void(int storeid, int which, void *value)
 {
-    if (storeid < 0 || storeid >= NETSNMP_DS_MAX_IDS || 
+    if (storeid < 0 || storeid >= NETSNMP_DS_MAX_IDS ||
 	which   < 0 || which   >= NETSNMP_DS_MAX_SUBIDS) {
         return SNMPERR_GENERR;
     }
@@ -318,7 +318,7 @@ netsnmp_ds_set_void(int storeid, int which, void *value)
 void *
 netsnmp_ds_get_void(int storeid, int which)
 {
-    if (storeid < 0 || storeid >= NETSNMP_DS_MAX_IDS || 
+    if (storeid < 0 || storeid >= NETSNMP_DS_MAX_IDS ||
 	which   < 0 || which   >= NETSNMP_DS_MAX_SUBIDS) {
         return NULL;
     }
@@ -349,7 +349,7 @@ netsnmp_ds_handle_config(const char *token, char *line)
         switch (drsp->type) {
         case ASN_BOOLEAN:
             value = strtok(line, " \t\n");
-            if (strcasecmp(value, "yes") == 0 || 
+            if (strcasecmp(value, "yes") == 0 ||
 		strcasecmp(value, "true") == 0) {
                 itmp = 1;
             } else if (strcasecmp(value, "no") == 0 ||
@@ -404,7 +404,7 @@ netsnmp_ds_register_config(u_char type, const char *ftype, const char *token,
 {
     netsnmp_ds_read_config *drsp;
 
-    if (storeid < 0 || storeid >= NETSNMP_DS_MAX_IDS    || 
+    if (storeid < 0 || storeid >= NETSNMP_DS_MAX_IDS    ||
 	which   < 0 || which   >= NETSNMP_DS_MAX_SUBIDS || token == NULL) {
         return SNMPERR_GENERR;
     }
@@ -450,7 +450,7 @@ netsnmp_ds_register_premib(u_char type, const char *ftype, const char *token,
 {
     netsnmp_ds_read_config *drsp;
 
-    if (storeid < 0 || storeid >= NETSNMP_DS_MAX_IDS    || 
+    if (storeid < 0 || storeid >= NETSNMP_DS_MAX_IDS    ||
 	which   < 0 || which   >= NETSNMP_DS_MAX_SUBIDS || token == NULL) {
         return SNMPERR_GENERR;
     }

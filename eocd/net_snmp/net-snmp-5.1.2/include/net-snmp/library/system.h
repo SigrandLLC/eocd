@@ -57,7 +57,7 @@ SOFTWARE.
 
 #ifndef HAVE_DIRENT_H /* MingGW has dirent.h but also defines WIN32 */
     /*
-     * structure of a directory entry 
+     * structure of a directory entry
      */
     typedef struct direct {
         long            d_ino;  /* inode number (not used by MS-DOS) */
@@ -66,7 +66,7 @@ SOFTWARE.
     } _DIRECT;
 
     /*
-     * structure for dir operations 
+     * structure for dir operations
      */
     typedef struct _dir_struc {
         char           *start;  /* Starting position */

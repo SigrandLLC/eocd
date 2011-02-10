@@ -15,17 +15,17 @@
 
 #include <sys/types.h>
 
-/* 
+/*
  * Copies src to the dest buffer. The copy will never overflow the dest buffer
  * and dest will always be null terminated, len is the size of the dest buffer.
  *
  * Returns the length of the src buffer.
- */ 
-size_t 
-strlcpy(char *dest, const char *src, size_t len) 
-{ 
-	size_t src_len = strlen(src); 
-	size_t new_len; 
+ */
+size_t
+strlcpy(char *dest, const char *src, size_t len)
+{
+	size_t src_len = strlen(src);
+	size_t new_len;
 
 	if (len == 0) {
 		return (src_len);
@@ -37,9 +37,9 @@ strlcpy(char *dest, const char *src, size_t len)
                 new_len = src_len;
 	}
 
-        memcpy(dest, src, new_len); 
-	dest[new_len] = '\0'; 
-	return (src_len); 
+        memcpy(dest, src, new_len);
+	dest[new_len] = '\0';
+	return (src_len);
 }
 
 #endif                    /* !HAVE_STRLCPY */

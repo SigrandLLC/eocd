@@ -38,18 +38,18 @@ INSTALLATION
 
   The Net-SNMP Windows installer package performs the following tasks:
 
-  - Installs the Net-SNMP binaries, MIB files and ActiveState 5.8.x Perl PPM 
-    package into the installation folder (defaults to c:\usr). 
-  - Adds (install folder)\bin to the system PATH. 
-  - Adds the following system environment variables: 
+  - Installs the Net-SNMP binaries, MIB files and ActiveState 5.8.x Perl PPM
+    package into the installation folder (defaults to c:\usr).
+  - Adds (install folder)\bin to the system PATH.
+  - Adds the following system environment variables:
     - SNMPCONFPATH=(install folder)/etc/snmp
     - SNMPSHAREPATH=(install folder)/share/snmp
-  - Creates an snmp.conf file in SNMPCONFPATH which defines: 
-    - mibdirs (install folder)/share/snmp/mibs 
-    - persistentDir (install folder)/snmp/persist 
-    - tempFilePattern (install folder)/temp/snmpdXXXXXX 
+  - Creates an snmp.conf file in SNMPCONFPATH which defines:
+    - mibdirs (install folder)/share/snmp/mibs
+    - persistentDir (install folder)/snmp/persist
+    - tempFilePattern (install folder)/temp/snmpdXXXXXX
 
-  After installing using the setup wizard, perform a quick test to verify that 
+  After installing using the setup wizard, perform a quick test to verify that
   Net-SNMP was installed correctly.  Run the following from a command prompt:
 
     snmptranslate -IR -Td IF-MIB::linkDown
@@ -66,10 +66,10 @@ INSTALLATION
                 state from some other state (but not from the notPresent
                 state).  This other state is indicated by the included value
                 of ifOperStatus."
-    ::= { iso(1) org(3) dod(6) internet(1) snmpV2(6) snmpModules(3) snmpMIB(1) 
+    ::= { iso(1) org(3) dod(6) internet(1) snmpV2(6) snmpModules(3) snmpMIB(1)
           snmpMIBObjects(1) snmpTraps(5) 3 }
 
-  If snmptranslate can not be found, then verify that the Net-SNMP bin folder is in 
+  If snmptranslate can not be found, then verify that the Net-SNMP bin folder is in
   your system path.
 
   If you get Module not found errors such as 'IP-MIB: Module not found', the application
@@ -85,48 +85,48 @@ INSTALLATION
 
 CO-EXISTENCE WITH MICROSOFT SNMP SERVICES
 
-If the Microsoft SNMP agent service (SNMP Service) is running, the Net-SNMP agent (snmpd) 
+If the Microsoft SNMP agent service (SNMP Service) is running, the Net-SNMP agent (snmpd)
 will fail to start as it will not be able to bind to the default TCP/IP port of 161.
 
-If the Microsoft SNMP Trap Receiver service is running, the Net-SNMP trap receiver (snmptrapd) 
+If the Microsoft SNMP Trap Receiver service is running, the Net-SNMP trap receiver (snmptrapd)
 will fail to start as it will not be able to bind to the default TCP/IP port of 162.
 
-For most users, it is recommended that either the Microsoft or Net-SNMP version of the 
+For most users, it is recommended that either the Microsoft or Net-SNMP version of the
 application be used, not both.
 
 To allow both the Microsoft and Net-SNMP agent / trap receiver to run at the same time, the
-default TCP/IP port must be changed on either the Microsoft or Net-SNMP version of the 
+default TCP/IP port must be changed on either the Microsoft or Net-SNMP version of the
 application.
 
-The Microsoft services use the 'snmp' and 'snmptrap' entries in the SERVICES file 
-(%SystemRoot%\SYSTEM32\DRIVERS\ETC\SERVICES) to determine the port to bind the service to 
+The Microsoft services use the 'snmp' and 'snmptrap' entries in the SERVICES file
+(%SystemRoot%\SYSTEM32\DRIVERS\ETC\SERVICES) to determine the port to bind the service to
 when the service starts.  Simply modify the entries and restart the affected services.
 
-The Net-SNMP ports for snmpd and snmptrapd can be modified via snmpd.conf and snmptrapd.conf 
-or by using a command line option with each program.  See the Net-SNMP Help file for 
+The Net-SNMP ports for snmpd and snmptrapd can be modified via snmpd.conf and snmptrapd.conf
+or by using a command line option with each program.  See the Net-SNMP Help file for
 instructions on changing the port number.
 
 Note:  Changing the default port the service listens on will prevent it from accepting
-       requests or receiving traps from standard SNMP devices and management stations 
+       requests or receiving traps from standard SNMP devices and management stations
        unless they have also been reconfigured to use the new port numbers.
 
-Some users have reported success in configuring the Net-SNMP snmpd agent service to 'proxy' 
-requests for Microsoft objects which are not available in the Net-SNMP agent.  This is done 
-by changing the default Microsoft 'SNMP Service' port and configuring a PROXY value in snmpd 
+Some users have reported success in configuring the Net-SNMP snmpd agent service to 'proxy'
+requests for Microsoft objects which are not available in the Net-SNMP agent.  This is done
+by changing the default Microsoft 'SNMP Service' port and configuring a PROXY value in snmpd
 to connect to 'localhost:newportnumber' for the 'HOST' value.
 
 
 INSTALLATION - PERL MODULE
 
-  Included in the (install folder)\Perl folder is an ActiveState Perl 
+  Included in the (install folder)\Perl folder is an ActiveState Perl
   5.8.x. PPM package.
 
-  The Perl modules require the Win32 REGEX (Regular Expression) package which 
+  The Perl modules require the Win32 REGEX (Regular Expression) package which
   is available from:
 
     http://people.delphiforums.com/gjc/gnu_regex.html
 
-  Download gnu_regex.exe, copy it to a temporary file and execute it to 
+  Download gnu_regex.exe, copy it to a temporary file and execute it to
   extract the files.
 
   Copy the extracted gnu_regex.dll to your %windir%\system32 folder.
@@ -149,11 +149,11 @@ CONFIGURATION
 
   All configuration files should be placed in the %SNMPCONFPATH% folder.
 
-  Note: All paths in configuration files should use forward slashes (Unix style), 
+  Note: All paths in configuration files should use forward slashes (Unix style),
   NOT back slashes.  Example: c:/usr
 
-  Included is a Perl script called snmpconf which can be used to create 
-  configuration files.  
+  Included is a Perl script called snmpconf which can be used to create
+  configuration files.
 
   Documentation for using the snmpconf is available in the Windows help file
   (Net-SNMP.chm) located in the docs directory of the installed package.  Help is also
@@ -168,10 +168,10 @@ BUILD INFORMATION
 
   Name:			net-snmp-x.x.x-1.win32.exe
   URL:			http://www.net-snmp.org
-  Build date:		
-  Built by:		
-  Installer Package by: 
-  
+  Build date:
+  Built by:
+  Installer Package by:
+
   OS:			Windows 2000 SP3
   Compiler:		MSVC++ 6.0 SP5
   Platform SDK:		February 2003
@@ -196,5 +196,5 @@ BUILD INFORMATION
   SNMPSHAREPATH:             | c:/usr/share/snmp        | SNMPSHAREPATH
   SNMPCONFPATH:              | c:/usr/etc/snmp          | SNMPCONFPATH
   PERSISTENT_DIRECTORY:      | c:/usr/snmp/persist      | SNMP_PERSISTENT_FILE
-  NETSNMP_TEMP_FILE_PATTERN: | c:/usr/temp/snmpdXXXXXX  | 
+  NETSNMP_TEMP_FILE_PATTERN: | c:/usr/temp/snmpdXXXXXX  |
 

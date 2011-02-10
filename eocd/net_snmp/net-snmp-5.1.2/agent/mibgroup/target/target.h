@@ -2,7 +2,7 @@
 #define SNMP_TARGET_H
 
 /*
- * optional filtering function.  Return either TARGET_SKIP or TARGET_KEEP 
+ * optional filtering function.  Return either TARGET_SKIP or TARGET_KEEP
  */
 typedef int     (TargetFilterFunction) (struct targetAddrTable_struct *
                                         targaddrs,
@@ -13,7 +13,7 @@ typedef int     (TargetFilterFunction) (struct targetAddrTable_struct *
 
 
 /*
- * utility functions 
+ * utility functions
  */
 
 netsnmp_session *get_target_sessions(char *taglist, TargetFilterFunction *,

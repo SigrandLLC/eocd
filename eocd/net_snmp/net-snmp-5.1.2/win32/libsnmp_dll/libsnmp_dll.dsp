@@ -7,19 +7,19 @@
 CFG=libsnmp_dll - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
-!MESSAGE 
+!MESSAGE
 !MESSAGE NMAKE /f "libsnmp_dll.mak".
-!MESSAGE 
+!MESSAGE
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
-!MESSAGE 
+!MESSAGE
 !MESSAGE NMAKE /f "libsnmp_dll.mak" CFG="libsnmp_dll - Win32 Debug"
-!MESSAGE 
+!MESSAGE
 !MESSAGE Possible choices for configuration are:
-!MESSAGE 
+!MESSAGE
 !MESSAGE "libsnmp_dll - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE "libsnmp_dll - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE 
+!MESSAGE
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
@@ -81,7 +81,7 @@ LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib /nologo /subsystem:console /dll /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 advapi32.lib ws2_32.lib kernel32.lib user32.lib /nologo /subsystem:console /dll /incremental:no /debug /machine:I386 /def:".\libsnmp.def" /out:"../bin/debug/netsnmp.dll"
 
-!ENDIF 
+!ENDIF
 
 # Begin Target
 

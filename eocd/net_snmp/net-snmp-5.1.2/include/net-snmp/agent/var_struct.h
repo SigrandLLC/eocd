@@ -13,7 +13,7 @@
 #define UCD_REGISTRY_OID_MAX_LEN	128
 
 /*
- * subtree flags 
+ * subtree flags
  */
 #define FULLY_QUALIFIED_INSTANCE    0x01
 #define SUBTREE_ATTACHED	    	0x02

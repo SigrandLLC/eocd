@@ -82,7 +82,7 @@ $(GZIP_TAR):
 # Don't want 'rpmbuild' to strip your executable programs?
 # Then add this line:
 #   --define='_os_install_post /usr/lib/rpm/brp-compress' \
-# to the RPM_OPTS macro definition.  This will eliminate the 
+# to the RPM_OPTS macro definition.  This will eliminate the
 # stripping of binaries, but still retain the compression of
 # manual pages.
 #

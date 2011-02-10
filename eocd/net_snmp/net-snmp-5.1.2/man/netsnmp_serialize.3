@@ -2,7 +2,7 @@
 .ad l
 .nh
 .SH NAME
-serialize: Calls sub handlers one request at a time. \- This functionally passes in one request at a time into lower handlers rather than a whole bunch of requests at once.  
+serialize: Calls sub handlers one request at a time. \- This functionally passes in one request at a time into lower handlers rather than a whole bunch of requests at once.
 
 .PP
 .SS "Functions"
@@ -26,10 +26,10 @@ serialize: Calls sub handlers one request at a time. \- This functionally passes
 .RI "\fIinitializes the serialize helper which then registers a serialize handler as a run-time injectable handler for configuration file use. \fP"
 .in -1c
 .SH "Detailed Description"
-.PP 
-This functionally passes in one request at a time into lower handlers rather than a whole bunch of requests at once. This is useful for handlers that don't want to iterate through the request lists themselves. Generally, this is probably less efficient so use with caution. The serialize handler might be useable to dynamically fix handlers with broken looping code, however. 
+.PP
+This functionally passes in one request at a time into lower handlers rather than a whole bunch of requests at once. This is useful for handlers that don't want to iterate through the request lists themselves. Generally, this is probably less efficient so use with caution. The serialize handler might be useable to dynamically fix handlers with broken looping code, however.
 .SH "Function Documentation"
-.PP 
+.PP
 .SS "\fBnetsnmp_mib_handler\fP* netsnmp_get_serialize_handler (void)"
 .PP
 returns a serialize handler that can be injected into a given handler chain. Definition at line 34 of file serialize.c.

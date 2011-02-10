@@ -1,5 +1,5 @@
 Version 2.12
-    1. Fix syslog notification on regenerator sensor alarm. Send only ONE message 
+    1. Fix syslog notification on regenerator sensor alarm. Send only ONE message
 	to syslog on sensor state change.
     2. Fix SIGHUP handling in eocd
 Version 2.14 (03.07.08)
@@ -15,13 +15,13 @@ Version 2.16 (17.07.08)
     2. Fix _hash function. Problem connected to signed/unsigned conflict
 
 Version 2.17 (30.09.08)
-    1. Fix eoc-info shell output 
+    1. Fix eoc-info shell output
 
 Version 2.18 (07.12.08)
 	1. Add output in JSON format in eoc-info
-	
+
 Version 2.25 (11.01.09)
-	1. Add initial Kdb support 
+	1. Add initial Kdb support
 	2. Add profiles compatibility logic
 
 Version 2.26 (19.01.09)
@@ -36,7 +36,7 @@ Version 2.27 (28.01.09)
 
 Version 2.28 (02.02.09)
 	1. Fix memory leacks (in EOC_router, eoc_channel, conf_profile).
-	The problem was in use delete operator with parent-class, in this 
+	The problem was in use delete operator with parent-class, in this
 	case only general destructor was called. This causes memory leacks.
 	2. Change eoc-info behaviour: show "A" not "AnnexA" e.t.c.
 

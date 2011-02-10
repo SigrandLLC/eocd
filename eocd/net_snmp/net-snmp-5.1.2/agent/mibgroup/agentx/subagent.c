@@ -225,7 +225,7 @@ handle_agentx_packet(int operation, netsnmp_session * session, int reqid,
 
         /*
          * Deregister the ping alarm, if any, and invalidate all other
-         * references to this session.  
+         * references to this session.
          */
         if (session->securityModel != SNMP_DEFAULT_SECMODEL) {
             snmp_alarm_unregister(session->securityModel);
@@ -238,10 +238,10 @@ handle_agentx_packet(int operation, netsnmp_session * session, int reqid,
         main_session = NULL;
         if (period != 0) {
             /*
-             * Pings are enabled, so periodically attempt to re-establish contact 
+             * Pings are enabled, so periodically attempt to re-establish contact
              * with the master agent.  Don't worry about the handle,
-             * agentx_reopen_session unregisters itself if it succeeds in talking 
-             * to the master agent.  
+             * agentx_reopen_session unregisters itself if it succeeds in talking
+             * to the master agent.
              */
             snmp_alarm_register(period, SA_REPEAT, agentx_reopen_session,
                                 NULL);
@@ -254,7 +254,7 @@ handle_agentx_packet(int operation, netsnmp_session * session, int reqid,
     }
 
     /*
-     * ok, we have a pdu from the net. Modify as needed 
+     * ok, we have a pdu from the net. Modify as needed
      */
 
     DEBUGMSGTL(("agentx/subagent", "handling agentx request (req=0x%x,trans="
@@ -291,7 +291,7 @@ handle_agentx_packet(int operation, netsnmp_session * session, int reqid,
         /*
          * We have to save a copy of the original variable list here because
          * if the master agent has requested scoping for some of the varbinds
-         * that information is stored there.  
+         * that information is stored there.
          */
 
         smagic->ovars = snmp_clone_varbind(pdu->variables);
@@ -301,7 +301,7 @@ handle_agentx_packet(int operation, netsnmp_session * session, int reqid,
 
     case AGENTX_MSG_GETBULK:
         /*
-         * WWWXXX 
+         * WWWXXX
          */
         DEBUGMSGTL(("agentx/subagent", "  -> getbulk\n"));
         pdu->command = SNMP_MSG_GETBULK;
@@ -309,7 +309,7 @@ handle_agentx_packet(int operation, netsnmp_session * session, int reqid,
         /*
          * We have to save a copy of the original variable list here because
          * if the master agent has requested scoping for some of the varbinds
-         * that information is stored there.  
+         * that information is stored there.
          */
 
         smagic->ovars = snmp_clone_varbind(pdu->variables);
@@ -324,7 +324,7 @@ handle_agentx_packet(int operation, netsnmp_session * session, int reqid,
 
     case AGENTX_MSG_TESTSET:
         /*
-         * XXXWWW we have to map this twice to both RESERVE1 and RESERVE2 
+         * XXXWWW we have to map this twice to both RESERVE1 and RESERVE2
          */
         DEBUGMSGTL(("agentx/subagent", "  -> testset\n"));
         asi = save_set_vars(session, pdu);
@@ -396,13 +396,13 @@ handle_agentx_packet(int operation, netsnmp_session * session, int reqid,
     }
 
     /*
-     * submit the pdu to the internal handler 
+     * submit the pdu to the internal handler
      */
 
     /*
      * We have to clone the PDU here, because when we return from this
      * callback, sess_process_packet will free(pdu), but this call also
-     * free()s its argument PDU.  
+     * free()s its argument PDU.
      */
 
     internal_pdu = snmp_clone_pdu(pdu);
@@ -444,7 +444,7 @@ handle_subagent_response(int op, netsnmp_session * session, int reqid,
                 (u->val.objid, u->val_len / sizeof(oid), nullOid,
                  nullOidLen) != 0) {
                 /*
-                 * The master agent requested scoping for this variable.  
+                 * The master agent requested scoping for this variable.
                  */
                 rc = snmp_oid_compare(v->name, v->name_length,
                                       u->val.objid,
@@ -461,7 +461,7 @@ handle_subagent_response(int op, netsnmp_session * session, int reqid,
                      * The varbind is out of scope.  From RFC2741, p. 66: "If
                      * the subagent cannot locate an appropriate variable,
                      * v.name is set to the starting OID, and the VarBind is
-                     * set to `endOfMibView'".  
+                     * set to `endOfMibView'".
                      */
                     snmp_set_var_objid(v, u->name, u->name_length);
                     snmp_set_var_typed_value(v, SNMP_ENDOFMIBVIEW, 0, 0);
@@ -476,7 +476,7 @@ handle_subagent_response(int op, netsnmp_session * session, int reqid,
 
     /*
      * XXXJBPN: similar for GETBULK but the varbinds can get re-ordered I
-     * think which makes it er more difficult.  
+     * think which makes it er more difficult.
      */
 
     if (smagic->ovars != NULL) {
@@ -517,10 +517,10 @@ handle_subagent_set_response(int op, netsnmp_session * session, int reqid,
 
     if (asi->mode == SNMP_MSG_INTERNAL_SET_RESERVE1) {
         /*
-         * reloop for RESERVE2 mode, an internal only agent mode 
+         * reloop for RESERVE2 mode, an internal only agent mode
          */
         /*
-         * XXX: check exception statuses of reserve1 first 
+         * XXX: check exception statuses of reserve1 first
          */
         if (!pdu->errstat) {
             asi->mode = pdu->command = SNMP_MSG_INTERNAL_SET_RESERVE2;
@@ -618,7 +618,7 @@ subagent_shutdown(int majorID, int minorID, void *serverarg, void *clientarg)
 
 
 /*
- * Register all the "standard" AgentX callbacks for the given session.  
+ * Register all the "standard" AgentX callbacks for the given session.
  */
 
 void
@@ -648,7 +648,7 @@ agentx_register_callbacks(netsnmp_session * s)
 }
 
 /*
- * Unregister all the callbacks associated with this session.  
+ * Unregister all the callbacks associated with this session.
  */
 
 void
@@ -679,7 +679,7 @@ agentx_unregister_callbacks(netsnmp_session * ss)
 }
 
 /*
- * Open a session to the master agent.  
+ * Open a session to the master agent.
  */
 int
 subagent_open_master_session(void)
@@ -716,7 +716,7 @@ subagent_open_master_session(void)
     if (main_session == NULL) {
         /*
          * Diagnose snmp_open errors with the input
-         * netsnmp_session pointer.  
+         * netsnmp_session pointer.
          */
         if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, NETSNMP_DS_AGENT_NO_CONNECTION_WARNINGS)) {
             if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, NETSNMP_DS_AGENT_NO_ROOT_ACCESS)) {
@@ -739,7 +739,7 @@ subagent_open_master_session(void)
         free(sess.peername);
 
     /*
-     * I don't know why 1 is success instead of the usual 0 = noerr, 
+     * I don't know why 1 is success instead of the usual 0 = noerr,
      * but that's what the function returns.
      */
     if (1 != agentx_open_session(main_session)) {
@@ -771,7 +771,7 @@ subagent_open_master_session(void)
 }
 
 /*
- * returns non-zero on error 
+ * returns non-zero on error
  */
 int
 subagent_pre_init(void)
@@ -779,7 +779,7 @@ subagent_pre_init(void)
     DEBUGMSGTL(("agentx/subagent", "initializing....\n"));
 
     /*
-     * set up callbacks to initiate master agent pings for this session 
+     * set up callbacks to initiate master agent pings for this session
      */
     netsnmp_ds_register_config(ASN_INTEGER,
                                netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID,
@@ -788,7 +788,7 @@ subagent_pre_init(void)
                                NETSNMP_DS_APPLICATION_ID,
                                NETSNMP_DS_AGENT_AGENTX_PING_INTERVAL);
 
-    
+
     /* ping and/or reconnect by default every 15 seconds */
     netsnmp_ds_set_int(NETSNMP_DS_APPLICATION_ID,
                        NETSNMP_DS_AGENT_AGENTX_PING_INTERVAL, 15);
@@ -820,7 +820,7 @@ subagent_pre_init(void)
  * Alarm callback function to open a session to the master agent.  If a
  * transport disconnection callback occurs, indicating that the master agent
  * has died (or there has been some strange communication problem), this
- * alarm is called repeatedly to try to re-open the connection.  
+ * alarm is called repeatedly to try to re-open the connection.
  */
 
 void
@@ -831,25 +831,25 @@ agentx_reopen_session(unsigned int clientreg, void *clientarg)
 
     if (subagent_open_master_session() == 0) {
         /*
-         * Successful.  Delete the alarm handle if one exists.  
+         * Successful.  Delete the alarm handle if one exists.
          */
         if (clientreg != 0) {
             snmp_alarm_unregister(clientreg);
         }
 
         /*
-         * Reregister all our nodes.  
+         * Reregister all our nodes.
          */
         register_mib_reattach();
 
         /*
-         * Register a ping alarm (if need be).  
+         * Register a ping alarm (if need be).
          */
         subagent_register_ping_alarm(0, 0, 0, main_session);
     } else {
         if (clientreg == 0) {
             /*
-             * Register a reattach alarm for later 
+             * Register a reattach alarm for later
              */
             subagent_register_ping_alarm(0, 0, 0, main_session);
         }
@@ -859,7 +859,7 @@ agentx_reopen_session(unsigned int clientreg, void *clientarg)
 /*
  * If a valid session is passed in (through clientarg), register a
  * ping handler to ping it frequently, else register an attempt to try
- * and open it again later. 
+ * and open it again later.
  */
 
 static int
@@ -876,7 +876,7 @@ subagent_register_ping_alarm(int majorID, int minorID,
         return 0;
 
     /*
-     * register a ping alarm, if desired 
+     * register a ping alarm, if desired
      */
     if (ss) {
         if (ss->securityModel != SNMP_DEFAULT_SECMODEL) {
@@ -891,13 +891,13 @@ subagent_register_ping_alarm(int majorID, int minorID,
                     ping_interval));
         /*
          * we re-use the securityModel parameter for an alarm stash,
-         * since agentx doesn't need it 
+         * since agentx doesn't need it
          */
         ss->securityModel = snmp_alarm_register(ping_interval, SA_REPEAT,
                                                 agentx_check_session, ss);
     } else {
         /*
-         * attempt to open it later instead 
+         * attempt to open it later instead
          */
         DEBUGMSGTL(("agentx/subagent",
                     "subagent not properly attached, postponing registration till later....\n"));
@@ -909,7 +909,7 @@ subagent_register_ping_alarm(int majorID, int minorID,
 
 /*
  * check a session validity for connectivity to the master agent.  If
- * not functioning, close and start attempts to reopen the session 
+ * not functioning, close and start attempts to reopen the session
  */
 void
 agentx_check_session(unsigned int clientreg, void *clientarg)

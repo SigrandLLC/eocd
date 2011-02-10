@@ -25,7 +25,7 @@ EOC_msg::EOC_msg(int sz){
 EOC_msg::EOC_msg(EOC_msg *ex)
 {
     size = ex->msize();
-    bsize = ex->msize();    
+    bsize = ex->msize();
     dir = ex->direction();
     buf = (char*)malloc(bsize);
     if( buf )
@@ -43,7 +43,7 @@ EOC_msg::EOC_msg(EOC_msg *ex,int new_size)
     size = bsize;
     dir = ex->direction();
     buf = (char*)malloc(bsize);
-    if( buf )    
+    if( buf )
 		memcpy(buf,ex->mptr(),size);
     else{
 		// TODO: EXCEPTION!!!
@@ -96,7 +96,7 @@ unit
 EOC_msg::src(){
     if( buf )
         return (unit)((buf[0]&0xf0)>>4);
-    return unknown;    
+    return unknown;
 }
 
 //---- Set address information ----//
@@ -104,7 +104,7 @@ int
 EOC_msg::dst(unit dst){
     if( (dst&0xf) != dst || !buf  )
 		return -1;
-    buf[0] &= 0xf0;	
+    buf[0] &= 0xf0;
     buf[0] |= dst&0xf;
     return 0;
 }
@@ -125,7 +125,7 @@ EOC_msg::setup(char *ptr,int sz)
     if( buf )
 		return -1;
     buf = ptr;
-    size = sz;	
+    size = sz;
     bsize = sz;
     // check for correctness
     if( (dst() < unknown || (dst() > sru8 && dst()!=BCAST) ) ||
@@ -144,7 +144,7 @@ EOC_msg::clean()
     if( buf )
 		free(buf);
     size = 0;
-    buf = NULL;    
+    buf = NULL;
     dir = NOSTREAM;
 }
 

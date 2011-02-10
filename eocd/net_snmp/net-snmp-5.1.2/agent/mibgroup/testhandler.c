@@ -32,7 +32,7 @@ void
 init_testhandler(void)
 {
     /*
-     * we're registering at .1.2.3.4 
+     * we're registering at .1.2.3.4
      */
     netsnmp_handler_registration *my_test;
     netsnmp_table_registration_info *table_info;
@@ -88,7 +88,7 @@ init_testhandler(void)
      * we'll construct a simple table here with two indexes: an
      * integer and a string (why not).  It'll contain only one
      * column so the data pointer is merely the data in that
-     * column. 
+     * column.
      */
 
     table = netsnmp_create_table_data("data_table_test");
@@ -97,7 +97,7 @@ init_testhandler(void)
     netsnmp_table_data_add_index(table, ASN_OCTET_STR);
 
     /*
-     * 1 partridge in a pear tree 
+     * 1 partridge in a pear tree
      */
     row = netsnmp_create_table_data_row();
     ind1 = 1;
@@ -108,7 +108,7 @@ init_testhandler(void)
     netsnmp_table_data_add_row(table, row);
 
     /*
-     * 2 turtle doves 
+     * 2 turtle doves
      */
     row = netsnmp_create_table_data_row();
     ind1 = 2;
@@ -120,7 +120,7 @@ init_testhandler(void)
 
     /*
      * we're going to register it as a normal table too, so we get the
-     * automatically parsed column and index information 
+     * automatically parsed column and index information
      */
     table_info = SNMP_MALLOC_TYPEDEF(netsnmp_table_registration_info);
 
@@ -148,7 +148,7 @@ my_test_handler(netsnmp_mib_handler *handler,
 
     DEBUGMSGTL(("testhandler", "Got request:\n"));
     /*
-     * loop through requests 
+     * loop through requests
      */
     while (requests) {
         netsnmp_variable_list *var = requests->requestvb;
@@ -204,20 +204,20 @@ my_test_table_handler(netsnmp_mib_handler *handler,
 {
 
     netsnmp_table_registration_info
-     
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         *handler_reg_info =
         (netsnmp_table_registration_info *) handler->prev->myvoid;
     netsnmp_table_request_info *table_info;
@@ -245,17 +245,17 @@ my_test_table_handler(netsnmp_mib_handler *handler,
         switch (reqinfo->mode) {
         case MODE_GETNEXT:
             /*
-             * beyond our search range? 
+             * beyond our search range?
              */
             if (table_info->colnum > RESULT_COLUMN)
                 break;
 
             /*
-             * below our minimum column? 
+             * below our minimum column?
              */
             if (table_info->colnum < RESULT_COLUMN ||
                 /*
-                 * or no index specified 
+                 * or no index specified
                  */
                 table_info->indexes->val.integer == 0) {
                 table_info->colnum = RESULT_COLUMN;
@@ -290,18 +290,18 @@ my_test_table_handler(netsnmp_mib_handler *handler,
         case MODE_GET:
             if (var->type == ASN_NULL) {        /* valid request if ASN_NULL */
                 /*
-                 * is it the right column? 
+                 * is it the right column?
                  */
                 if (table_info->colnum == RESULT_COLUMN &&
                     /*
-                     * and within the max boundries? 
+                     * and within the max boundries?
                      */
                     *(table_info->indexes->val.integer) <= MAX_COLONE &&
                     *(table_info->indexes->next_variable->val.integer)
                     <= MAX_COLTWO) {
 
                     /*
-                     * then, the result is column1 * column2 
+                     * then, the result is column1 * column2
                      */
                     result = *(table_info->indexes->val.integer) *
                         *(table_info->indexes->next_variable->val.integer);
@@ -347,7 +347,7 @@ my_test_instance_handler(netsnmp_mib_handler *handler,
 
     case MODE_SET_RESERVE2:
         /*
-         * store old info for undo later 
+         * store old info for undo later
          */
         memdup((u_char **) & accesses_cache,
                (u_char *) & accesses, sizeof(accesses));
@@ -364,7 +364,7 @@ my_test_instance_handler(netsnmp_mib_handler *handler,
 
     case MODE_SET_ACTION:
         /*
-         * update current 
+         * update current
          */
         accesses = *(requests->requestvb->val.integer);
         DEBUGMSGTL(("testhandler", "updated accesses -> %d\n", accesses));
@@ -379,7 +379,7 @@ my_test_instance_handler(netsnmp_mib_handler *handler,
     case MODE_SET_COMMIT:
     case MODE_SET_FREE:
         /*
-         * nothing to do 
+         * nothing to do
          */
         break;
     }
@@ -403,7 +403,7 @@ my_data_table_handler(netsnmp_mib_handler *handler,
             continue;
 
         /*
-         * extract our stored data and table info 
+         * extract our stored data and table info
          */
         row = netsnmp_extract_table_row(requests);
         table_info = netsnmp_extract_table_info(requests);
@@ -413,7 +413,7 @@ my_data_table_handler(netsnmp_mib_handler *handler,
             continue;
 
         /*
-         * there's only one column, we don't need to check if it's right 
+         * there's only one column, we don't need to check if it's right
          */
         netsnmp_table_data_build_result(reginfo, reqinfo, requests, row,
                                         table_info->colnum,

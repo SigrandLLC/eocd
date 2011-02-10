@@ -13,7 +13,7 @@ struct header_complex_index {
 };
 
 /*
- * Function pointer called by the header_comlpex functions when a client pointer (void * to us) needs to be cleaned. 
+ * Function pointer called by the header_comlpex functions when a client pointer (void * to us) needs to be cleaned.
  */
 
 typedef void    (HeaderComplexCleaner) (void *);
@@ -59,7 +59,7 @@ struct header_complex_index *header_complex_add_data(struct
                                                      * var, void *data);
 
 /*
- * Note: newoid is copied/cloned for you 
+ * Note: newoid is copied/cloned for you
  */
 struct header_complex_index *header_complex_add_data_by_oid(struct
                                                             header_complex_index

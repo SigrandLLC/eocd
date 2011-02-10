@@ -43,8 +43,8 @@ public:
 	head = inc(head);
 	return 0;
     }
-    
-    
+
+
 };
 
 
@@ -57,7 +57,7 @@ protected:
     side_perf perf;
 public:
     EOC_dummy1(char *name,dummy_channel *snd,dummy_channel *rcv);
-    ~EOC_dummy1();    
+    ~EOC_dummy1();
 
     int send(EOC_msg *m);
     EOC_msg *recv();
@@ -76,14 +76,14 @@ public:
     side_perf get_current_stat(){
 	return perf;
     }
-    
+
     int loops() { return 1;};
 
     int tresholds(s8 loopattn,s8 snr){
 	printf("%s: loop_attn(%d) snr_marg(%d)\n",name,loopattn,snr);
     }
     int statistics(int loop, side_perf &perf);
-    
+
 };
 
 #endif
@@ -101,10 +101,10 @@ int main()
     d.enqueue("aaaaaaaaaaaa",12);
     d.enqueue("aaaaaaaaaaaaaaa",15);
     d.enqueue("aaaaa",5);
-    d.enqueue("aaaaaa",6);    
-    d.enqueue("aaaaaaaaaa",10);    
+    d.enqueue("aaaaaa",6);
+    d.enqueue("aaaaaaaaaa",10);
     d.enqueue("aaaaaaaaaaa",11);
-    
+
     while( !d.dequeue(a,&b) ){
 	a[b] = 0;
 	printf("(%d): %s\n",b,a);

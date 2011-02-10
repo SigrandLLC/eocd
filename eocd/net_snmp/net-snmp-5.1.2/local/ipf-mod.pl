@@ -9,7 +9,7 @@
 ## Date: $ Tue Dec  1 10:24:08 EET 1998 $
 ## Version: 1.1a
 
-# Put this file in /usr/local/bin/ipf-mod.pl and then add the following 
+# Put this file in /usr/local/bin/ipf-mod.pl and then add the following
 # line to your snmpd.conf file (without the # at the front):
 #
 #   pass .1.3.6.1.4.1.2021.13.2 /usr/local/bin/ipf-mod.pl

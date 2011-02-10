@@ -36,7 +36,7 @@ typedef struct sl_node {
 
 typedef struct sl_container_s {
    netsnmp_container          c;
-   
+
    size_t                     count;      /* Index of the next free entry */
    sl_node                   *head;       /* head of list */
 } sl_container;
@@ -47,14 +47,14 @@ _get(netsnmp_container *c, const void *key, int exact)
 {
     sl_container *sl = (sl_container*)c;
     sl_node  *curr = sl->head;
-    
+
     if( (NULL != curr) && (NULL != key)) {
         while (curr) {
             if (sl->c.compare(curr->data, key) == 0)
                 break;
             curr = curr->next;
         }
-        
+
         if((curr) && (!exact)) {
             curr = curr->next;
         }
@@ -99,7 +99,7 @@ _ssll_insert(netsnmp_container *c, const void *data)
 {
     sl_container *sl = (sl_container*)c;
     sl_node  *new_node;
-    
+
     if(NULL == c)
         return -1;
 
@@ -107,7 +107,7 @@ _ssll_insert(netsnmp_container *c, const void *data)
     if(NULL == new_node)
         return -1;
     new_node->data = data;
-    
+
     if(NULL == sl->head) {
         sl->head = new_node;
     }
@@ -135,7 +135,7 @@ _ssll_remove(netsnmp_container *c, const void *data)
 {
     sl_container *sl = (sl_container*)c;
     sl_node  *curr = sl->head;
-    
+
     if((NULL == c) || (NULL == curr))
         return -1;
 
@@ -154,13 +154,13 @@ _ssll_remove(netsnmp_container *c, const void *data)
 
     if(NULL == curr)
         return -2;
-    
+
     /*
      * free our node structure, but not the data
      */
     free(curr);
     --sl->count;
-    
+
     return 0;
 }
 
@@ -168,7 +168,7 @@ static size_t
 _ssll_size(netsnmp_container *c)
 {
     sl_container *sl = (sl_container*)c;
-    
+
     if(NULL == c)
         return 0;
 
@@ -181,10 +181,10 @@ _ssll_for_each(netsnmp_container *c, netsnmp_container_obj_func *f,
 {
     sl_container *sl = (sl_container*)c;
     sl_node  *curr;
-    
+
     if(NULL == c)
         return;
-    
+
     for(curr = sl->head; curr; curr = curr->next)
         (*f) ((void *)curr->data, context);
 }
@@ -207,7 +207,7 @@ netsnmp_container_get_ssll(void)
     }
 
     sl->c.cfree = (netsnmp_container_rc*)_ssll_free;
-        
+
     sl->c.get_size = _ssll_size;
     sl->c.init = NULL;
     sl->c.insert = _ssll_insert;
@@ -218,7 +218,7 @@ netsnmp_container_get_ssll(void)
     sl->c.get_iterator = NULL;
     sl->c.for_each = _ssll_for_each;
 
-       
+
     return (netsnmp_container*)sl;
 }
 
@@ -228,7 +228,7 @@ netsnmp_container_get_ssll_factory(void)
     static netsnmp_factory f = {"sorted_singly_linked_list",
                                 (netsnmp_factory_produce_f*)
                                 netsnmp_container_get_ssll };
-    
+
     return &f;
 }
 

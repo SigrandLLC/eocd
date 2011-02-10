@@ -98,7 +98,7 @@
 ./agent_index.lo: ../include/net-snmp/system/linux.h
 ./agent_index.lo: ../include/net-snmp/system/sysv.h
 ./agent_index.lo: ../include/net-snmp/system/generic.h
-./agent_index.lo: ../include/net-snmp/machine/generic.h 
+./agent_index.lo: ../include/net-snmp/machine/generic.h
 ./agent_index.lo: ../include/net-snmp/net-snmp-includes.h
 ./agent_index.lo: ../include/net-snmp/definitions.h
 ./agent_index.lo: ../include/net-snmp/types.h
@@ -211,7 +211,7 @@
 ./agent_index.lo: mibgroup/ucd-snmp/loadave.h mibgroup/ucd-snmp/extensible.h
 ./agent_index.lo: mibgroup/ucd-snmp/errormib.h mibgroup/ucd-snmp/file.h
 ./agent_index.lo: mibgroup/ucd-snmp/dlmod.h mibgroup/ucd-snmp/proxy.h
-./agent_index.lo: mibgroup/ucd-snmp/logmatch.h 
+./agent_index.lo: mibgroup/ucd-snmp/logmatch.h
 ./agent_index.lo: mibgroup/snmpv3/snmpEngine.h mibgroup/snmpv3/snmpMPDStats.h
 ./agent_index.lo: mibgroup/snmpv3/usmStats.h mibgroup/snmpv3/usmUser.h
 ./agent_index.lo: mibgroup/notification/snmpNotifyTable.h
@@ -374,7 +374,7 @@
 ./agent_read_config.lo: mibgroup/ucd-snmp/extensible.h
 ./agent_read_config.lo: mibgroup/ucd-snmp/errormib.h mibgroup/ucd-snmp/file.h
 ./agent_read_config.lo: mibgroup/ucd-snmp/dlmod.h mibgroup/ucd-snmp/proxy.h
-./agent_read_config.lo: mibgroup/ucd-snmp/logmatch.h 
+./agent_read_config.lo: mibgroup/ucd-snmp/logmatch.h
 ./agent_read_config.lo: mibgroup/snmpv3/snmpEngine.h
 ./agent_read_config.lo: mibgroup/snmpv3/snmpMPDStats.h
 ./agent_read_config.lo: mibgroup/snmpv3/usmStats.h mibgroup/snmpv3/usmUser.h
@@ -543,7 +543,7 @@
 ./agent_registry.lo: mibgroup/ucd-snmp/extensible.h
 ./agent_registry.lo: mibgroup/ucd-snmp/errormib.h mibgroup/ucd-snmp/file.h
 ./agent_registry.lo: mibgroup/ucd-snmp/dlmod.h mibgroup/ucd-snmp/proxy.h
-./agent_registry.lo: mibgroup/ucd-snmp/logmatch.h 
+./agent_registry.lo: mibgroup/ucd-snmp/logmatch.h
 ./agent_registry.lo: mibgroup/snmpv3/snmpEngine.h
 ./agent_registry.lo: mibgroup/snmpv3/snmpMPDStats.h
 ./agent_registry.lo: mibgroup/snmpv3/usmStats.h mibgroup/snmpv3/usmUser.h
@@ -593,9 +593,9 @@
 ./agent_trap.lo: ../include/net-snmp/system/linux.h
 ./agent_trap.lo: ../include/net-snmp/system/sysv.h
 ./agent_trap.lo: ../include/net-snmp/system/generic.h
-./agent_trap.lo: ../include/net-snmp/machine/generic.h 
+./agent_trap.lo: ../include/net-snmp/machine/generic.h
 ./agent_trap.lo:  ../include/net-snmp/utilities.h
-./agent_trap.lo: ../include/net-snmp/types.h 
+./agent_trap.lo: ../include/net-snmp/types.h
 ./agent_trap.lo: ../include/net-snmp/definitions.h
 ./agent_trap.lo: ../include/net-snmp/library/snmp_api.h
 ./agent_trap.lo: ../include/net-snmp/library/asn1.h
@@ -673,7 +673,7 @@
 ./mib_modules.lo: ../include/net-snmp/system/linux.h
 ./mib_modules.lo: ../include/net-snmp/system/sysv.h
 ./mib_modules.lo: ../include/net-snmp/system/generic.h
-./mib_modules.lo: ../include/net-snmp/machine/generic.h 
+./mib_modules.lo: ../include/net-snmp/machine/generic.h
 ./mib_modules.lo: ../include/net-snmp/net-snmp-includes.h
 ./mib_modules.lo: ../include/net-snmp/definitions.h
 ./mib_modules.lo: ../include/net-snmp/types.h
@@ -784,7 +784,7 @@
 ./mib_modules.lo: mibgroup/ucd-snmp/loadave.h mibgroup/ucd-snmp/extensible.h
 ./mib_modules.lo: mibgroup/ucd-snmp/errormib.h mibgroup/ucd-snmp/file.h
 ./mib_modules.lo: mibgroup/ucd-snmp/dlmod.h mibgroup/ucd-snmp/proxy.h
-./mib_modules.lo: mibgroup/ucd-snmp/logmatch.h 
+./mib_modules.lo: mibgroup/ucd-snmp/logmatch.h
 ./mib_modules.lo: mibgroup/snmpv3/snmpEngine.h mibgroup/snmpv3/snmpMPDStats.h
 ./mib_modules.lo: mibgroup/snmpv3/usmStats.h mibgroup/snmpv3/usmUser.h
 ./mib_modules.lo: mibgroup/notification/snmpNotifyTable.h
@@ -926,7 +926,7 @@
 ./snmp_agent.lo: ../include/net-snmp/system/sysv.h
 ./snmp_agent.lo: ../include/net-snmp/system/generic.h
 ./snmp_agent.lo: ../include/net-snmp/machine/generic.h
-./snmp_agent.lo: ../include/net-snmp/net-snmp-includes.h 
+./snmp_agent.lo: ../include/net-snmp/net-snmp-includes.h
 ./snmp_agent.lo: ../include/net-snmp/definitions.h
 ./snmp_agent.lo: ../include/net-snmp/types.h
 ./snmp_agent.lo: ../include/net-snmp/library/snmp_api.h
@@ -1115,7 +1115,7 @@
 ./snmp_vars.lo: ../include/net-snmp/system/linux.h
 ./snmp_vars.lo: ../include/net-snmp/system/sysv.h
 ./snmp_vars.lo: ../include/net-snmp/system/generic.h
-./snmp_vars.lo: ../include/net-snmp/machine/generic.h 
+./snmp_vars.lo: ../include/net-snmp/machine/generic.h
 ./snmp_vars.lo: ../include/net-snmp/net-snmp-includes.h
 ./snmp_vars.lo: ../include/net-snmp/definitions.h ../include/net-snmp/types.h
 ./snmp_vars.lo: ../include/net-snmp/library/snmp_api.h
@@ -1224,7 +1224,7 @@
 ./snmp_vars.lo: mibgroup/ucd-snmp/loadave.h mibgroup/ucd-snmp/extensible.h
 ./snmp_vars.lo: mibgroup/ucd-snmp/errormib.h mibgroup/ucd-snmp/file.h
 ./snmp_vars.lo: mibgroup/ucd-snmp/dlmod.h mibgroup/ucd-snmp/proxy.h
-./snmp_vars.lo: mibgroup/ucd-snmp/logmatch.h 
+./snmp_vars.lo: mibgroup/ucd-snmp/logmatch.h
 ./snmp_vars.lo: mibgroup/snmpv3/snmpEngine.h mibgroup/snmpv3/snmpMPDStats.h
 ./snmp_vars.lo: mibgroup/snmpv3/usmStats.h mibgroup/snmpv3/usmUser.h
 ./snmp_vars.lo: mibgroup/notification/snmpNotifyTable.h
@@ -1268,7 +1268,7 @@
 ./snmpd.lo: ../include/net-snmp/system/linux.h
 ./snmpd.lo: ../include/net-snmp/system/sysv.h
 ./snmpd.lo: ../include/net-snmp/system/generic.h
-./snmpd.lo: ../include/net-snmp/machine/generic.h 
+./snmpd.lo: ../include/net-snmp/machine/generic.h
 ./snmpd.lo: ../include/net-snmp/net-snmp-includes.h
 ./snmpd.lo: ../include/net-snmp/definitions.h ../include/net-snmp/types.h
 ./snmpd.lo: ../include/net-snmp/library/snmp_api.h
@@ -1289,7 +1289,7 @@
 ./snmpd.lo: ../include/net-snmp/library/check_varbind.h
 ./snmpd.lo: ../include/net-snmp/library/container.h
 ./snmpd.lo: ../include/net-snmp/library/factory.h
-./snmpd.lo: ../include/net-snmp/library/snmp_logging.h 
+./snmpd.lo: ../include/net-snmp/library/snmp_logging.h
 ./snmpd.lo: ../include/net-snmp/library/container_binary_array.h
 ./snmpd.lo: ../include/net-snmp/library/container_list_ssll.h
 ./snmpd.lo: ../include/net-snmp/library/container_iterator.h
@@ -1377,7 +1377,7 @@
 ./snmpd.lo: mibgroup/ucd-snmp/loadave.h mibgroup/ucd-snmp/extensible.h
 ./snmpd.lo: mibgroup/ucd-snmp/errormib.h mibgroup/ucd-snmp/file.h
 ./snmpd.lo: mibgroup/ucd-snmp/dlmod.h mibgroup/ucd-snmp/proxy.h
-./snmpd.lo: mibgroup/ucd-snmp/logmatch.h 
+./snmpd.lo: mibgroup/ucd-snmp/logmatch.h
 ./snmpd.lo: mibgroup/snmpv3/snmpEngine.h mibgroup/snmpv3/snmpMPDStats.h
 ./snmpd.lo: mibgroup/snmpv3/usmStats.h mibgroup/snmpv3/usmUser.h
 ./snmpd.lo: mibgroup/notification/snmpNotifyTable.h

@@ -42,7 +42,7 @@ extern int daemon_mode;
 	}else{ \
 		printf("eocd(%s) " fmt " : %s\n", __FUNCTION__, ##args,strerror(errno)); \
 	}
-	
+
 #else
 
 #	define ASSERT(x)

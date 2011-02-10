@@ -5,9 +5,9 @@
 /**********************************************************************
  *
  *           Copyright 1996 by Carnegie Mellon University
- * 
+ *
  *                       All Rights Reserved
- * 
+ *
  * Permission to use, copy, modify, and distribute this software and its
  * documentation for any purpose and without fee is hereby granted,
  * provided that the above copyright notice appear in all copies and that
@@ -15,7 +15,7 @@
  * supporting documentation, and that the name of CMU not be
  * used in advertising or publicity pertaining to distribution of the
  * software without specific, written prior permission.
- * 
+ *
  * CMU DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
  * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
  * CMU BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
@@ -23,7 +23,7 @@
  * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
  * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
  * SOFTWARE.
- * 
+ *
  **********************************************************************/
 
 #include <net-snmp/net-snmp-config.h>
@@ -80,7 +80,7 @@
 const char     *SumFile = "Sum";
 
 /*
- * Information about the handled variables 
+ * Information about the handled variables
  */
 struct varInfo {
     char           *name;
@@ -201,17 +201,17 @@ wait_for_peak_start(int period, int peak)
     seconds = period * peak;
 
     /*
-     * Find the current time 
+     * Find the current time
      */
     gettimeofday(tv, (struct timezone *) 0);
 
     /*
-     * Create a tm struct from it 
+     * Create a tm struct from it
      */
     memcpy(&tm, localtime((time_t *) & tv->tv_sec), sizeof(tm));
 
     /*
-     * Calculate the next hour 
+     * Calculate the next hour
      */
     tm.tm_sec = 0;
     tm.tm_min = 0;
@@ -219,7 +219,7 @@ wait_for_peak_start(int period, int peak)
     SecondsAtNextHour = mktime(&tm);
 
     /*
-     * Now figure out the amount of time to sleep 
+     * Now figure out the amount of time to sleep
      */
     target = (SecondsAtNextHour - tv->tv_sec) % seconds;
 
@@ -347,7 +347,7 @@ wait_for_period(int period)
     }
     if (tv->tv_sec < 0) {
         /*
-         * ran out of time, schedule immediately 
+         * ran out of time, schedule immediately
          */
         tv->tv_sec = 0;
         tv->tv_usec = 0;
@@ -360,7 +360,7 @@ wait_for_period(int period)
             break;
         case -1:
             /*
-             * FALLTHRU 
+             * FALLTHRU
              */
         default:
             snmp_log_perror("select");
@@ -441,12 +441,12 @@ main(int argc, char *argv[])
     SOCK_STARTUP;
 
     /*
-     * open an SNMP session 
+     * open an SNMP session
      */
     ss = snmp_open(&session);
     if (ss == NULL) {
         /*
-         * diagnose snmp_open errors with the input netsnmp_session pointer 
+         * diagnose snmp_open errors with the input netsnmp_session pointer
          */
         snmp_sess_perror("snmpdelta", &session);
         SOCK_CLEANUP;
@@ -713,9 +713,9 @@ main(int argc, char *argv[])
                 }
 
                 /*
-                 * retry if the errored variable was successfully removed 
+                 * retry if the errored variable was successfully removed
                  */
-                if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+                if (!netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 					    NETSNMP_DS_APP_DONT_FIX_PDUS)) {
                     pdu = snmp_fix_pdu(response, SNMP_MSG_GET);
                     snmp_free_pdu(response);

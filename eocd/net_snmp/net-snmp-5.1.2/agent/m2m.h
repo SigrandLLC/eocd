@@ -8,7 +8,7 @@ struct get_req_state {
 };
 
 /*
- * values for type field in get_req_state 
+ * values for type field in get_req_state
  */
 #define ALARM_GET_REQ	1
 #define EVENT_GET_REQ	2
@@ -20,7 +20,7 @@ struct get_req_state {
 #define Export
 
 /*
- * values for EntryStatus 
+ * values for EntryStatus
  */
 #define ENTRY_ACTIVE		1
 #define ENTRY_NOTINSERVICE	2
@@ -30,12 +30,12 @@ struct get_req_state {
 #define ENTRY_DESTROY		6
 
 /*
- * maximum length for an OwnerString variable 
+ * maximum length for an OwnerString variable
  */
 #define MAX_OWNER_STR_LEN 128
 
 /*
- * maximum length for a description field 
+ * maximum length for a description field
  */
 #define MAX_DESCRIPTION_LEN 128
 

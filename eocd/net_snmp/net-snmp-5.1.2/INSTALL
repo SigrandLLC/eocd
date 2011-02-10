@@ -98,7 +98,7 @@ The simplest way to compile this package is:
      completes it prints a short message (also available in configure-summary)
      indicating what functionality will be available when compiled.
 
-  2. If necessary, edit include/net-snmp/net-snmp-config.h (see above).  
+  2. If necessary, edit include/net-snmp/net-snmp-config.h (see above).
 
   3. Type `make' to compile the package.
 
@@ -115,7 +115,7 @@ The simplest way to compile this package is:
 
   7. You can remove the application by typing `make uninstall'.
 
-There may be additional installation issues discussed in the 
+There may be additional installation issues discussed in the
 README's for various platforms such as README.solaris.
 
 

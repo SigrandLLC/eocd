@@ -88,7 +88,7 @@ open_agentx_session(netsnmp_session * session, netsnmp_pdu *pdu)
      * Be careful with fields: if these aren't zeroed, they will get free()d
      * more than once when the session is closed -- once in the main session,
      * and once in each subsession.  Basically, if it's not being used for
-     * some AgentX-specific purpose, it ought to be zeroed here. 
+     * some AgentX-specific purpose, it ought to be zeroed here.
      */
 
     sp->community = NULL;
@@ -151,7 +151,7 @@ close_agentx_session(netsnmp_session * session, int sessid)
                 netsnmp_remove_delegated_requests_for_session(subsession);
             }
         }
-                
+
         return AGENTX_ERR_NOERROR;
     }
 
@@ -429,7 +429,7 @@ agentx_notify(netsnmp_session * session, netsnmp_pdu *pdu)
         return AGENTX_ERR_PROCESSING_ERROR;
 
     /*
-     *  If sysUptime isn't the first varbind, don't worry.  
+     *  If sysUptime isn't the first varbind, don't worry.
      *     send_trap_vars() will add it if necessary.
      *
      *  Note that if this behaviour is altered, it will
@@ -466,7 +466,7 @@ handle_master_agentx_packet(int operation,
         DEBUGMSGTL(("agentx/master",
                     "transport disconnect on session %08p\n", session));
         /*
-         * Shut this session down gracefully.  
+         * Shut this session down gracefully.
          */
         close_agentx_session(session, -1);
         return 1;
@@ -477,7 +477,7 @@ handle_master_agentx_packet(int operation,
     }
 
     /*
-     * Okay, it's a NETSNMP_CALLBACK_OP_RECEIVED_MESSAGE op.  
+     * Okay, it's a NETSNMP_CALLBACK_OP_RECEIVED_MESSAGE op.
      */
 
     if (magic) {
@@ -488,7 +488,7 @@ handle_master_agentx_packet(int operation,
 
     DEBUGMSGTL(("agentx/master", "handle pdu (req=0x%x,trans=0x%x,sess=0x%x)\n",
                 pdu->reqid,pdu->transid, pdu->sessid));
-    
+
     switch (pdu->command) {
     case AGENTX_MSG_OPEN:
         asp->pdu->sessid = open_agentx_session(session, pdu);
@@ -537,7 +537,7 @@ handle_master_agentx_packet(int operation,
         break;
 
         /*
-         * TODO: Other admin packets 
+         * TODO: Other admin packets
          */
 
     case AGENTX_MSG_GET:
@@ -549,7 +549,7 @@ handle_master_agentx_packet(int operation,
     case AGENTX_MSG_CLEANUPSET:
     case AGENTX_MSG_RESPONSE:
         /*
-         * Shouldn't be handled here 
+         * Shouldn't be handled here
          */
         break;
 

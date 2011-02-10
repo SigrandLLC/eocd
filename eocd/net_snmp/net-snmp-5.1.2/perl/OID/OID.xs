@@ -30,7 +30,7 @@ constant(char *name, int len, int arg)
 }
 
 netsnmp_oid *
-nso_newarrayptr(oid *name, size_t name_len) 
+nso_newarrayptr(oid *name, size_t name_len)
 {
     netsnmp_oid *RETVAL;
     RETVAL = SNMP_MALLOC_TYPEDEF(netsnmp_oid);
@@ -87,7 +87,7 @@ nsop_DESTROY(oid1)
 	netsnmp_oid *oid1
     CODE:
 	free(oid1);
-        
+
 char *
 nsop_to_string(oid1)
     	netsnmp_oid *oid1
@@ -102,7 +102,7 @@ nsop_to_string(oid1)
                               (oid *) oid1->name, oid1->len);
             RETVAL = mystr;
         }
-                
+
     OUTPUT:
         RETVAL
 
@@ -126,7 +126,7 @@ nsop_append(oid1, string)
     oid name[MAX_OID_LEN];
     size_t name_len = MAX_OID_LEN;
     int i;
-    CODE: 
+    CODE:
     {
         if (!snmp_parse_oid(string, (oid *) name, &name_len)) {
             /* XXX */
@@ -146,7 +146,7 @@ nsop_append_oid(oid1, oid2)
     netsnmp_oid *oid2;
     PREINIT:
     int i;
-    CODE: 
+    CODE:
     {
         if (oid1->len + oid2->len > MAX_OID_LEN) {
             /* XXX: illegal */
@@ -160,13 +160,13 @@ nsop_append_oid(oid1, oid2)
 int
 nsop_length(oid1)
     netsnmp_oid *oid1;
-    CODE: 
+    CODE:
     {
         RETVAL = oid1->len;
     }
     OUTPUT:
     RETVAL
-    
+
 netsnmp_oid *
 nsop_clone(oid1)
     netsnmp_oid *oid1;
@@ -179,4 +179,4 @@ nsop_clone(oid1)
     }
 OUTPUT:
     RETVAL
-        
+

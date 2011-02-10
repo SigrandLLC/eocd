@@ -68,16 +68,16 @@ int main()
     el->i = 70;
     el->f = 4.0;
     tbl.add(el);
-    
+
     tbl.init_trace();
     span_prof_elem *el;
-     
+
     while( el = (span_prof_elem *)tbl.next_elem() ){
 	printf("%s: %d %f\n",el->name,el->i,el->f);
     }
-	
+
 /*
-    //print all items	
+    //print all items
     printf("Table content rewerse:\n");
     for(i=len-1; i>=0;i--){
 	sprintf(name,"item%d",i);
@@ -90,12 +90,12 @@ int main()
     if( el = (span_prof_elem*)tbl.find(name,strlen(name)) )
         printf("%s: %d %f\n",el->name,el->i,el->f);
 
-    
+
     sprintf(name,"bacde");
     if( el = (span_prof_elem*)tbl.find(name,strlen(name)) )
         printf("%s: %d %f\n",el->name,el->i,el->f);
-    
-    
+
+
     sprintf(name,"cabde");
     if( el = (span_prof_elem*)tbl.find(name,strlen(name)) )
         printf("%s: %d %f\n",el->name,el->i,el->f);
@@ -112,7 +112,7 @@ int main()
     	    printf("%s: %d %f\n",el->name,el->i,el->f);
     }
 */
-    printf("Done\n");    
+    printf("Done\n");
 }
 }
 

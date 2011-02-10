@@ -36,9 +36,9 @@
 #include "sysORTable.h"
 
 #ifdef hpux11
-#define	UDPTABLE_ENTRY_TYPE	mib_udpLsnEnt 
-#define	UDPTABLE_LOCALADDRESS	LocalAddress 
-#define	UDPTABLE_LOCALPORT	LocalPort 
+#define	UDPTABLE_ENTRY_TYPE	mib_udpLsnEnt
+#define	UDPTABLE_LOCALADDRESS	LocalAddress
+#define	UDPTABLE_LOCALPORT	LocalPort
 #define	UDPTABLE_IS_TABLE
 #else
 
@@ -49,8 +49,8 @@ struct netsnmp_udpEntry_s {
     netsnmp_udpEntry *inp_next;
 };
 #define	UDPTABLE_ENTRY_TYPE	netsnmp_udpEntry
-#define	UDPTABLE_LOCALADDRESS	entry.udpLocalAddress 
-#define	UDPTABLE_LOCALPORT	entry.udpLocalPort 
+#define	UDPTABLE_LOCALADDRESS	entry.udpLocalAddress
+#define	UDPTABLE_LOCALPORT	entry.udpLocalPort
 #define	UDPTABLE_IS_LINKED_LIST
 #else
 
@@ -58,7 +58,7 @@ struct netsnmp_udpEntry_s {
 #include <iphlpapi.h>
 #define	UDPTABLE_ENTRY_TYPE	MIB_UDPROW		/* ??? */
 #define	UDPTABLE_LOCALADDRESS	dwLocalAddr
-#define	UDPTABLE_LOCALPORT	dwLocalPort 
+#define	UDPTABLE_LOCALPORT	dwLocalPort
 #define	UDPTABLE_IS_TABLE
 #else			/* everything else */
 
@@ -73,12 +73,12 @@ struct netsnmp_inpcb_s {
     int             state;
     netsnmp_inpcb  *inp_next;
 };
-#define	UDPTABLE_ENTRY_TYPE	netsnmp_inpcb 
-#define	UDPTABLE_LOCALADDRESS	pcb.inp_laddr.s_addr 
+#define	UDPTABLE_ENTRY_TYPE	netsnmp_inpcb
+#define	UDPTABLE_LOCALADDRESS	pcb.inp_laddr.s_addr
 #define	UDPTABLE_LOCALPORT	pcb.inp_lport
 #else
-#define	UDPTABLE_ENTRY_TYPE	struct inpcb 
-#define	UDPTABLE_LOCALADDRESS	inp_laddr.s_addr 
+#define	UDPTABLE_ENTRY_TYPE	struct inpcb
+#define	UDPTABLE_LOCALADDRESS	inp_laddr.s_addr
 #define	UDPTABLE_LOCALPORT	inp_lport
 #endif
 #define	UDPTABLE_IS_LINKED_LIST
@@ -285,7 +285,7 @@ udpTable_next_entry( void **loop_context,
 #else
     snmp_set_var_value(index, (u_char *)&udp_head[i].UDPTABLE_LOCALADDRESS,
                                   sizeof(udp_head[i].UDPTABLE_LOCALADDRESS));
-#endif 
+#endif
     port = ntohs((u_short)udp_head[i].UDPTABLE_LOCALPORT);
     snmp_set_var_value(index->next_variable,
                                (u_char*)&port, sizeof(port));
@@ -457,7 +457,7 @@ udpTable_load(netsnmp_cache *cache, void *vmagic)
     }
 
     /*
-     * scan proc-file and build up a linked list 
+     * scan proc-file and build up a linked list
      * This will actually be built up in reverse,
      *   but since the entries are unsorted, that doesn't matter.
      */
@@ -563,14 +563,14 @@ udpTable_load(netsnmp_cache *cache, void *vmagic)
     DWORD         status = NO_ERROR;
 
     /*
-     * query for the buffer size needed 
+     * query for the buffer size needed
      */
     status = GetUdpTable(pUdpTable, &dwActualSize, TRUE);
     if (status == ERROR_INSUFFICIENT_BUFFER) {
         pUdpTable = (PMIB_UDPTABLE) malloc(dwActualSize);
         if (pUdpTable != NULL) {
             /*
-             * Get the sorted UDP table 
+             * Get the sorted UDP table
              */
             status = GetUdpTable(pUdpTable, &dwActualSize, TRUE);
         }
@@ -663,7 +663,7 @@ udpTable_load(netsnmp_cache *cache, void *vmagic)
      */
     entry  = table.inpt_queue.cqh_first;
     while (entry) {
-   
+
         nnew = SNMP_MALLOC_TYPEDEF(struct inpcb);
         if (!nnew)
             break;
@@ -705,7 +705,7 @@ udpTable_load(netsnmp_cache *cache, void *vmagic)
      */
     entry  = udp_inpcb.INP_NEXT_SYMBOL;
     while (entry) {
-   
+
         nnew = SNMP_MALLOC_TYPEDEF(struct inpcb);
         if (!nnew)
             break;

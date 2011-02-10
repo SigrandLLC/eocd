@@ -3,7 +3,7 @@
 * README.build.win32
 *
 * Authors: Alex Burger <alex_b@users.sourceforge.net>
-*          
+*
 *
 ***************************************************************************
 
@@ -45,7 +45,7 @@ Note:  All shell steps are using the Window CMD prompt unless otherwise stated.
 
 1.  Extract source.  The location will be references as (source dir)
 
-2.  Delete c:\usr if it exists and rename Net-SNMP.dll in your %windir% if you 
+2.  Delete c:\usr if it exists and rename Net-SNMP.dll in your %windir% if you
     have it already (to ensure Perl tests are using the compiled DLL)
 
 3.  Apply any required patches
@@ -58,16 +58,16 @@ Note:  All shell steps are using the Window CMD prompt unless otherwise stated.
 
     Net-SNMP build and install options
     ==================================
-    
+
     1. OpenSSL support:      disabled
     2. Platform SDK support: enabled
-    
+
     3. Install path:         c:/usr
     4. Install after build:  enabled
-    
+
     5. Perl modules:         enabled
     6. Install perl modules: disabled
-    
+
     7. Quiet build (logged): enabled
     8. Debug mode:           disabled
     9. IPv6 transports:      disabled
@@ -96,8 +96,8 @@ Creating the Perl package
 
 8.  ren Bundle-NetSNMP.ppd Net-SNMP.ppd
 
-9.  Modify Net-SNMP.ppd to look like the following.  Change the 
-    VERSION="x,x,x,x" line to the correct values.  Do NOT change 
+9.  Modify Net-SNMP.ppd to look like the following.  Change the
+    VERSION="x,x,x,x" line to the correct values.  Do NOT change
     * lines in the original file.
 
 <SOFTPKG NAME="Net-SNMP" VERSION="5,1,1,0">
@@ -148,7 +148,7 @@ Requirements
    -man2html3.0.1.tar.gz (http://search.cpan.org/~ehood/man2html3.0.1/)
     Note:  Most Linux distributions come with man2html as part of the man rpm
            package which is not the same as man2html from man2html3.0.1.tar.gz.
-           All that is needed from man2html3.0.1.tar.gz is the man2html script.  
+           All that is needed from man2html3.0.1.tar.gz is the man2html script.
            You do not need to do a complete install (make/make install) but you
            do need to make sure the script is configured correctly by setting the
            man command line switches etc for the OS from inside of the script.
@@ -174,7 +174,7 @@ Note:  A temporary location of /tmp/net-snmp is used.
 
     rm -R -f /tmp/net-snmp
 
-5.  Build Net-SNMP man pages: 
+5.  Build Net-SNMP man pages:
 
     ./configure
     make sedscript
@@ -190,8 +190,8 @@ Note:  A temporary location of /tmp/net-snmp is used.
     cd (source dir)/win32/dist/scripts
     chmod +x *
 
-8.  Edit these files and make sure the paths are correct in the OPTIONS 
-    section.  Also ensure the list of README files and Perl modules 
+8.  Edit these files and make sure the paths are correct in the OPTIONS
+    section.  Also ensure the list of README files and Perl modules
     are correct in readme2html and poddir2html.
 
     mandir2html
@@ -200,8 +200,8 @@ Note:  A temporary location of /tmp/net-snmp is used.
 
     Note:  mandir2html will process ALL man pages in c:\temp\net-snmp while
            readme2html and poddir2html will only process files listed in the
-           script.  If new man pages are added or removed, the Table of 
-           Contents (toc.hhc) and project file (Net-SNMP.hhp) need to be 
+           script.  If new man pages are added or removed, the Table of
+           Contents (toc.hhc) and project file (Net-SNMP.hhp) need to be
            updated by hand.
 
 9.  Run each script to generate the .html files:
@@ -213,8 +213,8 @@ Note:  A temporary location of /tmp/net-snmp is used.
     Note:  There will be many warnings from tidy which can be ignored.
 
 10. Verify each converted file to ensure all the links are correct.  The files
-    are located in /tmp/net-snmp/html by default.  In some instances, URLs may be 
-    split across two lines such as the Variables link at the bottom of 
+    are located in /tmp/net-snmp/html by default.  In some instances, URLs may be
+    split across two lines such as the Variables link at the bottom of
     man8-snmptrapd.8.html.
 
     You may have to bold the commands listed in the SYNOPSIS section for:
@@ -230,7 +230,7 @@ Note:  A temporary location of /tmp/net-snmp is used.
 
     cd (source dir)/win32/dist/scripts
     ./txt2html ../../EXAMPLE.conf.win32 | tidy > /tmp/net-snmp/html/EXAMPLE.conf.win32.html
-    
+
 
 Build Net-SNMP.chm
 ------------------
@@ -259,7 +259,7 @@ Note:  A temporary location of c:\temp\net-snmp is used.
 3.  New configuration options may be available in the new release of
     Net-SNMP, so the *.conf.win32.html files should be updated.
 
-    Create a text file with all the configuration options for snmpd and 
+    Create a text file with all the configuration options for snmpd and
     snmptrapd using:
 
     cd win32\bin\release (folder of *Windows* compiled Net-SNMP)
@@ -271,7 +271,7 @@ Note:  A temporary location of c:\temp\net-snmp is used.
     c:\temp\net-snmp\html\snmp.conf.win32.html
     c:\temp\net-snmp\html\snmpd.conf.win32.html
     c:\temp\net-snmp\html\snmptrapd.conf.win32.html
- 
+
     Only add the relevent section to each file from the .options files
     created above, ensure the font is set to fixed width.
 
@@ -282,7 +282,7 @@ Note:  A temporary location of c:\temp\net-snmp is used.
     tidy -asxhtml -m c:\temp\net-snmp\html\snmpd.conf.win32.html
     tidy -asxhtml -m c:\temp\net-snmp\html\snmp.conf.win32.html
 
-4.  Edit c:\temp\net-snmp\html\Net-SNMP.hhp and update the version for the 
+4.  Edit c:\temp\net-snmp\html\Net-SNMP.hhp and update the version for the
     'Title' variable.
 
 5.  Run HTML Workshop
@@ -319,7 +319,7 @@ Requirements
  -Windows
  -Nullsoft Scriptable Install System 2.0 - http://nsis.sourceforge.net/home/
 
-1.  Complete the three sections above:  'Compiling binaries', 'Compiling 
+1.  Complete the three sections above:  'Compiling binaries', 'Compiling
     HTMLHelp file' and 'Combining the binaries and HTMLHelp files'.  Net-SNMP
     should be located in c:\usr.
 
@@ -354,7 +354,7 @@ Requirements
     The generated filename would be: net-snmp-5.1.2-1.win32.exe
 
     PRODUCT_EXE_VERSION is usually 1 unless the binary package is re-released
-    due to packaging issues.  For pre releases, include the pre-release version 
+    due to packaging issues.  For pre releases, include the pre-release version
     in PRODUCT_REVISION.   For example, for 5.1.2 pre2 use:
 
     PRODUCT_MAJ_VERSION "5"
@@ -374,7 +374,7 @@ Requirements
 
 8.  Select c:\usr\net-snmp.nsi
 
-9.  You should now have a c:\usr\Net-SNMP-x.x.x-x.exe binary installer 
+9.  You should now have a c:\usr\Net-SNMP-x.x.x-x.exe binary installer
     package
 
 10.  Test the package

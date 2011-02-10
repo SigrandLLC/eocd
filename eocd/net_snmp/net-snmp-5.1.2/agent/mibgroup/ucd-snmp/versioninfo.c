@@ -38,7 +38,7 @@ init_versioninfo(void)
 
     /*
      * define the structure we're going to ask the agent to register our
-     * information at 
+     * information at
      */
     struct variable2 extensible_version_variables[] = {
         {MIBINDEX, ASN_INTEGER, RONLY, var_extensible_version, 1,
@@ -67,13 +67,13 @@ init_versioninfo(void)
 
     /*
      * Define the OID pointer to the top of the mib tree that we're
-     * registering underneath 
+     * registering underneath
      */
     oid             version_variables_oid[] =
         { UCDAVIS_MIB, VERSIONMIBNUM };
 
     /*
-     * register ourselves with the agent to handle our mib tree 
+     * register ourselves with the agent to handle our mib tree
      */
     REGISTER_MIB("ucd-snmp/versioninfo", extensible_version_variables,
                  variable2, version_variables_oid);

@@ -21,7 +21,7 @@
 #endif
 
 /*
- * #include ... 
+ * #include ...
  */
 
 extern char    *optarg;

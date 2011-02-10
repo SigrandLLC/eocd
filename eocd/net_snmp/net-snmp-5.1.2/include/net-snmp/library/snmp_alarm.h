@@ -9,7 +9,7 @@ extern          "C" {
                                          void *clientarg);
 
     /*
-     * alarm flags 
+     * alarm flags
      */
 #define SA_REPEAT 0x01          /* keep repeating every X seconds */
 
@@ -25,7 +25,7 @@ extern          "C" {
     };
 
     /*
-     * the ones you should need 
+     * the ones you should need
      */
     void            snmp_alarm_unregister(unsigned int clientreg);
     void	    snmp_alarm_unregister_all(void);
@@ -41,7 +41,7 @@ extern          "C" {
 
 
     /*
-     * the ones you shouldn't 
+     * the ones you shouldn't
      */
     void            init_snmp_alarm(void);
     int             init_alarm_post_config(int majorid, int minorid,

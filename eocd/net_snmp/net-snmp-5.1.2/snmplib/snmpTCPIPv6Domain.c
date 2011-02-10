@@ -77,7 +77,7 @@ static netsnmp_tdomain tcp6Domain;
 
 /*
  * Return a string representing the address in data, or else the "far end"
- * address if data is NULL.  
+ * address if data is NULL.
  */
 
 static char *
@@ -106,9 +106,9 @@ netsnmp_tcp6_fmtaddr(netsnmp_transport *t, void *data, int len)
 }
 
 /*
- * You can write something into opaque that will subsequently get passed back 
+ * You can write something into opaque that will subsequently get passed back
  * to your send function if you like.  For instance, you might want to
- * remember where a PDU came from, so that you can send a reply there...  
+ * remember where a PDU came from, so that you can send a reply there...
  */
 
 static int
@@ -193,7 +193,7 @@ netsnmp_tcp6_accept(netsnmp_transport *t)
 
     if (farend == NULL) {
         /*
-         * Indicate that the acceptance of this socket failed.  
+         * Indicate that the acceptance of this socket failed.
          */
         DEBUGMSGTL(("netsnmp_tcp6", "accept: malloc failed\n"));
         return -1;
@@ -220,7 +220,7 @@ netsnmp_tcp6_accept(netsnmp_transport *t)
         free(string);
 
         /*
-         * Try to make the new socket blocking.  
+         * Try to make the new socket blocking.
          */
 
 #ifdef WIN32
@@ -245,7 +245,7 @@ netsnmp_tcp6_accept(netsnmp_transport *t)
 /*
  * Open a TCP/IPv6-based transport for SNMP.  Local is TRUE if addr is the
  * local address to bind to (i.e. this is a server-type session); otherwise
- * addr is the remote address to send things to.  
+ * addr is the remote address to send things to.
  */
 
 netsnmp_transport *
@@ -314,7 +314,7 @@ netsnmp_tcp6_transport(struct sockaddr_in6 *addr, int local)
         t->local_length = 18;
 
         /*
-         * We should set SO_REUSEADDR too.  
+         * We should set SO_REUSEADDR too.
          */
 
         setsockopt(t->sock, SOL_SOCKET, SO_REUSEADDR, (void *)&opt, sizeof(opt));
@@ -344,7 +344,7 @@ netsnmp_tcp6_transport(struct sockaddr_in6 *addr, int local)
 #endif
 
         /*
-         * Now sit here and wait for connections to arrive.  
+         * Now sit here and wait for connections to arrive.
          */
 
         rc = listen(t->sock, NETSNMP_STREAM_QUEUE_LEN);
@@ -386,7 +386,7 @@ netsnmp_tcp6_transport(struct sockaddr_in6 *addr, int local)
 
     /*
      * Message size is not limited by this transport (hence msgMaxSize
-     * is equal to the maximum legal size of an SNMP message).  
+     * is equal to the maximum legal size of an SNMP message).
      */
 
     t->msgMaxSize = 0x7fffffff;
@@ -416,11 +416,11 @@ netsnmp_tcp6_create_tstring(const char *string, int local)
 
 /*
  * See:
- * 
+ *
  * http://www.ietf.org/internet-drafts/draft-ietf-ops-taddress-mib-01.txt
- * 
+ *
  * (or newer equivalent) for details of the TC which we are using for
- * the mapping here.  
+ * the mapping here.
  */
 
 netsnmp_transport *

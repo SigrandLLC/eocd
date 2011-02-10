@@ -21,7 +21,7 @@
 # Usage mess.  (No, it works.)
 #
 
-usage() { 
+usage() {
     cat << BLIK
 
 Usage: `basename $0` [-a] [-S SLEEPTIME] [-h] [-i] [-v] [-V] [-s] [-XM]
@@ -51,7 +51,7 @@ SNMP_PREFER_NEAR_MIBS=1	## prefer MIB files found in source hierarchy
 export SNMP_PREFER_NEAR_MIBS
 
 ### Check for the configuration script.
-##if [ ! -s "${SNMP_BASEDIR}/TESTCONF.sh"  ] ; then 
+##if [ ! -s "${SNMP_BASEDIR}/TESTCONF.sh"  ] ; then
 ##  echo "No TESTCONF.sh in \"$SNMP_BASEDIR\" ; exiting"
 ##  exit 0
 ##fi
@@ -199,7 +199,7 @@ fi
 
 for needed in snmpd snmpget snmpgetnext; do
     $WHICH $needed > /dev/null 2>&1
-    if [ $? -ne 0  ] ; then 
+    if [ $? -ne 0  ] ; then
         echo "No $needed found. Exiting"
         exit 1
     fi
@@ -251,7 +251,7 @@ fi ## SNMP_PREFER_NEAR_MIBS
 #
 cd ./tests
 
-#------------------------------------ -o- 
+#------------------------------------ -o-
 # Globals.
 #
 PROGRAM=
@@ -357,7 +357,7 @@ for testfile in $do_tests; do
 	    dothisone=no
 	fi
     fi
-  
+
     if [ "x$dothisone" = "xyes" ]; then
         if [ $SH_DEBUG = 1 ] ; then
 	    sh -x eval_onescript.sh $testfile $num "no"

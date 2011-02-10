@@ -104,12 +104,12 @@ public:
 		_cnt = 0;
 	}
 	sens_events(time_t start){
-		_start = start; 
+		_start = start;
 		_end = 0;
 		_cnt = 1;
 	}
 
-	
+
 	int event_start(time_t start)
 	{
 		printf("start event: %s\n",printtime(start));
@@ -126,7 +126,7 @@ public:
 	}
 	bool event_colsed(){
 		return (_end) > 0 ? true : false;
-	}	
+	}
 	bool related_event(time_t start){
 		if( _end ){
 			if( (start-_end) < 2*60 && (_start - _end)< 15*60 &&
@@ -137,7 +137,7 @@ public:
 		}
 		return true;
 	}
-	
+
 	void event_add(time_t start){
 		printf("add event: %s\n",printtime(start));
 		if( _end ){
@@ -155,12 +155,12 @@ public:
 int main()
 {
 	EOC_ring_container<sens_events> sens(100);
-	time_t times[][2] = { {1,0}, {1+1*60,1+1.5*60}, {1 + 2*60,1 + 2.5*60}, {1 + 10*60,1 + 10.5*60}, {1+40*60,1+40.5*60}, 
+	time_t times[][2] = { {1,0}, {1+1*60,1+1.5*60}, {1 + 2*60,1 + 2.5*60}, {1 + 10*60,1 + 10.5*60}, {1+40*60,1+40.5*60},
 			{1 + 41*60,1 + 41.5*60}, {1+44*60,1*50*60} };
 
 	int times_size = sizeof(times)/(sizeof(time_t)*2);
 
-	
+
 	// 1st event
 	for( int i=0;i<times_size; i++){
 		if( !sens[0]->event_started() ){

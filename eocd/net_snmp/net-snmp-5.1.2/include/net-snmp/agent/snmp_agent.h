@@ -34,13 +34,13 @@ extern          "C" {
 
     /*
      * If non-zero, causes the addresses of peers to be logged when receptions
-     * occur.  
+     * occur.
      */
 
     extern int      log_addresses;
 
     /*
-     * How many ticks since we last aged the address cache entries.  
+     * How many ticks since we last aged the address cache entries.
      */
 
     extern int      lastAddrAge;
@@ -59,7 +59,7 @@ extern          "C" {
 
 	/**
 	 * can be used to pass information on a per-request basis from a
-	 * helper to the later handlers 
+	 * helper to the later handlers
 	 */
         netsnmp_data_list *parent_data;
 
@@ -80,7 +80,7 @@ extern          "C" {
         int             status;
  	/** index in original pdu */
         int             index;
- 
+
        /** get-bulk */
         int             repeat;
         int             orig_repeat;
@@ -97,7 +97,7 @@ extern          "C" {
         void           *stateRef;
 
         /*
-         * don't use yet: 
+         * don't use yet:
          */
         void          **oldData;
         int             setCleanupFlags;
@@ -163,7 +163,7 @@ extern          "C" {
         struct netsnmp_agent_session_s *asp;    /* may not be needed */
         /*
          * can be used to pass information on a per-pdu basis from a
-         * helper to the later handlers 
+         * helper to the later handlers
          */
         netsnmp_data_list *agent_data;
     } netsnmp_agent_request_info;
@@ -188,7 +188,7 @@ extern          "C" {
         struct netsnmp_agent_session_s *next;
 
         /*
-         * new API pointers 
+         * new API pointers
          */
         netsnmp_agent_request_info *reqinfo;
         netsnmp_request_info *requests;
@@ -201,7 +201,7 @@ extern          "C" {
     } netsnmp_agent_session;
 
     /*
-     * Address cache handling functions.  
+     * Address cache handling functions.
      */
 
     void            netsnmp_addrcache_initialise(void);
@@ -209,7 +209,7 @@ extern          "C" {
 
 
     /*
-     * config file parsing routines 
+     * config file parsing routines
      */
     int             handle_snmp_packet(int, netsnmp_session *, int,
                                        netsnmp_pdu *, void *);
@@ -217,11 +217,11 @@ extern          "C" {
     netsnmp_agent_session *init_agent_snmp_session(netsnmp_session *,
                                                    netsnmp_pdu *);
     void            free_agent_snmp_session(netsnmp_agent_session *);
-    void           
+    void
         netsnmp_remove_and_free_agent_snmp_session(netsnmp_agent_session
                                                    *asp);
 #ifdef SNMP_NEED_REQUEST_LIST
-    void           
+    void
         netsnmp_free_agent_snmp_session_by_session(netsnmp_session * sess,
                                                    void (*free_request)
                                                    (netsnmp_request_list
@@ -244,7 +244,7 @@ extern          "C" {
     int
         netsnmp_request_set_error_all(netsnmp_request_info *requests,
                                        int error_value);
-    
+
     /** deprecated, use netsnmp_request_set_error instead */
     int             netsnmp_set_request_error(netsnmp_agent_request_info
                                               *reqinfo,
@@ -270,7 +270,7 @@ extern          "C" {
     int netsnmp_remove_delegated_requests_for_session(netsnmp_session *sess);
 
     /*
-     * Register and de-register agent NSAPs.  
+     * Register and de-register agent NSAPs.
      */
 
     struct netsnmp_transport_s;
@@ -292,7 +292,7 @@ extern          "C" {
 
     NETSNMP_INLINE void
            netsnmp_free_agent_data_sets(netsnmp_agent_request_info *agent);
-    NETSNMP_INLINE void    
+    NETSNMP_INLINE void
         netsnmp_free_agent_request_info(netsnmp_agent_request_info *ari);
 
 #ifdef __cplusplus

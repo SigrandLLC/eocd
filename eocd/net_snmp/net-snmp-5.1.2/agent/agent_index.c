@@ -76,7 +76,7 @@ extern netsnmp_session *main_session;
 
 /*
  * The caller is responsible for free()ing the memory returned by
- * this function.  
+ * this function.
  */
 
 char           *
@@ -131,7 +131,7 @@ register_int_index(oid * name, size_t name_len, int val)
 
 /*
  * The caller is responsible for free()ing the memory returned by
- * this function.  
+ * this function.
  */
 
 netsnmp_variable_list *
@@ -154,7 +154,7 @@ register_oid_index(oid * name, size_t name_len,
 
 /*
  * The caller is responsible for free()ing the memory returned by
- * this function.  
+ * this function.
  */
 
 netsnmp_variable_list *
@@ -171,13 +171,13 @@ register_index(netsnmp_variable_list * varbind, int flags,
     DEBUGMSG(("register_index", "for session %08p\n", ss));
 
 #if defined(USING_AGENTX_SUBAGENT_MODULE) && !defined(TESTING)
-    if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+    if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 			       NETSNMP_DS_AGENT_ROLE) == SUB_AGENT) {
         return (agentx_register_index(ss, varbind, flags));
     }
 #endif
     /*
-     * Look for the requested OID entry 
+     * Look for the requested OID entry
      */
     prev_oid_ptr = NULL;
     prev_idx_ptr = NULL;
@@ -192,7 +192,7 @@ register_index(netsnmp_variable_list * varbind, int flags,
     }
 
     /*
-     * Found the OID - now look at the registered indices 
+     * Found the OID - now look at the registered indices
      */
     if (res == 0 && idxptr) {
         if (varbind->type != idxptr->varbind->type)
@@ -253,13 +253,13 @@ register_index(netsnmp_variable_list * varbind, int flags,
             if (res2 == 0) {
                 if (idxptr2->allocated) {
                     /*
-                     * No good: the index is in use.  
+                     * No good: the index is in use.
                      */
                     return NULL;
                 } else {
                     /*
                      * Okay, it's unallocated, we can just claim ownership
-                     * here.  
+                     * here.
                      */
                     if ((rv =
                          snmp_clone_varbind(idxptr2->varbind)) != NULL) {
@@ -274,7 +274,7 @@ register_index(netsnmp_variable_list * varbind, int flags,
 
     /*
      * OK - we've now located where the new entry needs to
-     *      be fitted into the index registry tree          
+     *      be fitted into the index registry tree
      * To recap:
      *      'prev_oid_ptr' points to the head of the OID index
      *          list prior to this one.  If this is null, then
@@ -313,7 +313,7 @@ register_index(netsnmp_variable_list * varbind, int flags,
                                        varbind->val.string,
                                        varbind->val_len)) {
         /*
-         * if (snmp_clone_var( varbind, new_index->varbind ) != 0 ) 
+         * if (snmp_clone_var( varbind, new_index->varbind ) != 0 )
          */
         free(new_index);
         return NULL;
@@ -396,7 +396,7 @@ register_index(netsnmp_variable_list * varbind, int flags,
                         (varbind->name_length + 1) * sizeof(oid);
                 } else {
                     /*
-                     * Otherwise use '.1.1.1.1...' 
+                     * Otherwise use '.1.1.1.1...'
                      */
                     i = 40 / sizeof(oid);
                     if (i > 4)
@@ -415,7 +415,7 @@ register_index(netsnmp_variable_list * varbind, int flags,
     }
 
     /*
-     * Try to duplicate the new varbind for return.  
+     * Try to duplicate the new varbind for return.
      */
 
     if ((rv = snmp_clone_varbind(new_index->varbind)) == NULL) {
@@ -498,13 +498,13 @@ unregister_index(netsnmp_variable_list * varbind, int remember,
     int             res, res2, i;
 
 #if defined(USING_AGENTX_SUBAGENT_MODULE) && !defined(TESTING)
-    if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+    if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID,
 			       NETSNMP_DS_AGENT_ROLE) == SUB_AGENT) {
         return (agentx_unregister_index(ss, varbind));
     }
 #endif
     /*
-     * Look for the requested OID entry 
+     * Look for the requested OID entry
      */
     prev_oid_ptr = NULL;
     prev_idx_ptr = NULL;

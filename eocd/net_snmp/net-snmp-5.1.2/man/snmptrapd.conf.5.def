@@ -44,7 +44,7 @@ should be the system.sysUpTime.0 OID, and the second should be
 the ...snmpTrap.snmpTrapOID.0 OID.  The remainder of the OIDs, with the
 possible exception of the last one, are the variable bindings
 contained within the trap.  For SNMPv1 traps, the very last OID will
-be the ...snmpTrap.snmpTrapEnterprise OID and its value.  Essentially, 
+be the ...snmpTrap.snmpTrapEnterprise OID and its value.  Essentially,
 SNMPv1 traps have been converted to the SNMPv2 trap PDU type by the
 method described in the SNMPv1/SNMPv2/SNMPv3 coexistence document (RFC2576).
 .br
@@ -61,11 +61,11 @@ traphandle /usr/bin/perl BINDIR/traptoemail -s mysmtp.somewhere.com -f admin@som
 Turns off the support for the NOTIFICATION-LOG-MIB and thus doesn't
 retain logged traps.  Normally the snmptrapd program keeps a certain
 number of traps around in memory so they can be retrieved via querying
-the nlmLogTable and nlmLogvariableTable tables.  
+the nlmLogTable and nlmLogvariableTable tables.
 See the snmptrapd manual page and the
 NOTIFICATION-LOG-MIB for details.
 .IP "createUser username (MD5|SHA) authpassphrase [DES]"
-See the 
+See the
 .I snmpd.conf(5)
 manual page for a description of how to create SNMPv3 users.  It's
 roughly the same, but the file name changes to snmptrapd.conf from

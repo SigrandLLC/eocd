@@ -64,7 +64,7 @@ static netsnmp_tdomain udpDomain;
 
 /*
  * Return a string representing the address in data, or else the "far end"
- * address if data is NULL.  
+ * address if data is NULL.
  */
 
 static char *
@@ -85,7 +85,7 @@ netsnmp_udp_fmtaddr(netsnmp_transport *t, void *data, int len)
         /*
          * Here we just print the IP address of the peer for compatibility
          * purposes.  It would be nice if we could include the port number and
-         * some indication of the domain (c.f. AAL5PVC).  
+         * some indication of the domain (c.f. AAL5PVC).
          */
 
         sprintf(tmp, "%s", inet_ntoa(to->sin_addr));
@@ -96,9 +96,9 @@ netsnmp_udp_fmtaddr(netsnmp_transport *t, void *data, int len)
 
 
 /*
- * You can write something into opaque that will subsequently get passed back 
+ * You can write something into opaque that will subsequently get passed back
  * to your send function if you like.  For instance, you might want to
- * remember where a PDU came from, so that you can send a reply there...  
+ * remember where a PDU came from, so that you can send a reply there...
  */
 
 static int
@@ -196,8 +196,8 @@ netsnmp_udp_close(netsnmp_transport *t)
 
 /*
  * Open a UDP-based transport for SNMP.  Local is TRUE if addr is the local
- * address to bind to (i.e. this is a server-type session); otherwise addr is 
- * the remote address to send things to.  
+ * address to bind to (i.e. this is a server-type session); otherwise addr is
+ * the remote address to send things to.
  */
 
 netsnmp_transport *
@@ -217,7 +217,7 @@ netsnmp_udp_transport(struct sockaddr_in *addr, int local)
         return NULL;
     }
 
-    string = netsnmp_udp_fmtaddr(NULL, (void *)addr, 
+    string = netsnmp_udp_fmtaddr(NULL, (void *)addr,
 				 sizeof(struct sockaddr_in));
     DEBUGMSGTL(("netsnmp_udp", "open %s %s\n", local ? "local" : "remote",
                 string));
@@ -256,7 +256,7 @@ netsnmp_udp_transport(struct sockaddr_in *addr, int local)
      * Try to set the send and receive buffers to a reasonably large value, so
      * that we can send and receive big PDUs (defaults to 8192 bytes (!) on
      * Solaris, for instance).  Don't worry too much about errors -- just
-     * plough on regardless.  
+     * plough on regardless.
      */
 
 #ifdef  SO_SNDBUF
@@ -338,7 +338,7 @@ netsnmp_udp_transport(struct sockaddr_in *addr, int local)
     }
 
     /*
-     * 16-bit length field, 8 byte UDP header, 20 byte IPv4 header  
+     * 16-bit length field, 8 byte UDP header, 20 byte IPv4 header
      */
 
     t->msgMaxSize = 0xffff - 8 - 20;
@@ -371,9 +371,9 @@ netsnmp_sockaddr_in(struct sockaddr_in *addr,
     addr->sin_family = AF_INET;
     if (remote_port > 0) {
         addr->sin_port = htons((u_short)remote_port);
-    } else if (netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID, 
+    } else if (netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID,
 				  NETSNMP_DS_LIB_DEFAULT_PORT) > 0) {
-        addr->sin_port = htons((u_short)netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID, 
+        addr->sin_port = htons((u_short)netsnmp_ds_get_int(NETSNMP_DS_LIBRARY_ID,
 						 NETSNMP_DS_LIB_DEFAULT_PORT));
     } else {
         addr->sin_port = htons(SNMP_PORT);
@@ -382,7 +382,7 @@ netsnmp_sockaddr_in(struct sockaddr_in *addr,
     if (inpeername != NULL) {
         /*
          * Duplicate the peername because we might want to mank around with
-         * it.  
+         * it.
          */
 
         peername = strdup(inpeername);
@@ -391,7 +391,7 @@ netsnmp_sockaddr_in(struct sockaddr_in *addr,
         }
 
         /*
-         * Try and extract an appended port number.  
+         * Try and extract an appended port number.
          */
         cp = strchr(peername, ':');
         if (cp != NULL) {
@@ -407,20 +407,20 @@ netsnmp_sockaddr_in(struct sockaddr_in *addr,
         for (cp = peername; *cp && isdigit((int) *cp); cp++);
         if (!*cp && atoi(peername) != 0) {
             /*
-             * Okay, it looks like just a port number.  
+             * Okay, it looks like just a port number.
              */
             DEBUGMSGTL(("netsnmp_sockaddr_in", "totally numeric: %d\n",
                         atoi(peername)));
             addr->sin_port = htons((u_short)atoi(peername));
         } else if (inet_addr(peername) != INADDR_NONE) {
             /*
-             * It looks like an IP address.  
+             * It looks like an IP address.
              */
             DEBUGMSGTL(("netsnmp_sockaddr_in", "IP address\n"));
             addr->sin_addr.s_addr = inet_addr(peername);
         } else {
             /*
-             * Well, it must be a hostname then.  
+             * Well, it must be a hostname then.
              */
 #ifdef  HAVE_GETHOSTBYNAME
             struct hostent *hp = gethostbyname(peername);
@@ -462,7 +462,7 @@ netsnmp_sockaddr_in(struct sockaddr_in *addr,
 
 /*
  * The following functions provide the "com2sec" configuration token
- * functionality for compatibility.  
+ * functionality for compatibility.
  */
 
 #define EXAMPLE_NETWORK		"NETWORK"
@@ -490,7 +490,7 @@ netsnmp_udp_parse_security(const char *token, char *param)
     in_addr_t   network = 0, mask = 0;
 
     /*
-     * Get security, source address/netmask and community strings.  
+     * Get security, source address/netmask and community strings.
      */
 
     cp = copy_nword(param, secName, sizeof(secName));
@@ -526,20 +526,20 @@ netsnmp_udp_parse_security(const char *token, char *param)
     }
 
     /*
-     * Process the source address/netmask string.  
+     * Process the source address/netmask string.
      */
 
     cp = strchr(source, '/');
     if (cp != NULL) {
         /*
-         * Mask given.  
+         * Mask given.
          */
         *cp = '\0';
         strmask = cp + 1;
     }
 
     /*
-     * Deal with the network part first.  
+     * Deal with the network part first.
      */
 
     if ((strcmp(source, "default") == 0)
@@ -548,13 +548,13 @@ netsnmp_udp_parse_security(const char *token, char *param)
         strmask = "0.0.0.0";
     } else {
         /*
-         * Try interpreting as a dotted quad.  
+         * Try interpreting as a dotted quad.
          */
         network = inet_addr(source);
 
         if (network == (in_addr_t) -1) {
             /*
-             * Nope, wasn't a dotted quad.  Must be a hostname.  
+             * Nope, wasn't a dotted quad.  Must be a hostname.
              */
 #ifdef  HAVE_GETHOSTBYNAME
             struct hostent *hp = gethostbyname(source);
@@ -570,7 +570,7 @@ netsnmp_udp_parse_security(const char *token, char *param)
             }
 #else                           /*HAVE_GETHOSTBYNAME */
             /*
-             * Oh dear.  
+             * Oh dear.
              */
             config_perror("cannot resolve source hostname");
             return;
@@ -579,18 +579,18 @@ netsnmp_udp_parse_security(const char *token, char *param)
     }
 
     /*
-     * Now work out the mask.  
+     * Now work out the mask.
      */
 
     if (strmask == NULL || *strmask == '\0') {
         /*
-         * No mask was given.  Use 255.255.255.255.  
+         * No mask was given.  Use 255.255.255.255.
          */
         mask = 0xffffffffL;
     } else {
         if (strchr(strmask, '.')) {
             /*
-             * Try to interpret mask as a dotted quad.  
+             * Try to interpret mask as a dotted quad.
              */
             mask = inet_addr(strmask);
             if (mask == (in_addr_t) -1 &&
@@ -600,7 +600,7 @@ netsnmp_udp_parse_security(const char *token, char *param)
             }
         } else {
             /*
-             * Try to interpret mask as a "number of 1 bits".  
+             * Try to interpret mask as a "number of 1 bits".
              */
             int             maskLen = atoi(strmask), maskBit = 0x80000000L;
             if (maskLen <= 0 || maskLen > 32) {
@@ -616,7 +616,7 @@ netsnmp_udp_parse_security(const char *token, char *param)
     }
 
     /*
-     * Check that the network and mask are consistent.  
+     * Check that the network and mask are consistent.
      */
 
     if (network & ~mask) {
@@ -632,7 +632,7 @@ netsnmp_udp_parse_security(const char *token, char *param)
 
     /*
      * Everything is okay.  Copy the parameters to the structure allocated
-     * above and add it to END of the list.  
+     * above and add it to END of the list.
      */
 
     DEBUGMSGTL(("netsnmp_udp_parse_security",
@@ -678,10 +678,10 @@ netsnmp_udp_agent_config_tokens_register(void)
 
 
 /*
- * Return 0 if there are no com2sec entries, or return 1 if there ARE com2sec 
+ * Return 0 if there are no com2sec entries, or return 1 if there ARE com2sec
  * entries.  On return, if a com2sec entry matched the passed parameters,
  * then *secName points at the appropriate security name, or is NULL if the
- * parameters did not match any com2sec entry.  
+ * parameters did not match any com2sec entry.
  */
 
 int
@@ -695,7 +695,7 @@ netsnmp_udp_getSecName(void *opaque, int olength,
 
     /*
      * Special case if there are NO entries (as opposed to no MATCHING
-     * entries).  
+     * entries).
      */
 
     if (com2SecList == NULL) {
@@ -708,7 +708,7 @@ netsnmp_udp_getSecName(void *opaque, int olength,
 
     /*
      * If there is no IPv4 source address, then there can be no valid security
-     * name.  
+     * name.
      */
 
     if (opaque == NULL || olength != sizeof(struct sockaddr_in) ||

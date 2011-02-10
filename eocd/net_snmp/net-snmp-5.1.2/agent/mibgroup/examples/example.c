@@ -4,7 +4,7 @@
  */
 
 /*
- * include important headers 
+ * include important headers
  */
 #include <net-snmp/net-snmp-config.h>
 #if HAVE_STDLIB_H
@@ -17,7 +17,7 @@
 #endif
 
 /*
- * needed by util_funcs.h 
+ * needed by util_funcs.h
  */
 #if TIME_WITH_SYS_TIME
 # ifdef WIN32
@@ -45,12 +45,12 @@
 #include <net-snmp/agent/net-snmp-agent-includes.h>
 
 /*
- * header_generic() comes from here 
+ * header_generic() comes from here
  */
 #include "util_funcs.h"
 
 /*
- * include our .h file 
+ * include our .h file
  */
 #include "example.h"
 
@@ -66,7 +66,7 @@ int             example_int = 42;
 char            example_str[EXAMPLE_STR_LEN];
 
         /*
-         * Forward declarations for the config handlers 
+         * Forward declarations for the config handlers
          */
 void            example_parse_config_exampleint(const char *token,
                                                 char *cptr);
@@ -136,7 +136,7 @@ struct variable2 example_variables[] = {
     /*
      * This array defines the OID of the top of the mib tree that we're
      *  registering underneath.
-     * Note that this needs to be the correct size for the OID being 
+     * Note that this needs to be the correct size for the OID being
      *  registered, so that the length of the OID can be calculated.
      *  The format given here is the simplest way to achieve this.
      */
@@ -203,7 +203,7 @@ init_example(void)
      * so this call is commented out here.
      */
     /*
-     * auto_nlist( "example_symbol", 0, 0 ); 
+     * auto_nlist( "example_symbol", 0, 0 );
      */
 }
 
@@ -241,7 +241,7 @@ example_parse_config_examplestr(const char *token, char *cptr)
 }
 
         /*
-         * We don't need to do anything special when closing down 
+         * We don't need to do anything special when closing down
          */
 void
 example_free_config_exampleint(void)
@@ -326,11 +326,11 @@ var_example(struct variable *vp,
      * Many object will need to obtain data from the operating system in
      *  order to return the appropriate value.  Typically, this is done
      *  here - immediately following the 'header' call, and before the
-     *  switch statement. This is particularly appropriate if a single 
+     *  switch statement. This is particularly appropriate if a single
      *  interface call can return data for all the objects supported.
      *
      * This example module does not rely on external data, so no such
-     *  calls are needed in this case.  
+     *  calls are needed in this case.
      */
 
     /*
@@ -345,7 +345,7 @@ var_example(struct variable *vp,
         /*
          * Note that the assumption that the answer will be an
          *  integer does not hold true in this case, so the length
-         *  of the answer needs to be set explicitly.           
+         *  of the answer needs to be set explicitly.
          */
         *var_len = strlen(string);
         return (u_char *) string;
@@ -383,10 +383,10 @@ var_example(struct variable *vp,
 
     case EXAMPLEIPADDRESS:
         /*
-         * ipaddresses get returned as a long.  ick 
+         * ipaddresses get returned as a long.  ick
          */
         /*
-         * we're returning 127.0.0.1 
+         * we're returning 127.0.0.1
          */
         long_ret = ntohl(INADDR_LOOPBACK);
         return (u_char *) & long_ret;
@@ -450,7 +450,7 @@ write_exampleint(int action,
                  u_char * statP, oid * name, size_t name_len)
 {
     /*
-     * Define an arbitrary maximum permissible value 
+     * Define an arbitrary maximum permissible value
      */
 #define MAX_EXAMPLE_INT	100
     static long     intval;
@@ -564,13 +564,13 @@ write_exampletrap(int action,
 
     case RESERVE2:
         /*
-         * No resources are required.... 
+         * No resources are required....
          */
         break;
 
     case FREE:
         /*
-         * ... so no resources need be freed 
+         * ... so no resources need be freed
          */
         break;
 
@@ -585,7 +585,7 @@ write_exampletrap(int action,
     case UNDO:
         /*
          * We haven't done anything yet,
-         * so there's nothing to undo 
+         * so there's nothing to undo
          */
         break;
 
@@ -611,9 +611,9 @@ write_exampletrap(int action,
 /*
  * this documents how to send a SNMPv2 (and higher) trap via the
  * send_v2trap() API.
- * 
+ *
  * Coding SNMP-v2 Trap:
- * 
+ *
  * The SNMPv2-Trap PDU contains at least a pair of object names and
  * values: - sysUpTime.0 whose value is the time in hundredths of a
  * second since the netwok management portion of system was last
@@ -621,12 +621,12 @@ write_exampletrap(int action,
  * MIB whose value is the object-id of the specific trap you have defined
  * in your own MIB.  Other variables can be added to caracterize the
  * trap.
- * 
+ *
  * The function send_v2trap adds automaticallys the two objects but the
  * value of snmpTrapOID.0 is 0.0 by default. If you want to add your trap
  * name, you have to reconstruct this object and to add your own
  * variable.
- * 
+ *
  */
 
 
@@ -641,7 +641,7 @@ write_exampletrap2(int action,
     long            intval;
 
     /*
-     * these variales will be used when we send the trap 
+     * these variales will be used when we send the trap
      */
     oid             objid_snmptrap[] = { 1, 3, 6, 1, 6, 3, 1, 1, 4, 1, 0 };     /* snmpTrapOID.0 */
     oid             demo_trap[] = { 1, 3, 6, 1, 4, 1, 2021, 13, 990 };  /*demo-trap */
@@ -675,13 +675,13 @@ write_exampletrap2(int action,
 
     case RESERVE2:
         /*
-         * No resources are required.... 
+         * No resources are required....
          */
         break;
 
     case FREE:
         /*
-         * ... so no resources need be freed 
+         * ... so no resources need be freed
          */
         break;
 
@@ -696,7 +696,7 @@ write_exampletrap2(int action,
     case UNDO:
         /*
          * We haven't done anything yet,
-         * so there's nothing to undo 
+         * so there's nothing to undo
          */
         break;
 
@@ -711,7 +711,7 @@ write_exampletrap2(int action,
          */
 
         /*
-         * trap definition objects 
+         * trap definition objects
          */
 
         var_trap.next_variable = &var_obj;      /* next variable */
@@ -723,7 +723,7 @@ write_exampletrap2(int action,
 
 
         /*
-         * additional objects 
+         * additional objects
          */
 
 

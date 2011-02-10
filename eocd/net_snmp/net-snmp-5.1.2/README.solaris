@@ -33,7 +33,7 @@ This document is a compilation of information relating to
 running net-snmp (www.net-snmp.org) on Sun SPARC and ULTRA
 hardware under the Solaris operating system.
 
-This can be done either in conjunction with or as a 
+This can be done either in conjunction with or as a
 replacement for Sun's SNMP daemons.
 
 This is discussed in detail in the sections below.  Since
@@ -82,11 +82,11 @@ If you see something like:
 
   root 16178 1 0 13:16:04 pts/2 0:00 /usr/lib/snmp/snmpdx -y -c /etc/snmp/conf
 
-and/or 
+and/or
 
   root 21371 1 0 Feb 07 ? 0:52 mibiisa -r -p 41178
 
-then Sun's SNMP daemons are running.  
+then Sun's SNMP daemons are running.
 
 If you need this, for example if you use the Solstice Enterprise
 Agent, you may wish to run net-snmp as a sub-agent (see section 7).
@@ -94,7 +94,7 @@ Otherwise, you will need to disable Sun's daemons (see section 2).
 
 Regardless you may wish to compile net-snmp from source
 and install it (see sections 3, 5 and 6) or install
-binaries (see sections 4 and 5).  
+binaries (see sections 4 and 5).
 
 If some other SNMP daemon is running, you will need to determine
 where it came from and what it's being used for.  You get clues by
@@ -128,7 +128,7 @@ with libcrypto noted below (section 11).
 
 There are two choices for compilers.  Sun has a Forte development
 suite that includes a standalone C compiler.  If you have it, it
-is likely installed in /opt/SUNWspro/bin.  
+is likely installed in /opt/SUNWspro/bin.
 
 The more common choice is gcc (currently 2.95.3 or 3.4)
 available from sunfreeware.com.  If you install gcc, you do not
@@ -148,8 +148,8 @@ another compiler.
 Note:  Sun has included net-snmp with Solaris 10.  These
 instructions are written with Solaris 8 and previous in mind.
 
-Out of the box, Sun runs four SNMP daemons; mibiisa, idmispd, 
-xnmpXdmid and snmpdx. 
+Out of the box, Sun runs four SNMP daemons; mibiisa, idmispd,
+xnmpXdmid and snmpdx.
 
 These must be disabled before running net-snmp unless you are planning
 on running them together (see Section 7 below).  Here is the procedure:
@@ -179,7 +179,7 @@ X=`which pkill`
 
 case "$1" in
 'start')
-        /usr/local/sbin/snmpd 
+        /usr/local/sbin/snmpd
         ;;
 
 'stop')
@@ -200,15 +200,15 @@ exit 0
 3.  Compiling net-snmp
 
 It is strongly recommended that you compile net-snmp from source.
-That way you are guaranteed a working version for your specific 
+That way you are guaranteed a working version for your specific
 configuration of operating system, applications and libraries.
 
-If, for some reason, you cannot compile on a specific machine, 
-there are binaries available for download (see section 4).  
+If, for some reason, you cannot compile on a specific machine,
+there are binaries available for download (see section 4).
 In addition, you may create your own binaries (see section 6).
 
 You need to set your $PATH.  This is extremely important
-because otherwise there may be conflicts between the various 
+because otherwise there may be conflicts between the various
 components of the development environment.
 
 If you are using FORTE:
@@ -224,7 +224,7 @@ presumably you have - don't you love recursion?) www.net-snmp.org/download/
 
 Uncompress it and untar it in a working directory eg. /usr/local/src/net-snmp
 
-In order to save a lot of typing, you should create a "configure" 
+In order to save a lot of typing, you should create a "configure"
 script eg. bcc.sh in the directory below eg. /usr/local/src.
 
    ./configure --with-mib-modules="host disman/event-mib ucd-snmp/diskio \
@@ -247,8 +247,8 @@ When it completes, you should see something like:
   Building for:               solaris2
   Network transport support:  Callback Unix TCP UDP
   SNMPv3 Security Modules:    usm
-  Agent MIB code:             mibII ucd_snmp snmpv3mibs notification target 
-  \agent_mibs agentx agent_mibs utilities host disman/event-mib 
+  Agent MIB code:             mibII ucd_snmp snmpv3mibs notification target
+  \agent_mibs agentx agent_mibs utilities host disman/event-mib
   \ucd-snmp/diskio smux agentx mibII/mta_sendmail
   SNMP Perl modules:          disabled
   Embedded perl support:      disabled
@@ -259,7 +259,7 @@ Type:
 
    make
 
-and watch for compile errors.  
+and watch for compile errors.
 
 You will receive numerous warnings.  This is normal,
 a result of the variety of development environments.
@@ -270,7 +270,7 @@ Now type:
 
 and watch for failures.  Also watch for the special tests for Solaris.
 
-If you are satisfied with the tests, stop any snmpd daemons 
+If you are satisfied with the tests, stop any snmpd daemons
 that may be running (see section 2) and type:
 
    make install
@@ -288,7 +288,7 @@ configuration of operating system, applications and libraries.
 
 Binaries for Solaris may be found in two locations.
 
-www.sunfreeware.com - this installs as a package.  
+www.sunfreeware.com - this installs as a package.
 It does not have Perl support.
 
 Therefore, I recommend:
@@ -317,7 +317,7 @@ SunOS foo 5.8 Generic_108528-14 sun4u sparc SUNW,Ultra-4
 
 "sun4u" is the Ultra hardware platform
 "sun4m" is SuperSPARC  eg. Sparc 5 or Sparc 10
-"sun4d" is older SPARC boxes.  
+"sun4d" is older SPARC boxes.
 
 You can then decode the binary version by its name eg.:
 
@@ -370,7 +370,7 @@ test the daemon's functionality by typing:
    snmpget -v 1 -c whatever localhost sysUpTime.0
    snmpwalk -v 2c -c whatever -m ALL localhost .1.3 | more
 
-and paging through the results.  
+and paging through the results.
 
 If you have problems, you can examine diagnostic messages
 by running:
@@ -387,7 +387,7 @@ and when it blows up:
 
    bt
 
-to get the backtrace.  
+to get the backtrace.
 
 You can use:
 
@@ -397,7 +397,7 @@ to display debug messages.
 
 To display all debug messages type:
 
-   run -f -L -D ALL 
+   run -f -L -D ALL
 
 but this will be extremely verbose.
 
@@ -406,7 +406,7 @@ but this will be extremely verbose.
 ------------------------------------------------------------
 6.  Creating your own binaries
 
-Pick an appropriate name for a tarfile 
+Pick an appropriate name for a tarfile
 eg. net-snmp-5.1.custom-SunOS_5.8_sun4u.tar (see above)
 (this particular one means "a customized version of
 net-snmp 5.1 that works under Solaris 8 running on Ultra hardware")
@@ -441,7 +441,7 @@ identically configured Perl needs to be installed as well.
 
 Net-snmp may be used as a sub-agent in conjunction with Sun's snmpdx daemon.
 
-To do this, you will need to modify several files, 
+To do this, you will need to modify several files,
 all located in /etc/snmp/conf.
 
 First, do the following:
@@ -464,7 +464,7 @@ modify snmpd.conf with the correct:
    sysLocation
    system-group-read-community
    read-community (in my example below I will use community "whatever")
-   trap 
+   trap
    trap-community
    managers (leave blank for all)
 
@@ -480,7 +480,7 @@ Make sure that in snmpdx.reg the port is 161.
 You will now need to add two files - net-snmp.reg and net-snmp.rscs
 
 In this example, "subtrees" is set for HOST-RESOURCES-MIB, and UCD-SNMP-MIB.
-Do not use net-snmp's MIB-2 information as this is already provided by 
+Do not use net-snmp's MIB-2 information as this is already provided by
 Sun's mib and may cause a conflict.
 
 ::::: net-snmp.reg ::::::
@@ -488,11 +488,11 @@ Sun's mib and may cause a conflict.
 # net-snmp.reg
 # mib-2 is already provided by the mibiisa process
 # that is a default sub agent of snmpdx
-# we are specifying only hostmib and ucd 
+# we are specifying only hostmib and ucd
 ##########
 # agents #
 ##########
- 
+
 agents =
 {
         {
@@ -515,14 +515,14 @@ resource =
    registration_file = "/etc/snmp/conf/net-snmp.reg"
    policy = "spawn"
    type = "legacy"
-   command = "/usr/local/sbin/snmpd -p $PORT"  
+   command = "/usr/local/sbin/snmpd -p $PORT"
       }
- 
+
 }
 
 ::::::::::::::::::
 
-Stop any net-snmp processes that may be running.  
+Stop any net-snmp processes that may be running.
 
 Start Sun's daemons by typing:
 
@@ -557,7 +557,7 @@ Then do the following:
 
 rather than trying to individually clobber all the various Sun daemons.
 
-This configuration appears to deal properly with snmpgets 
+This configuration appears to deal properly with snmpgets
 and handle mistakes gracefully.
 
 Beyond this, your mileage may vary.
@@ -573,7 +573,7 @@ configurations.
 
 Solaris has a limitation on the number of file descriptors (255)
 available in stdio, so that fopen() fails if more than
-255 file descriptors (sockets) are open. This prevents mibs from 
+255 file descriptors (sockets) are open. This prevents mibs from
 being loaded after 250 sockets are open, since parse.c uses stdio.
 
 SEan <burke_sp@pacbell.net> investigated this problem, and had this
@@ -581,8 +581,8 @@ report on using the SFIO package to solve this problem.
 
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-The SFIO package ( http://www.research.att.com/sw/tools/sfio/ ) 
-is a buffered streams IO package that is much more more sophisticated 
+The SFIO package ( http://www.research.att.com/sw/tools/sfio/ )
+is a buffered streams IO package that is much more more sophisticated
 than stdio, but it does support stdio API's for backward compatibility,
 and that's the aspect that is important here.
 
@@ -590,8 +590,8 @@ To compile with SFIO, we simply add -I/usr/local/sfio/include to the
 $CPPFLAGS before compiling net-snmp. This causes SFIO's stdio.h to
 preempt Solaris stdio, mapping calls like fopen() and fprintf() to
 the SFIO implementations. This produces a libnetsnmp that does not
-have the fopen() limitation. Any application that links to this 
-libnetsnmp must also be linked to libsfio. 
+have the fopen() limitation. Any application that links to this
+libnetsnmp must also be linked to libsfio.
 
 Here are the two caveats:
 
@@ -602,35 +602,35 @@ makes them functions in multithreaded code (compiled with -mt,
 -pthread, or -D_REENTRANT). If your native stdio code links to the
 libsfio versions, a crash will result.
 
-There are two solutions to this problem. You may remove getc and putc 
+There are two solutions to this problem. You may remove getc and putc
 from libsfio, since SFIO defines getc and putc as macros, by doing:
 
 	ar d libsfio.a getc.o
 	ar d libsfio.a putc.o
 
 or link to SFIO's stdio compatibility library, libstdio, ahead of
-libsfio. This library wraps all of the native stdio calls with 
+libsfio. This library wraps all of the native stdio calls with
 versions that are safe for native or sfio streams, in case you
 need to share streams between SFIO and native stdio codes.
 
 B. libsfio provides 64-bit offsets in fseek(), ftell(). This is
 a good thing, since SFIO is intened to avoid needless limitations,
-but it means that SFIO's stdio.h defines off_t to be a 64-bit offset. 
-Net-SNMP uses readdir(), which returns a struct dirent containing 
-a 32-bit off_t, so the code compiled for SFIO doesn't access 
+but it means that SFIO's stdio.h defines off_t to be a 64-bit offset.
+Net-SNMP uses readdir(), which returns a struct dirent containing
+a 32-bit off_t, so the code compiled for SFIO doesn't access
 struct dirent's correctly.
 
 There are two solutions to this problem, as well. The first is to
-include <dirent.h> at the start of SFIO's stdio.h. Since SFIO 
-defines a macro substitution for off_t, this leaves struct dirent's 
+include <dirent.h> at the start of SFIO's stdio.h. Since SFIO
+defines a macro substitution for off_t, this leaves struct dirent's
 definition unchanged.
 
 An alternative, which I haven't verified, is to define _FILE_OFFSET_BITS
-to be 64 when compiling libnetsnmp. According to what I see in Solaris's 
-/usr/include/sys/feature_tests.h, you can select a 64-bit off_t at 
-compile time with this setting, which should make readdir()'s off_t 
+to be 64 when compiling libnetsnmp. According to what I see in Solaris's
+/usr/include/sys/feature_tests.h, you can select a 64-bit off_t at
+compile time with this setting, which should make readdir()'s off_t
 compatible with SFIO's ftell(), fseek().
- [[ We have received reports that this approach does not in fact work 
+ [[ We have received reports that this approach does not in fact work
 (see Perl discussion below)]]
 
 Finally, thanks to Phong Vo and AT&T Labs for a fast, robust and
@@ -647,18 +647,18 @@ Net-snmp may be compiled with Perl support by adding the lines:
 
 to your ./configure invocation.
 
-This should only be done if you are sure you really need Perl, 
+This should only be done if you are sure you really need Perl,
 for the following reasons:
 
-Solaris 8 and 9 ship with a version of Perl compiled using sun's cc. 
+Solaris 8 and 9 ship with a version of Perl compiled using sun's cc.
 
-This causes a problem when attempting to compile net-snmp 
+This causes a problem when attempting to compile net-snmp
 with Perl functionality ie.:
 
    ./configure --with-mib-modules="host disman/event-mib ucd-snmp/diskio \
       smux agents mibII/mta_sendmail" --enable-shared --enable-embedded-perl
 
-because during the Perl section of the compile, it attempts to do so 
+because during the Perl section of the compile, it attempts to do so
 using the methodology used to compile the original Perl, not
 what you're currently using.  This can be discovered by typing:
 
@@ -669,7 +669,7 @@ and it says (among other things)
   Compiler:
     cc='cc'
 
-and you don't have the full version of Sun's C compiler on your 
+and you don't have the full version of Sun's C compiler on your
 system, it's going to break.
 
 In addition if it was compiled with:
@@ -679,33 +679,33 @@ In addition if it was compiled with:
 net-snmp will not compile correctly.
 
 Given that the Perl provided with Solaris 8 (5.005_03)
-and Solaris 9 (5.005_03 and 5.6.1) is somewhat stale, 
+and Solaris 9 (5.005_03 and 5.6.1) is somewhat stale,
 upgrading may be to your advantage.
 
 Perl did not ship with Solaris before version 8.  If you installed a
 version from www.sunfreeware.com, it is compiled with some extra flags
-that cause the net-snmp compile to break.  
+that cause the net-snmp compile to break.
 
 In either case, you will need to compile and install Perl.
 
 There are, however, some issues.
 
-A.  Some applications (eg. /usr/bin/kstat) require this exact version 
+A.  Some applications (eg. /usr/bin/kstat) require this exact version
 of Perl because of libraries.  These instructions below install Perl
 in /usr/local/bin (and optionally /usr/bin/).  The original is left
-intact in /usr/perl5/bin/perl where, in fact, the kstat script looks 
+intact in /usr/perl5/bin/perl where, in fact, the kstat script looks
 for it.  If you have version specific scripts, you will need to do
 the same either by invoking /usr/perl5/bin/perl or putting:
 
 #!/usr/perl/bin/perl -w
 
-as the first line of your script and making it executable 
+as the first line of your script and making it executable
 (see the /usr/bin/kstat source as an example).
 
-B.  The instructions below disable large file support.  
+B.  The instructions below disable large file support.
 
 This means that Perl would be unable to deal
-successfully with files larger than 2 Gb.  
+successfully with files larger than 2 Gb.
 Again, using /usr/perl5/bin/perl or a version compiled
 with this functionality would solve this.
 
@@ -717,7 +717,7 @@ Install gcc version 3.3.2 (or later) from www.sunfreeware.com.
 
 Download the current stable release of Perl
 
-   http://www.cpan.org/src/stable.tar.gz 
+   http://www.cpan.org/src/stable.tar.gz
 
 and gunzip and untar.  (This document assumes Perl 5.8.3)
 
@@ -729,100 +729,100 @@ Accept most of the defaults, with some specific changes:
 
 Operating system name? [solaris]
 Operating system version? [2.6]   (or 2.7, 2.8, 2.9 ...)
-Build Perl for SOCKS? [n] 
+Build Perl for SOCKS? [n]
 Use the PerlIO abstraction layer? [y]
-Build a threading Perl? [n] 
-Build Perl for multiplicity? [n] 
-Use which C compiler? [/usr/local/bin/gcc] 
+Build a threading Perl? [n]
+Build Perl for multiplicity? [n]
+Use which C compiler? [/usr/local/bin/gcc]
 Directories to use for library searches?
 [/usr/local/lib /usr/lib /usr/ccs/lib]
 What is the file extension used for shared libraries? [so]
-Try to use long doubles if available? [n] 
+Try to use long doubles if available? [n]
 What libraries to use? [-lsocket -lnsl -ldl -lm -lc]
 What optimizer/debugger flag should be used? [-O]
-Any additional cc flags? [-fno-strict-aliasing -I/usr/local/include] 
-Any additional ld flags (NOT including libraries)? [ -L/usr/local/lib] 
+Any additional cc flags? [-fno-strict-aliasing -I/usr/local/include]
+Any additional ld flags (NOT including libraries)? [ -L/usr/local/lib]
 Try to use 64-bit integers, if available? [y]   (unless you're using 32-bit Solaris)
 Try to use maximal 64-bit support, if available? [n]
 What is your architecture name [sun4-solaris-64int]
-Installation prefix to use? (~name ok) [/usr/local/net-snmp] 
+Installation prefix to use? (~name ok) [/usr/local/net-snmp]
 What installation prefix should I use for installing files? (~name ok)
-[/usr/local/net-snmp] 
+[/usr/local/net-snmp]
 Pathname where the private library files will reside? (~name ok)
-[/usr/local/net-snmp/lib/perl5/5.8.3] 
+[/usr/local/net-snmp/lib/perl5/5.8.3]
 Where do you want to put the public architecture-dependent libraries? (~name ok)
-[/usr/local/net-snmp/lib/perl5/5.8.3/sun4-solaris-64int] 
-Do you wish to attempt to use the malloc that comes with perl5? [n] 
+[/usr/local/net-snmp/lib/perl5/5.8.3/sun4-solaris-64int]
+Do you wish to attempt to use the malloc that comes with perl5? [n]
 Installation prefix to use for add-on modules and utilities? (~name ok)
 [/usr/local/net-snmp]
 Pathname for the site-specific library files? (~name ok)
-[/usr/local/net-snmp/lib/perl5/site_perl/5.8.3] 
+[/usr/local/net-snmp/lib/perl5/site_perl/5.8.3]
 Pathname for the site-specific architecture-dependent library files? (~name ok)
-[/usr/local/net-snmp/lib/perl5/site_perl/5.8.3/sun4-solaris-64int] 
-Do you want to configure vendor-specific add-on directories? [n] 
+[/usr/local/net-snmp/lib/perl5/site_perl/5.8.3/sun4-solaris-64int]
+Do you want to configure vendor-specific add-on directories? [n]
 Colon-separated list of additional directories for perl to search? [none]
 Installation prefix to use for add-on modules and utilities? (~name ok)
-[/usr/local/net-snmp] 
+[/usr/local/net-snmp]
 Pathname where the public executables will reside? (~name ok)
-[/usr/local/net-snmp/bin] 
-Install any extra modules (y or n)? [n] 
+[/usr/local/net-snmp/bin]
+Install any extra modules (y or n)? [n]
 Directory for the main Perl5 html pages? (~name ok)
-[/usr/local/net-snmp/doc/html] 
+[/usr/local/net-snmp/doc/html]
 Directory for the Perl5 module html pages? (~name ok)
 [/usr/local/net-snmp/doc/html/modules]
 List of earlier versions to include in @INC? [none]
 Do you want to install perl as /usr/bin/perl? [n]
 Shall I use /usr/local/bin/nm to extract C symbols from the libraries? [n]
-Do you wish to use dynamic loading? [y] 
+Do you wish to use dynamic loading? [y]
 Source file to use for dynamic loading [ext/DynaLoader/dl_dlopen.xs]
 Any special flags to pass to /usr/local/bin/gcc -c to compile shared library modules?
-[-fPIC] 
+[-fPIC]
 What command should be used to create dynamic libraries?
-[/usr/local/bin/gcc] 
+[/usr/local/bin/gcc]
 Any special flags to pass to /usr/local/bin/gcc to create a dynamically loaded library?
-[-G -L/usr/local/lib] 
+[-G -L/usr/local/lib]
 Any special flags to pass to /usr/local/bin/gcc to use dynamic linking?
-[none] 
+[none]
 Build a shared libperl.so (y/n) [n]
 Where do the main Perl5 manual pages (source) go? (~name ok)
-[/usr/local/net-snmp/man/man1] 
+[/usr/local/net-snmp/man/man1]
 What suffix should be used for the main Perl5 man pages? [1]
 Where do the perl5 library man pages (source) go? (~name ok)
-[/usr/local/net-snmp/man/man3] 
+[/usr/local/net-snmp/man/man3]
 What suffix should be used for the perl5 library man pages? [3]
-Your host name appears to be "foo". Right? [y] 
+Your host name appears to be "foo". Right? [y]
 What is your domain name? [.bar.com]
-What is your e-mail address? [something.else@foo.bar.com] 
-Perl administrator e-mail address [something.else@foo.bar.com] 
+What is your e-mail address? [something.else@foo.bar.com]
+Perl administrator e-mail address [something.else@foo.bar.com]
 Do you want to install only the version-specific parts of perl? [n]
 Where do you keep publicly executable scripts? (~name ok)
-[/usr/local/net-snmp/bin] 
+[/usr/local/net-snmp/bin]
 Pathname where the add-on public executables should be installed? (~name ok)
-[/usr/local/net-snmp/bin] 
+[/usr/local/net-snmp/bin]
 Pathname where the site-specific html pages should be installed? (~name ok)
 [/usr/local/net-snmp/doc/html]
 Pathname where the site-specific library html pages should be installed? (~name ok)
-[/usr/local/net-snmp/doc/html/modules] 
+[/usr/local/net-snmp/doc/html/modules]
 Pathname where the site-specific manual pages should be installed? (~name ok)
 [/usr/local/net-snmp/man/man1]
 Pathname where the site-specific library manual pages should be installed? (~name ok)
-[/usr/local/net-snmp/man/man3] 
+[/usr/local/net-snmp/man/man3]
 Pathname where add-on public executable scripts should be installed? (~name ok)
-[/usr/local/net-snmp/bin] 
+[/usr/local/net-snmp/bin]
 Use the "fast stdio" if available? [y]
 Try to understand large files, if available? [n]
-What is the extension of dynamically loaded modules [so] 
-Shall I ignore gethostname() from now on? [n] 
-What is the size of a character (in bytes)? [1] 
-Do you still want to use vfork()? [n] 
+What is the extension of dynamically loaded modules [so]
+Shall I ignore gethostname() from now on? [n]
+What is the size of a character (in bytes)? [1]
+Do you still want to use vfork()? [n]
 Doubles must be aligned on a how-many-byte boundary? [8]
 Use which function to generate random numbers? [drand48]
 What type pointer is the second argument to getgroups() and setgroups()?
-[gid_t] 
-What pager is used on your system? [/usr/bin/more] 
+[gid_t]
+What pager is used on your system? [/usr/bin/more]
 Which compiler compiler (yacc) shall I use? [yacc]
 What extensions do you wish to load dynamically?[blah..blah..blah]  (use the default)
-What extensions do you wish to load statically? [ ] 
+What extensions do you wish to load statically? [ ]
 
 Run make depend now? [y]
 
@@ -861,10 +861,10 @@ Your configure invocation should be...
 --with-mib-modules="host disman/event-mib ucd-snmp/diskio examples/example smux  \
 agentx mibII/mta_sendmail" --with-cc=gcc
 
-Once you have compiled and installed net-snmp you should test its Perl 
+Once you have compiled and installed net-snmp you should test its Perl
 capabilities by doing the following:
 
-Copy the perl_module.pl script found at 
+Copy the perl_module.pl script found at
 
 http://www.net-snmp.org/tutorial-5/toolkit/perl/index.html
 
@@ -890,7 +890,7 @@ you will also need to ship the Perl which you created in /usr/local/net-snmp.
 ------------------------------------------------------------
 10.  sed and $PATH
 
-(note, if you have followed the recommendations for $PATH 
+(note, if you have followed the recommendations for $PATH
 above, this is not an issue -- Bruce Shaw <Bruce.Shaw at shaw.ca>)
 
 The version of sed in /usr/ucb on Solaris 2.5.1 and 2.6 can't
@@ -949,7 +949,7 @@ To include this in the loader search path, type:
 
 /usr/bin/crle will now display:
 
-Configuration file [3]: /var/ld/ld.config  
+Configuration file [3]: /var/ld/ld.config
   Default Library Path (ELF):   /usr/lib:/usr/local/ssl/lib
   Trusted Directories (ELF):    /usr/lib/secure  (system default)
 
@@ -962,22 +962,22 @@ Thanks to Dave Shield and Johannes Schmidt-Fischer
 ------------------------------------------------------------
 12.  Wish list
 
-A.  Hardware specific monitoring eg. fan speeds, CPU temperatures, 
+A.  Hardware specific monitoring eg. fan speeds, CPU temperatures,
     doors open, lights on or off
 
 This involves accessing the libraries found in:
 
    /usr/platform/`uname -i`/include/sys
 
-for which there is no published API, or parsing prtdiag -v 
+for which there is no published API, or parsing prtdiag -v
 and caching the results, which is messy and hard on resources.
 
 B.  Code cleanup
 
-There may be opportunities for shared code between UCD-SNMP 
+There may be opportunities for shared code between UCD-SNMP
 and HOST-RESOURCES-MIB.
 
-There may be opportunities to optimize caching perhaps 
+There may be opportunities to optimize caching perhaps
 using the new auto-caching code.
 
 C.  ORACLE

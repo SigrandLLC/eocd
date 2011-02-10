@@ -120,7 +120,7 @@ typedef struct{
     u8 sensor1 :1;
     u8 sensor2 :1;
     u8 sensor3 :1;
-    u8 :5; 
+    u8 :5;
 } resp_sensor_state;
 #define RESP_SENSOR_STATE_SZ sizeof(resp_sensor_state)
 

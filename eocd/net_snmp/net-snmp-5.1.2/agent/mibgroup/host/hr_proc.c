@@ -106,11 +106,11 @@ init_hr_proc(void)
  * Arguments:
  * vp     IN      - pointer to variable entry that points here
  * name    IN/OUT  - IN/name requested, OUT/name found
- * length  IN/OUT  - length of IN/OUT oid's 
+ * length  IN/OUT  - length of IN/OUT oid's
  * exact   IN      - TRUE if an exact match was requested
  * var_len OUT     - length of variable or 0 if function returned
  * write_method
- * 
+ *
  */
 
 int
@@ -130,7 +130,7 @@ header_hrproc(struct variable *vp,
 
     memcpy((char *) newname, (char *) vp->name, vp->namelen * sizeof(oid));
     /*
-     * Find "next" proc entry 
+     * Find "next" proc entry
      */
 
     Init_HR_Proc();
@@ -143,7 +143,7 @@ header_hrproc(struct variable *vp,
         if (exact && (result == 0)) {
             LowIndex = proc_idx;
             /*
-             * Save processor status information 
+             * Save processor status information
              */
             break;
         }
@@ -151,7 +151,7 @@ header_hrproc(struct variable *vp,
             (LowIndex == -1 || proc_idx < LowIndex)) {
             LowIndex = proc_idx;
             /*
-             * Save processor status information 
+             * Save processor status information
              */
 #ifdef HRPROC_MONOTONICALLY_INCREASING
             break;
@@ -282,7 +282,7 @@ describe_proc(int idx)
     return (proc_descriptions[idx & HRDEV_TYPE_MASK]);
 #elif solaris2
     int cidx = idx & HRDEV_TYPE_MASK;
-    snprintf(proc_description,sizeof(proc_description)-1, 
+    snprintf(proc_description,sizeof(proc_description)-1,
            "CPU %d Sun %d MHz %s with %s FPU %s",
             cpu[cidx].id,cpu[cidx].clock_MHz,cpu[cidx].cpu_type,cpu[cidx].fpu_type,cpu[cidx].state);
     return proc_description;
@@ -359,8 +359,8 @@ void kstat_CPU(void)
 {
 /* this routine asks the OS for the number of CPU's and uses that value
  * to set HRP_max_index for later use.  Then it asks the OS for
- * specific details of each CPU.  In Solaris, you cannot trust the 
- * first CPU to be 0 or for CPU 0 to even exist, hence there is a 
+ * specific details of each CPU.  In Solaris, you cannot trust the
+ * first CPU to be 0 or for CPU 0 to even exist, hence there is a
  * CPU id, state, cpu type, fpu type, state_begin (what does this do??)
  * and CPU speed.  Results are stuffed into the cpu array (see above).
  *

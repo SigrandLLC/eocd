@@ -43,7 +43,7 @@
  *
  *      % snmpset localhost nsIETFWGChair1.\"sming\" = "David Durham"
  *      nsIETFWGChair1."sming" = "David Durham"
- *  
+ *
  *      % snmpwalk localhost netSnmpIETFWGTable
  *      nsIETFWGChair1."sming" = "David Durham"
  *      nsIETFWGChair1."snmpv3" = "Russ Mundy"
@@ -61,17 +61,17 @@
  */
 
 /*
- * start be including the appropriate header files 
+ * start be including the appropriate header files
  */
 #include <net-snmp/net-snmp-config.h>
 #include <net-snmp/net-snmp-includes.h>
 #include <net-snmp/agent/net-snmp-agent-includes.h>
 
 /*
- * our initialization routine, automatically called by the agent 
+ * our initialization routine, automatically called by the agent
  */
 /*
- * (to get called, the function name must match init_FILENAME() 
+ * (to get called, the function name must match init_FILENAME()
  */
 void
 init_data_set(void)
@@ -82,14 +82,14 @@ init_data_set(void)
     /*
      * the OID we want to register our integer at.  This should be the
      * * OID node for the entire table.  In our case this is the
-     * * netSnmpIETFWGTable oid definition 
+     * * netSnmpIETFWGTable oid definition
      */
     oid             my_registration_oid[] =
         { 1, 3, 6, 1, 4, 1, 8072, 2, 2, 1 };
 
     /*
      * a debugging statement.  Run the agent with -Dexample_data_set to see
-     * * the output of this debugging statement. 
+     * * the output of this debugging statement.
      */
     DEBUGMSGTL(("example_data_set",
                 "Initalizing example dataset table\n"));
@@ -106,40 +106,40 @@ init_data_set(void)
     table_set = netsnmp_create_table_data_set("netSnmpIETFWGTable");
 
     /*
-     * allow the creation of new rows via SNMP SETs 
+     * allow the creation of new rows via SNMP SETs
      */
     table_set->allow_creation = 1;
 
     /*
-     * set up what a row "should" look like, starting with the index 
+     * set up what a row "should" look like, starting with the index
      */
     netsnmp_table_dataset_add_index(table_set, ASN_OCTET_STR);
 
     /*
-     * define what the columns should look like.  both are octet strings here 
+     * define what the columns should look like.  both are octet strings here
      */
     netsnmp_table_set_multi_add_default_row(table_set,
                                             /*
                                              * column 2 = OCTET STRING,
                                              * writable = 1,
                                              * default value = NULL,
-                                             * default value len = 0 
+                                             * default value len = 0
                                              */
                                             2, ASN_OCTET_STR, 1, NULL, 0,
                                             /*
-                                             * similar 
+                                             * similar
                                              */
                                             3, ASN_OCTET_STR, 1, NULL, 0,
                                             0 /* done */ );
 
     /*
-     * register the table 
+     * register the table
      */
     /*
      * if we wanted to handle specific data in a specific way, or note
      * * when requests came in we could change the NULL below to a valid
      * * handler method in which we could over ride the default
-     * * behaviour of the table_dataset helper 
+     * * behaviour of the table_dataset helper
      */
     netsnmp_register_table_data_set(netsnmp_create_handler_registration
                                     ("netSnmpIETFWGTable", NULL,
@@ -149,38 +149,38 @@ init_data_set(void)
 
 
     /*
-     * create the a row for the table, and add the data 
+     * create the a row for the table, and add the data
      */
     row = netsnmp_create_table_data_row();
     /*
-     * set the index to the IETF WG name "snmpv3" 
+     * set the index to the IETF WG name "snmpv3"
      */
     netsnmp_table_row_add_index(row, ASN_OCTET_STR, "snmpv3",
                                 strlen("snmpv3"));
 
 
     /*
-     * set column 2 to be the WG chair name "Russ Mundy" 
+     * set column 2 to be the WG chair name "Russ Mundy"
      */
     netsnmp_set_row_column(row, 2, ASN_OCTET_STR,
                            "Russ Mundy", strlen("Russ Mundy"));
     netsnmp_mark_row_column_writable(row, 2, 1);        /* make writable via SETs */
 
     /*
-     * set column 3 to be the WG chair name "David Harrington" 
+     * set column 3 to be the WG chair name "David Harrington"
      */
     netsnmp_set_row_column(row, 3, ASN_OCTET_STR, "David Harrington",
                            strlen("David Harrington"));
     netsnmp_mark_row_column_writable(row, 3, 1);        /* make writable via SETs */
 
     /*
-     * add the row to the table 
+     * add the row to the table
      */
     netsnmp_table_dataset_add_row(table_set, row);
 
 #ifdef ADD_MORE_DATA
     /*
-     * add the data, for the second row 
+     * add the data, for the second row
      */
     row = netsnmp_create_table_data_row();
     netsnmp_table_row_add_index(row, ASN_OCTET_STR, "snmpconf",

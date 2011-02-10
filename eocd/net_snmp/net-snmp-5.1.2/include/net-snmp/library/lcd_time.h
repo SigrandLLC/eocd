@@ -11,7 +11,7 @@ extern          "C" {
 
 
     /*
-     * undefine to enable time synchronization only on authenticated packets 
+     * undefine to enable time synchronization only on authenticated packets
      */
 #define LCD_TIME_SYNC_OPT 1
 
@@ -115,12 +115,12 @@ extern          "C" {
                                    u_int engine_boot, u_int engine_time,
                                    u_int authenticated);
 
-         
-         
-         
-         
-         
-         
+
+
+
+
+
+
         Enginetime
         search_enginetime_list(u_char * engineID, u_int engineID_len);
 

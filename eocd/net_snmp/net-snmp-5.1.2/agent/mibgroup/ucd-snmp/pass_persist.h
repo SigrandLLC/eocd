@@ -11,7 +11,7 @@ extern FindVarMethod var_extensible_pass_persist;
 extern WriteMethod setPassPersist;
 
 /*
- * config file parsing routines 
+ * config file parsing routines
  */
 void            pass_persist_free_config(void);
 void            pass_persist_parse_config(const char *, char *);

@@ -105,11 +105,11 @@ void netsnmp_free( void * ptr)
  * initially of size *buf_len.  Contents are preserved **AT THE BOTTOM END OF
  * THE BUFFER**.  If memory can be (re-)allocated then it returns 1, else it
  * returns 0.
- * 
+ *
  * @param buf  pointer to a buffer pointer
  * @param buf_len      pointer to current size of buffer in bytes
- * 
- * 
+ *
+ *
  */
 int
 snmp_realloc(u_char ** buf, size_t * buf_len)
@@ -124,7 +124,7 @@ snmp_realloc(u_char ** buf, size_t * buf_len)
     /*
      * The current re-allocation algorithm is to increase the buffer size by
      * whichever is the greater of 256 bytes or the current buffer size, up to
-     * a maximum increase of 8192 bytes.  
+     * a maximum increase of 8192 bytes.
      */
 
     if (*buf_len <= 255) {
@@ -160,7 +160,7 @@ snmp_strcat(u_char ** buf, size_t * buf_len, size_t * out_len,
 
     if (s == NULL) {
         /*
-         * Appending a NULL string always succeeds since it is a NOP.  
+         * Appending a NULL string always succeeds since it is a NOP.
          */
         return 1;
     }
@@ -229,7 +229,7 @@ malloc_random(size_t * size)
  *	@param to       Pointer to allocate and copy memory to.
  *      @param from     Pointer to copy memory from.
  *      @param size     Size of the data to be copied.
- *      
+ *
  *	@return SNMPERR_SUCCESS	on success, SNMPERR_GENERR on failure.
  */
 int
@@ -276,7 +276,7 @@ netsnmp_strdup_and_null(const u_char * from, size_t from_len)
  *	@param *input		Binary data.
  *	@param len		Length of binary data.
  *	@param **output	NULL terminated string equivalent in hex.
- *      
+ *
  * @return olen	Length of output string not including NULL terminator.
  *
  * FIX	Is there already one of these in the UCD SNMP codebase?
@@ -311,7 +311,7 @@ binary_to_hex(const u_char * input, size_t len, char **output)
  *	@param *input		Printable data in base16.
  *	@param len		Length in bytes of data.
  *	@param **output	Binary data equivalent to input.
- *      
+ *
  * @return SNMPERR_GENERR on failure, otherwise length of allocated string.
  *
  * Input of an odd length is right aligned.
@@ -428,7 +428,7 @@ snmp_hex_to_binary(u_char ** buf, size_t * buf_len, size_t * out_len,
         (*out_len)++;
         if (*++cp == '\0') {
             /*
-             * Odd number of hex digits is an error.  
+             * Odd number of hex digits is an error.
              */
             return 0;
         } else {
@@ -489,7 +489,7 @@ dump_chunk(const char *debugtoken, const char *title, const u_char * buf,
  * Parameters:
  *	*estring
  *	*estring_len
- *      
+ *
  * Returns:
  *	Allocated memory pointing to a string of buflen char representing
  *	a printf'able form of the snmpEngineID.
@@ -502,9 +502,9 @@ dump_chunk(const char *debugtoken, const char *title, const u_char * buf,
  *
  * First bit:	0	Bit string structured by means non-SNMPv3.
  *  		1	Structure described by SNMPv3 SnmpEngineID TC.
- *  
+ *
  * Bytes 1-4:		Enterprise ID.  (High bit of first byte is ignored.)
- *  
+ *
  * Byte 5:	0	(RESERVED by IANA.)
  *  		1	IPv4 address.		(   4 octets)
  *  		2	IPv6 address.		(  16 octets)
@@ -512,9 +512,9 @@ dump_chunk(const char *debugtoken, const char *title, const u_char * buf,
  *  		4	Locally defined text.	(0-27 octets)
  *  		5	Locally defined octets.	(0-27 octets)
  *  		6-127	(RESERVED for enterprise.)
- *  
+ *
  * Bytes 6-32:		(Determined by byte 5.)
- *  
+ *
  *
  * Non-printable characters are given in hex.  Text is given in quotes.
  * IP and MAC addresses are given in standard (UN*X) conventions.  Sections
@@ -533,7 +533,7 @@ dump_chunk(const char *debugtoken, const char *title, const u_char * buf,
  * XXX	Need a switch to decide whether to use DNS name instead of a simple
  *	IP address.
  *
- * FIX	Use something other than snprint_hexstring which doesn't add 
+ * FIX	Use something other than snprint_hexstring which doesn't add
  *	trailing spaces and (sometimes embedded) newlines...
  */
 #ifdef SNMP_TESTING_CODE
@@ -579,7 +579,7 @@ dump_snmpEngineID(const u_char * estring, size_t * estring_len)
                  ((*(esp + 1) & 0xff) << 16) |
                  ((*(esp + 2) & 0xff) << 8) | ((*(esp + 3) & 0xff)));
     /*
-     * XXX  Ick. 
+     * XXX  Ick.
      */
 
     if (remaining_len < 5) {    /* XXX  Violating string. */
@@ -641,10 +641,10 @@ dump_snmpEngineID(const u_char * estring, size_t * estring_len)
     case 4:                    /* Text. */
 
         /*
-         * Doesn't exist on all (many) architectures 
+         * Doesn't exist on all (many) architectures
          */
         /*
-         * s += snprintf(s, remaining_len+3, "\"%s\"", esp); 
+         * s += snprintf(s, remaining_len+3, "\"%s\"", esp);
          */
         s += sprintf(s, "\"%s\"", esp);
         goto dump_snmpEngineID_quit;
@@ -658,7 +658,7 @@ dump_snmpEngineID(const u_char * estring, size_t * estring_len)
         goto dump_snmpEngineID_quit;
         break;
        /*NOTREACHED*/ dump_snmpEngineID_violation:
-    case 0:                    /* Violation of RESERVED, 
+    case 0:                    /* Violation of RESERVED,
                                  * *   -OR- of expected length.
                                  */
         gotviolation = 1;
@@ -842,7 +842,7 @@ uatime_ready(marker_t pm, unsigned int deltaT)
          */
 
 /**
- * Return the number of timeTicks since the given marker 
+ * Return the number of timeTicks since the given marker
  */
 int
 marker_tticks(marker_t pm)

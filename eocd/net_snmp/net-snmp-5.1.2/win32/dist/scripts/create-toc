@@ -1,12 +1,12 @@
 #!/usr/bin/perl
 #
 # This program generates an HTML document containing links to man
-# pages already converted to html using man2html3.0.1 
-# (http://search.cpan.org/~ehood/man2html3.0.1/) 
+# pages already converted to html using man2html3.0.1
+# (http://search.cpan.org/~ehood/man2html3.0.1/)
 #
 # Written by:     Alex Burger
 # Date:           March 2nd, 2004
-# 
+#
 ################################################################
 # Options
 
@@ -38,13 +38,13 @@ foreach my $file (@files)
 {
   chomp $file;
 
-  # Man pages  
+  # Man pages
   if ($file =~ /$man_dir\/man(\d+)-(.*)/)
   {
     push (@man_pages, "$1-$2");
   }
 
-  # Perl POD files  
+  # Perl POD files
   elsif ($file =~ /$man_dir\/perl-(.*)/) {
     push (@perl_files, "$1");
   }
@@ -59,7 +59,7 @@ foreach my $file (@files)
 @perl_files = sort (@perl_files);
 @readme_files = sort (@readme_files);
 
-# Divide up man pages  
+# Divide up man pages
 foreach my $man_page (@man_pages)
 {
   $man_page =~ /(\d+)-(.*)/;
@@ -74,7 +74,7 @@ foreach my $man_page (@man_pages)
   elsif ($1 == 8) { push (@man8,$2); }
   elsif ($1 == 9) { push (@man9,$2); }
 }
-  
+
 if ($include_header > 0) {
   print '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">' . "\n";
   print '<HTML>' . "\n";
@@ -85,7 +85,7 @@ if ($include_header > 0) {
   print '<OBJECT type="text/site properties">' . "\n";
   print '	<param name="ImageType" value="Folder">' . "\n";
   print '</OBJECT>' . "\n";
-  
+
   print "<UL>\n";
 }
 print_section("Applications",   "man1-",\@man1);
@@ -108,7 +108,7 @@ sub print_section{
   my $man = shift;
 
   if (defined(@$man)) {
-      
+
     print '	<LI> <OBJECT type="text/sitemap">' . "\n";
     print "		<param name=\"Name\" value=\"$section_name\">\n";
     print '		<param name="ImageNumber" value="1">' . "\n";

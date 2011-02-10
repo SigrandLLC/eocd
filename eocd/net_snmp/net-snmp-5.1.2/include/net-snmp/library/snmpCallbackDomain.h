@@ -61,7 +61,7 @@ void             netsnmp_clear_callback_list(void);
 
 #define netsnmp_clear_callback_list()
 
-     
+
 #endif /*SNMP_TRANSPORT_CALLBACK_DOMAIN*/
 
 #ifdef __cplusplus

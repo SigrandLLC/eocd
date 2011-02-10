@@ -2,7 +2,7 @@
 .ad l
 .nh
 .SH NAME
-cache_handler: Maintains a cache of data for use by lower level handlers. \- This helper checks to see whether the data has been loaded 'recently' (according to the timeout for that particular cache) and calls the registered 'load_cache' routine if necessary.  
+cache_handler: Maintains a cache of data for use by lower level handlers. \- This helper checks to see whether the data has been loaded 'recently' (according to the timeout for that particular cache) and calls the registered 'load_cache' routine if necessary.
 
 .PP
 .SS "Functions"
@@ -34,10 +34,10 @@ cache_handler: Maintains a cache of data for use by lower level handlers. \- Thi
 .RI "\fIrun regularly to automatically release cached resources. \fP"
 .in -1c
 .SH "Detailed Description"
-.PP 
-This helper checks to see whether the data has been loaded 'recently' (according to the timeout for that particular cache) and calls the registered 'load_cache' routine if necessary. The lower handlers can then work with this local cached data. 
+.PP
+This helper checks to see whether the data has been loaded 'recently' (according to the timeout for that particular cache) and calls the registered 'load_cache' routine if necessary. The lower handlers can then work with this local cached data.
 .SH "Function Documentation"
-.PP 
+.PP
 .SS "int netsnmp_cache_helper_handler (\fBnetsnmp_mib_handler\fP * handler, \fBnetsnmp_handler_registration\fP * reginfo, \fBnetsnmp_agent_request_info\fP * reqinfo, \fBnetsnmp_request_info\fP * requests)"
 .PP
 Implements the cache handler. Definition at line 108 of file cache_handler.c.

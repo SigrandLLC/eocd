@@ -6,9 +6,9 @@ SSL=
 
 !IF "$(OS)" == "Windows_NT"
 NULL=
-!ELSE 
+!ELSE
 NULL=nul
-!ENDIF 
+!ENDIF
 
 !IF $(SSL) == 1
 OPENSSL="libeay32.lib"
@@ -88,47 +88,47 @@ CLEAN :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "." /I ".." /I "..\..\snmplib" /I "..\.." /I "..\..\include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "NETSNMP_DLL" /Fp"$(INTDIR)\libsnmp_dll.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "." /I ".." /I "..\..\snmplib" /I "..\.." /I "..\..\include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "NETSNMP_DLL" /Fp"$(INTDIR)\libsnmp_dll.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cpp{$(INTDIR)}.obj::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cxx{$(INTDIR)}.obj::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .c{$(INTDIR)}.sbr::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cpp{$(INTDIR)}.sbr::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cxx{$(INTDIR)}.sbr::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 MTL=midl.exe
-MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /o "NUL" /win32 
+MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /o "NUL" /win32
 RSC=rc.exe
 BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(INTDIR)\libsnmp_dll.bsc" 
+BSC32_FLAGS=/nologo /o"$(INTDIR)\libsnmp_dll.bsc"
 BSC32_SBRS= \
-	
+
 LINK32=link.exe
-LINK32_FLAGS=$(OPENSSL) advapi32.lib ws2_32.lib kernel32.lib user32.lib /nologo /subsystem:console /dll /pdb:none /machine:I386 /def:".\libsnmp.def" /out:"../bin/$(OUTDIR)/netsnmp.dll" /implib:"../lib/$(OUTDIR)\netsnmp.lib" 
+LINK32_FLAGS=$(OPENSSL) advapi32.lib ws2_32.lib kernel32.lib user32.lib /nologo /subsystem:console /dll /pdb:none /machine:I386 /def:".\libsnmp.def" /out:"../bin/$(OUTDIR)/netsnmp.dll" /implib:"../lib/$(OUTDIR)\netsnmp.lib"
 LINK32_OBJS= \
 	"$(INTDIR)\asn1.obj" \
 	"$(INTDIR)\callback.obj" \
@@ -260,47 +260,47 @@ CLEAN :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "." /I ".." /I "..\..\snmplib" /I "..\.." /I "..\..\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "NETSNMP_DLL" /Fp"$(INTDIR)\libsnmp_dll.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "." /I ".." /I "..\..\snmplib" /I "..\.." /I "..\..\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "NETSNMP_DLL" /Fp"$(INTDIR)\libsnmp_dll.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cpp{$(INTDIR)}.obj::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cxx{$(INTDIR)}.obj::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .c{$(INTDIR)}.sbr::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cpp{$(INTDIR)}.sbr::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cxx{$(INTDIR)}.sbr::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 MTL=midl.exe
-MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /o "NUL" /win32 
+MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /o "NUL" /win32
 RSC=rc.exe
 BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(INTDIR)\libsnmp_dll.bsc" 
+BSC32_FLAGS=/nologo /o"$(INTDIR)\libsnmp_dll.bsc"
 BSC32_SBRS= \
-	
+
 LINK32=link.exe
-LINK32_FLAGS=$(OPENSSL) advapi32.lib ws2_32.lib kernel32.lib user32.lib /nologo /subsystem:console /dll /incremental:no /pdb:"$(INTDIR)\netsnmp.pdb" /debug /machine:I386 /def:".\libsnmp.def" /out:"../bin/$(OUTDIR)/netsnmp.dll" /implib:"../lib/$(OUTDIR)\netsnmp.lib" 
+LINK32_FLAGS=$(OPENSSL) advapi32.lib ws2_32.lib kernel32.lib user32.lib /nologo /subsystem:console /dll /incremental:no /pdb:"$(INTDIR)\netsnmp.pdb" /debug /machine:I386 /def:".\libsnmp.def" /out:"../bin/$(OUTDIR)/netsnmp.dll" /implib:"../lib/$(OUTDIR)\netsnmp.lib"
 LINK32_OBJS= \
 	"$(INTDIR)\asn1.obj" \
 	"$(INTDIR)\callback.obj" \
@@ -358,16 +358,16 @@ LINK32_OBJS= \
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
 
-!ENDIF 
+!ENDIF
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
 !IF EXISTS("libsnmp_dll.dep")
 !INCLUDE "libsnmp_dll.dep"
-!ELSE 
+!ELSE
 !MESSAGE Warning: cannot find "libsnmp_dll.dep"
-!ENDIF 
-!ENDIF 
+!ENDIF
+!ENDIF
 
 
 !IF "$(CFG)" == "release" || "$(CFG)" == "debug"
@@ -672,6 +672,6 @@ SOURCE=..\..\snmplib\winpipe.c
 
 
 
-!ENDIF 
+!ENDIF
 
 

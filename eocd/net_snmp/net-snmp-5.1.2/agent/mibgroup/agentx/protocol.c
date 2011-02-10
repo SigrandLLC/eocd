@@ -235,7 +235,7 @@ agentx_realloc_build_oid(u_char ** buf, size_t * buf_len, size_t * out_len,
     }
 
     /*
-     * 'Compact' internet OIDs 
+     * 'Compact' internet OIDs
      */
     if (name_len >= 5 && (name[0] == 1 && name[1] == 3 &&
                           name[2] == 6 && name[3] == 1)) {
@@ -317,7 +317,7 @@ agentx_realloc_build_string(u_char ** buf, size_t * buf_len,
     *out_len += string_len;
 
     /*
-     * Pad to a multiple of 4 bytes if necessary (per RFC 2741).  
+     * Pad to a multiple of 4 bytes if necessary (per RFC 2741).
      */
 
     if (string_len % 4 != 0) {
@@ -501,7 +501,7 @@ agentx_realloc_build_varbind(u_char ** buf, size_t * buf_len,
     case ASN_OPAQUE_COUNTER64:
         /*
          * XXX - TODO - encode as raw OPAQUE for now (so fall through
-         * here).  
+         * here).
          */
 #endif
 
@@ -595,7 +595,7 @@ agentx_realloc_build_header(u_char ** buf, size_t * buf_len,
     }
 
     /*
-     * First 4 bytes are version, pdu type, flags, and a 0 reserved byte.  
+     * First 4 bytes are version, pdu type, flags, and a 0 reserved byte.
      */
 
     *(*buf + *out_len) = 1;
@@ -683,7 +683,7 @@ _agentx_realloc_build(u_char ** buf, size_t * buf_len, size_t * out_len,
     session->s_errno = 0;
 
     /*
-     * Various PDU types don't include context information (RFC 2741, p. 20). 
+     * Various PDU types don't include context information (RFC 2741, p. 20).
      */
     switch (pdu->command) {
     case AGENTX_MSG_OPEN:
@@ -696,7 +696,7 @@ _agentx_realloc_build(u_char ** buf, size_t * buf_len, size_t * out_len,
     }
 
     /*
-     * Build the header (and context if appropriate).  
+     * Build the header (and context if appropriate).
      */
     if (!agentx_realloc_build_header
         (buf, buf_len, out_len, allow_realloc, pdu)) {
@@ -705,7 +705,7 @@ _agentx_realloc_build(u_char ** buf, size_t * buf_len, size_t * out_len,
 
     /*
      * Everything causes a response, except for agentx-Response-PDU and
-     * agentx-CleanupSet-PDU.  
+     * agentx-CleanupSet-PDU.
      */
 
     pdu->flags |= UCD_MSG_FLAG_EXPECT_RESPONSE;
@@ -715,7 +715,7 @@ _agentx_realloc_build(u_char ** buf, size_t * buf_len, size_t * out_len,
 
     case AGENTX_MSG_OPEN:
         /*
-         * Timeout  
+         * Timeout
          */
         while ((*out_len + 4) >= *buf_len) {
             if (!(allow_realloc && snmp_realloc(buf, buf_len))) {
@@ -758,7 +758,7 @@ _agentx_realloc_build(u_char ** buf, size_t * buf_len, size_t * out_len,
 
     case AGENTX_MSG_CLOSE:
         /*
-         * Reason  
+         * Reason
          */
         while ((*out_len + 4) >= *buf_len) {
             if (!(allow_realloc && snmp_realloc(buf, buf_len))) {
@@ -843,7 +843,7 @@ _agentx_realloc_build(u_char ** buf, size_t * buf_len, size_t * out_len,
     case AGENTX_MSG_GETBULK:
         DEBUGDUMPHEADER("send", "GetBulk Non-Repeaters");
         if (!agentx_realloc_build_short
-            (buf, buf_len, out_len, allow_realloc, 
+            (buf, buf_len, out_len, allow_realloc,
             (u_short)pdu->non_repeaters,
              network_order)) {
             DEBUGINDENTLESS();
@@ -854,7 +854,7 @@ _agentx_realloc_build(u_char ** buf, size_t * buf_len, size_t * out_len,
 
         DEBUGDUMPHEADER("send", "GetBulk Max-Repetitions");
         if (!agentx_realloc_build_short
-            (buf, buf_len, out_len, allow_realloc, 
+            (buf, buf_len, out_len, allow_realloc,
             (u_short)pdu->max_repetitions,
              network_order)) {
             DEBUGINDENTLESS();
@@ -864,7 +864,7 @@ _agentx_realloc_build(u_char ** buf, size_t * buf_len, size_t * out_len,
         DEBUGINDENTLESS();
 
         /*
-         * Fallthrough  
+         * Fallthrough
          */
 
     case AGENTX_MSG_GET:
@@ -903,11 +903,11 @@ _agentx_realloc_build(u_char ** buf, size_t * buf_len, size_t * out_len,
         DEBUGINDENTLESS();
 
         if (!agentx_realloc_build_short
-            (buf, buf_len, out_len, allow_realloc, 
+            (buf, buf_len, out_len, allow_realloc,
             (u_short)pdu->errstat,
              network_order)
             || !agentx_realloc_build_short(buf, buf_len, out_len,
-                                           allow_realloc, 
+                                           allow_realloc,
                                            (u_short)pdu->errindex,
                                            network_order)) {
             DEBUGINDENTLESS();
@@ -921,7 +921,7 @@ _agentx_realloc_build(u_char ** buf, size_t * buf_len, size_t * out_len,
         DEBUGINDENTLESS();
 
         /*
-         * Fallthrough  
+         * Fallthrough
          */
 
     case AGENTX_MSG_INDEX_ALLOCATE:
@@ -945,7 +945,7 @@ _agentx_realloc_build(u_char ** buf, size_t * buf_len, size_t * out_len,
     case AGENTX_MSG_UNDOSET:
     case AGENTX_MSG_PING:
         /*
-         * "Empty" packet.  
+         * "Empty" packet.
          */
         break;
 
@@ -995,7 +995,7 @@ _agentx_realloc_build(u_char ** buf, size_t * buf_len, size_t * out_len,
     DEBUGINDENTLESS();
 
     /*
-     * Fix the payload length (ignoring the 20-byte header).  
+     * Fix the payload length (ignoring the 20-byte header).
      */
 
     agentx_build_int((*buf + 16), (*out_len - ilen) - 20, network_order);
@@ -1049,7 +1049,7 @@ agentx_parse_int(u_char * data, u_int network_byte_order)
 #else
         /*
          * The equivalent of the 'ntohl()' macro,
-         * except this macro is null on big-endian systems 
+         * except this macro is null on big-endian systems
          */
         value += data[3];
         value <<= 8;
@@ -1082,7 +1082,7 @@ agentx_parse_short(u_char * data, u_int network_byte_order)
 #else
         /*
          * The equivalent of the 'ntohs()' macro,
-         * except this macro is null on big-endian systems 
+         * except this macro is null on big-endian systems
          */
         value += data[1];
         value <<= 8;
@@ -1139,7 +1139,7 @@ agentx_parse_oid(u_char * data, size_t * length, int *inc,
     DEBUGMSG(("djp", "  sizeof(oid) = %d\n", sizeof(oid)));
     if (n_subid == 0 && prefix == 0) {
         /*
-         * Null OID 
+         * Null OID
          */
         *int_ptr = 0;
         int_ptr++;
@@ -1158,8 +1158,8 @@ agentx_parse_oid(u_char * data, size_t * length, int *inc,
         return NULL;
     }
 
-    if (prefix) {	 
-        if (sizeof(oid) == 8) {  	/* align OID values in 64 bit agent */  
+    if (prefix) {
+        if (sizeof(oid) == 8) {  	/* align OID values in 64 bit agent */
             int_ptr[0] = int_ptr[2] = int_ptr[4] = int_ptr[6] = int_ptr[8] = 0;
         }
         int_ptr[int_offset - 1] = 1;
@@ -1363,7 +1363,7 @@ agentx_parse_varbind(u_char * data, size_t * length, int *type,
                              data_len, network_byte_order);
         *data_len *= sizeof(oid);
         /*
-         * 'agentx_parse_oid()' returns the number of sub_ids 
+         * 'agentx_parse_oid()' returns the number of sub_ids
          */
         break;
 
@@ -1409,7 +1409,7 @@ agentx_parse_varbind(u_char * data, size_t * length, int *type,
     case SNMP_NOSUCHINSTANCE:
     case SNMP_ENDOFMIBVIEW:
         /*
-         * No data associated with these types. 
+         * No data associated with these types.
          */
         *data_len = 0;
         break;
@@ -1544,7 +1544,7 @@ agentx_parse(netsnmp_session * session, netsnmp_pdu *pdu, u_char * data,
 
     if (pdu == NULL) {
         /*
-         * Dump the packet in a formatted style 
+         * Dump the packet in a formatted style
          */
         pdu = (netsnmp_pdu *) malloc(sizeof(netsnmp_pdu));
         free(pdu);
@@ -1577,7 +1577,7 @@ agentx_parse(netsnmp_session * session, netsnmp_pdu *pdu, u_char * data,
         return SNMPERR_INCOMPLETE_PACKET;       /* i.e. wait for the rest */
 
     /*
-     * Control PDU handling 
+     * Control PDU handling
      */
     pdu->flags |= UCD_MSG_FLAG_ALWAYS_IN_VIEW;
     pdu->flags |= UCD_MSG_FLAG_FORCE_PDU_COPY;
@@ -1611,7 +1611,7 @@ agentx_parse(netsnmp_session * session, netsnmp_pdu *pdu, u_char * data,
         *length -= 4;
 
         /*
-         * Store subagent OID & description in a VarBind 
+         * Store subagent OID & description in a VarBind
          */
         DEBUGDUMPHEADER("recv", "Subagent OID");
         bufp = agentx_parse_oid(bufp, length, NULL,
@@ -1689,7 +1689,7 @@ agentx_parse(netsnmp_session * session, netsnmp_pdu *pdu, u_char * data,
             *length -= 4;
 
             /*
-             * Construct the end-OID.  
+             * Construct the end-OID.
              */
             end_oid_buf_len = oid_buf_len * sizeof(oid);
             memcpy(end_oid_buf, oid_buffer, end_oid_buf_len);
@@ -1721,7 +1721,7 @@ agentx_parse(netsnmp_session * session, netsnmp_pdu *pdu, u_char * data,
         bufp += 4;
         *length -= 4;
         /*
-         * Fallthrough - SearchRange handling is the same 
+         * Fallthrough - SearchRange handling is the same
          */
 
     case AGENTX_MSG_GETNEXT:
@@ -1755,7 +1755,7 @@ agentx_parse(netsnmp_session * session, netsnmp_pdu *pdu, u_char * data,
             }
             end_oid_buf_len *= sizeof(oid);
             /*
-             * 'agentx_parse_oid()' returns the number of sub_ids 
+             * 'agentx_parse_oid()' returns the number of sub_ids
              */
 
             if (inc) {
@@ -1782,7 +1782,7 @@ agentx_parse(netsnmp_session * session, netsnmp_pdu *pdu, u_char * data,
         pdu->flags |= UCD_MSG_FLAG_RESPONSE_PDU;
 
         /*
-         * sysUpTime 
+         * sysUpTime
          */
         pdu->time = agentx_parse_int(bufp,
                                      pdu->
@@ -1802,7 +1802,7 @@ agentx_parse(netsnmp_session * session, netsnmp_pdu *pdu, u_char * data,
         bufp += 4;
         *length -= 4;
         /*
-         * Fallthrough - VarBind handling is the same 
+         * Fallthrough - VarBind handling is the same
          */
 
     case AGENTX_MSG_INDEX_ALLOCATE:
@@ -1843,14 +1843,14 @@ agentx_parse(netsnmp_session * session, netsnmp_pdu *pdu, u_char * data,
     case AGENTX_MSG_PING:
 
         /*
-         * "Empty" packet 
+         * "Empty" packet
          */
         break;
 
 
     case AGENTX_MSG_ADD_AGENT_CAPS:
         /*
-         * Store AgentCap OID & description in a VarBind 
+         * Store AgentCap OID & description in a VarBind
          */
         bufp = agentx_parse_oid(bufp, length, NULL,
                                 oid_buffer, &oid_buf_len,
@@ -1873,7 +1873,7 @@ agentx_parse(netsnmp_session * session, netsnmp_pdu *pdu, u_char * data,
 
     case AGENTX_MSG_REMOVE_AGENT_CAPS:
         /*
-         * Store AgentCap OID & description in a VarBind 
+         * Store AgentCap OID & description in a VarBind
          */
         bufp = agentx_parse_oid(bufp, length, NULL,
                                 oid_buffer, &oid_buf_len,
@@ -1917,7 +1917,7 @@ testit(netsnmp_pdu *pdu1)
     memset(packet2, 0, BUFSIZ);
 
     /*
-     * Encode this into a "packet" 
+     * Encode this into a "packet"
      */
     len1 = BUFSIZ;
     if (agentx_build(&sess, pdu1, packet1, &len1) < 0) {
@@ -1929,7 +1929,7 @@ testit(netsnmp_pdu *pdu1)
     xdump(packet1, len1, "Ax1> ");
 
     /*
-     * Unpack this into a PDU 
+     * Unpack this into a PDU
      */
     len2 = len1;
     if (agentx_parse(&pdu2, packet1, &len2, (u_char **) NULL) < 0) {
@@ -1942,7 +1942,7 @@ testit(netsnmp_pdu *pdu1)
                     "Warning - parsed packet has %d bytes left\n", len2));
 
     /*
-     * Encode this into another "packet" 
+     * Encode this into another "packet"
      */
     len2 = BUFSIZ;
     if (agentx_build(&sess, &pdu2, packet2, &len2) < 0) {
@@ -1954,7 +1954,7 @@ testit(netsnmp_pdu *pdu1)
     xdump(packet2, len2, "Ax2> ");
 
     /*
-     * Compare the results 
+     * Compare the results
      */
     if (len1 != len2) {
         DEBUGMSGTL(("agentx",
@@ -1984,7 +1984,7 @@ main()
 
 
     /*
-     * Create an example AgentX pdu structure 
+     * Create an example AgentX pdu structure
      */
 
     memset(&pdu1, 0, sizeof(netsnmp_pdu));
@@ -2027,7 +2027,7 @@ main()
 #endif
 
 /*
- * returns the proper length of an incoming agentx packet. 
+ * returns the proper length of an incoming agentx packet.
  */
 /*
  *    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

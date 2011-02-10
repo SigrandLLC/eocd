@@ -47,7 +47,7 @@ struct snmp_secmod_incoming_params {
     u_char         *secEngineID;        /* OUT    - Pointer snmpEngineID.          */
     size_t         *secEngineIDLen;     /* IN/OUT - Len available; len returned.   */
     /*
-     * NOTE: Memory provided by caller.      
+     * NOTE: Memory provided by caller.
      */
 
     char           *secName;    /* OUT    - Pointer to securityName.       */
@@ -69,7 +69,7 @@ struct snmp_secmod_incoming_params {
  */
 
 /*
- * free's a given security module's data; called at unregistration time 
+ * free's a given security module's data; called at unregistration time
  */
 typedef int     (SecmodSessionCallback) (netsnmp_session *);
 typedef int     (SecmodPduCallback) (netsnmp_pdu *);
@@ -84,17 +84,17 @@ typedef void    (SecmodFreeState) (void *);
 
 /*
  * all of these callback functions except the encoding and decoding
- * routines are optional.  The rest of them are available if need.  
+ * routines are optional.  The rest of them are available if need.
  */
 struct snmp_secmod_def {
     /*
-     * session maniplation functions 
+     * session maniplation functions
      */
     SecmodSessionCallback *session_open;        /* called in snmp_sess_open()  */
     SecmodSessionCallback *session_close;       /* called in snmp_sess_close() */
 
     /*
-     * pdu manipulation routines 
+     * pdu manipulation routines
      */
     SecmodPduCallback *pdu_free;        /* called in free_pdu() */
     Secmod2PduCallback *pdu_clone;      /* called in snmp_clone_pdu() */
@@ -102,7 +102,7 @@ struct snmp_secmod_def {
     SecmodFreeState *pdu_free_state_ref;        /* frees pdu->securityStateRef */
 
     /*
-     * de/encoding routines: mandatory 
+     * de/encoding routines: mandatory
      */
     SecmodOutMsg   *encode_reverse;     /* encode packet back to front */
     SecmodOutMsg   *encode_forward;     /* encode packet forward */
@@ -121,16 +121,16 @@ struct snmp_secmod_list {
 
 
 /*
- * register a security service 
+ * register a security service
  */
 int             register_sec_mod(int, const char *,
                                  struct snmp_secmod_def *);
 /*
- * find a security service definition 
+ * find a security service definition
  */
 struct snmp_secmod_def *find_sec_mod(int);
 /*
- * register a security service 
+ * register a security service
  */
 int             unregister_sec_mod(int);        /* register a security service */
 void            init_secmod(void);

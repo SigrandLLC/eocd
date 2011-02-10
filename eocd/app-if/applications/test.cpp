@@ -21,7 +21,7 @@ void print_full(app_comm_cli *cli)
     app_frame *req = new app_frame(APP_SPAN_NAME,APP_GET,app_frame::REQUEST,1,"");
     char *buf;
     int flag = 0;
-    
+
     printf("Full information about served channels:\n");
     do{
         cli->send(req->frame_ptr(),req->frame_size());
@@ -36,7 +36,7 @@ void print_full(app_comm_cli *cli)
 			delete resp;
 			delete req;
 			return;
-		} 
+		}
 		if( resp->is_negative() ){ // no such unit or no net_side
 			delete resp;
 			break;
@@ -49,7 +49,7 @@ void print_full(app_comm_cli *cli)
 			printf("%s ",p->name[i]);
 			//			printf("-----------------------------------------------------\n");
 			//			print_exact(cli,p->name[i],-1);
-		}	
+		}
 		printf("\n");
 
 		if( !p->filled )
@@ -83,7 +83,7 @@ main(int argc, char *argv[] )
 		printf("Cannot connect to %s\n",sock_name);
 		return 0;
     }
- 
+
 	{
 		printf("ADD channel dsl3-------------------------\n");
 		app_frame *req = new app_frame(APP_ADD_CHAN,APP_SET,app_frame::REQUEST,1,"dsl3");
@@ -103,7 +103,7 @@ main(int argc, char *argv[] )
 			delete resp;
 			delete req;
 			return 0;
-		} 
+		}
 		if( resp->is_negative() ){ // no such unit or no net_side
 			printf("Request is dropped\n");
 			return 0;;
@@ -137,7 +137,7 @@ main(int argc, char *argv[] )
 			delete resp;
 			delete req;
 			return 0;
-		} 
+		}
 		if( resp->is_negative() ){ // no such unit or no net_side
 			printf("Request is dropped\n");
 			return 0;;
@@ -165,15 +165,15 @@ main(int argc, char *argv[] )
 			delete resp;
 			delete req;
 			return 0;
-		} 
+		}
 		if( resp->is_negative() ){ // no such unit or no net_side
 			printf("Request is dropped\n");
 			return 0;;
 		}
 		printf("Request_successfull\n");
-		
+
 	}
-	
+
 	{
 		printf("ADD profile span#4-------------------------\n");
 		app_frame *req = new app_frame(APP_ADD_CPROF,APP_SET,app_frame::REQUEST,1,"");
@@ -193,13 +193,13 @@ main(int argc, char *argv[] )
 			delete resp;
 			delete req;
 			return 0;
-		} 
+		}
 		if( resp->is_negative() ){ // no such unit or no net_side
 			printf("Request is dropped\n");
 			return 0;;
 		}
 		printf("Request_successfull\n");
-	}	
+	}
 	{
 		printf("DEL profile span#1-------------------------\n");
 		app_frame *req = new app_frame(APP_DEL_CPROF,APP_SET,app_frame::REQUEST,1,"");
@@ -219,7 +219,7 @@ main(int argc, char *argv[] )
 			delete resp;
 			delete req;
 			return 0;
-		} 
+		}
 		if( resp->is_negative() ){ // no such unit or no net_side
 			printf("Request is dropped\n");
 			return 0;;
@@ -232,7 +232,7 @@ main(int argc, char *argv[] )
 		cprof_payload *p = (cprof_payload*)req->payload_ptr();
 		span_conf_profile_t *mconf = &p->conf;
 		cprof_changes *c = (cprof_changes *)req->changelist_ptr();
-	
+
 		memset(p,0,sizeof(*p));
 		memset(c,0,sizeof(*c));
 		strcpy(p->pname,"span#4");
@@ -254,7 +254,7 @@ main(int argc, char *argv[] )
 			delete resp;
 			delete req;
 			return 0;
-		} 
+		}
 		if( resp->is_negative() ){ // no such unit or no net_side
 			printf("Request is dropped\n");
 			return 0;;

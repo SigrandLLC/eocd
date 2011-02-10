@@ -22,12 +22,12 @@ initialize_table_mteEventTable(void)
     size_t          mteEventTable_oid_len = OID_LENGTH(mteEventTable_oid);
 
     /*
-     * create the table structure itself 
+     * create the table structure itself
      */
     table_set = netsnmp_create_table_data_set("mteEventTable");
 
     /*
-     * comment this out or delete if you don't support creation of new rows 
+     * comment this out or delete if you don't support creation of new rows
      */
     table_set->allow_creation = 1;
     /* mark the row status column */
@@ -60,11 +60,11 @@ initialize_table_mteEventTable(void)
     /* keep index values around for comparisons later */
     table_set->table->store_indexes = 1;
     /*
-     * registering the table with the master agent 
+     * registering the table with the master agent
      */
     /*
      * note: if you don't need a subhandler to deal with any aspects
-     * of the request, change mteEventTable_handler to "NULL" 
+     * of the request, change mteEventTable_handler to "NULL"
      */
     netsnmp_register_table_data_set(netsnmp_create_handler_registration
                                     ("mteEventTable",
@@ -80,7 +80,7 @@ init_mteEventTable(void)
 {
 
     /*
-     * here we initialize all the tables we're planning on supporting 
+     * here we initialize all the tables we're planning on supporting
      */
     initialize_table_mteEventTable();
 
@@ -105,7 +105,7 @@ mteEventTable_handler(netsnmp_mib_handler *handler,
      * perform anything here that you need to do.  The requests have
      * already been processed by the master table_dataset handler, but
      * this gives you chance to act on the request in some other way
-     * if need be. 
+     * if need be.
      */
 
     /* XXX: on rowstatus = destroy, remove the corresponding rows from the
@@ -214,7 +214,7 @@ parse_notificationEvent(const char *token, char *line) {
                            ASN_INTEGER, (char *) &tlong, sizeof(tlong));
 
     netsnmp_table_data_add_row(table_set->table, row);
-    
+
     /*
      * now all the objects to put into the trap's object row
      */
@@ -235,7 +235,7 @@ parse_notificationEvent(const char *token, char *line) {
 }
 
 /*
- * send trap 
+ * send trap
  */
 void
 run_mte_events(struct mteTriggerTable_data *item,
@@ -255,7 +255,7 @@ run_mte_events(struct mteTriggerTable_data *item,
                    eventobjname) == 0) {
             /* run this event */
             col1 = (netsnmp_table_data_set_storage *) row->data;
-            
+
             tc = netsnmp_table_data_set_find_column(col1,
                                                     COLUMN_MTEEVENTACTIONS);
             if (!tc->data.bitstring[0] & 0x80) {
@@ -288,15 +288,15 @@ run_mte_events(struct mteTriggerTable_data *item,
 
                     /* run this event */
                     col1 = (netsnmp_table_data_set_storage *) notif_row->data;
-            
+
                     tc = netsnmp_table_data_set_find_column(col1, COLUMN_MTEEVENTNOTIFICATION);
                     no = netsnmp_table_data_set_find_column(col1, COLUMN_MTEEVENTNOTIFICATIONOBJECTS);
                     noo = netsnmp_table_data_set_find_column(col1, COLUMN_MTEEVENTNOTIFICATIONOBJECTSOWNER);
                     if (!tc)
                         continue; /* no notification to be had. XXX: return? */
-                    
+
                     /*
-                     * snmpTrap oid 
+                     * snmpTrap oid
                      */
                     snmp_varlist_add_variable(&var_list, objid_snmptrap,
                                               sizeof(objid_snmptrap) /
@@ -320,7 +320,7 @@ run_mte_events(struct mteTriggerTable_data *item,
 
                         DEBUGMSGTL(("mteEventTable:send_events", "Adding objects for owner=%s name=%s", tmpowner, tmpname));
                         mte_add_objects(var_list, item,
-                                        tmpowner, tmpname, 
+                                        tmpowner, tmpname,
                                        name_oid + item->mteTriggerValueIDLen,
                                         name_oid_len - item->mteTriggerValueIDLen);
                         free(tmpowner);
@@ -330,7 +330,7 @@ run_mte_events(struct mteTriggerTable_data *item,
                     DEBUGMSGTL(("mteEventTable:send_events", "sending an event "));
                     DEBUGMSGOID(("mteEventTable:send_events", tc->data.objid, tc->data_len / sizeof(oid)));
                     DEBUGMSG(("mteEventTable:send_events", "\n"));
-                    
+
                     send_v2trap(var_list);
                     snmp_free_varbind(var_list);
                 }

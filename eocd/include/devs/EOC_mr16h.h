@@ -9,10 +9,10 @@
 class EOC_sg17 : public EOC_dev_terminal{
 protected:
     char *fname;
-    int valid;    
+    int valid;
 public:
     EOC_sg17(char *fname);
-    ~EOC_sg17();    
+    ~EOC_sg17();
     int send(EOC_msg *m);
     EOC_msg *recv();
 //    Linkstate link_state();

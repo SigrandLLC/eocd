@@ -41,7 +41,7 @@ typedef struct netsnmp_transport_s {
     int             domain_length;  /*  In sub-IDs, not octets.  */
 
     /*  Local transport address (in relevant SNMP-style encoding).  */
-    
+
     unsigned char  *local;
     int             local_length;   /*  In octets.  */
 
@@ -51,7 +51,7 @@ typedef struct netsnmp_transport_s {
     int             remote_length;  /*  In octets.  */
 
     /*  The actual socket.  */
-    
+
     int             sock;
 
     /*  Flags (see #definitions above).  */
@@ -68,8 +68,8 @@ typedef struct netsnmp_transport_s {
     size_t          msgMaxSize;
 
     /*  Callbacks.  Arguments are:
-     *		
-     *              "this" pointer, fd, buf, size, *opaque, *opaque_length  
+     *
+     *              "this" pointer, fd, buf, size, *opaque, *opaque_length
      */
 
     int             (*f_recv)   (struct netsnmp_transport_s *, void *,
@@ -137,7 +137,7 @@ int             netsnmp_tdomain_support(const oid *in_oid, size_t in_len,
 					const oid **out_oid, size_t *out_len);
 
 int             netsnmp_tdomain_register(netsnmp_tdomain *domain);
-    
+
 int             netsnmp_tdomain_unregister(netsnmp_tdomain *domain);
 
 void            netsnmp_clear_tdomain_list(void);

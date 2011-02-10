@@ -16,14 +16,14 @@ class app_comm{
 protected:
     enum { MAX_SOCK_NAME = 256 };
     enum { BLOCK_SIZE = 1024 };
-    
+
     int error_init;
 
     char *sname;
     int sfd;
     fd_set socks;
-    int hisock;    
-    
+    int hisock;
+
     int init_success(){ return !error_init; }
     int set_nonblock(int sock);
     virtual int build_select_list();

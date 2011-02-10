@@ -55,7 +55,7 @@ accum_channel_list(app_comm_cli &cli,struct eoc_channel channels[MAX_CHANNELS],i
     int flag = 0, ret = 0;
 
 	chan_cnt = 0;
-	
+
 	if( !req ){
 		print_error(omode,"fatal error: low on memory\n");
 		exit(0);
@@ -90,7 +90,7 @@ exit:
 }
 
 
-int 
+int
 accum_ints(app_comm_cli &cli,channel_info_t &info,unit u,side s,output_t omode)
 {
 	endp_int_payload *p, *p1;
@@ -100,12 +100,12 @@ accum_ints(app_comm_cli &cli,channel_info_t &info,unit u,side s,output_t omode)
 	char *b;
 	endp_int_payload ints[96];
 
-	
+
 	if( snum < 0 ){
 		print_error(omode,"fatal error (%s): error side: %d\n",info.name,s);
 		exit(0);
 	}
-	
+
 	app_ids id;
 	switch( info.tbl_type ){
 	case INT15:
@@ -120,7 +120,7 @@ accum_ints(app_comm_cli &cli,channel_info_t &info,unit u,side s,output_t omode)
 		return 0;
 	}
 
-	
+
 	int index,inum;
 	req = new app_frame(id, APP_GET_NEXT, app_frame::REQUEST,1,info.name);
 	if( !req ){
@@ -133,8 +133,8 @@ accum_ints(app_comm_cli &cli,channel_info_t &info,unit u,side s,output_t omode)
 		p->side = s;
 		p->loop = 0; // At this moment we have only one loop
 		p->int_num = inum;
-		
-		if(ret = eocd_request(cli,req,resp,omode)) { 
+
+		if(ret = eocd_request(cli,req,resp,omode)) {
 			// no such unit or no net_side or no more non-zero intervals
 			break;
 		}
@@ -159,7 +159,7 @@ accum_ints(app_comm_cli &cli,channel_info_t &info,unit u,side s,output_t omode)
 	switch( info.tbl_type ){
 	case INT15:
 		if( index ){
-			info.units[(int)u -1].sints15m[snum] = new endp_int_payload[index]; 
+			info.units[(int)u -1].sints15m[snum] = new endp_int_payload[index];
 			memcpy(info.units[(int)u -1].sints15m[snum],ints,sizeof(endp_int_payload)*index);
 		}else{
 			info.units[(int)u -1].sints15m[snum] = NULL;
@@ -168,7 +168,7 @@ accum_ints(app_comm_cli &cli,channel_info_t &info,unit u,side s,output_t omode)
 		break;
 	case INT1D:
 		if( index ){
-			info.units[(int)u -1].sints1d[snum] = new endp_int_payload[index]; 
+			info.units[(int)u -1].sints1d[snum] = new endp_int_payload[index];
 			memcpy(info.units[(int)u -1].sints1d[snum],ints,sizeof(endp_int_payload)*index);
 		}else{
 			info.units[(int)u -1].sints1d[snum] = NULL;
@@ -185,7 +185,7 @@ exit:
 	return ret;
 }
 
-int 
+int
 accum_side(app_comm_cli &cli,channel_info_t &info,unit u,side s,output_t omode)
 {
     endp_cur_payload *p,*p1;
@@ -203,7 +203,7 @@ accum_side(app_comm_cli &cli,channel_info_t &info,unit u,side s,output_t omode)
 		exit(0);
 	}
 	snum = side2index(s,u,info);
-	
+
 	// Get info about endpoint, loop 0
     req = new app_frame(APP_ENDP_CUR,APP_GET,app_frame::REQUEST,1,info.name);
 	if( !req ){
@@ -230,7 +230,7 @@ accum_side(app_comm_cli &cli,channel_info_t &info,unit u,side s,output_t omode)
 			info.name,unit2string((unit)p1->unit),side2string((side)p1->side),p1->loop);
 		exit(0);
 	}
-	
+
 	if( snum < 0 ){
 		print_error(omode,"fatal error (%s): wrong side: %d\n",info.name,s);
 		exit(0);
@@ -241,13 +241,13 @@ accum_side(app_comm_cli &cli,channel_info_t &info,unit u,side s,output_t omode)
 	if( info.tbl_type == TBL_FULL ){
 		info.tbl_type = INT15;
 		accum_ints(cli,info,u,s,omode);
-		info.tbl_type = INT1D;		
+		info.tbl_type = INT1D;
 		accum_ints(cli,info,u,s,omode);
 		info.tbl_type = TBL_FULL;
 	}else{
 		accum_ints(cli,info,u,s,omode);
 	}
-exit:	
+exit:
 	if( req )
 		delete req;
 	if( resp )
@@ -288,7 +288,7 @@ accum_unit(app_comm_cli &cli,channel_info_t &info,unit u,output_t omode)
 		}
 		break;
 	}
-	
+
 	switch( u ){
 	case stu_c:
 	case stu_r:
@@ -319,7 +319,7 @@ accum_unit(app_comm_cli &cli,channel_info_t &info,unit u,output_t omode)
 		unit_info_t &uinfo = info.units[(int)u-1];
 		uinfo.sensors = *p;
 	}
-	
+
 	// Get info about sensors events
 	for(int i = 0;i<3;i++){
 		unit_info_t &uinfo = info.units[(int)u-1];
@@ -340,7 +340,7 @@ accum_unit(app_comm_cli &cli,channel_info_t &info,unit u,output_t omode)
 			((sensor_full_payload *)req->payload_ptr())->unit = u;
 			((sensor_full_payload *)req->payload_ptr())->num = i;
 			((sensor_full_payload *)req->payload_ptr())->index = j;
-			
+
 
 			if(ret = eocd_request(cli, req, resp, omode)){ // no such unit or no net_side
 				//print_errcode(omode,ret,info.name);
@@ -355,14 +355,14 @@ accum_unit(app_comm_cli &cli,channel_info_t &info,unit u,output_t omode)
 			last = p->last;
 		}
 		uinfo.sens_events_num[i] = j;
-	}	
+	}
 exit:
 	if( resp )
 	    delete resp;
 	if( req )
 	    delete req;
     return ret;
-	
+
 }
 
 int
@@ -376,7 +376,7 @@ accum_channel(app_comm_cli &cli,channel_info_t &info,output_t omode,unit u)
 	if( info.type == slave ){
 		return 0;
 	}
-	
+
 	// Get channel parameters
 	req = new app_frame(APP_SPAN_PARAMS,APP_GET,app_frame::REQUEST,1,info.name);
 	if( !req ){
@@ -403,10 +403,10 @@ accum_channel(app_comm_cli &cli,channel_info_t &info,output_t omode,unit u)
 		delete req;
 	}
 	if( resp ){
-		delete resp; 
+		delete resp;
 	}
 	req = resp = NULL;
-	
+
 	// Get channel configuration
 	req = new app_frame(APP_SPAN_CONF, APP_GET, app_frame::REQUEST, 1,info.name);
 	if( !req ){
@@ -424,7 +424,7 @@ accum_channel(app_comm_cli &cli,channel_info_t &info,output_t omode,unit u)
 		delete req;
 	}
 	if( resp ){
-		delete resp; 
+		delete resp;
 	}
 	req = resp = NULL;
 
@@ -447,19 +447,19 @@ accum_channel(app_comm_cli &cli,channel_info_t &info,output_t omode,unit u)
     // poll STU-C
     info.units_map[(int)(stu_c) - 1] = true; // STU-C always available
   	accum_unit(cli,info,stu_c,omode);
-    
+
     // poll pepeaters
 		for(int i=0;i<info.stat.nreps;i++){
 			info.units_map[i] = true;
 			accum_unit(cli,info,(unit)(i+3),omode);
 		}
 
-    // poll STU-R    
+    // poll STU-R
     if( info.link_on ){
 			info.units_map[(int)(stu_r) - 1] = true;
 			accum_unit(cli,info,stu_r,omode);
-    }      
-    
+    }
+
 		break;
 	case unknown:
 		break;
@@ -469,7 +469,7 @@ accum_channel(app_comm_cli &cli,channel_info_t &info,output_t omode,unit u)
 		break;
 	}
 
-	
+
 exit:
 	if (req)
 		delete req;
@@ -497,8 +497,8 @@ int rst_relative(app_comm_cli &cli,char *chan,unit u,side s,output_t omode)
 	p->unit = (u8)u;
 	p->side = (u8)s;
 	p->loop = (u8)0;
-	
-	if( (ret=eocd_request(cli,req,resp,omode)) ){ 
+
+	if( (ret=eocd_request(cli,req,resp,omode)) ){
 		print_errcode(omode,ret,chan);
 	}
 exit:
@@ -528,12 +528,12 @@ int accum_confprofile(app_comm_cli &cli, confprof_info_t &info,output_t omode)
 
 	p = (cprof_payload*) req->payload_ptr();
 	strncpy(p->pname, info.pname, SNMP_ADMIN_LEN);
-	
-	if( (ret=eocd_request(cli,req,resp,omode)) ){ 
+
+	if( (ret=eocd_request(cli,req,resp,omode)) ){
 		print_errcode(omode,ret," ");
 		exit(0);
 	}
-	
+
 	p = (cprof_payload*)resp->payload_ptr();
 	info.conf = p->conf;
 	info.comp = p->comp;
@@ -564,8 +564,8 @@ int accum_profiles(app_comm_cli &cli, profiles_info_t &info,output_t omode,char 
 	info.size = 2;
 	info.cinfos = (confprof_info_t*)malloc(sizeof(confprof_info_t)*info.size);
 	info.used = 0;
-	
-	
+
+
 	req = new app_frame(APP_LIST_CPROF, APP_GET, app_frame::REQUEST, 1, "");
 	if( !req ){
 		print_error(omode,"fatal error: low on memory\n");
@@ -577,7 +577,7 @@ int accum_profiles(app_comm_cli &cli, profiles_info_t &info,output_t omode,char 
 	do {
 		p1 = (cprof_list_payload*) req->payload_ptr();
 
-		if( (ret=eocd_request(cli,req,resp,omode)) ){ 
+		if( (ret=eocd_request(cli,req,resp,omode)) ){
 			print_errcode(omode,ret,"profiles");
 			exit(0);
 		}

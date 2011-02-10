@@ -39,7 +39,7 @@
  *
  *  This is a simple container that doesn't actually contain anything.
  *  All the methods simply log a debug message and return.
- *  
+ *
  *  The original intent for this container is as a wrapper for a specialized
  *  container. Implement the functions you need, create a null_container,
  *  and override the default functions with your specialized versions.
@@ -140,7 +140,7 @@ netsnmp_container_get_null(void)
     }
 
     c->container_data = NULL;
-        
+
     c->get_size = _null_size;
     c->init = _null_init;
     c->cfree = _null_free;
@@ -151,7 +151,7 @@ netsnmp_container_get_null(void)
     c->get_subset = _null_get_subset;
     c->get_iterator = 0; /* _null_iterator; */
     c->for_each = _null_for_each;
-       
+
     return c;
 }
 
@@ -161,7 +161,7 @@ netsnmp_container_get_null_factory(void)
     static netsnmp_factory f = { "null",
                                  (netsnmp_factory_produce_f*)
                                  netsnmp_container_get_null};
-    
+
     DEBUGMSGTL(("container:null:get_null_factory","in\n"));
     return &f;
 }

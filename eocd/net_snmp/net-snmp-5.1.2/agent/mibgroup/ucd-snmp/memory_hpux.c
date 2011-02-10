@@ -89,12 +89,12 @@ init_memory_hpux(void)
 
     /*
      * Define the OID pointer to the top of the mib tree that we're
-     * registering underneath 
+     * registering underneath
      */
     oid             mem_variables_oid[] = { UCDAVIS_MIB, MEMMIBNUM };
 
     /*
-     * register ourselves with the agent to handle our mib tree 
+     * register ourselves with the agent to handle our mib tree
      */
     REGISTER_MIB("ucd-snmp/memory", extensible_mem_variables, variable2,
                  mem_variables_oid);
@@ -135,7 +135,7 @@ var_extensible_mem(struct variable *vp,
     static long     long_ret;
 
     /*
-     * Initialize the return value to 0 
+     * Initialize the return value to 0
      */
     long_ret = 0;
     swap.total_swap = 0;
@@ -165,7 +165,7 @@ var_extensible_mem(struct variable *vp,
         return ((u_char *) (&long_ret));
     case MEMTOTALREAL:
         /*
-         * Retrieve the static memory statistics 
+         * Retrieve the static memory statistics
          */
         if (pstat_getstatic(&pst, sizeof(pst), (size_t) 1, 0) == -1) {
             snmp_log(LOG_ERR, "memory_hpux: pstat_getstatic failed!\n");
@@ -175,14 +175,14 @@ var_extensible_mem(struct variable *vp,
         return ((u_char *) (&long_ret));
     case MEMAVAILREAL:
         /*
-         * Retrieve the static memory statistics 
+         * Retrieve the static memory statistics
          */
         if (pstat_getstatic(&pst, sizeof(pst), (size_t) 1, 0) == -1) {
             snmp_log(LOG_ERR, "memory_hpux: pstat_getstatic failed!\n");
             return (NULL);
         }
         /*
-         * Retrieve the dynamic memory statistics 
+         * Retrieve the dynamic memory statistics
          */
         if (pstat_getdynamic(&psd, sizeof(psd), (size_t) 1, 0) == -1) {
             snmp_log(LOG_ERR, "memory_hpux: pstat_getdynamic failed!\n");
@@ -192,14 +192,14 @@ var_extensible_mem(struct variable *vp,
         return ((u_char *) (&long_ret));
     case MEMTOTALSWAPTXT:
         /*
-         * Retrieve the static memory statistics 
+         * Retrieve the static memory statistics
          */
         if (pstat_getstatic(&pst, sizeof(pst), (size_t) 1, 0) == -1) {
             snmp_log(LOG_ERR, "memory_hpux: pstat_getstatic failed!\n");
             return (NULL);
         }
         /*
-         * Retrieve the dynamic memory statistics 
+         * Retrieve the dynamic memory statistics
          */
         if (pstat_getdynamic(&psd, sizeof(psd), (size_t) 1, 0) == -1) {
             snmp_log(LOG_ERR, "memory_hpux: pstat_getdynamic failed!\n");
@@ -209,14 +209,14 @@ var_extensible_mem(struct variable *vp,
         return ((u_char *) (&long_ret));
     case MEMUSEDSWAPTXT:
         /*
-         * Retrieve the static memory statistics 
+         * Retrieve the static memory statistics
          */
         if (pstat_getstatic(&pst, sizeof(pst), (size_t) 1, 0) == -1) {
             snmp_log(LOG_ERR, "memory_hpux: pstat_getstatic failed!\n");
             return (NULL);
         }
         /*
-         * Retrieve the dynamic memory statistics 
+         * Retrieve the dynamic memory statistics
          */
         if (pstat_getdynamic(&psd, sizeof(psd), (size_t) 1, 0) == -1) {
             snmp_log(LOG_ERR, "memory_hpux: pstat_getdynamic failed!\n");
@@ -226,14 +226,14 @@ var_extensible_mem(struct variable *vp,
         return ((u_char *) (&long_ret));
     case MEMTOTALREALTXT:
         /*
-         * Retrieve the static memory statistics 
+         * Retrieve the static memory statistics
          */
         if (pstat_getstatic(&pst, sizeof(pst), (size_t) 1, 0) == -1) {
             snmp_log(LOG_ERR, "memory_hpux: pstat_getstatic failed!\n");
             return (NULL);
         }
         /*
-         * Retrieve the dynamic memory statistics 
+         * Retrieve the dynamic memory statistics
          */
         if (pstat_getdynamic(&psd, sizeof(psd), (size_t) 1, 0) == -1) {
             snmp_log(LOG_ERR, "memory_hpux: pstat_getdynamic failed!\n");
@@ -243,14 +243,14 @@ var_extensible_mem(struct variable *vp,
         return ((u_char *) (&long_ret));
     case MEMUSEDREALTXT:
         /*
-         * Retrieve the static memory statistics 
+         * Retrieve the static memory statistics
          */
         if (pstat_getstatic(&pst, sizeof(pst), (size_t) 1, 0) == -1) {
             snmp_log(LOG_ERR, "memory_hpux: pstat_getstatic failed!\n");
             return (NULL);
         }
         /*
-         * Retrieve the dynamic memory statistics 
+         * Retrieve the dynamic memory statistics
          */
         if (pstat_getdynamic(&psd, sizeof(psd), (size_t) 1, 0) == -1) {
             snmp_log(LOG_ERR, "memory_hpux: pstat_getdynamic failed!\n");
@@ -260,14 +260,14 @@ var_extensible_mem(struct variable *vp,
         return ((u_char *) (&long_ret));
     case MEMTOTALFREE:
         /*
-         * Retrieve the static memory statistics 
+         * Retrieve the static memory statistics
          */
         if (pstat_getstatic(&pst, sizeof(pst), (size_t) 1, 0) == -1) {
             snmp_log(LOG_ERR, "memory_hpux: pstat_getstatic failed!\n");
             return (NULL);
         }
         /*
-         * Retrieve the dynamic memory statistics 
+         * Retrieve the dynamic memory statistics
          */
         if (pstat_getdynamic(&psd, sizeof(psd), (size_t) 1, 0) == -1) {
             snmp_log(LOG_ERR, "memory_hpux: pstat_getdynamic failed!\n");

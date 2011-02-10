@@ -5,10 +5,10 @@ config_require(util_funcs)
 config_add_mib(UCD-DISKIO-MIB)
 
     /*
-     * Define all our functions using prototyping for ANSI compilers 
+     * Define all our functions using prototyping for ANSI compilers
      */
     /*
-     * These functions are then defined in the example.c file 
+     * These functions are then defined in the example.c file
      */
      void            init_diskio(void);
      FindVarMethod   var_diskio;
@@ -20,7 +20,7 @@ config_add_mib(UCD-DISKIO-MIB)
  * lets say (since we are) creating a mib table at the location
  * .1.3.6.1.4.1.2021.254.  The following magic numbers would be the
  * next numbers on that oid for the var_example function to use, ie:
- * .1.3.6.1.4.1.2021.254.1 (and .2 and .3 ...) 
+ * .1.3.6.1.4.1.2021.254.1 (and .2 and .3 ...)
  */
 
 #define	DISKIO_INDEX		1

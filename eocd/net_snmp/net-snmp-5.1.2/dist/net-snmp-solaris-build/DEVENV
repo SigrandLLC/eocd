@@ -5,7 +5,7 @@ PATH=$PREFIX/bin:/usr/bin:/usr/dt/bin:/usr/openwin/bin:/usr/sbin:/usr/ccs/bin:/u
 MANPATH=$PREFIX/man:$MANPATH
 export PATH MANPATH
 
-LD_LIBRARY_PATH=$PREFIX/lib 
+LD_LIBRARY_PATH=$PREFIX/lib
 LD_RUN_PATH=$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH LD_RUN_PATH
 

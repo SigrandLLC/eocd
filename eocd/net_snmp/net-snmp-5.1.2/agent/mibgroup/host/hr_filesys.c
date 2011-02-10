@@ -188,11 +188,11 @@ init_hr_filesys(void)
  * Arguments:
  * vp     IN      - pointer to variable entry that points here
  * name    IN/OUT  - IN/name requested, OUT/name found
- * length  IN/OUT  - length of IN/OUT oid's 
+ * length  IN/OUT  - length of IN/OUT oid's
  * exact   IN      - TRUE if an exact match was requested
  * var_len OUT     - length of variable or 0 if function returned
  * write_method
- * 
+ *
  */
 
 int
@@ -212,7 +212,7 @@ header_hrfilesys(struct variable *vp,
 
     memcpy((char *) newname, (char *) vp->name, vp->namelen * sizeof(oid));
     /*
-     * Find "next" file system entry 
+     * Find "next" file system entry
      */
 
     Init_HR_FileSys();

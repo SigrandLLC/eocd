@@ -6,13 +6,13 @@
 
                       All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the name of CMU not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 CMU DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -39,7 +39,7 @@ extern          "C" {
         int             waiting;
         int             status;
         /*
-         * status codes 
+         * status codes
          */
 #define STAT_SUCCESS	0
 #define STAT_ERROR	1
@@ -89,7 +89,7 @@ extern          "C" {
     int             snmp_clone_mem(void **, void *, unsigned);
 
     /*
-     * single session API - see snmp_api.h for full details 
+     * single session API - see snmp_api.h for full details
      */
     int             snmp_sess_synch_response(void *, netsnmp_pdu *,
                                              netsnmp_pdu **);

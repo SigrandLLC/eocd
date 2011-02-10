@@ -13,10 +13,10 @@ extern          "C" {
 #define AGENTX_SOCKET	"/var/run/agentx"
 
     /*
-     * AgentX versions 
+     * AgentX versions
      */
     /*
-     * Use values distinct from those used to represent SNMP versions 
+     * Use values distinct from those used to represent SNMP versions
      */
 
 #define AGENTX_VERSION_BASE	192     /* Binary: 11xxxxxx */
@@ -26,7 +26,7 @@ extern          "C" {
 
 
     /*
-     * PDU types in AgentX 
+     * PDU types in AgentX
      */
 #define AGENTX_MSG_OPEN       ((u_char)1)
 #define AGENTX_MSG_CLOSE      ((u_char)2)
@@ -49,7 +49,7 @@ extern          "C" {
 
 
     /*
-     * Error codes from RFC 2257 
+     * Error codes from RFC 2257
      */
 #define AGENTX_ERR_OPEN_FAILED          (256)
 #define AGENTX_ERR_NOT_OPEN             (257)
@@ -63,7 +63,7 @@ extern          "C" {
 #define AGENTX_ERR_UNKNOWN_AGENTCAPS    (265)
 
     /*
-     * added in 1999 revision 
+     * added in 1999 revision
      */
 #define AGENTX_ERR_NOERROR		SNMP_ERR_NOERROR
 #define AGENTX_ERR_PARSE_FAILED         (266)
@@ -71,13 +71,13 @@ extern          "C" {
 #define AGENTX_ERR_PROCESSING_ERROR     (268)
 
     /*
-     * Message processing models 
+     * Message processing models
      */
 #define AGENTX_MP_MODEL_AGENTXv1        (257)
 
 
     /*
-     * PDU Flags - see also 'UCD_MSG_FLAG_xxx' in snmp.h 
+     * PDU Flags - see also 'UCD_MSG_FLAG_xxx' in snmp.h
      */
 #define AGENTX_MSG_FLAG_INSTANCE_REGISTER     0x01
 #define AGENTX_MSG_FLAG_NEW_INSTANCE          0x02
@@ -88,7 +88,7 @@ extern          "C" {
 #define AGENTX_MSG_FLAGS_MASK                 0xff
 
     /*
-     * Session Flags - see also 'UCD_FLAGS_xxx' in snmp.h 
+     * Session Flags - see also 'UCD_FLAGS_xxx' in snmp.h
      */
 #define AGENTX_FLAGS_NETWORK_BYTE_ORDER       AGENTX_MSG_FLAG_NETWORK_BYTE_ORDER
 

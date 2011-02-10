@@ -19,12 +19,12 @@ netsnmp_container_get_factory(const char *type);
 
 /*------------------------------------------------------------------
  */
-static void 
+static void
 _factory_free(container_type *data, void *context)
 {
     if (data == NULL)
 	return;
-    
+
     if (data->name != NULL) {
         DEBUGMSGTL(("container", "  _factory_free_list() called for %s\n",
                     data->name));
@@ -117,7 +117,7 @@ netsnmp_factory *
 netsnmp_container_get_factory(const char *type)
 {
     container_type ct, *found;
-    
+
     ct.name = type;
     found = CONTAINER_FIND(containers, &ct);
 
@@ -197,9 +197,9 @@ netsnmp_container_add_index(netsnmp_container *primary,
  * container.h. If you chance one, change them both.
  */
 int CONTAINER_INSERT(netsnmp_container *x, const void *k)
-{ 
+{
     int rc2, rc = 0;
-    
+
     /** start at first container */
     while(x->prev)
         x = x->prev;
@@ -221,7 +221,7 @@ int CONTAINER_INSERT(netsnmp_container *x, const void *k)
 int CONTAINER_REMOVE(netsnmp_container *x, const void *k)
 {
     int rc2, rc = 0;
-    
+
     /** start at last container */
     while(x->next)
         x = x->next;
@@ -232,7 +232,7 @@ int CONTAINER_REMOVE(netsnmp_container *x, const void *k)
             rc = rc2;
         }
         x = x->prev;
-        
+
     }
     return rc;
 }
@@ -244,7 +244,7 @@ int CONTAINER_REMOVE(netsnmp_container *x, const void *k)
 int CONTAINER_FREE(netsnmp_container *x)
 {
     int  rc2, rc = 0;
-        
+
     /** start at last container */
     while(x->next)
         x = x->next;

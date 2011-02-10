@@ -92,7 +92,7 @@ vacm_save(const char *token, const char *type)
 }
 
 /*
- * vacm_save_view(): saves a view entry to the persistent cache 
+ * vacm_save_view(): saves a view entry to the persistent cache
  */
 void
 vacm_save_view(struct vacm_viewEntry *view, const char *token,
@@ -160,7 +160,7 @@ vacm_parse_config_view(const char *token, char *line)
 }
 
 /*
- * vacm_save_access(): saves an access entry to the persistent cache 
+ * vacm_save_access(): saves an access entry to the persistent cache
  */
 void
 vacm_save_access(struct vacm_accessEntry *access_entry, const char *token,
@@ -251,7 +251,7 @@ vacm_parse_config_access(const char *token, char *line)
 }
 
 /*
- * vacm_save_group(): saves a group entry to the persistent cache 
+ * vacm_save_group(): saves a group entry to the persistent cache
  */
 void
 vacm_save_group(struct vacm_groupEntry *group_entry, const char *token,
@@ -349,7 +349,7 @@ vacm_getViewEntry(const char *viewName,
                 /*
                  * match successful, keep this node if its longer than
                  * the previous or (equal and lexicographically greater
-                 * than the previous). 
+                 * than the previous).
                  */
                 count++;
                 if (mode == VACM_MODE_CHECK_SUBTREE) {
@@ -384,12 +384,12 @@ vacm_getViewEntry(const char *viewName,
  *   *viewName           - Name of view to check
  *   *viewSubtree        - OID of subtree
  *    viewSubtreeLen     - length of subtree OID
- *      
+ *
  * Returns:
  *   VACM_SUCCESS          The OID is included in the view.
  *   VACM_NOTINVIEW        If no entry in the view list includes the
  *                         provided OID, or the OID is explicitly excluded
- *                         from the view. 
+ *                         from the view.
  *   VACM_SUBTREE_UNKNOWN  The entire subtree has both allowed and disallowed
  *                         portions.
  */
@@ -440,9 +440,9 @@ vacm_checkSubtree(const char *viewName,
                     /*
                      * match successful, keep this node if it's longer than
                      * the previous or (equal and lexicographically greater
-                     * than the previous). 
+                     * than the previous).
                      */
-    
+
                     if (vpShorter == NULL
                         || vp->viewSubtreeLen > vpShorter->viewSubtreeLen
                         || (vp->viewSubtreeLen == vpShorter->viewSubtreeLen
@@ -486,7 +486,7 @@ vacm_checkSubtree(const char *viewName,
                 if (found) {
                     /*
                      * match successful.  If we already found a match
-                     * with a different view type, then parts of the subtree 
+                     * with a different view type, then parts of the subtree
                      * are included and others are excluded, so return UNKNOWN.
                      */
                     if (vpLonger != NULL
@@ -708,7 +708,7 @@ vacm_createGroupEntry(int securityModel, const char *securityName)
              memcmp(lg->securityName, gp->securityName, glen + 1)) > 0)
             break;
         /*
-         * if (lg->securityModel == securityModel && cmp == 0) abort(); 
+         * if (lg->securityModel == securityModel && cmp == 0) abort();
          */
         og = lg;
         lg = lg->next;
@@ -926,16 +926,16 @@ int
 store_vacm(int majorID, int minorID, void *serverarg, void *clientarg)
 {
     /*
-     * figure out our application name 
+     * figure out our application name
      */
     char           *appname = (char *) clientarg;
     if (appname == NULL) {
-        appname = netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID, 
+        appname = netsnmp_ds_get_string(NETSNMP_DS_LIBRARY_ID,
 					NETSNMP_DS_LIB_APPTYPE);
     }
 
     /*
-     * save the VACM MIB 
+     * save the VACM MIB
      */
     vacm_save("vacm", appname);
     return SNMPERR_SUCCESS;
@@ -944,7 +944,7 @@ store_vacm(int majorID, int minorID, void *serverarg, void *clientarg)
 /*
  * returns 1 if vacm has *any* configuration entries in it (regardless
  * of weather or not there is enough to make a decision based on it),
- * else return 0 
+ * else return 0
  */
 int
 vacm_is_configured(void)

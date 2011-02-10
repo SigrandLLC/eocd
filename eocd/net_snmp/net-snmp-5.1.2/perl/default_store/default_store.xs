@@ -894,7 +894,7 @@ not_there:
 }
 
 
-MODULE = NetSNMP::default_store		PACKAGE = NetSNMP::default_store		
+MODULE = NetSNMP::default_store		PACKAGE = NetSNMP::default_store
 
 
 double
